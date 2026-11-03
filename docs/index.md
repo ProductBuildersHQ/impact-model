@@ -102,11 +102,11 @@ markers for the partners a program influences.)
 
 ## The theory of change
 
-The theory of change is the projection most programs start from. It explains
-**how and why a program expects to bring about a change**. It starts from the
-long-term goal and works backwards: what conditions must exist for the goal to
-be reached, what must exist before each of those, and so on down to what the
-program does today. Each step is an
+The theory of change is the projection many teams start from. It explains
+**how and why the work is expected to bring about a change**, whether the work is
+a product, a strategy, or a program. It starts from the long-term goal and works
+backwards: what conditions must exist for the goal to be reached, what must
+exist before each of those, and so on down to what is done today. Each step is an
 **outcome**; each arrow between outcomes is a **causal link** with a reason for
 believing it holds; and each belief that has to be true for a link to work is an
 **assumption** that can be tested.
@@ -126,8 +126,9 @@ claim it.
 
 ### Why it matters
 
-The method is used by foundations, development agencies, and funders, and the
-sources agree on five reasons:
+The method grew up among foundations, development agencies, and funders, but it
+is a tool for any goal: a product's adoption, a company's strategy, or a
+program's impact. The sources agree on five reasons:
 
 - **Planning.** Agree on what has to change, and in what order, before spending
   money on activities.
@@ -135,8 +136,8 @@ sources agree on five reasons:
   long-term goal, instead of asserting that they do.
 - **Evaluability.** Indicators and tests come from the causal reasoning, so you
   know what to measure and what would count as being wrong.
-- **Communication.** Funders, partners, staff, and the people the program serves
-  can see the same reasoning and argue with it.
+- **Communication.** Leaders, funders, partners, staff, and the people the work
+  serves can see the same reasoning and argue with it.
 - **Learning.** The model is a living framework. When evidence arrives, you revise
   it instead of defending it.
 
@@ -266,9 +267,10 @@ Reading the second diagram:
 | **Honest handling of people's data** | Stories and quotes appear only with consent, and restricted evidence is never rendered anywhere |
 | **Ready for AI agents** | An MCP server and agent skills let an agent draft, edit, measure, report, and export, under the same rules as a person |
 
-It is meant for program and strategy teams, evaluators, funders, and anyone who has
-to explain *why* what they do should lead to what they hope for, and then show
-whether it did.
+It is meant for anyone who sets goals and has to show results, in a startup, a
+company, or a nonprofit: founders, product, strategy, and program teams,
+evaluators, and funders. Each has to explain *why* what they do should lead to
+what they hope for, and then show whether it did.
 
 ## Start here
 
