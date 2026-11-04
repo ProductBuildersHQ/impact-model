@@ -10,7 +10,7 @@ import (
 
 // DefinitionKinds lists the definition report kinds that need no
 // observations, in the order the definitions pack presents them.
-var DefinitionKinds = []string{"pathway", "logic-model", "logic-model-diagram", "logic-model-layered", "logic-model-d2", "problem-tree", "problem-tree-d2", "problem-tree-json", "outcome-map", "logframe", "metrics", "metric-selection", "collection-plan", "glossary", "assessment", "definitions"}
+var DefinitionKinds = []string{"pathway", "logic-model", "logic-model-diagram", "logic-model-layered", "logic-model-d2", "problem-tree", "problem-tree-d2", "problem-tree-json", "dmaic-plan", "outcome-map", "logframe", "metrics", "metric-selection", "collection-plan", "glossary", "assessment", "definitions"}
 
 // PathwayDiagrams renders the causal-pathway diagram of the whole impact model,
 // then one per pathway, each as a titled Mermaid block.

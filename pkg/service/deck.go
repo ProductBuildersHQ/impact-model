@@ -75,6 +75,8 @@ func DefinitionReport(doc *impact.Model, kind, pathway string) (string, error) {
 			return "", err
 		}
 		return t.JSON()
+	case "dmaic-plan":
+		return report.DMAICPlan(doc, pathway)
 	case "outcome-map":
 		return report.OutcomeMaps(whole, pathways), nil
 	case "logframe":
