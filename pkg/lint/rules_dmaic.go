@@ -3,7 +3,6 @@ package lint
 import (
 	"fmt"
 	"math"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -58,7 +57,7 @@ func init() {
 	register("IMP-DMA-002", validate.SeverityWarning, "An indicator of a DMAIC pathway is measured at least 20 times a year.", func(c *Context) []Finding {
 		var out []Finding
 		for _, d := range dmaicIndicators(c) {
-			n, ok := perYear(d.v.Frequency)
+			n, ok := impact.TimesPerYear(d.v.Frequency)
 			if !ok || n >= impact.DMAICMinPoints {
 				continue
 			}
@@ -82,7 +81,7 @@ func init() {
 					Message: "it is a survey, and how many people are asked each year is not stated, so it cannot be told whether each measurement has enough responses"})
 				continue
 			}
-			n, ok := perYear(d.v.Frequency)
+			n, ok := impact.TimesPerYear(d.v.Frequency)
 			if !ok {
 				continue // IMP-DMA-001 reports the missing frequency
 			}
@@ -98,35 +97,6 @@ func init() {
 		}
 		return out
 	})
-}
-
-var isoDuration = regexp.MustCompile(`^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$`)
-
-// perYear is how many times a year an ISO 8601 duration repeats, using the
-// average year and month. It reports false for an empty or unreadable
-// duration and for one of zero length.
-func perYear(iso string) (float64, bool) {
-	m := isoDuration.FindStringSubmatch(iso)
-	if m == nil {
-		return 0, false
-	}
-	const daysPerYear = 365.2425
-	unit := []float64{daysPerYear, daysPerYear / 12, 7, 1, 1.0 / 24, 1.0 / 1440, 1.0 / 86400}
-	days := 0.0
-	for i, part := range m[1:] {
-		if part == "" {
-			continue
-		}
-		v, err := strconv.ParseFloat(part, 64)
-		if err != nil {
-			return 0, false // the pattern admits only numbers; unreachable
-		}
-		days += v * unit[i]
-	}
-	if days == 0 {
-		return 0, false
-	}
-	return daysPerYear / days, true
 }
 
 // timesAYear says how often a year something happens, in words.
