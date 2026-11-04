@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
 )
 
 func TestProjectionGoldens(t *testing.T) {
@@ -28,6 +30,7 @@ func TestProjectionsOfATheoryWithNoPathways(t *testing.T) {
 	for i := range doc.Metrics {
 		doc.Metrics[i].Layer = ""
 	}
+	clearTreePathways(doc)
 	whole := build(t, doc, nil, Options{})
 	for name, out := range map[string]string{
 		"outcome map": OutcomeMaps(whole, nil), "logframe": Logframes(whole, nil), "diagram": LogicModelDiagrams(whole, nil),
@@ -119,5 +122,16 @@ func TestLogicModelDiagramJoinsOnlyTheStagesThatHaveContent(t *testing.T) {
 	}
 	if d != LogicModelMermaid(v) {
 		t.Error("the diagram is not deterministic")
+	}
+}
+
+// clearTreePathways drops the pathway references of causes and effects, for a
+// test that removes the pathways.
+func clearTreePathways(doc *impact.Model) {
+	for i := range doc.Causes {
+		doc.Causes[i].PathwayIDs = nil
+	}
+	for i := range doc.Effects {
+		doc.Effects[i].PathwayIDs = nil
 	}
 }

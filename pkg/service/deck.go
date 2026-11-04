@@ -66,11 +66,15 @@ func DefinitionReport(doc *impact.Model, kind, pathway string) (string, error) {
 	case "logic-model-d2":
 		return logicmodel.Diagrams(whole, pathways, logicmodel.FormatD2)
 	case "problem-tree":
-		return problemtree.Report(doc, problemtree.FormatMermaid)
+		return problemtree.ReportFor(doc, pathway, problemtree.FormatMermaid)
 	case "problem-tree-d2":
-		return problemtree.Report(doc, problemtree.FormatD2)
+		return problemtree.ReportFor(doc, pathway, problemtree.FormatD2)
 	case "problem-tree-json":
-		return problemtree.Build(doc).JSON()
+		t, err := problemtree.BuildFor(doc, pathway)
+		if err != nil {
+			return "", err
+		}
+		return t.JSON()
 	case "outcome-map":
 		return report.OutcomeMaps(whole, pathways), nil
 	case "logframe":

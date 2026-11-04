@@ -340,6 +340,10 @@ type Cause struct {
 	Parents          []string `json:"parents,omitempty"`
 	AffectedGroupIDs []string `json:"affectedGroupIds,omitempty"`
 	EvidenceIDs      []string `json:"evidenceIds,omitempty"`
+	// PathwayIDs are the pathways whose own problem tree this cause belongs
+	// to. A cause shared by several programs names each of them. The problem
+	// tree of the whole model holds every cause either way.
+	PathwayIDs []string `json:"pathwayIds,omitempty"`
 	// OutOfScope records that the cause is real but not addressed here.
 	OutOfScope *OutOfScope `json:"outOfScope,omitempty"`
 	Provenance *Provenance `json:"provenance,omitempty"`
@@ -356,6 +360,9 @@ type Effect struct {
 	Parents          []string `json:"parents,omitempty"`
 	AffectedGroupIDs []string `json:"affectedGroupIds,omitempty"`
 	EvidenceIDs      []string `json:"evidenceIds,omitempty"`
+	// PathwayIDs are the pathways whose own problem tree this effect belongs
+	// to, as for a cause.
+	PathwayIDs []string `json:"pathwayIds,omitempty"`
 	// OutOfScope records that the effect is real but not relieved here.
 	OutOfScope *OutOfScope `json:"outOfScope,omitempty"`
 	Provenance *Provenance `json:"provenance,omitempty"`
@@ -577,13 +584,18 @@ type Consultation struct {
 // program area or a strategy. Detail for a pathway may live in a child
 // Impact model that points back with the document's parent field.
 type Pathway struct {
-	ID              string      `json:"id" jsonschema:"required"`
-	Title           string      `json:"title" jsonschema:"required"`
-	Kind            PathwayKind `json:"kind,omitempty"`
-	Description     string      `json:"description,omitempty"`
-	OwnerID         string      `json:"ownerActorId,omitempty"`
-	OutcomeIDs      []string    `json:"outcomeIds,omitempty"`
-	InterventionIDs []string    `json:"interventionIds,omitempty"`
+	ID          string      `json:"id" jsonschema:"required"`
+	Title       string      `json:"title" jsonschema:"required"`
+	Kind        PathwayKind `json:"kind,omitempty"`
+	Description string      `json:"description,omitempty"`
+	// ProblemStatement is the core problem of this pathway's own problem
+	// tree, for a program that answers a narrower problem than the model's
+	// (context.problemStatement). The causes and effects that name the
+	// pathway in pathwayIds hang from it.
+	ProblemStatement string   `json:"problemStatement,omitempty"`
+	OwnerID          string   `json:"ownerActorId,omitempty"`
+	OutcomeIDs       []string `json:"outcomeIds,omitempty"`
+	InterventionIDs  []string `json:"interventionIds,omitempty"`
 	// ChildModel references an impact model that elaborates this pathway
 	// (model:<doc>).
 	ChildModel string `json:"childModel,omitempty" jsonschema:"pattern=^model:[a-z][a-z0-9]*(-[a-z0-9]+)*$"`

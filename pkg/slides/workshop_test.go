@@ -100,6 +100,12 @@ func TestWorkshopWithoutPathwaysRendersOneLogicModel(t *testing.T) {
 	for i := range doc.Indicators {
 		doc.Indicators[i].PathwayIDs = nil
 	}
+	for i := range doc.Causes {
+		doc.Causes[i].PathwayIDs = nil
+	}
+	for i := range doc.Effects {
+		doc.Effects[i].PathwayIDs = nil
+	}
 	whole, pathways := views(t, doc)
 	if n := strings.Count(Workshop(whole, pathways, Options{}), "# Logic model: "); n != 1 {
 		t.Errorf("want one logic model, got %d", n)

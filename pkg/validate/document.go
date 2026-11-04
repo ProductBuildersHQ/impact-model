@@ -934,6 +934,7 @@ func (c *checker) causesAndGroups() {
 			c.errorf("VAL-CAU-005", p+"/outOfScope/reason", cause.ID, "a cause set aside needs a reason")
 		}
 		c.refs(p+"/parents", cause.ID, cause.Parents, impact.ElementCause)
+		c.refs(p+"/pathwayIds", cause.ID, cause.PathwayIDs, impact.ElementPathway)
 		c.prov("causes", i, cause.ID, cause.Provenance)
 		switch {
 		case slices.Contains(cause.Parents, cause.ID) && cause.ID != "":
@@ -948,6 +949,7 @@ func (c *checker) causesAndGroups() {
 			c.errorf("VAL-EFF-001", p+"/statement", e.ID, "effect has no statement")
 		}
 		c.refs(p+"/parents", e.ID, e.Parents, impact.ElementEffect)
+		c.refs(p+"/pathwayIds", e.ID, e.PathwayIDs, impact.ElementPathway)
 		c.refs(p+"/affectedGroupIds", e.ID, e.AffectedGroupIDs, impact.ElementTargetGroup)
 		c.refs(p+"/evidenceIds", e.ID, e.EvidenceIDs, impact.ElementEvidence)
 		if e.OutOfScope != nil && strings.TrimSpace(e.OutOfScope.Reason) == "" {
