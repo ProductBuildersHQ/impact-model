@@ -88,6 +88,49 @@ immediate causes lead to the core problem. Written the other way round, the
 tree draws upside down, so `IMP-CAU-003` reports a cause whose parent sits at a
 deeper level.
 
+## One tree per program
+
+An organization with several programs often has one problem it exists to solve
+and a narrower problem behind each program. Give a pathway its own core problem
+with `problemStatement`, and name the pathways a cause or effect belongs to with
+`pathwayIds`. A cause shared by several programs names each of them.
+
+```yaml
+pathways:
+  - id: pw-training
+    title: Training
+    problemStatement: Small employers cannot find trained staff.
+causes:
+  - id: cause-no-courses
+    statement: No local courses teach the trade.
+    level: immediate
+    pathwayIds:
+      - pw-training
+  - id: cause-low-wages
+    statement: Wages in the trade are low.
+    level: structural
+    parents:
+      - cause-no-courses
+    pathwayIds:
+      - pw-training
+      - pw-placement
+```
+
+```bash
+impact-model report problem-tree impact-model.yaml --pathway pw-training
+```
+
+A pathway's tree holds only the causes and effects that name it, under its own
+problem statement, or under the model's when it has none. A parent outside the
+pathway's tree is left out, so a cause whose parents all belong to other
+programs leads straight to the program's problem. The whole model's tree, drawn
+without `--pathway`, still holds every cause and effect, and the `definitions`
+pack draws it first and then each program's tree.
+
+In a program's tables, the program's own outcomes are listed first. An outcome
+of another pathway that addresses the same cause follows, labelled with its
+pathway, so a shared cause does not look unaddressed.
+
 ## How the diagram is laid out
 
 The arrows flow upward, from the roots to the core problem and on to the

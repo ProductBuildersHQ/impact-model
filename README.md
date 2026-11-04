@@ -78,7 +78,7 @@ Each projection answers a different question for a different reader:
 
 | Projection | Answers | Get it with |
 |------------|---------|-------------|
-| **Problem tree** | What is the problem, what causes it, and what does it lead to? The core problem in the middle, causes (roots) below and effects (branches) above, with the outcomes that address each. See [the guide](docs/guides/problem-tree.md) | `report problem-tree`, `problem-tree-d2`, `problem-tree-json` |
+| **Problem tree** | What is the problem, what causes it, and what does it lead to? The core problem in the middle, causes (roots) below and effects (branches) above, with the outcomes that address each. See [the guide](docs/guides/problem-tree.md) | `report problem-tree` (`--pathway` for one program's tree), `problem-tree-d2`, `problem-tree-json` |
 | **Theory of change** | Why should what we do lead to the change we want, and in what order must outcomes happen? Drawn as pathways of change, from the earliest outcome at the bottom to the long-term goal at the top | `report pathway` |
 | **Outcome map** | What changes, who is responsible for each change, and how is it measured? The outcomes by level, each with its sphere, owner, cause, and indicators | `report outcome-map` |
 | **Logic model** | What goes in, what is done, and what comes out? Stages from inputs, activities, and outputs through short-, medium-, and long-term outcomes to impact, one per pathway | `report logic-model`, `logic-model-d2` |
@@ -86,7 +86,7 @@ Each projection answers a different question for a different reader:
 | **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
 | **OKRs and outcome journeys** | What will a team commit to this quarter, and how does a person move through the outcomes? For the [PRISM](#part-of-the-prism-ecosystem) planning tools | `export okr`, `export journey` |
 | **V2MOM** | What do we want, what matters, how will we get it, what is in the way, and how will we know? Vision and values from the context, one method per pathway with its interventions as projects, measures from each pathway's North Star and guardrails, and obstacles from risks and open assumptions. See [the mapping](docs/guides/v2mom.md) | `export v2mom` |
-| **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](docs/guides/dmaic.md) | `export dmaic` |
+| **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](docs/guides/dmaic.md) | `export dmaic`, and `report dmaic-plan` to plan it before there is data |
 
 Each projection leaves something out. A problem tree shows the problem, what
 causes it, and what it leads to, but not the steps by which a program changes
