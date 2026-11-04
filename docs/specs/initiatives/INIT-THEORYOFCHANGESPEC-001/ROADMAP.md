@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 20 of 23 phases completed
+**Status:** In progress — 20 of 24 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -578,3 +578,20 @@
 - [x] `RMI-IMPACTMODEL-016` Refresh the overview, credits, and guides for V2MOM, DMAIC, and problem trees
   - Type: documentation · Status: completed
   - Acceptance: README and docs/index.md list every projection and export; credits name V2MOM, DMAIC, and problem-tree sources; a test keeps README and docs/index.md in step
+
+## Phase 24 — Program Problem Trees and DMAIC Planning
+
+**Theme:** A problem tree for each program under the organization's, and a DMAIC plan a team can review before any data is collected
+**Status:** In progress — 0 of 2 items completed
+
+- [ ] `RMI-IMPACTMODEL-018` Draw a problem tree per pathway
+  - Type: capability · Status: in progress
+  - Depends on: `RMI-IMPACTMODEL-011`
+  - Satisfies: PRD-FR-515, TRD-044
+  - Acceptance: pathway.problemStatement and pathwayIds on causes and effects validate and cascade on removal; problem-tree, problem-tree-d2, and problem-tree-json take --pathway; the definitions pack draws the whole tree then each pathway tree; outcomes from other pathways are labelled; unit tests and goldens; problem tree guide updated
+
+- [ ] `RMI-IMPACTMODEL-019` Plan DMAIC before the data exists
+  - Type: capability · Status: in progress
+  - Depends on: `RMI-IMPACTMODEL-005`, `RMI-IMPACTMODEL-018`
+  - Satisfies: PRD-FR-516, TRD-045
+  - Acceptance: report dmaic-plan lists, per DMAIC pathway or the one named, the core problem and root causes, the interventions, and each metric's phase use and remaining needs; the cadence helper is shared with the IMP-DMA lint rules; golden and unit tests; DMAIC guide updated
