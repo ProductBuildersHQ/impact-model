@@ -21,7 +21,7 @@ func TestExportPRISM(t *testing.T) {
 			t.Errorf("%s: %+v %v", kind, out, err)
 		}
 	}
-	if _, err := ExportPRISM("mystery", doc, nil, nil); err == nil || !strings.Contains(err.Error(), "okr, journey, v2mom, vsem, dmaic") {
+	if _, err := ExportPRISM("mystery", doc, nil, nil); err == nil || !strings.Contains(err.Error(), "okr, journey, v2mom, vsem, dmaic, mel") {
 		t.Errorf("unknown kind: %v", err)
 	}
 

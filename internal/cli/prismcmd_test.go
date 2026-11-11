@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/grokify/prism-roadmap/goals/dmaic"
+	"github.com/grokify/prism-roadmap/goals/mel"
 	"github.com/grokify/prism-roadmap/goals/okr"
 	"github.com/grokify/prism-roadmap/goals/v2mom"
 	"github.com/grokify/prism-roadmap/goals/vsem"
@@ -101,6 +102,26 @@ func TestExportVSEM(t *testing.T) {
 		if !strings.Contains(refused.err, want) {
 			t.Errorf("refusal does not say %q: %s", want, refused.err)
 		}
+	}
+}
+
+func TestExportMEL(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "mel.json")
+	r := run(t, "", "export", "mel", exTheory, "-O", exObs, "-o", out)
+	wantCode(t, r, ExitOK)
+	plan, err := mel.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := mel.Errors(plan.Validate(mel.DefaultValidationOptions())); len(errs) != 0 {
+		t.Errorf("exported MEL plan does not validate: %+v", errs)
+	}
+	if len(plan.Results) == 0 || len(plan.Indicators) == 0 || len(plan.Evaluations) == 0 || len(plan.Learning) == 0 || len(plan.Reviews) == 0 {
+		t.Errorf("results, indicators, evaluations, learning questions, or reviews missing")
+	}
+	first := run(t, "", "export", "mel", exTheory, "-O", exObs)
+	if again := run(t, "", "export", "mel", exTheory, "-O", exObs); again.stdout != first.stdout {
+		t.Error("two exports differ")
 	}
 }
 
