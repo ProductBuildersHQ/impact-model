@@ -105,4 +105,21 @@ func init() {
 		}
 		return out
 	})
+
+	register("IMP-INT-008", validate.SeverityWarning, "Interventions run within the time horizon of the impact model.", func(c *Context) []Finding {
+		h := c.Doc.Context.TimeHorizon
+		if h == nil {
+			return nil
+		}
+		var out []Finding
+		for _, in := range activeInterventions(c.Doc) {
+			for _, d := range []struct{ field, date string }{{"startDate", in.v.StartDate}, {"endDate", in.v.EndDate}} {
+				if d.date != "" && (d.date < h.Start || d.date > h.End) {
+					out = append(out, Finding{Path: at("interventions", in.i) + "/" + d.field, Element: in.v.ID,
+						Message: fmt.Sprintf("%s %s is outside the time horizon %s to %s", d.field, d.date, h.Start, h.End)})
+				}
+			}
+		}
+		return out
+	})
 }

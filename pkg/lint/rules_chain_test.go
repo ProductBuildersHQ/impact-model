@@ -70,6 +70,10 @@ func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 			func(d *impact.Model) { addIndicator(d, "ind-did", "int-1") }},
 		{"IMP-INT-007", "int-1", func(d *impact.Model) {},
 			func(d *impact.Model) { d.Interventions[0].Resources = "Two staff and a room" }},
+		{"IMP-INT-008", "int-1", func(d *impact.Model) {
+			d.Context.TimeHorizon = &impact.TimeHorizon{Start: "2026-01-01", End: "2027-12-31"}
+			d.Interventions[0].StartDate, d.Interventions[0].EndDate = "2026-03-01", "2028-06-30"
+		}, func(d *impact.Model) { d.Interventions[0].EndDate = "2027-06-30" }},
 
 		// ---- the numbers each audience is told
 		{"IMP-AUD-002", "aud-1", func(d *impact.Model) { outcome(d, "oc-impact").AudienceIDs = []string{"aud-1"} },
