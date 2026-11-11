@@ -238,8 +238,8 @@ func init() {
 	asm("IMP-ASM-002", validate.SeverityWarning, "High and critical assumptions cite evidence.",
 		"a high or critical assumption cites no evidence",
 		func(_ *Context, a impact.Assumption) bool { return critical(a) && len(a.EvidenceIDs) == 0 })
-	asm("IMP-ASM-004", validate.SeverityWarning, "Assumptions that need testing say how, and are watched or tied to a decision.",
-		"this assumption needs testing but has no test, or no monitoring indicator or related decision",
+	asm("IMP-ASM-004", validate.SeverityWarning, "Assumptions that need testing say how, and are watched or tied to a decision, a learning question, or an evaluation.",
+		"this assumption needs testing but has no test, or no monitoring indicator, related decision, learning question, or evaluation",
 		func(c *Context, a impact.Assumption) bool {
 			if !a.NeedsTesting {
 				return false
@@ -251,6 +251,7 @@ func init() {
 			for _, d := range c.Doc.Decisions {
 				watched = watched || slices.Contains(d.RelatedIDs, a.ID)
 			}
+			watched = watched || takenUp(c.Doc, a.ID)
 			return a.Test == "" || !watched
 		})
 
