@@ -78,6 +78,25 @@ func TestCommandsEqualTheirPatches(t *testing.T) {
 			},
 		},
 		{
+			"intervention set dates",
+			[]string{"intervention", "set", "FILE", "int-reference", "--start-date", "2026-05-01", "--end-date", "2027-04-30"},
+			func(t *testing.T) []edit.Op {
+				return []edit.Op{
+					must(edit.Add("/interventions/@int-reference/endDate", "2027-04-30")),
+					must(edit.Add("/interventions/@int-reference/startDate", "2026-05-01")),
+				}
+			},
+		},
+		{
+			"pathway set resources",
+			[]string{"pathway", "set", "FILE", "pw-supply", "--set", `resources=[{"name":"Events budget","allocation":"$40k a year"}]`},
+			func(t *testing.T) []edit.Op {
+				return []edit.Op{must(edit.Add("/pathways/@pw-supply/resources", []any{
+					map[string]any{"name": "Events budget", "allocation": "$40k a year"},
+				}))}
+			},
+		},
+		{
 			"risk rm",
 			[]string{"risk", "rm", "FILE", "rsk-competing"},
 			func(t *testing.T) []edit.Op { return []edit.Op{edit.Remove("/risks/@rsk-competing")} },

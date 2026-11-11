@@ -93,6 +93,8 @@ var elementFlags = map[string][]elementFlag{
 		s("status", "status", "planned, in_progress, completed, paused, or cancelled"),
 		ss("outputs", "outputs", "direct products"),
 		s("resources", "resources", "resources required"),
+		s("start-date", "startDate", "date it starts (YYYY-MM-DD)"),
+		s("end-date", "endDate", "date it ends (YYYY-MM-DD); leave out for ongoing work"),
 	},
 	"assumption": {
 		sr("statement", "statement", "the assumption, ideally if X then Y because Z"),
