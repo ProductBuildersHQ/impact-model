@@ -9,6 +9,7 @@ import (
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 	"github.com/grokify/prism-roadmap/goals/okr"
 	"github.com/grokify/prism-roadmap/goals/v2mom"
+	"github.com/grokify/prism-roadmap/goals/vsem"
 )
 
 func TestExportOKRAndJourneys(t *testing.T) {
@@ -68,6 +69,35 @@ func TestExportV2MOM(t *testing.T) {
 	refused := run(t, "", "export", "v2mom", "../../examples/market-adoption/impact-model.yaml")
 	wantCode(t, refused, ExitUsageErr)
 	for _, want := range []string{"cannot be drawn as a V2MOM", "context.vision", "context.values"} {
+		if !strings.Contains(refused.err, want) {
+			t.Errorf("refusal does not say %q: %s", want, refused.err)
+		}
+	}
+}
+
+func TestExportVSEM(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "vsem.json")
+	r := run(t, "", "export", "vsem", exTheory, "-O", exObs, "-o", out)
+	wantCode(t, r, ExitOK)
+	doc, err := vsem.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := vsem.Errors(doc.Validate(vsem.DefaultValidationOptions())); len(errs) != 0 {
+		t.Errorf("exported VSEM does not validate: %+v", errs)
+	}
+	if doc.Vision == "" || len(doc.Strategies) == 0 || len(doc.Execution) == 0 || len(doc.Metrics) == 0 {
+		t.Errorf("vision, strategies, execution, or metrics missing: %+v", doc)
+	}
+	first := run(t, "", "export", "vsem", exTheory, "-O", exObs)
+	if again := run(t, "", "export", "vsem", exTheory, "-O", exObs); again.stdout != first.stdout {
+		t.Error("two exports differ")
+	}
+
+	// A model without a vision, a mission, or pathways is refused, naming them.
+	refused := run(t, "", "export", "vsem", "../../examples/market-adoption/impact-model.yaml")
+	wantCode(t, refused, ExitUsageErr)
+	for _, want := range []string{"cannot be drawn as a VSEM", "context.vision or context.mission", "a pathway"} {
 		if !strings.Contains(refused.err, want) {
 			t.Errorf("refusal does not say %q: %s", want, refused.err)
 		}
