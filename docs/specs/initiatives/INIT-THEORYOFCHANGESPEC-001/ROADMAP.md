@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 20 of 27 phases completed
+**Status:** In progress — 21 of 27 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -599,14 +599,14 @@
 ## Phase 25 — VSEM
 
 **Theme:** VSEM (Vision, Strategy, Execution, Metrics) as a stand-alone format in prism-roadmap, the impact model holding every part of it, and an export that needs nothing else
-**Status:** Proposed — 0 of 2 items completed
+**Status:** Completed — 2 of 2 items completed
 
-- [ ] `RMI-IMPACTMODEL-020` Hold everything a VSEM needs in the impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-020` Hold everything a VSEM needs in the impact model
+  - Type: capability · Status: completed
   - Acceptance: a gap analysis of VSEM against the model recorded in the TRD; pathway resources and intervention timing added, or the TRD says why existing fields suffice; schemas regenerated and lint rules updated where the new fields need checks; examples carry the new fields
 
-- [ ] `RMI-IMPACTMODEL-021` Export a VSEM projection of an impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-021` Export a VSEM projection of an impact model
+  - Type: capability · Status: completed
   - Depends on: `RMI-PRISMROADMAP-022` (goals/vsem in prism-roadmap), `RMI-IMPACTMODEL-020`
   - Acceptance: prismx.ToVSEM linked by ID and refusing a model that lacks a vision or pathways, as ToV2MOM does; export vsem in the CLI, the service layer, and the MCP server; golden tests on the examples; a VSEM guide and credits entry; the VSEM document stays separate from the model
 

@@ -626,8 +626,10 @@ named version, so that both teams work from the same agreed theory.
   structural causes of violence).
 - **PRD-FR-602** An MCP server (official Go SDK) MUST expose validate, lint,
   graph, status, report, and schema tools over stdio.
-- **PRD-FR-603** Export to `prism-roadmap` OKR documents and outcome journeys
-  MUST be provided in an adapter package that the core model does not import.
+- **PRD-FR-603** Export to `prism-roadmap` OKR documents, outcome journeys,
+  and the V2MOM, VSEM, and DMAIC goal documents MUST be provided in an adapter
+  package that the core model does not import. Each export MUST draw only on
+  the impact model and its observations, needing no other input.
 - **PRD-FR-604** A published reference format MUST identify a ToC document and
   any element within it across repositories, for use by USM and UFM.
 - **PRD-FR-605** The repository MUST ship agent skills (instruction files plus
