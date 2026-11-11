@@ -364,6 +364,7 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | IMP-ACC-002 | warning | Outcomes above the ceiling of accountability are not explicitly marked `responsibility: own` (the organization contributes to them, it does not own them) |
 | IMP-INT-001 | error | Every intervention targets ≥ 1 outcome (enforced by validation as VAL-INT-001, so it is never reached by lint) |
 | IMP-INT-002 | warning | Every intervention has an owner actor |
+| IMP-INT-008 | warning | An intervention's `startDate` and `endDate` fall within the document's time horizon |
 | IMP-ACC-001 | warning | A ceiling of accountability is declared |
 | IMP-ACT-001 | info | Outcomes in the `influence` sphere name ≥ 1 actor (boundary partner) |
 | IMP-EVD-001 | info | Links into impact-level outcomes cite ≥ 1 evidence record |
@@ -770,6 +771,40 @@ It applies the patch through `pkg/edit`. It refuses when:
 - any rule IMP-PRV-003 violation remains, unless `--force` with `--reason`
   (recorded in the revision).
 
+### 6.16 VSEM export (`pkg/prismx`)
+
+A VSEM (Vision, Strategy, Execution, Metrics) is drawn from the model alone,
+into prism-roadmap's `goals/vsem` document. Every section has a source in the
+model; two needed fields to be added.
+
+| VSEM part | Model source | Gap and resolution |
+|-----------|--------------|--------------------|
+| Vision, mission | `context.vision`, `context.mission` | None. The export needs at least one of them |
+| Strategy | Each pathway that is not rejected: `title`, `description`, `ownerActorId` | None |
+| Resources a strategy commits | `pathway.resources[] {name, allocation, description}` | **Added.** `intervention.resources` says what one piece of work uses and feeds the logic model's inputs; it cannot say what a strategy commits as a whole |
+| Strategy priority | None | Left blank. Pathways are not ranked; interventions carry priority scores, which say nothing about the strategy |
+| Execution | The pathway's interventions: `title`, `description`, `type`, `ownerActorId`, `status`, `initiativeRefs` | None |
+| Execution timing | `intervention.startDate`, `intervention.endDate` | **Added.** Dates, end not before start (VAL-DATE-002), within the time horizon (IMP-INT-008) |
+| Metrics for a strategy | The pathway's focus: North Star, one metric that matters, guardrails | None. The same metrics the V2MOM export uses |
+| Metrics for the vision | Indicators of `impact`-level outcomes | None |
+| A metric's owner, baseline, target, due date, direction, frequency, source | `ownerActorId`, `baseline`, the latest `targets[]` entry, `direction`, `frequency`, `dataSource` | None |
+| A metric's current value, progress, status | The status computed from observations | None; filled only when observations are given |
+
+**Mapping rules.**
+
+- The export is refused (`ErrNotVSEMReady`) without a vision or mission, or
+  without a pathway that is not rejected.
+- An intervention or indicator that serves more than one pathway is listed under
+  the first, because VSEM IDs are unique; an intervention in no pathway has no
+  strategy and is left out.
+- An intervention of type `program` is a `program`; any other is an
+  `initiative`. A paused intervention has no VSEM status.
+- A frequency of one day, week, month, quarter, or year is written as Daily,
+  Weekly, Monthly, Quarterly, or Yearly; any other ISO 8601 duration is
+  written as given.
+- Vision metrics are the indicators of `impact`-level outcomes that are not
+  already a strategy's metric, in file order.
+
 ## 7. Data Design
 
 ### 7.1 Document model (`pkg/impact`)
@@ -831,10 +866,10 @@ type Document struct {
 | `Consultation` | `id`, `date` (req), `step` (req: `focus`, `change_analysis`, `assumptions_risks`, `actors`, `measurement`, `whole`), `method` (`workshop`, `interview`, `survey`, `document_review`, `evidence_review`, `meeting`), `stakeholderGroups[]` (groups or actor IDs, never personal names required), `count?`, `findings[]`, `changedIds[]` | Validation trail per UNDG principle (a) and the validate-each-step loop. |
 | `PreconditionGroup` | `id`, `target` (outcome ID), `members[]` (outcome or group IDs; ≥ 2), `logic` {`all`/`any`/`at_least`, `k`}, `sufficiency` (text) | Explicit AND/OR/k-of-n "cluster" (ActKnowledge). Groups nest, so `(A AND B) OR C` is expressible. Incoming links whose source is a group member are evaluated through the group; the group's result feeds the target's `logic`. |
 | `CausalLink` | `id`, `from` (outcome or intervention ID), `to` (outcome ID), `type` (`causes`, `enables`, `contributes_to`, `necessary_condition`), `rationale`, `assumptionIds[]`, `evidenceIds[]`, `interventionIds[]` (interventions placed on the connector, ActKnowledge style), `polarity` (`positive` default, `negative`), `feedback` bool, `loopType` (`reinforcing`, `balancing`; only with `feedback`), `lag?` (ISO 8601 duration) | Directed edge. Intervention → outcome edges MAY be implicit via `Intervention.targets`. |
-| `Intervention` | `id`, `title` (req), `type` (`program`, `product`, `policy`, `advocacy`, `partnership`, `standardization`, `investment`, `communication`, `research`, `other`), `targets[]` (req), `outputs[]`, `ownerActorId`, `status`, `capabilities[]` (`core.CapabilityRef`), `initiativeRefs[]` (ExternalRef, e.g. visionstudio `INIT-…`), `resources` | Strategy / activity. |
+| `Intervention` | `id`, `title` (req), `type` (`program`, `product`, `policy`, `advocacy`, `partnership`, `standardization`, `investment`, `communication`, `research`, `other`), `targets[]` (req), `outputs[]`, `ownerActorId`, `status`, `capabilities[]` (`core.CapabilityRef`), `initiativeRefs[]` (ExternalRef, e.g. visionstudio `INIT-…`), `resources`, `startDate`, `endDate` (dates; end not before start, VAL-DATE-002) | Strategy / activity. The dates are when it runs; an ongoing intervention has a start and no end. |
 | `Assumption` | `id`, `statement` (req), `ifThenBecause?` {`if`, `then`, `because`}, `type` (`causal`, `contextual`, `implementation`, `behavioral`, `external`, `partnership`), `appliesTo[]` (link/outcome/intervention IDs), `criticality` (`low`, `medium`, `high`, `critical`), `plausibility` (`low`, `medium`, `high`), `explainsFully?` (bool; UNDG question 1), `needsTesting` (bool; UNDG question 3), `test` (how: monitoring indicator, evaluation, research), `indicatorIds[]` (assumption-monitoring indicators), `evidenceIds[]`, `status`, `ownerActorId` | Static status is the default; observation sets override. `confidence` from v0.1 drafts is replaced by `plausibility` (UNDG question 2). |
 | `Indicator` | `id`, `measures` (req; outcome ID, or intervention ID for output indicators, or assumption ID for assumption-monitoring indicators, or pathway ID for pathway-level and roll-up indicators that have no single outcome), `name` (req), `definition`, `measurementType` (`quantitative`, `qualitative`, `hybrid`), `unit`, `direction` (`increase`, `decrease`, `maintain`), `tolerance`, `levels[]` (ordered qualitative levels; Outcome Mapping progress markers use `expect`/`like`/`love`), `baseline {value, level, date, source}`, `targets[] {value, level, threshold, date, label, milestone bool}`, `population {description, actorIds[], size}`, `disaggregation[]`, `dataSource`, `method`, `frequency` (ISO 8601 duration), `ownerActorId`, `proxyFor[]` (outcome IDs this indicator stands in for), `externalRefs[]` (e.g. maturity SLI, OKR KR) | ActKnowledge's four components — population, target, threshold, timeline — map to `population`, `targets[].value`, `targets[].threshold`, `targets[].date`. Framework-design extensions: `metricId` (instantiates a shared `Metric`), `pathwayIds[]`, `claim` (`attribution` or `contribution`; contribution when omitted, so a report never overclaims), `caveats[]`, `collection {mode, system, minutesPerPeriod, period, questionsPerRespondent, respondentsPerYear, sampleRate}`, `selection {status: candidate/selected/retired, scores[] {criterionId, score 1–5, note}, rationale}`, `audienceIds[]`, `rollupFrom[]` (indicator IDs whose values roll up into this one via the metric's rule), `themeIds[]` (for `theme_count` indicators derived from stories). `measurementType` gains `theme_count` together with the story codebook (RMI-035). |
-| `Pathway` | `id`, `title` (req), `kind` (`program`, `strategy`, `theme`, `geography`, `segment`), `description`, `problemStatement` (core problem of its own problem tree), `ownerActorId`, `outcomeIds[]`, `interventionIds[]`, `childModel?` (ref to a program-level ToC document), `focus?`, `projections[]` (`dmaic`; unique, VAL-PTH-007) | Program area / strategy grouping. `projections: [dmaic]` subjects the pathway's indicators to the IMP-DMA rules and includes it in `export dmaic`. Indicators join via `pathwayIds`. A pathway may delegate detail to a child ToC whose `parent` points back. |
+| `Pathway` | `id`, `title` (req), `kind` (`program`, `strategy`, `theme`, `geography`, `segment`), `description`, `problemStatement` (core problem of its own problem tree), `ownerActorId`, `outcomeIds[]`, `interventionIds[]`, `childModel?` (ref to a program-level ToC document), `focus?`, `projections[]` (`dmaic`; unique, VAL-PTH-007), `resources[] {name (req, VAL-PTH-008), allocation, description}` (what the pathway commits as a whole, §6.16) | Program area / strategy grouping. `projections: [dmaic]` subjects the pathway's indicators to the IMP-DMA rules and includes it in `export dmaic`. Indicators join via `pathwayIds`. A pathway may delegate detail to a child ToC whose `parent` points back. |
 | `Metric` | `id`, `name` (req), `definition` (req), `formula` (req; exact computation in words, e.g. "sum over sessions of attendees × session hours"), `unit`, `direction`, `aggregation` (`sum`, `mean`, `weighted_mean`, `median`, `mode`, `min`, `max`, `latest`, `none`; `median` and `mode` are the honest choices for ordinal levels), `weightMetricId?`, `layer` (`common`, `pathway`) | Shared definition so a metric is computed identically across pathways. `none` means values cannot be combined (e.g. distinct counts across overlapping populations) and org-level values must be observed directly. |
 | `SelectionCriterion` | `id`, `name`, `question`, `weight`, `appliesTo` (req: `indicator`, `outcome`, `intervention`) | Indicator criteria: decision value, audience value, cost to collect (inverted), consistency, credibility. Outcome / intervention (focus and solution) criteria: equity, comparative advantage, feasibility, evidence of what works. Scores live on the subject (`selection.scores` for indicators, `priority.scores` for outcomes and interventions). |
 | `MeasurementBudget` | `staffMinutesPerWeek`, `maxQuestionsPerRespondentPerYear`, `targetSelectedMetrics {min, max}` | Declared sustainability constraints. |
@@ -1101,3 +1136,4 @@ No open question blocks implementation.
 | 0.5 | 2026-10-29 | John Wang | Public-source drafting with element provenance and data availability, assessment report, sharing exports (pandoc profile, review packet and sheet, export stamps), ReviewResponse import as proposals, approval, impact-draft-from-sources and toc-share-google skills over external Google tooling |
 | 0.6 | 2026-11-01 | John Wang | Problem trees: causes become a network (`parents[]`), effects (branches) with `addressesEffects`, lint IMP-EFF-001/002, and the problem-tree reports built from a JSON diagram spec (TRD-043) |
 | 0.7 | 2026-11-03 | John Wang | A problem tree per pathway (`pathway.problemStatement`, `pathwayIds` on causes and effects, TRD-044) and the `dmaic-plan` report (TRD-045) |
+| 0.8 | 2026-11-11 | John Wang | Pathway resources and intervention dates, lint IMP-INT-008, and the VSEM gap analysis and mapping (§6.16) |
