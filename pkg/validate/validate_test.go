@@ -98,6 +98,8 @@ func TestDocumentIssues(t *testing.T) {
 		{"intervention ends before it starts", func(d *impact.Model) {
 			d.Interventions[0].StartDate, d.Interventions[0].EndDate = "2027-03-01", "2027-02-01"
 		}, "VAL-DATE-002", "/interventions/0", SeverityError},
+		{"objective without statement or one outcome", func(d *impact.Model) { d.Context.Objective = &impact.Objective{} }, "VAL-OBJ-001", "/context/objective", SeverityError},
+		{"objective names an unknown outcome", func(d *impact.Model) { d.Context.Objective.OutcomeIDs = []string{"oc-ghost"} }, "VAL-REF-001", "/context/objective/outcomeIds/0", SeverityError},
 		{"evaluation without title", func(d *impact.Model) { d.Evaluations[0].Title = " " }, "VAL-EVL-001", "/evaluations/0/title", SeverityError},
 		{"evaluation with an empty question", func(d *impact.Model) { d.Evaluations[0].Questions = []string{""} }, "VAL-EVL-002", "/evaluations/0/questions/0", SeverityError},
 		{"evaluation type unknown", func(d *impact.Model) { d.Evaluations[0].Type = "summative" }, "VAL-ENUM-001", "/evaluations/0/type", SeverityError},

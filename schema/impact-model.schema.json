@@ -614,6 +614,9 @@
           },
           "type": "array"
         },
+        "objective": {
+          "$ref": "#/$defs/Objective"
+        },
         "narrative": {
           "type": "string"
         }
@@ -1749,6 +1752,21 @@
         "context",
         "outcomes"
       ]
+    },
+    "Objective": {
+      "properties": {
+        "statement": {
+          "type": "string"
+        },
+        "outcomeIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
     },
     "OutOfScope": {
       "properties": {

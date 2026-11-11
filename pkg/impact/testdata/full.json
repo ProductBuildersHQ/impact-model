@@ -37,6 +37,12 @@
       "start": "2026-01-01",
       "end": "2028-12-31"
     },
+    "objective": {
+      "statement": "Make delegated agent access safe by default",
+      "outcomeIds": [
+        "oc-safer-agents"
+      ]
+    },
     "narrative": "If major identity providers implement the standard, agent platforms adopt it, and enterprises require it.",
     "mission": "Make provider interoperability routine for the enterprises that depend on it.",
     "vision": "Enterprises sign in once and every provider they use honors it.",

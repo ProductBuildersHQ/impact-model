@@ -388,6 +388,19 @@ func findReference(root map[string]any, id string) (found, bool) {
 			}
 		}
 	}
+	if ctx, ok := root["context"].(map[string]any); ok {
+		if o, ok := ctx["objective"].(map[string]any); ok {
+			ids, _ := o["outcomeIds"].([]any)
+			for i, v := range ids {
+				if v == id {
+					return found{
+						site:    refSite{array: "objective", field: []string{"outcomeIds"}, action: dropItem},
+						element: o, index: -1, item: i, holder: o, left: len(ids) - 1,
+					}, true
+				}
+			}
+		}
+	}
 	if f, ok := findObjectRef(root, id); ok {
 		return f, true
 	}
@@ -488,6 +501,16 @@ func (f found) remedy() ([]Op, string, error) {
 			return one(Remove(Pointer("ceilingOfAccountability")))
 		}
 		return one(f.removeItem())
+	case "objective":
+		// An objective with no statement left and no outcome says nothing.
+		statement, _ := f.holder["statement"].(string)
+		switch {
+		case f.left == 0 && statement == "":
+			return one(Remove(Pointer("context", "objective")))
+		case f.left == 0:
+			return one(Remove(Pointer("context", "objective", "outcomeIds")))
+		}
+		return one(Remove(Pointer("context", "objective", "outcomeIds", strconv.Itoa(f.item))))
 	}
 	switch f.site.action {
 	case dropElement:
