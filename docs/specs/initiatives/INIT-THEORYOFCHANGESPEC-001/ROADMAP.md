@@ -627,10 +627,10 @@
 ## Phase 27 — OGSM
 
 **Theme:** OGSM (Objective, Goals, Strategies, Measures) as a stand-alone format in prism-roadmap, the impact model naming its objective, and an export that needs nothing else
-**Status:** Proposed — 0 of 2 items completed
+**Status:** In progress — 1 of 2 items completed
 
-- [ ] `RMI-IMPACTMODEL-024` Hold everything an OGSM needs in the impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-024` Hold everything an OGSM needs in the impact model
+  - Type: capability · Status: completed
   - Depends on: `RMI-IMPACTMODEL-020`
   - Acceptance: a gap analysis of OGSM against the model recorded in the TRD; a way to name the objective when more than one impact outcome exists, with a lint rule when it is ambiguous; schemas regenerated; examples carry the new field
 

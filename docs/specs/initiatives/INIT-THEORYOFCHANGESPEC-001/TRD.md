@@ -402,6 +402,7 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | IMP-LRN-001 | warning | Once the model plans evaluations or learning questions, every `high`/`critical` assumption not yet shown to hold (status empty, `untested`, `at_risk`, or `invalidated`) is named by a learning question or an evaluation |
 | IMP-LRN-002 | info | Every open learning question is taken up by a review meeting |
 | IMP-LRN-003 | warning | Evaluation dates and learning question due dates fall within the document's time horizon |
+| IMP-CTX-002 | info | The objective is clear: `context.objective` is set, or the model has a single impact outcome (a plan with one objective, such as an OGSM, cannot otherwise be drawn) |
 
 Rule IDs are permanent. Retired rules keep their ID reserved.
 
@@ -840,6 +841,27 @@ plan's budget.
 Lint IMP-LRN-001 to 003 check the plan once it exists: critical assumptions are
 taken up, open questions are reviewed, and dates fall within the time horizon.
 
+### 6.18 OGSM (`pkg/impact`, `pkg/prismx`)
+
+An OGSM (Objective, Goals, Strategies, Measures) is drawn from the model alone,
+into prism-roadmap's `goals/ogsm` document.
+
+| OGSM part | Model source | Gap and resolution |
+|-----------|--------------|--------------------|
+| Objective | The one impact outcome, or none when there are several | **Added** `context.objective {statement, outcomeIds[]}`. Without it, a model with one impact outcome uses that outcome; with several, the objective is ambiguous (IMP-CTX-002) |
+| Objective due date | `context.timeHorizon.end` | None |
+| Goals | Indicators of the outcomes the objective stands for (`objective.outcomeIds`, or the impact outcomes) | None |
+| Strategies | Pathways that are not rejected | None. A strategy serves the goals whose outcomes its own outcomes are or lead to, through causal links (not feedback) and precondition groups |
+| Measures | Each pathway's focus: North Star, one metric that matters, guardrails | None; an indicator that is already a goal is not repeated |
+| Actions | Each pathway's interventions, with owner, status, and dates (§6.16) | None |
+| Strategy priority | None | Left blank, as for VSEM |
+
+**Mapping rules.** The export is refused (`ErrNotOGSMReady`) when the
+objective is ambiguous or there is no pathway that is not rejected. An
+intervention or indicator in more than one pathway is listed under the first.
+A paused intervention has no action status. Frequencies are written in words
+as for VSEM.
+
 ## 7. Data Design
 
 ### 7.1 Document model (`pkg/impact`)
@@ -892,7 +914,7 @@ type Document struct {
 | Type | Key fields | Notes |
 |------|-----------|-------|
 | `Perspective` | `actorId`, `role` (`proponent`, `funder`, `implementer`, `observer`), `futureRef?` | Whose theory this is. USM uses the actor; UFM uses `futureRef` to group a ToC under a competing future. |
-| `Context` | `problemStatement` (req), `rootCauses[]`, `targetPopulation`, `market?` (ExternalRef), `geography?`, `timeHorizon {start,end}` (optional, keeping the minimal document small; date-range lint rules apply only when set), `mission`, `vision`, `values[] {name (req), description}` (ordered, most important first; a value needs a name and names are unique: VAL-DOC-006, VAL-DOC-007), `narrative` | Problem analysis / problem tree inputs. Mission, vision, and values frame the model and are not outcomes; the V2MOM export needs the vision and at least one value. |
+| `Context` | `problemStatement` (req), `rootCauses[]`, `targetPopulation`, `market?` (ExternalRef), `geography?`, `timeHorizon {start,end}` (optional, keeping the minimal document small; date-range lint rules apply only when set), `mission`, `vision`, `values[] {name (req), description}` (ordered, most important first; a value needs a name and names are unique: VAL-DOC-006, VAL-DOC-007), `objective? {statement, outcomeIds[]}` (the one thing the model sets out to achieve; a statement is needed unless it names exactly one outcome, VAL-OBJ-001), `narrative` | Problem analysis / problem tree inputs. Mission, vision, and values frame the model and are not outcomes; the V2MOM export needs the vision and at least one value. |
 | `Ceiling` | `level` (outcome level) or `outcomeIds[]`, `rationale` | Ceiling of accountability; outcomes above it are tracked but not owned. |
 | `Outcome` | `id`, `title` (req; a positive condition, not an activity), `description`, `level` (req: `impact`, `long_term`, `medium_term`, `short_term`, `output`), `sphere` (`control`, `influence`, `interest`), `logic` {`type`: `all`/`any`/`at_least`, `k`} over ungrouped incoming links (default `all`), `category` (open string; recommended vocabularies: ORS `impact`/`influence`/`leverage`/`capacity`, COM-B `reach`/`capability`/`opportunity`/`motivation`/`behavior`/`direct_benefit`/`wellbeing`, MSD AAER `adopt`/`adapt`/`expand`/`respond`), `changeType` (`knowledge`, `attitude`, `skill`, `behavior`, `practice`, `policy`, `norm`, `condition`, `investment`, `adoption`), `population`, `actorIds[]` (who changes / co-owners — supports collective outcomes), `contributesTo[]` (outcomes in a parent theory, as `model:<doc>#<outcome>` references; resolved by `validate --parent` / `validate.Family`), `responsibility` (`own` default, `shared`, `partner`, `unaddressed`), `deliveredBy[]` (actor IDs), `addressesCauses[]` (cause IDs), `addressesEffects[]` (effect IDs), `targetGroupIds[]`, `priority?` {`scores[]` {criterionId, score 1–5, note}, `rationale`}, `tags[]` | Graph node. Indicators reference outcomes, not vice versa. `partner` / `unaddressed` outcomes stay in the graph and are monitored (UNDG: monitor the whole solution tree) but are excluded from accountability counts. |
 | `Cause` | `id`, `statement` (req), `level` (req: `immediate`, `underlying`, `structural`), `parents[]` (cause IDs it contributes to; empty for a direct cause of the core problem), `affectedGroupIds[]`, `evidenceIds[]`, `pathwayIds[]` (pathways whose own tree it belongs to), `outOfScope?` {reason}, `provenance?` | Problem tree roots; outcomes map to causes via `addressesCauses`. Causes form a network; validation rejects a cause among its own parents (VAL-CAU-003) and a parent chain that loops (VAL-CAU-004). |
@@ -1177,3 +1199,4 @@ No open question blocks implementation.
 | 0.8 | 2026-11-11 | John Wang | Pathway resources and intervention dates, lint IMP-INT-008, the VSEM gap analysis and mapping (§6.16), and `export vsem` (TRD-014) |
 | 0.9 | 2026-11-11 | John Wang | Evaluations, learning questions, review meetings, indicator quality assurance, audience reporting frequency and owner, lint IMP-LRN-001 to 003, and the MEL gap analysis and mapping (§6.17) |
 | 0.10 | 2026-11-11 | John Wang | `export mel` and `ToMEL` per the MEL mapping (§6.17, TRD-014) |
+| 0.11 | 2026-11-11 | John Wang | `context.objective`, lint IMP-CTX-002, and the OGSM gap analysis and mapping (§6.18) |
