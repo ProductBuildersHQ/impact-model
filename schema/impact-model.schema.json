@@ -1230,6 +1230,14 @@
         "resources": {
           "type": "string"
         },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
         "priority": {
           "$ref": "#/$defs/Priority"
         },
@@ -1770,6 +1778,12 @@
         "focus": {
           "$ref": "#/$defs/Focus"
         },
+        "resources": {
+          "items": {
+            "$ref": "#/$defs/Resource"
+          },
+          "type": "array"
+        },
         "projections": {
           "items": {
             "type": "string",
@@ -1980,6 +1994,24 @@
       },
       "additionalProperties": false,
       "type": "object"
+    },
+    "Resource": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "allocation": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
     },
     "Revision": {
       "properties": {

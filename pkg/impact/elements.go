@@ -109,6 +109,10 @@ type Intervention struct {
 	// InitiativeRefs points at delivery initiatives (e.g. VisionStudio).
 	InitiativeRefs []ExternalRef `json:"initiativeRefs,omitempty"`
 	Resources      string        `json:"resources,omitempty"`
+	// StartDate and EndDate are when the intervention runs. An ongoing
+	// intervention has a start and no end.
+	StartDate string `json:"startDate,omitempty" jsonschema:"format=date"`
+	EndDate   string `json:"endDate,omitempty" jsonschema:"format=date"`
 	// Priority records how the intervention scored against the
 	// prioritization criteria.
 	Priority   *Priority   `json:"priority,omitempty"`
@@ -601,12 +605,27 @@ type Pathway struct {
 	ChildModel string `json:"childModel,omitempty" jsonschema:"pattern=^model:[a-z][a-z0-9]*(-[a-z0-9]+)*$"`
 	// Focus names the metrics this program is steered by.
 	Focus *Focus `json:"focus,omitempty"`
+	// Resources are what the pathway commits as a whole: where its people,
+	// money, and tooling go. An intervention's own resources field says what
+	// that one piece of work uses.
+	Resources []Resource `json:"resources,omitempty"`
 	// Projections names the projections this pathway is meant for beyond the
 	// ones every pathway gets. dmaic marks a program whose metrics are
 	// measured often enough to improve with DMAIC: lint then checks their
 	// cadence and sample size, and export dmaic includes the pathway.
 	Projections []Projection `json:"projections,omitempty"`
 	Provenance  *Provenance  `json:"provenance,omitempty"`
+}
+
+// Resource is one resource a pathway commits, such as a team, a budget, or a
+// tool.
+type Resource struct {
+	// Name is the kind of resource, e.g. "Engineering" or "Program budget".
+	Name string `json:"name" jsonschema:"required"`
+	// Allocation is how much is committed, as written, e.g. "2 squads" or
+	// "40% of the year's budget".
+	Allocation  string `json:"allocation,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 // Focus names the metrics a program, product, or other pathway is steered by.

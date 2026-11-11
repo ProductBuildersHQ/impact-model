@@ -274,6 +274,8 @@
         }
       ],
       "resources": "Two engineers and an event budget",
+      "startDate": "2026-03-01",
+      "endDate": "2027-12-31",
       "provenance": {
         "basis": "confirmed",
         "decidedAt": "2026-02-03",
@@ -734,6 +736,16 @@
         "decidedAt": "2026-02-03",
         "decidedBy": "Standards working group"
       },
+      "resources": [
+        {
+          "name": "Standards engineering",
+          "allocation": "3 engineers",
+          "description": "Spec editing and the reference implementation"
+        },
+        {
+          "name": "Events budget"
+        }
+      ],
       "focus": {
         "northStarId": "ind-idp-count",
         "oneMetricId": "ind-idp-roadmaps",

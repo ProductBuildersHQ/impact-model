@@ -378,6 +378,11 @@ func (c *checker) interventions() {
 			}
 		}
 		c.externalRefs(p+"/initiativeRefs", in.ID, in.InitiativeRefs)
+		c.date(p+"/startDate", in.ID, in.StartDate)
+		c.date(p+"/endDate", in.ID, in.EndDate)
+		if validDate(in.StartDate) && validDate(in.EndDate) && in.EndDate < in.StartDate {
+			c.errorf("VAL-DATE-002", p, in.ID, "end %s is before start %s", in.EndDate, in.StartDate)
+		}
 	}
 }
 
@@ -610,6 +615,11 @@ func (c *checker) pathways() {
 			enum(c, jp, pw.ID, pr)
 			if slices.Contains(pw.Projections[:j], pr) {
 				c.errorf("VAL-PTH-007", jp, pw.ID, "projection %q is listed more than once", pr)
+			}
+		}
+		for j, r := range pw.Resources {
+			if strings.TrimSpace(r.Name) == "" {
+				c.errorf("VAL-PTH-008", p+"/resources/"+strconv.Itoa(j)+"/name", pw.ID, "resource %d has no name", j)
 			}
 		}
 		if f := pw.Focus; f != nil {

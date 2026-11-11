@@ -94,6 +94,10 @@ func TestDocumentIssues(t *testing.T) {
 		{"at_least without k", func(d *impact.Model) { d.Outcomes[1].Logic = &impact.Logic{Type: impact.LogicAtLeast} }, "VAL-LOGIC-001", "/outcomes/1/logic/k", SeverityError},
 		{"k with all", func(d *impact.Model) { d.Outcomes[1].Logic = &impact.Logic{Type: impact.LogicAll, K: 2} }, "VAL-LOGIC-002", "/outcomes/1/logic/k", SeverityError},
 		{"intervention without targets", func(d *impact.Model) { d.Interventions[0].Targets = nil }, "VAL-INT-001", "/interventions/0/targets", SeverityError},
+		{"intervention start not a date", func(d *impact.Model) { d.Interventions[0].StartDate = "2027-02-30" }, "VAL-DATE-001", "/interventions/0/startDate", SeverityError},
+		{"intervention ends before it starts", func(d *impact.Model) {
+			d.Interventions[0].StartDate, d.Interventions[0].EndDate = "2027-03-01", "2027-02-01"
+		}, "VAL-DATE-002", "/interventions/0", SeverityError},
 		{"intervention targets non-outcome", func(d *impact.Model) { d.Interventions[0].Targets = []string{"asm-no-fork"} }, "VAL-REF-002", "/interventions/0/targets/0", SeverityError},
 		{"indicator measures unknown", func(d *impact.Model) { d.Indicators[0].Measures = "oc-missing" }, "VAL-REF-001", "/indicators/0/measures", SeverityError},
 		{"indicator measures link", func(d *impact.Model) { d.Indicators[0].Measures = "ln-spec-idp" }, "VAL-REF-002", "/indicators/0/measures", SeverityError},

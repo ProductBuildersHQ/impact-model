@@ -27,6 +27,9 @@ func TestPathwayIssues(t *testing.T) {
 		{"pathway outcome is an actor", func(d *impact.Model) { d.Pathways[0].OutcomeIDs[0] = "act-idp" }, "VAL-REF-002", "/pathways/0/outcomeIds/0"},
 		{"pathway intervention is an outcome", func(d *impact.Model) { d.Pathways[0].InterventionIDs[0] = "oc-idp-support" }, "VAL-REF-002", "/pathways/0/interventionIds/0"},
 		{"pathway owner unknown", func(d *impact.Model) { d.Pathways[0].OwnerID = "act-ghost" }, "VAL-REF-001", "/pathways/0/ownerActorId"},
+		{"pathway resource without a name", func(d *impact.Model) {
+			d.Pathways[0].Resources = []impact.Resource{{Name: "Engineering"}, {Allocation: "2 people"}}
+		}, "VAL-PTH-008", "/pathways/0/resources/1/name"},
 		{"pathway kind invalid", func(d *impact.Model) { d.Pathways[0].Kind = "region" }, "VAL-ENUM-001", "/pathways/0/kind"},
 		{"duplicate pathway id", func(d *impact.Model) { d.Pathways[0].ID = "oc-idp-support" }, "VAL-ID-002", "/pathways/0/id"},
 	}
