@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 21 of 27 phases completed
+**Status:** In progress — 22 of 27 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -613,14 +613,14 @@
 ## Phase 26 — MEL
 
 **Theme:** A monitoring, evaluation, and learning plan as a stand-alone format in prism-roadmap, the impact model holding its evaluations and learning agenda, and an export that needs nothing else
-**Status:** In progress — 1 of 2 items completed
+**Status:** Completed — 2 of 2 items completed
 
 - [x] `RMI-IMPACTMODEL-022` Hold everything a MEL plan needs in the impact model
   - Type: capability · Status: completed
   - Acceptance: a gap analysis of MEL against the model recorded in the TRD; learning questions and planned evaluations added and linked to the assumptions, links, and outcomes they test; indicator data quality checks, review cadence, and audience reporting frequency added; lint rules for untested critical assumptions without an evaluation or learning question; schemas regenerated; examples carry the new fields
 
-- [ ] `RMI-IMPACTMODEL-023` Export a MEL plan from an impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-023` Export a MEL plan from an impact model
+  - Type: capability · Status: completed
   - Depends on: `RMI-PRISMROADMAP-023` (goals/mel in prism-roadmap), `RMI-IMPACTMODEL-022`
   - Acceptance: prismx.ToMEL linked by ID; export mel in the CLI, the service layer, and the MCP server; golden tests on the examples; the narrative report's M&E provisions draw on the same fields; a MEL guide and credits entry
 

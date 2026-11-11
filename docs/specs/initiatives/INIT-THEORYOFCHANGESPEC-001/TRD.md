@@ -65,7 +65,7 @@ no persistence, no statistical inference).
 | TRD-011 | Renderers MUST NOT emit `restricted` evidence excerpts | PRD-FR-503 | Test with restricted evidence asserts absence |
 | TRD-012 | `spec/` MUST embed `toc.md` template and `toc.rubric.yaml` that parses into `rubric.RubricSet` and passes its `Validate()` | PRD-FR-601 | `spec_test.go` |
 | TRD-013 | `pkg/mcp` MUST expose the six tools in §6.3 over stdio with the official Go SDK | PRD-FR-602 | In-memory transport integration test |
-| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
+| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), MEL plans (per §6.17; refused without an outcome), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
 | TRD-015 | `pkg/ref` MUST parse and format the reference grammar in §6.7 | PRD-FR-604 | Parse/format round-trip and invalid-input tests |
 | TRD-016 | Core types MUST reuse `prism-core` `Person`, `Risk`, `CapabilityRef`, health and trend constants instead of redefining them | PRD G-7 | Code review; grep test for duplicate type names |
 | TRD-017 | `pkg/impact` MUST define `Pathway`, `Metric`, `Audience`, `GlossaryTerm`, `Theme`, `SelectionCriterion`, `MeasurementBudget`, and the indicator extensions in §7.1 | PRD-FR-112…117 | Round-trip tests; schema lint |
@@ -174,7 +174,7 @@ no persistence, no statistical inference).
 | `pkg/lint` | Quality rules | Rule registry, §6.4 rules, options (disable / severity override), SummaryReport output. |
 | `pkg/measure` | Measurement | §6.5 algorithms; produces `impact.Status`; `Diff(prev, cur)`. |
 | `pkg/report` | Rendering | View model, standard templates (embedded), Mermaid builder, user templates. |
-| `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToVSEM`, `ToDMAIC`; prism-roadmap import is confined here. |
+| `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToVSEM`, `ToDMAIC`, `ToMEL`; prism-roadmap import is confined here. |
 | `pkg/service` | Service layer | One function per user operation (Validate, Lint, Graph, Status, Report, Export, Schema) used by CLI and MCP. |
 | `pkg/mcp` | MCP server | Tool registration and JSON I/O over `pkg/service`. |
 | `spec/` | Spec content | `toc.md` template, `toc.rubric.yaml`, judge instructions; embedded. |
@@ -234,7 +234,7 @@ no persistence, no statistical inference).
 | `impact-model report <kind> <toc> [-O <obs>...] [--as-of] [--pathway ID] [--audience ID] [--template file] [--out file]` | `kind` (status): `exec`, `results`, `assumptions`, `interventions`, `evidence-gaps`, `story`, `learning-review`, `portfolio`, `narrative`, `actors`, `full`, `custom`; `kind` (definition, no observations needed): `pathway`, `logic-model`, `metrics`, `metric-selection`, `collection-plan`, `glossary`, `definitions` (all definition reports) | 0; 2 |
 | `impact-model import observations --csv <file> --map <mapping.yaml> --model <toc> [--out obs.yaml]` | CSV → ObservationSet; unmatched rows to stderr and `--unmatched file` | 0 all rows imported; 1 some rows unmatched; 2 error |
 | `impact-model export csv <table> <toc> [-O obs...]` | `table`: `indicators`, `metrics`, `metric-selection`, `collection-plan`, `glossary`, `results`, `themes` | 0; 2 |
-| `impact-model export okr\|journey\|v2mom\|vsem\|dmaic <model> [-O obs...]` | PRISM exports | 0; 2 |
+| `impact-model export okr\|journey\|v2mom\|vsem\|dmaic\|mel <model> [-O obs...]` | PRISM exports | 0; 2 |
 | `impact-model schema [name]` | List or print embedded schemas | 0; 2 |
 | `impact-model init [--template program\|market]` | Write a starter document | 0; 2 |
 | `impact-model mcp` | Start MCP server on stdio | 0 on clean shutdown |
@@ -308,6 +308,7 @@ func ToOKR(doc *impact.Document, st *impact.Status) (*okr.OKRDocument, error)
 func ToOutcomeJourneys(doc *impact.Document, st *impact.Status) ([]journey.OutcomeJourney, error)
 func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) // wraps ErrNotV2MOMReady
 func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error)    // wraps ErrNotVSEMReady
+func ToMEL(doc *impact.Model, st *impact.Status) (*mel.Plan, error)       // wraps ErrNotMELReady
 func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) // wraps ErrNotDMAICReady
 ```
 
@@ -327,7 +328,7 @@ require a DAG), `ErrUnsupportedFormat`. Callers use `errors.Is`.
 | `impact_report` | `{ document \| path, observations…, kind, asOf? }` | `{ format: "markdown", content }` |
 | `impact_patch` | `{ document \| path, patch[], dryRun?, allowErrors? }` | `{ applied, document?, issuesIntroduced[], issuesResolved[] }`; with `path` and not `dryRun`, writes canonical file |
 | `impact_deck` | `{ document \| path, observations…, kind, audience? }` | `{ format: "marp", content }` (no export) |
-| `impact_export` | `{ document \| path, observations…, kind: "okr"\|"journey"\|"v2mom"\|"vsem"\|"dmaic", asOf? }` | `{ kind, document, omissions?[] }`; a model the format cannot be drawn from is refused with an error naming what to add |
+| `impact_export` | `{ document \| path, observations…, kind: "okr"\|"journey"\|"v2mom"\|"vsem"\|"dmaic"\|"mel", asOf? }` | `{ kind, document, omissions?[] }`; a model the format cannot be drawn from is refused with an error naming what to add |
 | `impact_diff` | `{ old: { document \| path }, new: { document \| path } }` | the structural diff |
 | `impact_judge_bundle` | `{ document \| path, profile? }` | judge bundle JSON |
 
@@ -1175,3 +1176,4 @@ No open question blocks implementation.
 | 0.7 | 2026-11-03 | John Wang | A problem tree per pathway (`pathway.problemStatement`, `pathwayIds` on causes and effects, TRD-044) and the `dmaic-plan` report (TRD-045) |
 | 0.8 | 2026-11-11 | John Wang | Pathway resources and intervention dates, lint IMP-INT-008, the VSEM gap analysis and mapping (§6.16), and `export vsem` (TRD-014) |
 | 0.9 | 2026-11-11 | John Wang | Evaluations, learning questions, review meetings, indicator quality assurance, audience reporting frequency and owner, lint IMP-LRN-001 to 003, and the MEL gap analysis and mapping (§6.17) |
+| 0.10 | 2026-11-11 | John Wang | `export mel` and `ToMEL` per the MEL mapping (§6.17, TRD-014) |
