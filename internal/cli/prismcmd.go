@@ -88,6 +88,22 @@ numeric indicator, is refused.`
 
 With observations (-O), the indicators carry their latest values. A model
 with no outcome that review has not rejected is refused.`
+	case "ogsm":
+		short, long = "Export the impact model as an OGSM", `Export the impact model as an OGSM (Objective, Goals, Strategies, Measures):
+
+  Objective   context.objective, or the model's one impact outcome, due at
+              the end of the time horizon
+  Goals       the indicators of the outcomes the objective stands for
+  Strategies  one per pathway, serving the goals its outcomes lead to
+  Measures    each pathway's focus: North Star, one metric, guardrails,
+              leaving out any that is already a goal
+  Actions     each pathway's interventions, with owners, status, and dates
+
+An intervention or indicator in more than one pathway is listed under the
+first. With observations (-O), the goals and measures carry current values,
+progress, and status. A model with several impact outcomes and no
+context.objective, or without a pathway, is refused, with a message naming
+what to add.`
 	}
 	cmd := &cobra.Command{
 		Use:     kind + " <model-file>",
@@ -123,7 +139,7 @@ func runPrismExport(e *env, cmd *cobra.Command, kind, path string) error {
 	for _, o := range exp.Omissions {
 		fmt.Fprintf(e.errOut, "note: %s is left out: %s\n", o.IndicatorID, o.Reason)
 	}
-	if errors.Is(err, prismx.ErrNotV2MOMReady) || errors.Is(err, prismx.ErrNotVSEMReady) || errors.Is(err, prismx.ErrNotDMAICReady) || errors.Is(err, prismx.ErrNotMELReady) {
+	if errors.Is(err, prismx.ErrNotV2MOMReady) || errors.Is(err, prismx.ErrNotVSEMReady) || errors.Is(err, prismx.ErrNotDMAICReady) || errors.Is(err, prismx.ErrNotMELReady) || errors.Is(err, prismx.ErrNotOGSMReady) {
 		return &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("%s: %w", path, err)}
 	}
 	if err != nil {

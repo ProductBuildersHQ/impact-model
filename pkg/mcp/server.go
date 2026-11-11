@@ -49,7 +49,7 @@ func (s *Server) MCP() *sdk.Server {
 	sdk.AddTool(srv, &sdk.Tool{Name: "impact_graph", Description: "Query the causal graph: summary, upstream, downstream, paths, cycles, levels, orphans, dead-ends, or a Mermaid diagram."}, s.graphTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "impact_status", Description: "Compute a status snapshot of an impact model from observation sets as of a date."}, s.statusTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "impact_report", Description: "Render a report as Markdown: a definition report, or a status report such as exec or story."}, s.reportTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_export", Description: "Export the impact model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, or mel. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "impact_export", Description: "Export the impact model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, mel, or ogsm. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "impact_patch", Description: "Apply an RFC 6902 JSON Patch to an impact model atomically. Elements may be addressed by id: /outcomes/@oc-skills/title. A patch that adds validation errors is rejected."}, s.patchTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "impact_deck", Description: "Generate a slide deck as Marp Markdown: workshop, exec, learning-review, or story. Nothing is rendered to PDF."}, s.deckTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "impact_judge_bundle", Description: "Build the bundle a judge reads to review an impact model against the rubric. Makes no model calls."}, s.judgeTool)
@@ -250,7 +250,7 @@ func (s *Server) reportTool(_ context.Context, _ *sdk.CallToolRequest, in report
 type exportIn struct {
 	Source
 	Observations
-	Kind string `json:"kind" jsonschema:"the export: okr, journey, v2mom, vsem, dmaic, or mel"`
+	Kind string `json:"kind" jsonschema:"the export: okr, journey, v2mom, vsem, dmaic, mel, or ogsm"`
 	AsOf string `json:"asOf,omitempty" jsonschema:"the status date, YYYY-MM-DD; default: the latest date in the observations"`
 }
 
