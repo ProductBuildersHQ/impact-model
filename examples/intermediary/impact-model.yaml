@@ -1653,6 +1653,10 @@ indicators:
     claim: contribution
     caveats:
       - Rated by coaches and members, so it reflects self-assessment as well as observed practice.
+    qualityAssurance:
+      checks:
+        - A second coach rates one in ten members, and ratings more than one level apart are discussed.
+      lastAssessed: "2026-07-15"
     dataAvailability: internal_new
     targetGroupIds:
       - tg-small-members
@@ -3035,6 +3039,8 @@ audiences:
     channels:
       - board deck
       - quarterly summary
+    frequency: P3M
+    ownerActorId: act-network
     headline:
       - indicatorId: ind-practice-maturity
         label: Leadership practice across members
@@ -3052,6 +3058,8 @@ audiences:
     channels:
       - newsletter
       - member assembly
+    frequency: P6M
+    ownerActorId: act-network
     headline:
       - indicatorId: ind-story-peer-help
         label: Times members helped each other
@@ -3065,6 +3073,8 @@ audiences:
     channels:
       - annual report
       - grant report
+    frequency: P1Y
+    ownerActorId: act-network
     headline:
       - indicatorId: ind-residents-served
         label: Residents served by members
@@ -3078,6 +3088,8 @@ audiences:
     needs: What members jointly recommend.
     channels:
       - policy briefing
+    frequency: P6M
+    ownerActorId: act-network
 themes:
   - id: thm-peer-help
     label: Members helping each other
@@ -3277,3 +3289,106 @@ consultations:
     changedIds:
       - asm-officials-receptive
       - oc-st-channel
+evaluations:
+  - id: eval-midterm
+    title: Midterm review of the three programs
+    type: midterm
+    questions:
+      - Are member leaders applying what they learn, and what helps or stops them?
+      - Do joint positions reach the county planning office, and does it act on them?
+    method: Interviews with 20 member leaders and county staff, with the rubric ratings and joint-position records
+    evaluator: external
+    ownerActorId: act-network
+    startDate: "2027-04-01"
+    endDate: "2027-06-30"
+    status: planned
+    budget: Funded by the regional funder's evaluation grant
+    relatedIds:
+      - asm-skills-applied
+      - asm-officials-receptive
+      - asm-positions-hold
+      - lq-skills-applied
+    provenance:
+      basis: stated
+  - id: eval-final
+    title: Final evaluation of the network strategy
+    type: final
+    questions:
+      - Did members become more capable and more collaborative, and how much did the network contribute?
+      - Did residents receive more and better services from member organizations?
+    method: Contribution analysis using the rubric ratings, member survey, county service data, and outcome harvesting
+    evaluator: external
+    ownerActorId: act-network
+    startDate: "2028-07-01"
+    endDate: "2028-12-31"
+    status: planned
+    relatedIds:
+      - oc-lt-capable-members
+      - asm-members-deliver
+    provenance:
+      basis: stated
+learningQuestions:
+  - id: lq-skills-applied
+    question: Do leaders who finish a cohort change how they run their organizations within six months?
+    rationale: Decides whether to keep investing in cohorts or shift to coaching.
+    methods:
+      - Rubric ratings at six months
+      - Follow-up interviews with a sample of leaders
+    ownerActorId: act-network
+    dueDate: "2027-03-31"
+    status: open
+    relatedIds:
+      - asm-skills-applied
+      - ln-skills-practice
+    provenance:
+      basis: stated
+  - id: lq-attendance-barriers
+    question: Is the Learning Exchange behind plan because of attendance barriers or because of scheduling?
+    rationale: Decides whether to change session times or offer travel help.
+    methods:
+      - Cohort exit form
+      - Stories from small members
+    ownerActorId: act-network
+    dueDate: "2026-12-31"
+    status: open
+    relatedIds:
+      - asm-time-to-attend
+      - ind-attendance-rate
+    provenance:
+      basis: stated
+  - id: lq-members-deliver
+    question: When members become more capable, do residents see better services?
+    rationale: Tests the link the whole strategy rests on.
+    methods:
+      - County service data
+      - Resident survey
+    ownerActorId: act-network
+    dueDate: "2028-06-30"
+    status: open
+    relatedIds:
+      - asm-members-deliver
+    provenance:
+      basis: stated
+reviewMeetings:
+  - id: mtg-quarterly
+    name: Quarterly learning review
+    purpose: Look at the quarter's measures and stories, take up the learning questions, and decide what to change.
+    frequency: P3M
+    participants:
+      - Program leads
+      - Two member representatives
+    ownerActorId: act-network
+    nextDate: "2026-12-10"
+    questionIds:
+      - lq-skills-applied
+      - lq-attendance-barriers
+      - lq-members-deliver
+  - id: mtg-annual
+    name: Annual strategy review with the board
+    purpose: Review the year against the impact model and revise it.
+    frequency: P1Y
+    participants:
+      - Network board
+      - Program leads
+    ownerActorId: act-network
+    nextDate: "2027-01-20"

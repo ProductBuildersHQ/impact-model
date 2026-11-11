@@ -34,6 +34,17 @@
       },
       {
         "description": "`intervention.startDate` and `intervention.endDate`: when an intervention runs. Both are dates, the end is not before the start (VAL-DATE-002), and lint warns when either falls outside the time horizon (IMP-INT-008). `intervention add` and `intervention set` take `--start-date` and `--end-date`"
+      },
+      {
+        "description": "Evaluation and learning in the impact model: `evaluations` (questions, type, method, evaluator, owner, dates, status, budget, and what each addresses), `learningQuestions` (the decision each informs, methods, owner, due date, status, answer, and what each tests), and `reviewMeetings` (frequency, participants, owner, next date, and the learning questions each takes up). `indicator.qualityAssurance` records how an indicator's data is checked, and `audience.frequency` and `audience.ownerActorId` how often an audience is reported to and by whom. Validation checks them (VAL-EVL, VAL-LRN, VAL-MTG), and `evaluation`, `question`, and `review-meeting` commands add, set, and remove them"
+      },
+      {
+        "description": "Lint IMP-LRN-001 to 003: once the model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one, open questions are taken up by a review meeting, and dates fall within the time horizon"
+      }
+    ],
+    "changed": [
+      {
+        "description": "IMP-ASM-004 accepts a learning question or evaluation that names an assumption as the way it is watched"
       }
     ],
     "dependencies": [
@@ -50,6 +61,9 @@
       },
       {
         "description": "A VSEM guide maps each part of a VSEM to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
+      },
+      {
+        "description": "The authoring guide and concepts cover evaluations, learning questions, and review meetings, and the intermediary example carries an evaluation plan, a learning agenda, and review meetings"
       }
     ]
   },

@@ -17,7 +17,8 @@ elements, how they refer to each other, and the ways to change them.
 | **Evidence** | A source that supports or contradicts an element, with a sensitivity |
 | **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by and the resources it commits |
 | **Cause**, **effect**, **target group** | The problem tree: causes below the core problem (`context.problemStatement`), effects above it, each linked to others through `parents`, and the groups affected. Outcomes say which causes they address and which effects they relieve. A pathway can have its own tree: its `problemStatement`, and the causes and effects that name it in `pathwayIds`. See the [problem tree guide](problem-tree.md) |
-| **Audience**, **theme** | Who needs to see what reported, the short list of numbers each is told, and the codebook for coding stories |
+| **Audience**, **theme** | Who needs to see what reported, how often, the short list of numbers each is told, and the codebook for coding stories |
+| **Evaluation**, **learning question**, **review meeting** | The evaluation plan, the learning agenda, and when the team stops to review what it has learned. See [Evaluation and learning](#evaluation-and-learning) |
 | **Metric**, **term** | A shared metric library, and a glossary of the words the impact model uses |
 | **Risk**, **decision**, **factor**, **consultation** | What could go wrong, what is awaiting a decision, external factors, and the review trail |
 
@@ -93,6 +94,47 @@ A ratio and a difference take exactly two indicators, in order. A composition is
 arithmetic and not a causal link. See [Measuring progress](measurement.md) for
 how the value is worked out and what is withheld, and
 [Quality and judging](quality-and-judging.md) for the rules that check all of it.
+
+## Evaluation and learning
+
+Indicators say how progress is monitored. Three more elements say when the
+team will ask whether and why results happened, and what it most needs to find
+out:
+
+- **Evaluations** are the evaluation plan: each with its questions, a type
+  (`baseline`, `process`, `formative`, `midterm`, `final`, `impact`, or
+  `developmental`), a method, who carries it out (`internal`, `external`, or
+  `mixed`), and dates. What an evaluation finds is recorded as evidence of type
+  `evaluation`.
+- **Learning questions** are the learning agenda: each with the decision it
+  informs, how and by when it will be answered, and the outcomes, links,
+  assumptions, interventions, or indicators it tests. Mark one `answered` with
+  its answer once it is.
+- **Review meetings** say when the team stops to review: how often, who takes
+  part, and which learning questions each takes up. Each meeting held is
+  recorded as a learning review in that period's observation set.
+
+An indicator's `qualityAssurance` says how its data is checked, and an
+audience's `frequency` how often it is reported to. Together they make the
+model a complete monitoring, evaluation, and learning plan. Once the model has
+evaluations or learning questions, lint asks that every high or critical
+assumption not yet shown to hold is taken up by one (IMP-LRN-001), that open
+questions are reviewed (IMP-LRN-002), and that dates fall within the time
+horizon (IMP-LRN-003).
+
+```bash
+impact-model question add impact-model.yaml --id lq-skills-applied \
+  --question "Do leaders who finish a cohort change how they run their organizations?" \
+  --rationale "Decides whether to keep investing in cohorts" \
+  --methods "Rubric ratings at six months" --due 2027-03-31 \
+  --related asm-skills-applied,ln-skills-practice
+impact-model evaluation add impact-model.yaml --id eval-midterm --title "Midterm review" \
+  --type midterm --evaluator external --start-date 2027-04-01 --end-date 2027-06-30 \
+  --questions "Are member leaders applying what they learn?" --related asm-skills-applied
+impact-model review-meeting add impact-model.yaml --id mtg-quarterly \
+  --name "Quarterly learning review" --frequency P3M --questions lq-skills-applied
+impact-model audience set impact-model.yaml aud-board --frequency P3M --owner act-network
+```
 
 ## Provenance: stated, inferred, or confirmed
 

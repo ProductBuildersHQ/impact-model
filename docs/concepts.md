@@ -109,6 +109,8 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Assumption assessments over time | `ObservationSet.Assessments[]` | 005 |
 | Most Significant Change stories, theme codebook | `ObservationSet.Stories[]`, `Model.Themes[]` | 035 |
 | Learning reviews (MEL) | `ObservationSet.Reviews[]` | 035 |
+| Evaluation plan, learning agenda, review meetings (MEL) | `Model.Evaluations[]`, `Model.LearningQuestions[]`, `Model.ReviewMeetings[]` | IMPACTMODEL-022 |
+| How an indicator's data is checked; how often an audience is reported to | `Indicator.QualityAssurance`; `Audience.Frequency`, `Audience.OwnerID` | IMPACTMODEL-022 |
 | Computed status, diffs between periods | `Status`, `StatusDiff` | 005 (types), 017–020 (computation) |
 
 ## Alignment and integration
@@ -148,3 +150,6 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Pathway | A named grouping of outcomes, interventions, and indicators, such as a program area, with the `resources` it commits |
 | Provenance basis | Whether an element was stated by a source, inferred, proposed as a hypothesis, confirmed, or rejected in review |
 | Observation set | A separate document of measured values, assumption assessments, stories, and learning reviews for a period |
+| Evaluation | A planned point at which the organization asks whether results happened and why, with its questions, type, method, and dates |
+| Learning question | A question on the learning agenda: something the organization most needs to find out, the decision it informs, and when it will be answered |
+| Review meeting | A recurring meeting at which the organization reviews what it has measured and learned, and takes up learning questions |
