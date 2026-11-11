@@ -22,7 +22,7 @@ OKRs and outcome journeys are projections too, written by `export okr` and
 `export v2mom` (see the [V2MOM guide](guides/v2mom.md)), a VSEM, written by
 `export vsem` (see the [VSEM guide](guides/vsem.md)), and a DMAIC metrics
 document for pathways marked `projections: [dmaic]`, written by `export dmaic`
-(see the [DMAIC guide](guides/dmaic.md)).
+(see the [DMAIC guide](guides/dmaic.md)), and a monitoring, evaluation, and learning plan, written by `export mel` (see the [MEL guide](guides/mel.md)).
 
 **Delivered by** names the roadmap item (`RMI-THEORYOFCHANGESPEC-NNN`, shown
 as `NNN`) that adds the type or field. Concepts not in v0 are listed under

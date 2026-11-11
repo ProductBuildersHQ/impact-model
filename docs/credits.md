@@ -22,6 +22,7 @@ full record: it summarizes each source and gives the citations.
 | Problem-tree analysis in the logical framework approach (GTZ, *ZOPP*, 1997; European Commission, *Project Cycle Management Guidelines*, 2004) | The core problem in the middle, its causes below as roots, and its effects above as branches | `effects`, `Cause.parents`, `Effect.parents`, `addressesEffects`, the problem-tree report |
 | V2MOM (Marc Benioff, Salesforce; Benioff and Adler, 2009) | Vision, values, methods, obstacles, and measures, in that order, as one alignment document | `context.values` and the V2MOM export |
 | VSEM, Vision, Strategy, Execution, Metrics (practitioner framework with no single canonical source; the form followed is documented in prism-roadmap's `goals/vsem`) | A one-page plan: a vision, the strategies that reach it and the resources each commits, the work that carries them out, and metrics each with an accountable owner | `pathway.resources`, `intervention.startDate` and `endDate`, and the VSEM export |
+| Monitoring, evaluation, and learning (MEL) planning, including results frameworks, performance indicator reference sheets, evaluation plans, and learning agendas (USAID, *ADS 201* and *Learning Agenda* guidance; Better Evaluation's *Rainbow Framework*) | A plan for how results will be measured, when they will be evaluated, and what the organization will learn | `evaluations`, `learningQuestions`, `reviewMeetings`, `indicator.qualityAssurance`, and the MEL export |
 | Six Sigma's DMAIC cycle (Motorola; General Electric) | Improvement efforts that define, measure, analyze, improve, and control a metric from a baseline toward a target | `pathway.projections` with `dmaic`, the DMAIC export, and the `IMP-DMA` lint rules |
 | Statistical process control (Shewhart, 1931) | Control limits from an individuals and moving-range chart, three sigma either side of the center line | Control limits in the DMAIC export |
 
@@ -36,7 +37,7 @@ document as the pathways.
 This project is part of the PRISM family of projects by the same author. It uses
 [prism-core](https://github.com/grokify/prism-core) for shared types, the goals
 packages of [prism-roadmap](https://github.com/grokify/prism-roadmap) for the
-OKR, outcome-journey, V2MOM, VSEM, and DMAIC exports,
+OKR, outcome-journey, V2MOM, VSEM, DMAIC, and MEL exports,
 [d2vision](https://github.com/grokify/d2vision) for the layered logic-model and
 problem-tree diagrams, and
 [structured-evaluation](https://github.com/plexusone/structured-evaluation) for

@@ -116,7 +116,8 @@ out:
 
 An indicator's `qualityAssurance` says how its data is checked, and an
 audience's `frequency` how often it is reported to. Together they make the
-model a complete monitoring, evaluation, and learning plan. Once the model has
+model a complete monitoring, evaluation, and learning plan, which `export mel`
+writes out (see the [MEL guide](mel.md)). Once the model has
 evaluations or learning questions, lint asks that every high or critical
 assumption not yet shown to hold is taken up by one (IMP-LRN-001), that open
 questions are reviewed (IMP-LRN-002), and that dates fall within the time

@@ -11,11 +11,17 @@
     "highlights": [
       {
         "description": "A VSEM from the impact model alone: `export vsem` writes the vision, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, and metrics from each pathway's focus and the impact outcomes, each with an accountable owner"
+      },
+      {
+        "description": "A monitoring, evaluation, and learning plan from the impact model alone: `export mel` writes the results framework, activities, indicator reference sheets, assumptions to monitor, evaluation plan, learning agenda, reviews, and reporting schedule"
       }
     ],
     "added": [
       {
         "description": "`export vsem` and the `vsem` kind of the MCP tool `impact_export`: a VSEM (Vision, Strategy, Execution, Metrics) in prism-roadmap's `goals/vsem` format. The vision and mission come from the context, each pathway is a strategy with its resources, its interventions are execution with kind, owner, status, and dates, and its focus indicators are the strategy's metrics; the indicators of impact-level outcomes are the vision's metrics. A model without a vision or mission, or without a pathway, is refused, naming what to add. In Go: `prismx.ToVSEM` and `prismx.ErrNotVSEMReady`"
+      },
+      {
+        "description": "`export mel` and the `mel` kind of the MCP tool `impact_export`: a MEL plan in prism-roadmap's `goals/mel` format. Outcomes become the results framework (feedback links, which are loops, left out), interventions activities, and indicators reference sheets with quality checks and caveats; assumptions carry their tests as how they are monitored; evaluations, learning questions, and review meetings carry over, a link they name written as both its ends; and audiences become the reporting schedule. A model with no outcome review has not rejected is refused. In Go: `prismx.ToMEL` and `prismx.ErrNotMELReady`"
       },
       {
         "description": "A problem tree per pathway: `pathway.problemStatement` is a program's own core problem, and `pathwayIds` on causes and effects name the program trees they belong to, a shared cause naming several. `report problem-tree`, `problem-tree-d2`, and `problem-tree-json` take `--pathway`, and the `definitions` pack draws the whole tree and then each program's tree. Validation checks the new references (VAL-REF-001), and removing a pathway with cascade drops them"
@@ -49,7 +55,7 @@
     ],
     "dependencies": [
       {
-        "description": "Bumped `github.com/grokify/prism-roadmap` from v0.22.0 to v0.23.0, which adds `goals/vsem`"
+        "description": "Bumped `github.com/grokify/prism-roadmap` from v0.22.0 to v0.24.0, which adds `goals/vsem` and `goals/mel`"
       }
     ],
     "documentation": [
@@ -64,6 +70,9 @@
       },
       {
         "description": "The authoring guide and concepts cover evaluations, learning questions, and review meetings, and the intermediary example carries an evaluation plan, a learning agenda, and review meetings"
+      },
+      {
+        "description": "A MEL guide maps each part of a MEL plan to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
       }
     ]
   },
