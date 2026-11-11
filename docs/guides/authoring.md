@@ -62,7 +62,7 @@ different things, and an impact model can make all of them.
   to achieve, as a statement and the outcomes that say it has been reached.
   A model with a single impact outcome has that outcome as its objective; one
   with several should name the objective, which plans with one objective,
-  such as an OGSM, need (IMP-CTX-002).
+  such as an OGSM, need (IMP-CTX-002; see the [OGSM guide](ogsm.md)).
 
 ```bash
 # A pathway's North Star, and what watches it
