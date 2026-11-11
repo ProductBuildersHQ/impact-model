@@ -8,15 +8,15 @@
     "grokify"
   ],
   "unreleased": {
-    "documentation": [
+    "highlights": [
       {
-        "description": "The README and the documentation home present the theory of change and the toolkit as tools for goals, strategy, and results in startups, companies, and nonprofits alike, not as program-evaluation tools"
-      },
-      {
-        "description": "The authoring guide and concepts cover pathway resources and intervention dates, and the course-catalog and intermediary examples carry them"
+        "description": "A VSEM from the impact model alone: `export vsem` writes the vision, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, and metrics from each pathway's focus and the impact outcomes, each with an accountable owner"
       }
     ],
     "added": [
+      {
+        "description": "`export vsem` and the `vsem` kind of the MCP tool `impact_export`: a VSEM (Vision, Strategy, Execution, Metrics) in prism-roadmap's `goals/vsem` format. The vision and mission come from the context, each pathway is a strategy with its resources, its interventions are execution with kind, owner, status, and dates, and its focus indicators are the strategy's metrics; the indicators of impact-level outcomes are the vision's metrics. A model without a vision or mission, or without a pathway, is refused, naming what to add. In Go: `prismx.ToVSEM` and `prismx.ErrNotVSEMReady`"
+      },
       {
         "description": "A problem tree per pathway: `pathway.problemStatement` is a program's own core problem, and `pathwayIds` on causes and effects name the program trees they belong to, a shared cause naming several. `report problem-tree`, `problem-tree-d2`, and `problem-tree-json` take `--pathway`, and the `definitions` pack draws the whole tree and then each program's tree. Validation checks the new references (VAL-REF-001), and removing a pathway with cascade drops them"
       },
@@ -34,6 +34,22 @@
       },
       {
         "description": "`intervention.startDate` and `intervention.endDate`: when an intervention runs. Both are dates, the end is not before the start (VAL-DATE-002), and lint warns when either falls outside the time horizon (IMP-INT-008). `intervention add` and `intervention set` take `--start-date` and `--end-date`"
+      }
+    ],
+    "dependencies": [
+      {
+        "description": "Bumped `github.com/grokify/prism-roadmap` from v0.22.0 to v0.23.0, which adds `goals/vsem`"
+      }
+    ],
+    "documentation": [
+      {
+        "description": "The README and the documentation home present the theory of change and the toolkit as tools for goals, strategy, and results in startups, companies, and nonprofits alike, not as program-evaluation tools"
+      },
+      {
+        "description": "The authoring guide and concepts cover pathway resources and intervention dates, and the course-catalog and intermediary examples carry them"
+      },
+      {
+        "description": "A VSEM guide maps each part of a VSEM to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
       }
     ]
   },

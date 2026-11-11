@@ -55,7 +55,8 @@ different things, and an impact model can make all of them.
 - **Purpose** is `context.mission`, `context.vision`, and `context.values`:
   why the organization exists, what it works toward, and the principles that
   guide how it works, most important first. They are not part of the causal
-  chain. A V2MOM needs the vision and at least one value.
+  chain. A V2MOM needs the vision and at least one value; a VSEM needs the
+  vision or the mission.
 
 ```bash
 # A pathway's North Star, and what watches it

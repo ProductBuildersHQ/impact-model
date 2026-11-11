@@ -10,7 +10,7 @@ generated JSON Schema, plus an SDK, the `impact-model` CLI, and an MCP server.
 
 You describe the change once, in one impact model. The problem tree, the
 [theory of change](https://en.wikipedia.org/wiki/Theory_of_change), the logic
-model, the outcome map, the logframe, strategy formats such as OKRs and V2MOM,
+model, the outcome map, the logframe, strategy formats such as OKRs, V2MOM, and VSEM,
 and improvement formats such as DMAIC are **projections** of it. Each draws the
 same model for a different reader and leaves something out, and none of them is
 a part of another.
@@ -29,6 +29,7 @@ flowchart LR
   im --> lf["Logframe"]:::method
   im --> okr["OKRs"]:::strategy
   im --> v2["V2MOM"]:::strategy
+  im --> vs["VSEM"]:::strategy
   im --> dm["DMAIC"]:::strategy
 ```
 
@@ -69,6 +70,7 @@ Each projection answers a different question for a different reader:
 | **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
 | **OKRs and outcome journeys** | What will a team commit to this quarter, and how does a person move through the outcomes? For the [PRISM](#part-of-the-prism-ecosystem) planning tools | `export okr`, `export journey` |
 | **V2MOM** | What do we want, what matters, how will we get it, what is in the way, and how will we know? Vision and values from the context, one method per pathway with its interventions as projects, measures from each pathway's North Star and guardrails, and obstacles from risks and open assumptions. See [the mapping](guides/v2mom.md) | `export v2mom` |
+| **VSEM** | Where are we going, how, with what work, and how will we know? Vision and mission from the context, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, metrics from each pathway's North Star and guardrails, and the impact outcomes' indicators as the vision's metrics. See [the mapping](guides/vsem.md) | `export vsem` |
 | **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](guides/dmaic.md) | `export dmaic`, and `report dmaic-plan` to plan it before there is data |
 
 Each projection leaves something out. A problem tree shows the problem, what
@@ -92,6 +94,7 @@ impact-model report definitions impact-model.yaml       # all of them, plus metr
 impact-model export okr impact-model.yaml               # OKRs for the PRISM tools
 impact-model export journey impact-model.yaml           # outcome journeys for the PRISM tools
 impact-model export v2mom impact-model.yaml             # a V2MOM
+impact-model export vsem impact-model.yaml              # a VSEM
 impact-model export dmaic impact-model.yaml             # DMAIC improvement efforts
 ```
 
@@ -262,7 +265,7 @@ Reading the second diagram:
 | **Edits that cannot make it worse** | One validated, atomic patch engine behind the CLI, the SDK, and the AI tools. A change that adds structural errors is rejected, and `--dry-run` shows the result first |
 | **Quality you can check** | A schema, structural validation, 72 deterministic lint rules, and a rubric for human or AI judges, so "is this a good impact model?" has an answer you can repeat |
 | **Progress you can measure** | Load a spreadsheet of numbers and see which indicators, outcomes, and pathways are on track, with assumptions that can cap a result and a confidence score for each route to impact |
-| **Artifacts for each audience** | Executive and funder reports, audience stories, slide decks, Word and PowerPoint files, CSV tables, and OKR, V2MOM, and DMAIC exports, all from one source and stamped with the version and hash |
+| **Artifacts for each audience** | Executive and funder reports, audience stories, slide decks, Word and PowerPoint files, CSV tables, and OKR, V2MOM, VSEM, and DMAIC exports, all from one source and stamped with the version and hash |
 | **Review that comes back** | Send a packet or sheet to reviewers, import their answers as proposed changes you inspect, then record approval |
 | **Honest handling of people's data** | Stories and quotes appear only with consent, and restricted evidence is never rendered anywhere |
 | **Ready for AI agents** | An MCP server and agent skills let an agent draft, edit, measure, report, and export, under the same rules as a person |
@@ -282,6 +285,7 @@ what they hope for, and then show whether it did.
 | Produce reports and decks | [Reports and decks](guides/reports-and-decks.md) |
 | Draw the problem tree | [Problem tree](guides/problem-tree.md) |
 | Export a V2MOM, and see how it maps | [V2MOM](guides/v2mom.md) |
+| Export a VSEM, and see how it maps | [VSEM](guides/vsem.md) |
 | Run a program with DMAIC, and see how it maps | [DMAIC](guides/dmaic.md) |
 | Send an impact model out for review | [Review round trip](guides/review-round-trip.md) |
 | Judge the quality of an impact model | [Quality and judging](guides/quality-and-judging.md) |
@@ -294,7 +298,7 @@ The [release notes](releases/v0.5.0.md) list what the latest release contains, a
 
 Shared primitives come from
 [prism-core](https://github.com/grokify/prism-core). The OKR, outcome-journey,
-V2MOM, and DMAIC exports target the goals packages of
+V2MOM, VSEM, and DMAIC exports target the goals packages of
 [prism-roadmap](https://github.com/grokify/prism-roadmap). Rubrics and GO/NO-GO
 reports use [structured-evaluation](https://github.com/plexusone/structured-evaluation).
 

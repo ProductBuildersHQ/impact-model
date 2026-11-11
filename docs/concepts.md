@@ -19,7 +19,8 @@ projections of it, drawn by the `report` command:
 
 OKRs and outcome journeys are projections too, written by `export okr` and
 `export journey` for the PRISM planning tools, and so is a V2MOM, written by
-`export v2mom` (see the [V2MOM guide](guides/v2mom.md)), and a DMAIC metrics
+`export v2mom` (see the [V2MOM guide](guides/v2mom.md)), a VSEM, written by
+`export vsem` (see the [VSEM guide](guides/vsem.md)), and a DMAIC metrics
 document for pathways marked `projections: [dmaic]`, written by `export dmaic`
 (see the [DMAIC guide](guides/dmaic.md)).
 
@@ -140,7 +141,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Precondition | An outcome that must hold for a higher outcome; incoming links to an outcome are its preconditions |
 | Precondition group | An explicit AND / OR / k-of-n combination of preconditions |
 | Causal link | A directed claim that one outcome (or intervention) contributes to another, with a rationale |
-| Intervention | Something the actors do to bring about outcomes (program, product, policy, advocacy, partnership…). The logic model shows interventions as activities, and the V2MOM projection shows them as a method's projects. An initiative is the organizational effort that delivers one, linked through `initiativeRefs`. `startDate` and `endDate` say when it runs |
+| Intervention | Something the actors do to bring about outcomes (program, product, policy, advocacy, partnership…). The logic model shows interventions as activities, the V2MOM projection shows them as a method's projects, and the VSEM projection as a strategy's execution. An initiative is the organizational effort that delivers one, linked through `initiativeRefs`. `startDate` and `endDate` say when it runs |
 | Assumption | A condition believed to hold for a link or outcome to work, which the initiative does not bring about |
 | Indicator | Measurable evidence that an outcome, output, or assumption is changing |
 | Ceiling of accountability | The line above which outcomes are tracked but not owned |

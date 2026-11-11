@@ -124,6 +124,7 @@ can tell that a PDF, a Word file, and a spreadsheet came from the same version.
 impact-model export okr impact-model.yaml -O obs-q3.yaml -o okr.json
 impact-model export journey impact-model.yaml -o journeys.json
 impact-model export v2mom impact-model.yaml -O obs-q3.yaml -o v2mom.json
+impact-model export vsem impact-model.yaml -O obs-q3.yaml -o vsem.json
 impact-model export dmaic impact-model.yaml -O obs-q3.yaml -o dmaic.json
 ```
 
@@ -131,9 +132,11 @@ impact-model export dmaic impact-model.yaml -O obs-q3.yaml -o dmaic.json
 objective, with each indicator as a key result carrying baseline, target,
 current value, score, status, and confidence. `export journey` writes outcome
 journeys. `export v2mom` writes a V2MOM with one method per pathway; the
-[V2MOM guide](v2mom.md) maps each part. `export dmaic` writes a DMAIC metrics
+[V2MOM guide](v2mom.md) maps each part. `export vsem` writes a VSEM with one
+strategy per pathway, its resources, execution, and metrics; the
+[VSEM guide](vsem.md) maps each part. `export dmaic` writes a DMAIC metrics
 document for the pathways marked for DMAIC; the [DMAIC guide](dmaic.md) maps
-each part. All four are JSON for the PRISM tools, and an agent gets the same
+each part. All five are JSON for the PRISM tools, and an agent gets the same
 exports from the MCP server's `impact_export` tool.
 
 ## The layered logic model diagram
