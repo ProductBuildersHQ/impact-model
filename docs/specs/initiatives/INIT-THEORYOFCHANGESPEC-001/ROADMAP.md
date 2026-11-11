@@ -613,10 +613,10 @@
 ## Phase 26 — MEL
 
 **Theme:** A monitoring, evaluation, and learning plan as a stand-alone format in prism-roadmap, the impact model holding its evaluations and learning agenda, and an export that needs nothing else
-**Status:** Proposed — 0 of 2 items completed
+**Status:** In progress — 1 of 2 items completed
 
-- [ ] `RMI-IMPACTMODEL-022` Hold everything a MEL plan needs in the impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-022` Hold everything a MEL plan needs in the impact model
+  - Type: capability · Status: completed
   - Acceptance: a gap analysis of MEL against the model recorded in the TRD; learning questions and planned evaluations added and linked to the assumptions, links, and outcomes they test; indicator data quality checks, review cadence, and audience reporting frequency added; lint rules for untested critical assumptions without an evaluation or learning question; schemas regenerated; examples carry the new fields
 
 - [ ] `RMI-IMPACTMODEL-023` Export a MEL plan from an impact model
