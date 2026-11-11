@@ -19,9 +19,10 @@ projections of it, drawn by the `report` command:
 
 OKRs and outcome journeys are projections too, written by `export okr` and
 `export journey` for the PRISM planning tools, and so is a V2MOM, written by
-`export v2mom` (see the [V2MOM guide](guides/v2mom.md)), and a DMAIC metrics
+`export v2mom` (see the [V2MOM guide](guides/v2mom.md)), a VSEM, written by
+`export vsem` (see the [VSEM guide](guides/vsem.md)), and a DMAIC metrics
 document for pathways marked `projections: [dmaic]`, written by `export dmaic`
-(see the [DMAIC guide](guides/dmaic.md)).
+(see the [DMAIC guide](guides/dmaic.md)), and a monitoring, evaluation, and learning plan, written by `export mel` (see the [MEL guide](guides/mel.md)).
 
 **Delivered by** names the roadmap item (`RMI-THEORYOFCHANGESPEC-NNN`, shown
 as `NNN`) that adds the type or field. Concepts not in v0 are listed under
@@ -108,6 +109,8 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Assumption assessments over time | `ObservationSet.Assessments[]` | 005 |
 | Most Significant Change stories, theme codebook | `ObservationSet.Stories[]`, `Model.Themes[]` | 035 |
 | Learning reviews (MEL) | `ObservationSet.Reviews[]` | 035 |
+| Evaluation plan, learning agenda, review meetings (MEL) | `Model.Evaluations[]`, `Model.LearningQuestions[]`, `Model.ReviewMeetings[]` | IMPACTMODEL-022 |
+| How an indicator's data is checked; how often an audience is reported to | `Indicator.QualityAssurance`; `Audience.Frequency`, `Audience.OwnerID` | IMPACTMODEL-022 |
 | Computed status, diffs between periods | `Status`, `StatusDiff` | 005 (types), 017–020 (computation) |
 
 ## Alignment and integration
@@ -140,10 +143,13 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Precondition | An outcome that must hold for a higher outcome; incoming links to an outcome are its preconditions |
 | Precondition group | An explicit AND / OR / k-of-n combination of preconditions |
 | Causal link | A directed claim that one outcome (or intervention) contributes to another, with a rationale |
-| Intervention | Something the actors do to bring about outcomes (program, product, policy, advocacy, partnership…). The logic model shows interventions as activities, and the V2MOM projection shows them as a method's projects. An initiative is the organizational effort that delivers one, linked through `initiativeRefs` |
+| Intervention | Something the actors do to bring about outcomes (program, product, policy, advocacy, partnership…). The logic model shows interventions as activities, the V2MOM projection shows them as a method's projects, and the VSEM projection as a strategy's execution. An initiative is the organizational effort that delivers one, linked through `initiativeRefs`. `startDate` and `endDate` say when it runs |
 | Assumption | A condition believed to hold for a link or outcome to work, which the initiative does not bring about |
 | Indicator | Measurable evidence that an outcome, output, or assumption is changing |
 | Ceiling of accountability | The line above which outcomes are tracked but not owned |
-| Pathway | A named grouping of outcomes, interventions, and indicators, such as a program area |
+| Pathway | A named grouping of outcomes, interventions, and indicators, such as a program area, with the `resources` it commits |
 | Provenance basis | Whether an element was stated by a source, inferred, proposed as a hypothesis, confirmed, or rejected in review |
 | Observation set | A separate document of measured values, assumption assessments, stories, and learning reviews for a period |
+| Evaluation | A planned point at which the organization asks whether results happened and why, with its questions, type, method, and dates |
+| Learning question | A question on the learning agenda: something the organization most needs to find out, the decision it informs, and when it will be answered |
+| Review meeting | A recurring meeting at which the organization reviews what it has measured and learned, and takes up learning questions |

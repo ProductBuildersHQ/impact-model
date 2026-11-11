@@ -65,7 +65,7 @@ no persistence, no statistical inference).
 | TRD-011 | Renderers MUST NOT emit `restricted` evidence excerpts | PRD-FR-503 | Test with restricted evidence asserts absence |
 | TRD-012 | `spec/` MUST embed `toc.md` template and `toc.rubric.yaml` that parses into `rubric.RubricSet` and passes its `Validate()` | PRD-FR-601 | `spec_test.go` |
 | TRD-013 | `pkg/mcp` MUST expose the six tools in §6.3 over stdio with the official Go SDK | PRD-FR-602 | In-memory transport integration test |
-| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
+| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), MEL plans (per §6.17; refused without an outcome), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
 | TRD-015 | `pkg/ref` MUST parse and format the reference grammar in §6.7 | PRD-FR-604 | Parse/format round-trip and invalid-input tests |
 | TRD-016 | Core types MUST reuse `prism-core` `Person`, `Risk`, `CapabilityRef`, health and trend constants instead of redefining them | PRD G-7 | Code review; grep test for duplicate type names |
 | TRD-017 | `pkg/impact` MUST define `Pathway`, `Metric`, `Audience`, `GlossaryTerm`, `Theme`, `SelectionCriterion`, `MeasurementBudget`, and the indicator extensions in §7.1 | PRD-FR-112…117 | Round-trip tests; schema lint |
@@ -174,7 +174,7 @@ no persistence, no statistical inference).
 | `pkg/lint` | Quality rules | Rule registry, §6.4 rules, options (disable / severity override), SummaryReport output. |
 | `pkg/measure` | Measurement | §6.5 algorithms; produces `impact.Status`; `Diff(prev, cur)`. |
 | `pkg/report` | Rendering | View model, standard templates (embedded), Mermaid builder, user templates. |
-| `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToDMAIC`; prism-roadmap import is confined here. |
+| `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToVSEM`, `ToDMAIC`, `ToMEL`; prism-roadmap import is confined here. |
 | `pkg/service` | Service layer | One function per user operation (Validate, Lint, Graph, Status, Report, Export, Schema) used by CLI and MCP. |
 | `pkg/mcp` | MCP server | Tool registration and JSON I/O over `pkg/service`. |
 | `spec/` | Spec content | `toc.md` template, `toc.rubric.yaml`, judge instructions; embedded. |
@@ -234,7 +234,7 @@ no persistence, no statistical inference).
 | `impact-model report <kind> <toc> [-O <obs>...] [--as-of] [--pathway ID] [--audience ID] [--template file] [--out file]` | `kind` (status): `exec`, `results`, `assumptions`, `interventions`, `evidence-gaps`, `story`, `learning-review`, `portfolio`, `narrative`, `actors`, `full`, `custom`; `kind` (definition, no observations needed): `pathway`, `logic-model`, `metrics`, `metric-selection`, `collection-plan`, `glossary`, `definitions` (all definition reports) | 0; 2 |
 | `impact-model import observations --csv <file> --map <mapping.yaml> --model <toc> [--out obs.yaml]` | CSV → ObservationSet; unmatched rows to stderr and `--unmatched file` | 0 all rows imported; 1 some rows unmatched; 2 error |
 | `impact-model export csv <table> <toc> [-O obs...]` | `table`: `indicators`, `metrics`, `metric-selection`, `collection-plan`, `glossary`, `results`, `themes` | 0; 2 |
-| `impact-model export okr\|journey\|v2mom\|dmaic <model> [-O obs...]` | PRISM exports | 0; 2 |
+| `impact-model export okr\|journey\|v2mom\|vsem\|dmaic\|mel <model> [-O obs...]` | PRISM exports | 0; 2 |
 | `impact-model schema [name]` | List or print embedded schemas | 0; 2 |
 | `impact-model init [--template program\|market]` | Write a starter document | 0; 2 |
 | `impact-model mcp` | Start MCP server on stdio | 0 on clean shutdown |
@@ -307,6 +307,8 @@ func Mermaid(doc *impact.Document, st *impact.Status, opts MermaidOptions) strin
 func ToOKR(doc *impact.Document, st *impact.Status) (*okr.OKRDocument, error)
 func ToOutcomeJourneys(doc *impact.Document, st *impact.Status) ([]journey.OutcomeJourney, error)
 func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) // wraps ErrNotV2MOMReady
+func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error)    // wraps ErrNotVSEMReady
+func ToMEL(doc *impact.Model, st *impact.Status) (*mel.Plan, error)       // wraps ErrNotMELReady
 func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) // wraps ErrNotDMAICReady
 ```
 
@@ -326,7 +328,7 @@ require a DAG), `ErrUnsupportedFormat`. Callers use `errors.Is`.
 | `impact_report` | `{ document \| path, observations…, kind, asOf? }` | `{ format: "markdown", content }` |
 | `impact_patch` | `{ document \| path, patch[], dryRun?, allowErrors? }` | `{ applied, document?, issuesIntroduced[], issuesResolved[] }`; with `path` and not `dryRun`, writes canonical file |
 | `impact_deck` | `{ document \| path, observations…, kind, audience? }` | `{ format: "marp", content }` (no export) |
-| `impact_export` | `{ document \| path, observations…, kind: "okr"\|"journey"\|"v2mom"\|"dmaic", asOf? }` | `{ kind, document, omissions?[] }`; a model the format cannot be drawn from is refused with an error naming what to add |
+| `impact_export` | `{ document \| path, observations…, kind: "okr"\|"journey"\|"v2mom"\|"vsem"\|"dmaic"\|"mel", asOf? }` | `{ kind, document, omissions?[] }`; a model the format cannot be drawn from is refused with an error naming what to add |
 | `impact_diff` | `{ old: { document \| path }, new: { document \| path } }` | the structural diff |
 | `impact_judge_bundle` | `{ document \| path, profile? }` | judge bundle JSON |
 
@@ -364,6 +366,7 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | IMP-ACC-002 | warning | Outcomes above the ceiling of accountability are not explicitly marked `responsibility: own` (the organization contributes to them, it does not own them) |
 | IMP-INT-001 | error | Every intervention targets ≥ 1 outcome (enforced by validation as VAL-INT-001, so it is never reached by lint) |
 | IMP-INT-002 | warning | Every intervention has an owner actor |
+| IMP-INT-008 | warning | An intervention's `startDate` and `endDate` fall within the document's time horizon |
 | IMP-ACC-001 | warning | A ceiling of accountability is declared |
 | IMP-ACT-001 | info | Outcomes in the `influence` sphere name ≥ 1 actor (boundary partner) |
 | IMP-EVD-001 | info | Links into impact-level outcomes cite ≥ 1 evidence record |
@@ -382,7 +385,7 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | IMP-CAU-003 | warning | A cause contributes only to causes at its own level or nearer the problem (`structural` → `underlying` → `immediate`); a parent at a deeper level usually means the link was written backwards |
 | IMP-RSP-001 | warning | Outcomes with responsibility `partner` or `shared` name ≥ 1 delivering actor; `shared` names ≥ 2 |
 | IMP-RSP-002 | info | `partner` and `unaddressed` outcomes on a path to impact still have ≥ 1 indicator (monitor the whole solution tree) |
-| IMP-ASM-004 | warning | Assumptions with `needsTesting: true` have a `test` and either a monitoring indicator or a linked decision / evaluation question |
+| IMP-ASM-004 | warning | Assumptions with `needsTesting: true` have a `test` and either a monitoring indicator, a related decision, or a learning question or evaluation that names them |
 | IMP-ASM-005 | info | Assumptions of type `partnership` exist when any outcome is `shared` or `partner` |
 | IMP-RSK-001 | info | `high` / `critical` assumptions have ≥ 1 related risk with mitigation |
 | IMP-EQU-001 | warning | Indicators on outcomes that target groups disaggregate by those groups (specify changes for target groups, not assume them) |
@@ -396,6 +399,9 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | IMP-DMA-003 | warning | A survey indicator of a DMAIC pathway gets ≥ 30 responses per measurement (`collection.respondentsPerYear` × `sampleRate` ÷ measurements per year), and states `respondentsPerYear` |
 | IMP-EFF-001 | warning | Every effect is relieved by ≥ 1 outcome (`addressesEffects`) or marked `outOfScope` with a reason |
 | IMP-EFF-002 | info | Outcomes that relieve effects include ≥ 1 at `long_term` or `impact` level (effects are what the program ultimately reduces; causes are what it works on) |
+| IMP-LRN-001 | warning | Once the model plans evaluations or learning questions, every `high`/`critical` assumption not yet shown to hold (status empty, `untested`, `at_risk`, or `invalidated`) is named by a learning question or an evaluation |
+| IMP-LRN-002 | info | Every open learning question is taken up by a review meeting |
+| IMP-LRN-003 | warning | Evaluation dates and learning question due dates fall within the document's time horizon |
 
 Rule IDs are permanent. Retired rules keep their ID reserved.
 
@@ -770,6 +776,70 @@ It applies the patch through `pkg/edit`. It refuses when:
 - any rule IMP-PRV-003 violation remains, unless `--force` with `--reason`
   (recorded in the revision).
 
+### 6.16 VSEM export (`pkg/prismx`)
+
+A VSEM (Vision, Strategy, Execution, Metrics) is drawn from the model alone,
+into prism-roadmap's `goals/vsem` document. Every section has a source in the
+model; two needed fields to be added.
+
+| VSEM part | Model source | Gap and resolution |
+|-----------|--------------|--------------------|
+| Vision, mission | `context.vision`, `context.mission` | None. The export needs at least one of them |
+| Strategy | Each pathway that is not rejected: `title`, `description`, `ownerActorId` | None |
+| Resources a strategy commits | `pathway.resources[] {name, allocation, description}` | **Added.** `intervention.resources` says what one piece of work uses and feeds the logic model's inputs; it cannot say what a strategy commits as a whole |
+| Strategy priority | None | Left blank. Pathways are not ranked; interventions carry priority scores, which say nothing about the strategy |
+| Execution | The pathway's interventions: `title`, `description`, `type`, `ownerActorId`, `status`, `initiativeRefs` | None |
+| Execution timing | `intervention.startDate`, `intervention.endDate` | **Added.** Dates, end not before start (VAL-DATE-002), within the time horizon (IMP-INT-008) |
+| Metrics for a strategy | The pathway's focus: North Star, one metric that matters, guardrails | None. The same metrics the V2MOM export uses |
+| Metrics for the vision | Indicators of `impact`-level outcomes | None |
+| A metric's owner, baseline, target, due date, direction, frequency, source | `ownerActorId`, `baseline`, the latest `targets[]` entry, `direction`, `frequency`, `dataSource` | None |
+| A metric's current value, progress, status | The status computed from observations | None; filled only when observations are given |
+
+**Mapping rules.**
+
+- The export is refused (`ErrNotVSEMReady`) without a vision or mission, or
+  without a pathway that is not rejected.
+- An intervention or indicator that serves more than one pathway is listed under
+  the first, because VSEM IDs are unique; an intervention in no pathway has no
+  strategy and is left out.
+- An intervention of type `program` is a `program`; any other is an
+  `initiative`. A paused intervention has no VSEM status.
+- A frequency of one day, week, month, quarter, six months, or year is written
+  as Daily, Weekly, Monthly, Quarterly, Every six months, or Yearly; any other
+  ISO 8601 duration is written as given.
+- Vision metrics are the indicators of `impact`-level outcomes that are not
+  already a strategy's metric, in file order.
+
+### 6.17 MEL (`pkg/impact`, `pkg/prismx`)
+
+A monitoring, evaluation, and learning (MEL) plan is drawn from the model
+alone, into prism-roadmap's `goals/mel` document. Monitoring was already in
+the model; evaluation and learning were not, beyond a period's learning
+review.
+
+| MEL part | Model source | Gap and resolution |
+|----------|--------------|--------------------|
+| Results framework | Outcomes at the same five levels; contribution from causal links and precondition groups | None. Feedback links, which are intentional loops, are left out: a results framework is a hierarchy |
+| Activities | Interventions, with `targets`, owner, status, `startDate`, `endDate` | None |
+| Indicator reference sheets | Indicators: `definition`, `measurementType`, `unit`, `direction`, `disaggregation`, `baseline`, `targets`, `dataSource` (or `collection.system`), `method` (or `collection.mode`), `frequency`, owner; limitations from `caveats` | **Added** `qualityAssurance {checks[], lastAssessed}`. An indicator may measure an outcome, an intervention, or an assumption, as in MEL |
+| Assumptions to monitor | Assumptions; how each is monitored is its `test`; the results that depend on it are what it `appliesTo` (a link's target, an intervention's targets) | None |
+| Evaluation plan | None | **Added** `evaluations[]` |
+| Learning agenda | Only the questions a held review took up (`ObservationSet.learningReviews`) | **Added** `learningQuestions[]`, a standing agenda |
+| Review schedule | None | **Added** `reviewMeetings[]` |
+| Reporting schedule | Audiences: `needs`, `channels`, the indicators reported to each, headline first | **Added** `audience.frequency` and `audience.ownerActorId` |
+| Purpose | None | Left empty: nothing in the model says what the plan is for |
+
+**Mapping rules.** The export is refused (`ErrNotMELReady`) without an outcome
+that is not rejected. Rejected elements are left out with every reference to
+them. A causal link named by an evaluation or learning question becomes both
+of its ends. A `hybrid` indicator has no single MEL type and is left untyped;
+a `theme_count` indicator is quantitative. Frequencies are written in words as
+for VSEM (§6.16). The measurement budget's staff minutes a week become the
+plan's budget.
+
+Lint IMP-LRN-001 to 003 check the plan once it exists: critical assumptions are
+taken up, open questions are reviewed, and dates fall within the time horizon.
+
 ## 7. Data Design
 
 ### 7.1 Document model (`pkg/impact`)
@@ -831,14 +901,14 @@ type Document struct {
 | `Consultation` | `id`, `date` (req), `step` (req: `focus`, `change_analysis`, `assumptions_risks`, `actors`, `measurement`, `whole`), `method` (`workshop`, `interview`, `survey`, `document_review`, `evidence_review`, `meeting`), `stakeholderGroups[]` (groups or actor IDs, never personal names required), `count?`, `findings[]`, `changedIds[]` | Validation trail per UNDG principle (a) and the validate-each-step loop. |
 | `PreconditionGroup` | `id`, `target` (outcome ID), `members[]` (outcome or group IDs; ≥ 2), `logic` {`all`/`any`/`at_least`, `k`}, `sufficiency` (text) | Explicit AND/OR/k-of-n "cluster" (ActKnowledge). Groups nest, so `(A AND B) OR C` is expressible. Incoming links whose source is a group member are evaluated through the group; the group's result feeds the target's `logic`. |
 | `CausalLink` | `id`, `from` (outcome or intervention ID), `to` (outcome ID), `type` (`causes`, `enables`, `contributes_to`, `necessary_condition`), `rationale`, `assumptionIds[]`, `evidenceIds[]`, `interventionIds[]` (interventions placed on the connector, ActKnowledge style), `polarity` (`positive` default, `negative`), `feedback` bool, `loopType` (`reinforcing`, `balancing`; only with `feedback`), `lag?` (ISO 8601 duration) | Directed edge. Intervention → outcome edges MAY be implicit via `Intervention.targets`. |
-| `Intervention` | `id`, `title` (req), `type` (`program`, `product`, `policy`, `advocacy`, `partnership`, `standardization`, `investment`, `communication`, `research`, `other`), `targets[]` (req), `outputs[]`, `ownerActorId`, `status`, `capabilities[]` (`core.CapabilityRef`), `initiativeRefs[]` (ExternalRef, e.g. visionstudio `INIT-…`), `resources` | Strategy / activity. |
+| `Intervention` | `id`, `title` (req), `type` (`program`, `product`, `policy`, `advocacy`, `partnership`, `standardization`, `investment`, `communication`, `research`, `other`), `targets[]` (req), `outputs[]`, `ownerActorId`, `status`, `capabilities[]` (`core.CapabilityRef`), `initiativeRefs[]` (ExternalRef, e.g. visionstudio `INIT-…`), `resources`, `startDate`, `endDate` (dates; end not before start, VAL-DATE-002) | Strategy / activity. The dates are when it runs; an ongoing intervention has a start and no end. |
 | `Assumption` | `id`, `statement` (req), `ifThenBecause?` {`if`, `then`, `because`}, `type` (`causal`, `contextual`, `implementation`, `behavioral`, `external`, `partnership`), `appliesTo[]` (link/outcome/intervention IDs), `criticality` (`low`, `medium`, `high`, `critical`), `plausibility` (`low`, `medium`, `high`), `explainsFully?` (bool; UNDG question 1), `needsTesting` (bool; UNDG question 3), `test` (how: monitoring indicator, evaluation, research), `indicatorIds[]` (assumption-monitoring indicators), `evidenceIds[]`, `status`, `ownerActorId` | Static status is the default; observation sets override. `confidence` from v0.1 drafts is replaced by `plausibility` (UNDG question 2). |
-| `Indicator` | `id`, `measures` (req; outcome ID, or intervention ID for output indicators, or assumption ID for assumption-monitoring indicators, or pathway ID for pathway-level and roll-up indicators that have no single outcome), `name` (req), `definition`, `measurementType` (`quantitative`, `qualitative`, `hybrid`), `unit`, `direction` (`increase`, `decrease`, `maintain`), `tolerance`, `levels[]` (ordered qualitative levels; Outcome Mapping progress markers use `expect`/`like`/`love`), `baseline {value, level, date, source}`, `targets[] {value, level, threshold, date, label, milestone bool}`, `population {description, actorIds[], size}`, `disaggregation[]`, `dataSource`, `method`, `frequency` (ISO 8601 duration), `ownerActorId`, `proxyFor[]` (outcome IDs this indicator stands in for), `externalRefs[]` (e.g. maturity SLI, OKR KR) | ActKnowledge's four components — population, target, threshold, timeline — map to `population`, `targets[].value`, `targets[].threshold`, `targets[].date`. Framework-design extensions: `metricId` (instantiates a shared `Metric`), `pathwayIds[]`, `claim` (`attribution` or `contribution`; contribution when omitted, so a report never overclaims), `caveats[]`, `collection {mode, system, minutesPerPeriod, period, questionsPerRespondent, respondentsPerYear, sampleRate}`, `selection {status: candidate/selected/retired, scores[] {criterionId, score 1–5, note}, rationale}`, `audienceIds[]`, `rollupFrom[]` (indicator IDs whose values roll up into this one via the metric's rule), `themeIds[]` (for `theme_count` indicators derived from stories). `measurementType` gains `theme_count` together with the story codebook (RMI-035). |
-| `Pathway` | `id`, `title` (req), `kind` (`program`, `strategy`, `theme`, `geography`, `segment`), `description`, `problemStatement` (core problem of its own problem tree), `ownerActorId`, `outcomeIds[]`, `interventionIds[]`, `childModel?` (ref to a program-level ToC document), `focus?`, `projections[]` (`dmaic`; unique, VAL-PTH-007) | Program area / strategy grouping. `projections: [dmaic]` subjects the pathway's indicators to the IMP-DMA rules and includes it in `export dmaic`. Indicators join via `pathwayIds`. A pathway may delegate detail to a child ToC whose `parent` points back. |
+| `Indicator` | `id`, `measures` (req; outcome ID, or intervention ID for output indicators, or assumption ID for assumption-monitoring indicators, or pathway ID for pathway-level and roll-up indicators that have no single outcome), `name` (req), `definition`, `measurementType` (`quantitative`, `qualitative`, `hybrid`), `unit`, `direction` (`increase`, `decrease`, `maintain`), `tolerance`, `levels[]` (ordered qualitative levels; Outcome Mapping progress markers use `expect`/`like`/`love`), `baseline {value, level, date, source}`, `targets[] {value, level, threshold, date, label, milestone bool}`, `population {description, actorIds[], size}`, `disaggregation[]`, `dataSource`, `method`, `frequency` (ISO 8601 duration), `ownerActorId`, `proxyFor[]` (outcome IDs this indicator stands in for), `externalRefs[]` (e.g. maturity SLI, OKR KR) | ActKnowledge's four components — population, target, threshold, timeline — map to `population`, `targets[].value`, `targets[].threshold`, `targets[].date`. Framework-design extensions: `metricId` (instantiates a shared `Metric`), `pathwayIds[]`, `claim` (`attribution` or `contribution`; contribution when omitted, so a report never overclaims), `caveats[]`, `collection {mode, system, minutesPerPeriod, period, questionsPerRespondent, respondentsPerYear, sampleRate}`, `selection {status: candidate/selected/retired, scores[] {criterionId, score 1–5, note}, rationale}`, `audienceIds[]`, `rollupFrom[]` (indicator IDs whose values roll up into this one via the metric's rule), `themeIds[]` (for `theme_count` indicators derived from stories), `qualityAssurance {checks[], lastAssessed}` (how its data is checked; what it cannot show stays in `caveats`). `measurementType` gains `theme_count` together with the story codebook (RMI-035). |
+| `Pathway` | `id`, `title` (req), `kind` (`program`, `strategy`, `theme`, `geography`, `segment`), `description`, `problemStatement` (core problem of its own problem tree), `ownerActorId`, `outcomeIds[]`, `interventionIds[]`, `childModel?` (ref to a program-level ToC document), `focus?`, `projections[]` (`dmaic`; unique, VAL-PTH-007), `resources[] {name (req, VAL-PTH-008), allocation, description}` (what the pathway commits as a whole, §6.16) | Program area / strategy grouping. `projections: [dmaic]` subjects the pathway's indicators to the IMP-DMA rules and includes it in `export dmaic`. Indicators join via `pathwayIds`. A pathway may delegate detail to a child ToC whose `parent` points back. |
 | `Metric` | `id`, `name` (req), `definition` (req), `formula` (req; exact computation in words, e.g. "sum over sessions of attendees × session hours"), `unit`, `direction`, `aggregation` (`sum`, `mean`, `weighted_mean`, `median`, `mode`, `min`, `max`, `latest`, `none`; `median` and `mode` are the honest choices for ordinal levels), `weightMetricId?`, `layer` (`common`, `pathway`) | Shared definition so a metric is computed identically across pathways. `none` means values cannot be combined (e.g. distinct counts across overlapping populations) and org-level values must be observed directly. |
 | `SelectionCriterion` | `id`, `name`, `question`, `weight`, `appliesTo` (req: `indicator`, `outcome`, `intervention`) | Indicator criteria: decision value, audience value, cost to collect (inverted), consistency, credibility. Outcome / intervention (focus and solution) criteria: equity, comparative advantage, feasibility, evidence of what works. Scores live on the subject (`selection.scores` for indicators, `priority.scores` for outcomes and interventions). |
 | `MeasurementBudget` | `staffMinutesPerWeek`, `maxQuestionsPerRespondentPerYear`, `targetSelectedMetrics {min, max}` | Declared sustainability constraints. |
-| `Audience` | `id`, `name` (req), `needs` (what they need to see), `channels[]` (e.g. annual report, grant proposal, board deck, newsletter) | Story and reporting target. |
+| `Audience` | `id`, `name` (req), `needs` (what they need to see), `channels[]` (e.g. annual report, grant proposal, board deck, newsletter), `frequency` (ISO 8601 duration: how often it is reported to), `ownerActorId` (who prepares what it receives), `headline[]` | Story and reporting target; the MEL export's reporting schedule. |
 | `GlossaryTerm` | `id` (req, so terms can be addressed and referenced), `term` (req), `definition` (req), `examples[]`, `relatedIds[]` | Shared vocabulary (e.g. output vs outcome vs impact with organization-specific examples). |
 | `Theme` | `id`, `label` (req), `definition` (req), `includes[]`, `excludes[]`, `examples[]`, `outcomeIds[]` | Codebook for coding stories consistently (human or AI). |
 | `Provenance` (embedded as `provenance` on every element type) | `basis` (`stated`, `inferred`, `hypothesis`, `confirmed`, `rejected`), `evidenceIds[]`, `note`, `decidedAt?`, `decidedBy?` (group or role) | Public-source drafting and review lifecycle. `rejected` elements stay in the document for history but are excluded from graph analysis, measurement, and default reports. Sources are ordinary `Evidence` records (URL, title, excerpt, accessedAt, sensitivity). |
@@ -849,6 +919,9 @@ type Document struct {
 | `Risk` | embeds `core.Risk`, plus `appliesTo[]`, `category` (`environmental_political`, `opportunity`, `design`, `partnership`, `market`, `technical`, `operational`), `relatedAssumptionIds[]` | prism-core reuse; UNDG notes assumptions and risks are often inverse, so the link is explicit. `opportunity` risks are upside. |
 | `Alignment` | `elementId`, `target` (`ExternalRef`) | `ExternalRef{framework, ref, url, relation}`; frameworks: `okr`, `bsc`, `v2mom`, `capability`, `maturity_sli`, `market_spec`, `usm`, `ufm`, `sdg`, `vsem` (Vision–Strategy–Execution–Metrics one-pagers), `visionstudio`, `custom`; relations: `supports`, `measures`, `implements`, `contributes_to`, `same_as`. BSC alignments carry `perspective` in `ExternalRef.attributes` (`financial`, `customer`, `internal_process`, `learning_growth`). |
 | `Decision` | `id`, `question`, `options[]`, `dueDate`, `ownerActorId`, `status`, `relatedIds[]` | Feeds "decisions requested" in exec reports. |
+| `Evaluation` | `id`, `title` (req, VAL-EVL-001), `type` (`baseline`, `process`, `formative`, `midterm`, `final`, `impact`, `developmental`), `questions[]` (none empty, VAL-EVL-002), `method`, `evaluator` (`internal`, `external`, `mixed`), `ownerActorId`, `startDate`, `endDate` (VAL-DATE-002), `status` (`planned`, `in_progress`, `completed`, `cancelled`), `budget`, `relatedIds[]` (outcomes, links, assumptions, interventions, indicators, learning questions), `provenance` | The evaluation plan. What an evaluation finds is recorded as evidence of type `evaluation`. |
+| `LearningQuestion` | `id`, `question` (req, VAL-LRN-001), `rationale` (the decision it informs), `methods[]`, `ownerActorId`, `dueDate`, `status` (`open`, `answered`, `retired`; `answered` needs an `answer`, VAL-LRN-002), `answer`, `relatedIds[]` (outcomes, links, assumptions, interventions, indicators), `provenance` | The learning agenda. A period's learning review records the questions it took up. |
+| `ReviewMeeting` | `id`, `name` (req, VAL-MTG-001), `purpose`, `frequency` (ISO 8601 duration), `participants[]`, `ownerActorId`, `nextDate`, `questionIds[]` (learning questions) | When the organization stops to review what it has measured and learned; each meeting held is a learning review in that period's observation set. |
 | `Revision` | `version`, `date`, `summary`, `trigger` (`learning`, `evidence`, `context_change`, `strategy_change`, `review`), `changedIds[]`, `triggerEvidenceIds[]`, `qualityReview?` {`plausible`, `feasible`, `testable`: `pass`/`partial`/`fail`, `notes`} | Adaptive-management log; `qualityReview` records the Aspen Roundtable criteria. |
 
 ### 7.2 Observation set and status
@@ -1101,3 +1174,6 @@ No open question blocks implementation.
 | 0.5 | 2026-10-29 | John Wang | Public-source drafting with element provenance and data availability, assessment report, sharing exports (pandoc profile, review packet and sheet, export stamps), ReviewResponse import as proposals, approval, impact-draft-from-sources and toc-share-google skills over external Google tooling |
 | 0.6 | 2026-11-01 | John Wang | Problem trees: causes become a network (`parents[]`), effects (branches) with `addressesEffects`, lint IMP-EFF-001/002, and the problem-tree reports built from a JSON diagram spec (TRD-043) |
 | 0.7 | 2026-11-03 | John Wang | A problem tree per pathway (`pathway.problemStatement`, `pathwayIds` on causes and effects, TRD-044) and the `dmaic-plan` report (TRD-045) |
+| 0.8 | 2026-11-11 | John Wang | Pathway resources and intervention dates, lint IMP-INT-008, the VSEM gap analysis and mapping (§6.16), and `export vsem` (TRD-014) |
+| 0.9 | 2026-11-11 | John Wang | Evaluations, learning questions, review meetings, indicator quality assurance, audience reporting frequency and owner, lint IMP-LRN-001 to 003, and the MEL gap analysis and mapping (§6.17) |
+| 0.10 | 2026-11-11 | John Wang | `export mel` and `ToMEL` per the MEL mapping (§6.17, TRD-014) |

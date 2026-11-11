@@ -10,14 +10,15 @@ elements, how they refer to each other, and the ways to change them.
 | **Outcome** | A change that should happen, at one of five levels: `output`, `short_term`, `medium_term`, `long_term`, or `impact` |
 | **Link** | A causal arrow from one outcome to another, with a rationale and a polarity. A feedback link marks a loop |
 | **Group** | Preconditions for an outcome: all of them, any of them, or at least *k* of *n*. Groups can nest |
-| **Intervention** | Something the program does to bring about outcomes |
+| **Intervention** | Something the program does to bring about outcomes, with the resources it uses and, optionally, when it runs (`startDate`, `endDate`) |
 | **Assumption** | Something that must hold for a link or outcome to work, with a criticality and a status |
 | **Indicator** | How an outcome, activity, or assumption is measured, with a baseline, targets, and a frequency. It can also be worked out from other indicators, such as a cost per outcome |
 | **Actor** | A person or organization who changes, delivers, or co-owns an outcome |
 | **Evidence** | A source that supports or contradicts an element, with a sensitivity |
-| **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by |
+| **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by and the resources it commits |
 | **Cause**, **effect**, **target group** | The problem tree: causes below the core problem (`context.problemStatement`), effects above it, each linked to others through `parents`, and the groups affected. Outcomes say which causes they address and which effects they relieve. A pathway can have its own tree: its `problemStatement`, and the causes and effects that name it in `pathwayIds`. See the [problem tree guide](problem-tree.md) |
-| **Audience**, **theme** | Who needs to see what reported, the short list of numbers each is told, and the codebook for coding stories |
+| **Audience**, **theme** | Who needs to see what reported, how often, the short list of numbers each is told, and the codebook for coding stories |
+| **Evaluation**, **learning question**, **review meeting** | The evaluation plan, the learning agenda, and when the team stops to review what it has learned. See [Evaluation and learning](#evaluation-and-learning) |
 | **Metric**, **term** | A shared metric library, and a glossary of the words the impact model uses |
 | **Risk**, **decision**, **factor**, **consultation** | What could go wrong, what is awaiting a decision, external factors, and the review trail |
 
@@ -46,10 +47,17 @@ different things, and an impact model can make all of them.
   that reader. The board, funders, and members can each lead with different
   numbers drawn from the same indicators, and every audience sees the same figure
   for an indicator.
+- **Resources and timing** say where effort goes. A pathway's `resources` list
+  what it commits as a whole, each with a name and an allocation such as "2
+  squads" or "15% of the budget". An intervention's `resources` say what that
+  one piece of work uses, and its `startDate` and `endDate` say when it runs;
+  ongoing work has a start and no end. Lint warns when the dates fall outside
+  the time horizon (IMP-INT-008).
 - **Purpose** is `context.mission`, `context.vision`, and `context.values`:
   why the organization exists, what it works toward, and the principles that
   guide how it works, most important first. They are not part of the causal
-  chain. A V2MOM needs the vision and at least one value.
+  chain. A V2MOM needs the vision and at least one value; a VSEM needs the
+  vision or the mission.
 
 ```bash
 # A pathway's North Star, and what watches it
@@ -60,6 +68,12 @@ impact-model pathway set impact-model.yaml pw-learning \
 impact-model audience set impact-model.yaml aud-board --set 'headline=[
   {"indicatorId":"ind-practice-maturity","label":"Leadership practice across members"},
   {"indicatorId":"ind-reach-network"}]'
+
+# What a pathway commits, and when an intervention runs
+impact-model pathway set impact-model.yaml pw-learning \
+  --set 'resources=[{"name":"Program staff","allocation":"3 staff"}]'
+impact-model intervention set impact-model.yaml int-training-series \
+  --start-date 2026-09-01 --end-date 2027-05-31
 
 # Why the organization exists
 impact-model patch impact-model.yaml - <<'EOF'
@@ -80,6 +94,48 @@ A ratio and a difference take exactly two indicators, in order. A composition is
 arithmetic and not a causal link. See [Measuring progress](measurement.md) for
 how the value is worked out and what is withheld, and
 [Quality and judging](quality-and-judging.md) for the rules that check all of it.
+
+## Evaluation and learning
+
+Indicators say how progress is monitored. Three more elements say when the
+team will ask whether and why results happened, and what it most needs to find
+out:
+
+- **Evaluations** are the evaluation plan: each with its questions, a type
+  (`baseline`, `process`, `formative`, `midterm`, `final`, `impact`, or
+  `developmental`), a method, who carries it out (`internal`, `external`, or
+  `mixed`), and dates. What an evaluation finds is recorded as evidence of type
+  `evaluation`.
+- **Learning questions** are the learning agenda: each with the decision it
+  informs, how and by when it will be answered, and the outcomes, links,
+  assumptions, interventions, or indicators it tests. Mark one `answered` with
+  its answer once it is.
+- **Review meetings** say when the team stops to review: how often, who takes
+  part, and which learning questions each takes up. Each meeting held is
+  recorded as a learning review in that period's observation set.
+
+An indicator's `qualityAssurance` says how its data is checked, and an
+audience's `frequency` how often it is reported to. Together they make the
+model a complete monitoring, evaluation, and learning plan, which `export mel`
+writes out (see the [MEL guide](mel.md)). Once the model has
+evaluations or learning questions, lint asks that every high or critical
+assumption not yet shown to hold is taken up by one (IMP-LRN-001), that open
+questions are reviewed (IMP-LRN-002), and that dates fall within the time
+horizon (IMP-LRN-003).
+
+```bash
+impact-model question add impact-model.yaml --id lq-skills-applied \
+  --question "Do leaders who finish a cohort change how they run their organizations?" \
+  --rationale "Decides whether to keep investing in cohorts" \
+  --methods "Rubric ratings at six months" --due 2027-03-31 \
+  --related asm-skills-applied,ln-skills-practice
+impact-model evaluation add impact-model.yaml --id eval-midterm --title "Midterm review" \
+  --type midterm --evaluator external --start-date 2027-04-01 --end-date 2027-06-30 \
+  --questions "Are member leaders applying what they learn?" --related asm-skills-applied
+impact-model review-meeting add impact-model.yaml --id mtg-quarterly \
+  --name "Quarterly learning review" --frequency P3M --questions lq-skills-applied
+impact-model audience set impact-model.yaml aud-board --frequency P3M --owner act-network
+```
 
 ## Provenance: stated, inferred, or confirmed
 

@@ -42,6 +42,9 @@ var elementKinds = []ElementKind{
 	{"theme", "themes"},
 	{"criterion", "selectionCriteria"},
 	{"consultation", "consultations"},
+	{"evaluation", "evaluations"},
+	{"question", "learningQuestions"},
+	{"review-meeting", "reviewMeetings"},
 }
 
 // ElementKinds returns the editable element kinds in document order.
@@ -260,6 +263,13 @@ var refSites = []refSite{
 	{"decisions", []string{"ownerActorId"}, dropValue, 0},
 	{"decisions", []string{"relatedIds"}, dropItem, 0},
 	{"revisions", []string{"triggerEvidenceIds"}, dropItem, 0},
+	{"audiences", []string{"ownerActorId"}, dropValue, 0},
+	{"evaluations", []string{"ownerActorId"}, dropValue, 0},
+	{"evaluations", []string{"relatedIds"}, dropItem, 0},
+	{"learningQuestions", []string{"ownerActorId"}, dropValue, 0},
+	{"learningQuestions", []string{"relatedIds"}, dropItem, 0},
+	{"reviewMeetings", []string{"ownerActorId"}, dropValue, 0},
+	{"reviewMeetings", []string{"questionIds"}, dropItem, 0},
 }
 
 func init() {
@@ -267,7 +277,7 @@ func init() {
 	for _, array := range []string{
 		"outcomes", "preconditionGroups", "links", "interventions", "assumptions",
 		"indicators", "actors", "externalFactors", "risks", "metrics", "pathways",
-		"causes", "effects",
+		"causes", "effects", "evaluations", "learningQuestions",
 	} {
 		refSites = append(refSites, refSite{array, []string{"provenance", "evidenceIds"}, dropItem, 0})
 	}

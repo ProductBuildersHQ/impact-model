@@ -80,6 +80,13 @@ type Model struct {
 
 	// Consultations record validation of the impact model with stakeholders.
 	Consultations []Consultation `json:"consultations,omitempty"`
+
+	// Evaluations, LearningQuestions, and ReviewMeetings are the evaluation
+	// plan, the learning agenda, and when the organization stops to review
+	// what it has measured and learned.
+	Evaluations       []Evaluation       `json:"evaluations,omitempty"`
+	LearningQuestions []LearningQuestion `json:"learningQuestions,omitempty"`
+	ReviewMeetings    []ReviewMeeting    `json:"reviewMeetings,omitempty"`
 }
 
 // NewModel returns a document with Kind and SpecVersion set.

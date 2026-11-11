@@ -93,6 +93,8 @@ var elementFlags = map[string][]elementFlag{
 		s("status", "status", "planned, in_progress, completed, paused, or cancelled"),
 		ss("outputs", "outputs", "direct products"),
 		s("resources", "resources", "resources required"),
+		s("start-date", "startDate", "date it starts (YYYY-MM-DD)"),
+		s("end-date", "endDate", "date it ends (YYYY-MM-DD); leave out for ongoing work"),
 	},
 	"assumption": {
 		sr("statement", "statement", "the assumption, ideally if X then Y because Z"),
@@ -216,6 +218,8 @@ var elementFlags = map[string][]elementFlag{
 		sr("name", "name", "audience name"),
 		s("needs", "needs", "what they need to see"),
 		ss("channels", "channels", "where they are reached, e.g. annual report"),
+		s("frequency", "frequency", "how often they are reported to, as an ISO 8601 duration, e.g. P3M"),
+		s("owner", "ownerActorId", "actor ID of who prepares what they receive"),
 	},
 	"theme": {
 		sr("label", "label", "short name of the theme"),
@@ -240,6 +244,38 @@ var elementFlags = map[string][]elementFlag{
 		n("count", "count", "how many people took part"),
 		ss("findings", "findings", "what was learned"),
 		ss("changed", "changedIds", "IDs of elements changed as a result"),
+	},
+	"evaluation": {
+		sr("title", "title", "short title"),
+		s("type", "type", "baseline, process, formative, midterm, final, impact, or developmental"),
+		ss("questions", "questions", "the questions it answers"),
+		s("method", "method", "design and methods"),
+		s("evaluator", "evaluator", "internal, external, or mixed"),
+		s("owner", "ownerActorId", "actor ID of who leads it"),
+		s("start-date", "startDate", "date it starts (YYYY-MM-DD)"),
+		s("end-date", "endDate", "date it ends (YYYY-MM-DD)"),
+		s("status", "status", "planned, in_progress, completed, or cancelled"),
+		s("budget", "budget", "what it costs, as written"),
+		ss("related", "relatedIds", "outcome, link, assumption, intervention, indicator, or learning question IDs it addresses"),
+	},
+	"question": {
+		sr("question", "question", "what the organization needs to find out"),
+		s("rationale", "rationale", "why the answer matters: the decision it informs"),
+		ss("methods", "methods", "how it will be answered"),
+		s("owner", "ownerActorId", "actor ID of who answers it"),
+		s("due", "dueDate", "date it should be answered by (YYYY-MM-DD)"),
+		s("status", "status", "open, answered, or retired"),
+		s("answer", "answer", "what was found"),
+		ss("related", "relatedIds", "outcome, link, assumption, intervention, or indicator IDs it tests"),
+	},
+	"review-meeting": {
+		sr("name", "name", "meeting name, e.g. Quarterly learning review"),
+		s("purpose", "purpose", "what it is for"),
+		s("frequency", "frequency", "ISO 8601 duration, e.g. P3M"),
+		ss("participants", "participants", "roles or groups that take part"),
+		s("owner", "ownerActorId", "actor ID of who runs it"),
+		s("next", "nextDate", "date of the next meeting (YYYY-MM-DD)"),
+		ss("questions", "questionIds", "learning question IDs it takes up"),
 	},
 	"pathway": {
 		sr("title", "title", "pathway name, e.g. a program area"),
@@ -550,6 +586,12 @@ func shortPrefix(kind string) string {
 		return "thm"
 	case "consultation":
 		return "con"
+	case "evaluation":
+		return "eval"
+	case "question":
+		return "lq"
+	case "review-meeting":
+		return "mtg"
 	default:
 		return "dec"
 	}

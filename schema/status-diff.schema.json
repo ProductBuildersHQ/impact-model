@@ -31,7 +31,10 @@
             "audience",
             "theme",
             "criterion",
-            "consultation"
+            "consultation",
+            "evaluation",
+            "learningQuestion",
+            "reviewMeeting"
           ]
         },
         "field": {

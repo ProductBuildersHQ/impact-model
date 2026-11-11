@@ -78,6 +78,25 @@ func TestCommandsEqualTheirPatches(t *testing.T) {
 			},
 		},
 		{
+			"intervention set dates",
+			[]string{"intervention", "set", "FILE", "int-reference", "--start-date", "2026-05-01", "--end-date", "2027-04-30"},
+			func(t *testing.T) []edit.Op {
+				return []edit.Op{
+					must(edit.Add("/interventions/@int-reference/endDate", "2027-04-30")),
+					must(edit.Add("/interventions/@int-reference/startDate", "2026-05-01")),
+				}
+			},
+		},
+		{
+			"pathway set resources",
+			[]string{"pathway", "set", "FILE", "pw-supply", "--set", `resources=[{"name":"Events budget","allocation":"$40k a year"}]`},
+			func(t *testing.T) []edit.Op {
+				return []edit.Op{must(edit.Add("/pathways/@pw-supply/resources", []any{
+					map[string]any{"name": "Events budget", "allocation": "$40k a year"},
+				}))}
+			},
+		},
+		{
 			"risk rm",
 			[]string{"risk", "rm", "FILE", "rsk-competing"},
 			func(t *testing.T) []edit.Op { return []edit.Op{edit.Remove("/risks/@rsk-competing")} },
@@ -122,27 +141,30 @@ func TestCommandsEqualTheirPatches(t *testing.T) {
 // document.
 func TestEveryKindCanBeAdded(t *testing.T) {
 	tests := map[string][]string{
-		"outcome":      {"--id", "oc-x", "--title", "T", "--level", "output"},
-		"group":        {"--id", "grp-x", "--target", "oc-safer-agents", "--members", "oc-idp-support,oc-platform-support", "--logic", "any"},
-		"link":         {"--id", "ln-x", "--from", "oc-reference-impl", "--to", "oc-idp-support"},
-		"intervention": {"--id", "int-x", "--title", "T", "--targets", "oc-spec-stable"},
-		"assumption":   {"--id", "asm-x", "--statement", "S", "--applies-to", "ln-spec-idp", "--needs-testing"},
-		"indicator":    {"--id", "ind-x", "--measures", "oc-spec-stable", "--name", "N", "--type", "quantitative"},
-		"actor":        {"--id", "act-x", "--name", "N", "--roles", "adopter,funder"},
-		"evidence":     {"--id", "ev-x", "--title", "T", "--url", "https://example.org/x", "--accessed", "2026-10-29"},
-		"factor":       {"--id", "ef-x", "--description", "D", "--affects", "oc-safer-agents"},
-		"risk":         {"--id", "rsk-x", "--description", "D", "--category", "market"},
-		"decision":     {"--id", "dec-x", "--question", "Q"},
-		"pathway":      {"--id", "pw-x", "--title", "T", "--outcomes", "oc-idp-support", "--kind", "program"},
-		"consultation": {"--id", "con-x", "--date", "2026-10-29", "--step", "whole", "--method", "workshop"},
-		"metric":       {"--id", "met-x", "--name", "N", "--definition", "D", "--formula", "count of things"},
-		"cause":        {"--id", "cause-x", "--statement", "S", "--level", "immediate"},
-		"effect":       {"--id", "eff-x", "--statement", "S", "--parents", "eff-custom-integrations"},
-		"target-group": {"--id", "tg-x", "--name", "N"},
-		"audience":     {"--id", "aud-x", "--name", "Board"},
-		"theme":        {"--id", "thm-x", "--label", "L", "--definition", "D"},
-		"criterion":    {"--id", "crit-x", "--name", "Credibility", "--applies-to", "indicator", "--weight", "2"},
-		"term":         {"--id", "term-x", "--term", "Outcome", "--definition", "A change that happens to someone."},
+		"outcome":        {"--id", "oc-x", "--title", "T", "--level", "output"},
+		"group":          {"--id", "grp-x", "--target", "oc-safer-agents", "--members", "oc-idp-support,oc-platform-support", "--logic", "any"},
+		"link":           {"--id", "ln-x", "--from", "oc-reference-impl", "--to", "oc-idp-support"},
+		"intervention":   {"--id", "int-x", "--title", "T", "--targets", "oc-spec-stable"},
+		"assumption":     {"--id", "asm-x", "--statement", "S", "--applies-to", "ln-spec-idp", "--needs-testing"},
+		"indicator":      {"--id", "ind-x", "--measures", "oc-spec-stable", "--name", "N", "--type", "quantitative"},
+		"actor":          {"--id", "act-x", "--name", "N", "--roles", "adopter,funder"},
+		"evidence":       {"--id", "ev-x", "--title", "T", "--url", "https://example.org/x", "--accessed", "2026-10-29"},
+		"factor":         {"--id", "ef-x", "--description", "D", "--affects", "oc-safer-agents"},
+		"risk":           {"--id", "rsk-x", "--description", "D", "--category", "market"},
+		"decision":       {"--id", "dec-x", "--question", "Q"},
+		"pathway":        {"--id", "pw-x", "--title", "T", "--outcomes", "oc-idp-support", "--kind", "program"},
+		"consultation":   {"--id", "con-x", "--date", "2026-10-29", "--step", "whole", "--method", "workshop"},
+		"metric":         {"--id", "met-x", "--name", "N", "--definition", "D", "--formula", "count of things"},
+		"cause":          {"--id", "cause-x", "--statement", "S", "--level", "immediate"},
+		"effect":         {"--id", "eff-x", "--statement", "S", "--parents", "eff-custom-integrations"},
+		"target-group":   {"--id", "tg-x", "--name", "N"},
+		"audience":       {"--id", "aud-x", "--name", "Board"},
+		"theme":          {"--id", "thm-x", "--label", "L", "--definition", "D"},
+		"criterion":      {"--id", "crit-x", "--name", "Credibility", "--applies-to", "indicator", "--weight", "2"},
+		"term":           {"--id", "term-x", "--term", "Outcome", "--definition", "A change that happens to someone."},
+		"evaluation":     {"--id", "eval-x", "--title", "T", "--type", "final", "--related", "ln-spec-idp,lq-incentive"},
+		"question":       {"--id", "lq-x", "--question", "Q", "--due", "2027-06-30", "--related", "asm-no-fork"},
+		"review-meeting": {"--id", "mtg-x", "--name", "N", "--frequency", "P1M", "--questions", "lq-incentive"},
 	}
 	for _, k := range edit.ElementKinds() {
 		args, ok := tests[k.Name]

@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 20 of 24 phases completed
+**Status:** In progress — 22 of 27 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -582,16 +582,59 @@
 ## Phase 24 — Program Problem Trees and DMAIC Planning
 
 **Theme:** A problem tree for each program under the organization's, and a DMAIC plan a team can review before any data is collected
-**Status:** In progress — 0 of 2 items completed
+**Status:** Completed — 2 of 2 items completed
 
-- [ ] `RMI-IMPACTMODEL-018` Draw a problem tree per pathway
-  - Type: capability · Status: in progress
+- [x] `RMI-IMPACTMODEL-018` Draw a problem tree per pathway
+  - Type: capability · Status: completed
   - Depends on: `RMI-IMPACTMODEL-011`
   - Satisfies: PRD-FR-515, TRD-044
   - Acceptance: pathway.problemStatement and pathwayIds on causes and effects validate and cascade on removal; problem-tree, problem-tree-d2, and problem-tree-json take --pathway; the definitions pack draws the whole tree then each pathway tree; outcomes from other pathways are labelled; unit tests and goldens; problem tree guide updated
 
-- [ ] `RMI-IMPACTMODEL-019` Plan DMAIC before the data exists
-  - Type: capability · Status: in progress
+- [x] `RMI-IMPACTMODEL-019` Plan DMAIC before the data exists
+  - Type: capability · Status: completed
   - Depends on: `RMI-IMPACTMODEL-005`, `RMI-IMPACTMODEL-018`
   - Satisfies: PRD-FR-516, TRD-045
   - Acceptance: report dmaic-plan lists, per DMAIC pathway or the one named, the core problem and root causes, the interventions, and each metric's phase use and remaining needs; the cadence helper is shared with the IMP-DMA lint rules; golden and unit tests; DMAIC guide updated
+
+## Phase 25 — VSEM
+
+**Theme:** VSEM (Vision, Strategy, Execution, Metrics) as a stand-alone format in prism-roadmap, the impact model holding every part of it, and an export that needs nothing else
+**Status:** Completed — 2 of 2 items completed
+
+- [x] `RMI-IMPACTMODEL-020` Hold everything a VSEM needs in the impact model
+  - Type: capability · Status: completed
+  - Acceptance: a gap analysis of VSEM against the model recorded in the TRD; pathway resources and intervention timing added, or the TRD says why existing fields suffice; schemas regenerated and lint rules updated where the new fields need checks; examples carry the new fields
+
+- [x] `RMI-IMPACTMODEL-021` Export a VSEM projection of an impact model
+  - Type: capability · Status: completed
+  - Depends on: `RMI-PRISMROADMAP-022` (goals/vsem in prism-roadmap), `RMI-IMPACTMODEL-020`
+  - Acceptance: prismx.ToVSEM linked by ID and refusing a model that lacks a vision or pathways, as ToV2MOM does; export vsem in the CLI, the service layer, and the MCP server; golden tests on the examples; a VSEM guide and credits entry; the VSEM document stays separate from the model
+
+## Phase 26 — MEL
+
+**Theme:** A monitoring, evaluation, and learning plan as a stand-alone format in prism-roadmap, the impact model holding its evaluations and learning agenda, and an export that needs nothing else
+**Status:** Completed — 2 of 2 items completed
+
+- [x] `RMI-IMPACTMODEL-022` Hold everything a MEL plan needs in the impact model
+  - Type: capability · Status: completed
+  - Acceptance: a gap analysis of MEL against the model recorded in the TRD; learning questions and planned evaluations added and linked to the assumptions, links, and outcomes they test; indicator data quality checks, review cadence, and audience reporting frequency added; lint rules for untested critical assumptions without an evaluation or learning question; schemas regenerated; examples carry the new fields
+
+- [x] `RMI-IMPACTMODEL-023` Export a MEL plan from an impact model
+  - Type: capability · Status: completed
+  - Depends on: `RMI-PRISMROADMAP-023` (goals/mel in prism-roadmap), `RMI-IMPACTMODEL-022`
+  - Acceptance: prismx.ToMEL linked by ID; export mel in the CLI, the service layer, and the MCP server; golden tests on the examples; the narrative report's M&E provisions draw on the same fields; a MEL guide and credits entry
+
+## Phase 27 — OGSM
+
+**Theme:** OGSM (Objective, Goals, Strategies, Measures) as a stand-alone format in prism-roadmap, the impact model naming its objective, and an export that needs nothing else
+**Status:** Proposed — 0 of 2 items completed
+
+- [ ] `RMI-IMPACTMODEL-024` Hold everything an OGSM needs in the impact model
+  - Type: capability · Status: proposed
+  - Depends on: `RMI-IMPACTMODEL-020`
+  - Acceptance: a gap analysis of OGSM against the model recorded in the TRD; a way to name the objective when more than one impact outcome exists, with a lint rule when it is ambiguous; schemas regenerated; examples carry the new field
+
+- [ ] `RMI-IMPACTMODEL-025` Export an OGSM projection of an impact model
+  - Type: capability · Status: proposed
+  - Depends on: `RMI-PRISMROADMAP-024` (goals/ogsm in prism-roadmap), `RMI-IMPACTMODEL-024`
+  - Acceptance: prismx.ToOGSM linked by ID and refusing a model without a clear objective or pathways; export ogsm in the CLI, the service layer, and the MCP server; golden tests on the examples; an OGSM guide and credits entry

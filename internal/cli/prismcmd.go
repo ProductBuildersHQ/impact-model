@@ -39,6 +39,20 @@ Measures):
 With observations (-O), the measures carry current values, progress, and
 status. A model without a vision, values, or a pathway is refused, with a
 message naming what to add.`
+	case "vsem":
+		short, long = "Export the impact model as a VSEM", `Export the impact model as a VSEM (Vision, Strategy, Execution, Metrics):
+
+  Vision     context.vision, and context.mission
+  Strategy   one per pathway, with the resources it commits
+  Execution  each pathway's interventions, with owners, status, and dates;
+             type program is a program, any other an initiative
+  Metrics    each pathway's focus: North Star, one metric, guardrails;
+             then, for the vision, indicators of impact-level outcomes
+
+An intervention or indicator in more than one pathway is listed under the
+first. With observations (-O), the metrics carry current values, progress,
+and status. A model without a vision or mission, or without a pathway, is
+refused, with a message naming what to add.`
 	case "dmaic":
 		short, long = "Export DMAIC pathways as a DMAIC metrics document", `Export the pathways marked projections: [dmaic] as a DMAIC (Define, Measure,
 Analyze, Improve, Control) metrics document:
@@ -57,6 +71,23 @@ Analyze, Improve, Control) metrics document:
 Process capability is not filled: it needs specification limits, which an
 impact model does not record. A model with no marked pathway, or none with a
 numeric indicator, is refused.`
+	case "mel":
+		short, long = "Export the impact model as a MEL plan", `Export the impact model as a monitoring, evaluation, and learning (MEL) plan:
+
+  Results      the outcomes at their levels, each contributing to the
+               outcomes its links and precondition groups lead to (feedback
+               links, which are loops, are left out)
+  Activities   the interventions, producing the outcomes they target
+  Indicators   reference sheets: definition, baseline, targets, data source,
+               method, frequency, owner, quality checks, and caveats
+  Assumptions  each with its test as how it is monitored
+  Evaluations  the evaluation plan
+  Learning     the learning questions; a link one names becomes both ends
+  Reviews      the review meetings
+  Reports      the audiences: needs, channels, frequency, and indicators
+
+With observations (-O), the indicators carry their latest values. A model
+with no outcome that review has not rejected is refused.`
 	}
 	cmd := &cobra.Command{
 		Use:     kind + " <model-file>",
@@ -92,7 +123,7 @@ func runPrismExport(e *env, cmd *cobra.Command, kind, path string) error {
 	for _, o := range exp.Omissions {
 		fmt.Fprintf(e.errOut, "note: %s is left out: %s\n", o.IndicatorID, o.Reason)
 	}
-	if errors.Is(err, prismx.ErrNotV2MOMReady) || errors.Is(err, prismx.ErrNotDMAICReady) {
+	if errors.Is(err, prismx.ErrNotV2MOMReady) || errors.Is(err, prismx.ErrNotVSEMReady) || errors.Is(err, prismx.ErrNotDMAICReady) || errors.Is(err, prismx.ErrNotMELReady) {
 		return &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("%s: %w", path, err)}
 	}
 	if err != nil {

@@ -158,6 +158,10 @@ func EnumValues() map[reflect.Type][]string {
 	add(typeOf[impact.RollupMethod](), strs(impact.AllRollupMethods()))
 	add(typeOf[impact.AssumptionSource](), strs(impact.AllAssumptionSources()))
 	add(typeOf[impact.ElementKind](), strs(impact.AllElementKinds()))
+	add(typeOf[impact.EvaluationType](), strs(impact.AllEvaluationTypes()))
+	add(typeOf[impact.Evaluator](), strs(impact.AllEvaluators()))
+	add(typeOf[impact.EvaluationStatus](), strs(impact.AllEvaluationStatuses()))
+	add(typeOf[impact.QuestionStatus](), strs(impact.AllQuestionStatuses()))
 	return m
 }
 
