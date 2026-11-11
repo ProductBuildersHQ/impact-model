@@ -78,7 +78,7 @@ Each projection answers a different question for a different reader:
 
 | Projection | Answers | Get it with |
 |------------|---------|-------------|
-| **Problem tree** | What is the problem, what causes it, and what does it lead to? The core problem in the middle, causes (roots) below and effects (branches) above, with the outcomes that address each. See [the guide](docs/guides/problem-tree.md) | `report problem-tree`, `problem-tree-d2`, `problem-tree-json` |
+| **Problem tree** | What is the problem, what causes it, and what does it lead to? The core problem in the middle, causes (roots) below and effects (branches) above, with the outcomes that address each. See [the guide](docs/guides/problem-tree.md) | `report problem-tree` (`--pathway` for one program's tree), `problem-tree-d2`, `problem-tree-json` |
 | **Theory of change** | Why should what we do lead to the change we want, and in what order must outcomes happen? Drawn as pathways of change, from the earliest outcome at the bottom to the long-term goal at the top | `report pathway` |
 | **Outcome map** | What changes, who is responsible for each change, and how is it measured? The outcomes by level, each with its sphere, owner, cause, and indicators | `report outcome-map` |
 | **Logic model** | What goes in, what is done, and what comes out? Stages from inputs, activities, and outputs through short-, medium-, and long-term outcomes to impact, one per pathway | `report logic-model`, `logic-model-d2` |
@@ -86,7 +86,7 @@ Each projection answers a different question for a different reader:
 | **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
 | **OKRs and outcome journeys** | What will a team commit to this quarter, and how does a person move through the outcomes? For the [PRISM](#part-of-the-prism-ecosystem) planning tools | `export okr`, `export journey` |
 | **V2MOM** | What do we want, what matters, how will we get it, what is in the way, and how will we know? Vision and values from the context, one method per pathway with its interventions as projects, measures from each pathway's North Star and guardrails, and obstacles from risks and open assumptions. See [the mapping](docs/guides/v2mom.md) | `export v2mom` |
-| **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](docs/guides/dmaic.md) | `export dmaic` |
+| **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](docs/guides/dmaic.md) | `export dmaic`, and `report dmaic-plan` to plan it before there is data |
 
 Each projection leaves something out. A problem tree shows the problem, what
 causes it, and what it leads to, but not the steps by which a program changes
@@ -119,11 +119,11 @@ markers for the partners a program influences.)
 
 ## The theory of change
 
-The theory of change is the projection most programs start from. It explains
-**how and why a program expects to bring about a change**. It starts from the
-long-term goal and works backwards: what conditions must exist for the goal to
-be reached, what must exist before each of those, and so on down to what the
-program does today. Each step is an
+The theory of change is the projection many teams start from. It explains
+**how and why the work is expected to bring about a change**, whether the work is
+a product, a strategy, or a program. It starts from the long-term goal and works
+backwards: what conditions must exist for the goal to be reached, what must
+exist before each of those, and so on down to what is done today. Each step is an
 **outcome**; each arrow between outcomes is a **causal link** with a reason for
 believing it holds; and each belief that has to be true for a link to work is an
 **assumption** that can be tested.
@@ -143,8 +143,9 @@ claim it.
 
 ### Why it matters
 
-The method is used by foundations, development agencies, and funders, and the
-sources agree on five reasons:
+The method grew up among foundations, development agencies, and funders, but it
+is a tool for any goal: a product's adoption, a company's strategy, or a
+program's impact. The sources agree on five reasons:
 
 - **Planning.** Agree on what has to change, and in what order, before spending
   money on activities.
@@ -152,8 +153,8 @@ sources agree on five reasons:
   long-term goal, instead of asserting that they do.
 - **Evaluability.** Indicators and tests come from the causal reasoning, so you
   know what to measure and what would count as being wrong.
-- **Communication.** Funders, partners, staff, and the people the program serves
-  can see the same reasoning and argue with it.
+- **Communication.** Leaders, funders, partners, staff, and the people the work
+  serves can see the same reasoning and argue with it.
 - **Learning.** The model is a living framework. When evidence arrives, you revise
   it instead of defending it.
 
@@ -283,9 +284,10 @@ Reading the second diagram:
 | **Honest handling of people's data** | Stories and quotes appear only with consent, and restricted evidence is never rendered anywhere |
 | **Ready for AI agents** | An MCP server and agent skills let an agent draft, edit, measure, report, and export, under the same rules as a person |
 
-It is meant for program and strategy teams, evaluators, funders, and anyone who has
-to explain *why* what they do should lead to what they hope for, and then show
-whether it did.
+It is meant for anyone who sets goals and has to show results, in a startup, a
+company, or a nonprofit: founders, product, strategy, and program teams,
+evaluators, and funders. Each has to explain *why* what they do should lead to
+what they hope for, and then show whether it did.
 
 ## Quick start
 

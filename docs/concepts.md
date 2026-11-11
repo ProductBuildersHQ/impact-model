@@ -11,7 +11,7 @@ projections of it, drawn by the `report` command:
 
 | Method | Projection shows | Report kinds |
 |--------|------|--------------|
-| Problem tree | The core problem, its causes (roots) below and its effects (branches) above, with the outcomes that address each | `problem-tree`, `problem-tree-d2`, `problem-tree-json` |
+| Problem tree | The core problem, its causes (roots) below and its effects (branches) above, with the outcomes that address each | `problem-tree`, `problem-tree-d2`, `problem-tree-json`, each with `--pathway` for one program's tree |
 | Theory of change | Pathways of change, with the reasons and assumptions behind each link | `pathway` |
 | Logic model | Inputs, activities, outputs, and outcomes by level, for each pathway | `logic-model`, `logic-model-layered`, `logic-model-d2` |
 | Outcome map | Outcomes by level, with who is responsible for each | `outcome-map` |

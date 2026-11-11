@@ -597,6 +597,17 @@ named version, so that both teams work from the same agreed theory.
   document (nodes, edges, and layers), from which D2 and Mermaid are rendered,
   so other tools can read or restyle it. Alongside it, tables list each cause
   and effect with the outcomes that address it, or why it is set aside.
+- **PRD-FR-515** A program that answers a narrower problem than the
+  organization's MUST be able to have its own problem tree: a pathway records
+  its own core problem, causes and effects name the pathways whose trees they
+  belong to (a shared cause names several), and the problem tree reports draw
+  one pathway's tree on request. The whole model's tree keeps every cause and
+  effect.
+- **PRD-FR-516** The tools MUST plan DMAIC before any data exists: for each
+  pathway marked for DMAIC, the problem it improves (from its problem tree),
+  the interventions an improvement would change, and each metric with the
+  DMAIC phases it serves and what it still needs (baseline, numeric target,
+  cadence, data source) before the DMAIC export can chart it.
 - **PRD-FR-509** Indicators with a baseline and no target MUST report
   `baseline_only` rather than a failure, so a first measurement year is
   presented as establishing a baseline.

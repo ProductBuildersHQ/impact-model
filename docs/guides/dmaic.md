@@ -33,6 +33,41 @@ pathways:
 
 Only marked pathways are checked by the DMAIC lint rules and exported.
 
+## Plan before the data exists
+
+A team often wants to know which metrics a DMAIC effort would use before it has
+measured anything. `report dmaic-plan` answers that from the impact model alone:
+
+```bash
+impact-model report dmaic-plan impact-model.yaml
+impact-model report dmaic-plan impact-model.yaml --pathway pw-catalog
+```
+
+For each marked pathway, or the one named, it shows:
+
+- **Define:** the pathway's core problem and the causes in its
+  [problem tree](problem-tree.md#one-tree-per-program), deepest first.
+- **Improve:** the interventions an improvement would change.
+- **A metric table:** each indicator of the pathway, the phases it serves, its
+  cadence and data availability, and what it still needs.
+
+One metric can serve several phases, and the plan derives them as a convention:
+
+| Phase | A metric serves it when |
+|-------|-------------------------|
+| Define | It measures a long-term or impact outcome, or one that relieves an effect: it sizes the problem |
+| Measure | Always: every metric needs a baseline |
+| Analyze | It is broken down by group (`disaggregation` or `targetGroupIds`), so it shows where the gap is |
+| Improve | It measures one of the pathway's interventions, or an earlier outcome one of them is aimed at, so it moves soon after a change |
+| Control | It is measured on a schedule at least once a year, so a gain can be checked for whether it lasts |
+
+"Still needs" lists what stands between the metric and a control chart: a
+numeric baseline and target (without them the export leaves the metric out), a
+data source, a frequency, and at least 20 measurements a year. A program
+measured yearly will always show the last; the plan is still useful for Define,
+Measure, and Analyze, and it tells you which metrics to measure more often if
+you want control limits.
+
 ## What lint checks first
 
 `impact-model lint` checks every indicator of a marked pathway:

@@ -50,6 +50,7 @@ func TestLogicModelsFallBackToTheWholeTheory(t *testing.T) {
 	for i := range doc.Indicators {
 		doc.Indicators[i].PathwayIDs = nil
 	}
+	clearTreePathways(doc)
 	whole := build(t, doc, nil, Options{})
 	out := LogicModels(whole, nil)
 	if !strings.Contains(out, "## Logic model: Open agent authorization standard adoption") {

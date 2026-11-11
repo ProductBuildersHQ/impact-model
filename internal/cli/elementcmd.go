@@ -196,6 +196,7 @@ var elementFlags = map[string][]elementFlag{
 		ss("parents", "parents", "cause IDs this one contributes to; none for a direct cause of the core problem"),
 		ss("affected", "affectedGroupIds", "target group IDs affected"),
 		ss("evidence", "evidenceIds", "evidence IDs behind the cause"),
+		ss("pathways", "pathwayIds", "pathway IDs whose own problem tree this cause belongs to"),
 		s("out-of-scope", "outOfScope.reason", "why the cause is left alone"),
 	},
 	"effect": {
@@ -203,6 +204,7 @@ var elementFlags = map[string][]elementFlag{
 		ss("parents", "parents", "effect IDs this one follows from; none for a direct effect of the core problem"),
 		ss("affected", "affectedGroupIds", "target group IDs affected"),
 		ss("evidence", "evidenceIds", "evidence IDs behind the effect"),
+		ss("pathways", "pathwayIds", "pathway IDs whose own problem tree this effect belongs to"),
 		s("out-of-scope", "outOfScope.reason", "why the effect is left alone"),
 	},
 	"target-group": {
@@ -243,6 +245,7 @@ var elementFlags = map[string][]elementFlag{
 		sr("title", "title", "pathway name, e.g. a program area"),
 		s("kind", "kind", "program, product, strategy, theme, geography, or segment"),
 		s("description", "description", "longer description"),
+		s("problem", "problemStatement", "core problem of the pathway's own problem tree, as a short phrase"),
 		s("owner", "ownerActorId", "owning actor ID"),
 		ss("outcomes", "outcomeIds", "outcome IDs in the pathway"),
 		ss("interventions", "interventionIds", "intervention IDs in the pathway"),

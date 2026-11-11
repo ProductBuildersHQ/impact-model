@@ -398,6 +398,12 @@
           },
           "type": "array"
         },
+        "pathwayIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "outOfScope": {
           "$ref": "#/$defs/OutOfScope"
         },
@@ -697,6 +703,12 @@
           "type": "array"
         },
         "evidenceIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pathwayIds": {
           "items": {
             "type": "string"
           },
@@ -1731,6 +1743,9 @@
           ]
         },
         "description": {
+          "type": "string"
+        },
+        "problemStatement": {
           "type": "string"
         },
         "ownerActorId": {

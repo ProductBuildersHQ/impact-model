@@ -9,7 +9,10 @@
 package problemtree
 
 import (
+	"fmt"
 	"math"
+	"slices"
+	"strings"
 
 	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
 )
@@ -70,15 +73,50 @@ func (t *Tree) Empty() bool { return len(t.Rows) <= 1 }
 // below the core problem, and any other cause is one row below its lowest
 // parent; effects mirror this upward. Within a row, nodes keep file order.
 func Build(doc *impact.Model) *Tree {
+	return build(doc, doc.Context.ProblemStatement, "")
+}
+
+// BuildFor lays out the problem tree of one pathway: its problem statement,
+// or the model's when it has none, with the causes and effects that name the
+// pathway in pathwayIds. A parent outside the pathway's tree is left out, so
+// a cause whose parents all belong to other pathways leads straight to the
+// pathway's problem. An empty pathwayID builds the tree of the whole model.
+func BuildFor(doc *impact.Model, pathwayID string) (*Tree, error) {
+	if pathwayID == "" {
+		return Build(doc), nil
+	}
+	p, ok := doc.Pathway(pathwayID)
+	if !ok {
+		return nil, fmt.Errorf("problemtree: unknown pathway %q", pathwayID)
+	}
+	return build(doc, ProblemStatement(doc, p), pathwayID), nil
+}
+
+// ProblemStatement is the core problem of a pathway's tree: its own problem
+// statement, or the model's when it has none.
+func ProblemStatement(doc *impact.Model, p *impact.Pathway) string {
+	if strings.TrimSpace(p.ProblemStatement) != "" {
+		return p.ProblemStatement
+	}
+	return doc.Context.ProblemStatement
+}
+
+// inTree reports whether a cause or effect naming pathwayIDs belongs to the
+// tree of pathway; every one belongs to the whole model's tree.
+func inTree(pathway string, pathwayIDs []string) bool {
+	return pathway == "" || slices.Contains(pathwayIDs, pathway)
+}
+
+func build(doc *impact.Model, problem, pathway string) *Tree {
 	causes := map[string]impact.Cause{}
 	for _, c := range doc.Causes {
-		if !c.Rejected() {
+		if !c.Rejected() && inTree(pathway, c.PathwayIDs) {
 			causes[c.ID] = c
 		}
 	}
 	effects := map[string]impact.Effect{}
 	for _, e := range doc.Effects {
-		if !e.Rejected() {
+		if !e.Rejected() && inTree(pathway, e.PathwayIDs) {
 			effects[e.ID] = e
 		}
 	}
@@ -86,7 +124,7 @@ func Build(doc *impact.Model) *Tree {
 	causeRow := rows(func(id string) []string { return causes[id].Parents }, func(id string) bool { _, ok := causes[id]; return ok }, -1)
 	effectRow := rows(func(id string) []string { return effects[id].Parents }, func(id string) bool { _, ok := effects[id]; return ok }, +1)
 
-	byRow := map[int][]Node{0: {{ID: ProblemID, Label: oneLine(doc.Context.ProblemStatement), Kind: KindProblem}}}
+	byRow := map[int][]Node{0: {{ID: ProblemID, Label: oneLine(problem), Kind: KindProblem}}}
 	t := &Tree{}
 	for _, c := range doc.Causes {
 		if _, ok := causes[c.ID]; !ok {

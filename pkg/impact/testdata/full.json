@@ -715,6 +715,7 @@
       "title": "Supply side: providers and platforms",
       "kind": "strategy",
       "description": "Getting identity providers and agent platforms to ship the standard.",
+      "problemStatement": "Providers and platforms do not ship a common delegated-access standard.",
       "ownerActorId": "act-proponent",
       "outcomeIds": [
         "oc-spec-stable",
@@ -799,6 +800,9 @@
     {
       "id": "cause-no-demand-signal",
       "statement": "Providers see no customer demand for a common standard.",
+      "pathwayIds": [
+        "pw-supply"
+      ],
       "level": "underlying",
       "parents": [
         "cause-no-reference"
@@ -820,6 +824,9 @@
     {
       "id": "eff-custom-integrations",
       "statement": "Every enterprise pays for custom identity integrations.",
+      "pathwayIds": [
+        "pw-supply"
+      ],
       "affectedGroupIds": [
         "tg-small-providers"
       ],

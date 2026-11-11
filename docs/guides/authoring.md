@@ -16,7 +16,7 @@ elements, how they refer to each other, and the ways to change them.
 | **Actor** | A person or organization who changes, delivers, or co-owns an outcome |
 | **Evidence** | A source that supports or contradicts an element, with a sensitivity |
 | **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by |
-| **Cause**, **effect**, **target group** | The problem tree: causes below the core problem (`context.problemStatement`), effects above it, each linked to others through `parents`, and the groups affected. Outcomes say which causes they address and which effects they relieve. See the [problem tree guide](problem-tree.md) |
+| **Cause**, **effect**, **target group** | The problem tree: causes below the core problem (`context.problemStatement`), effects above it, each linked to others through `parents`, and the groups affected. Outcomes say which causes they address and which effects they relieve. A pathway can have its own tree: its `problemStatement`, and the causes and effects that name it in `pathwayIds`. See the [problem tree guide](problem-tree.md) |
 | **Audience**, **theme** | Who needs to see what reported, the short list of numbers each is told, and the codebook for coding stories |
 | **Metric**, **term** | A shared metric library, and a glossary of the words the impact model uses |
 | **Risk**, **decision**, **factor**, **consultation** | What could go wrong, what is awaiting a decision, external factors, and the review trail |

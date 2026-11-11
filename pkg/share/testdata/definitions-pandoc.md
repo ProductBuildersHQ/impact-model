@@ -3,7 +3,7 @@ title: "Open agent authorization standard adoption"
 version: "0.1"
 date: "2026-09-30"
 model-id: "open-agent-auth"
-content-hash: "f12dc528d8e8543f76bdd6924a1246227cb922017958f83604b2769e6f9634b9"
+content-hash: "63798765ef1936625d5ee50075d69cefcac3d446fc8e68d814dde0f0d9650e82"
 ---
 
 ## Problem tree
@@ -29,15 +29,37 @@ Causes (roots) below lead up to the core problem, which leads up to its effects 
 
 \newpage
 
+## Problem tree: Supply side: providers and platforms
+
+Core problem: Providers and platforms do not ship a common delegated-access standard.
+
+Causes (roots) below lead up to the core problem, which leads up to its effects (branches).
+
+![Diagram](diagrams/d2.png)
+
+### Causes
+
+| Cause | Level | Leads to | Addressed by |
+|-------|-------|----------|--------------|
+| Providers see no customer demand for a common standard. (`cause-no-demand-signal`) | underlying | the core problem | Major identity providers support the standard (`oc-idp-support`) |
+
+### Effects
+
+| Effect | Follows from | Relieved by |
+|--------|--------------|-------------|
+| Every enterprise pays for custom identity integrations. (`eff-custom-integrations`) | the core problem | Major identity providers support the standard (`oc-idp-support`) |
+
+\newpage
+
 ## Causal pathways
 
 ### The theory of change on one page
 
-![Diagram](diagrams/d2.png)
+![Diagram](diagrams/d3.png)
 
 ### Supply side: providers and platforms
 
-![Diagram](diagrams/d3.png)
+![Diagram](diagrams/d4.png)
 
 \newpage
 
@@ -127,4 +149,4 @@ _This is a view of the causal model. It flattens the links between outcomes; the
 | General availability | A release available to all customers without special arrangement, as opposed to a preview. | A vendor's public release notes list the feature without a preview label. |
 
 
-*Impact model open-agent-auth · version 0.1 · hash f12dc528d8e8 · as of 2026-09-30*
+*Impact model open-agent-auth · version 0.1 · hash 63798765ef19 · as of 2026-09-30*

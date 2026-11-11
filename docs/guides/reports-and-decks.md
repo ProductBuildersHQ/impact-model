@@ -20,9 +20,10 @@ impact-model report definitions impact-model.yaml --out definitions.md
 | `logic-model` | Inputs, activities, outputs, and outcomes for each pathway. `--diagram` draws it left to right (also `logic-model-diagram`) |
 | `logic-model-layered` | The logic model as columns, from inputs to impact, with a box for each item and an arrow wherever the impact model says one leads to another. Written as Mermaid |
 | `logic-model-d2` | The same layered diagram as [D2](https://d2lang.com), where a grid keeps every stage in its own column. Render it with `d2 diagram.d2 diagram.svg` |
-| `problem-tree` | The core problem with its causes below and effects above, arrows flowing upward, and tables of what addresses each. Written as Mermaid; see the [problem tree guide](problem-tree.md) |
+| `problem-tree` | The core problem with its causes below and effects above, arrows flowing upward, and tables of what addresses each. Written as Mermaid; `--pathway` draws one program's own tree. See the [problem tree guide](problem-tree.md) |
 | `problem-tree-d2` | The same problem tree as D2, where a grid keeps every row in place |
 | `problem-tree-json` | The diagram document the problem tree is drawn from: a d2vision diagram spec, as JSON, with no stamp |
+| `dmaic-plan` | For each pathway marked for DMAIC: the problem it improves, the interventions an improvement would change, and each metric with the DMAIC phases it serves and what it still needs before `export dmaic` can chart it. See the [DMAIC guide](dmaic.md#plan-before-the-data-exists) |
 | `outcome-map` | The outcomes framework, marking what is monitored but not owned |
 | `logframe` | A results-framework matrix with indicators, means of verification, and assumptions |
 | `metrics` | Metric definitions and how they combine across pathways |
@@ -30,7 +31,7 @@ impact-model report definitions impact-model.yaml --out definitions.md
 | `collection-plan` | What is collected, how, how often, and the burden against the budget |
 | `glossary` | The words the impact model uses |
 | `assessment` | How much of the impact model is stated, inferred, or still a hypothesis |
-| `definitions` | One document for a workshop: the problem tree (when the model records causes or effects), the causal pathways, logic models, outcome maps, logframes, metric definitions, and glossary |
+| `definitions` | One document for a workshop: the problem trees (the whole model's, then each pathway's own), the causal pathways, logic models, outcome maps, logframes, metric definitions, and glossary |
 
 ## Status reports
 
