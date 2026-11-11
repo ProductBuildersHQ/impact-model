@@ -243,6 +243,12 @@
           },
           "type": "array"
         },
+        "frequency": {
+          "type": "string"
+        },
+        "ownerActorId": {
+          "type": "string"
+        },
         "headline": {
           "items": {
             "$ref": "#/$defs/HeadlineMetric"
@@ -728,6 +734,83 @@
         "statement"
       ]
     },
+    "Evaluation": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "baseline",
+            "process",
+            "formative",
+            "midterm",
+            "final",
+            "impact",
+            "developmental"
+          ]
+        },
+        "questions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "method": {
+          "type": "string"
+        },
+        "evaluator": {
+          "type": "string",
+          "enum": [
+            "internal",
+            "external",
+            "mixed"
+          ]
+        },
+        "ownerActorId": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "planned",
+            "in_progress",
+            "completed",
+            "cancelled"
+          ]
+        },
+        "budget": {
+          "type": "string"
+        },
+        "relatedIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ]
+    },
     "Evidence": {
       "properties": {
         "id": {
@@ -1117,6 +1200,9 @@
         "composedOf": {
           "$ref": "#/$defs/Composition"
         },
+        "qualityAssurance": {
+          "$ref": "#/$defs/QualityAssurance"
+        },
         "dataAvailability": {
           "type": "string",
           "enum": [
@@ -1251,6 +1337,58 @@
         "id",
         "title",
         "targets"
+      ]
+    },
+    "LearningQuestion": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "methods": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "ownerActorId": {
+          "type": "string"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "answered",
+            "retired"
+          ]
+        },
+        "answer": {
+          "type": "string"
+        },
+        "relatedIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
+        "question"
       ]
     },
     "Logic": {
@@ -1580,6 +1718,24 @@
         "consultations": {
           "items": {
             "$ref": "#/$defs/Consultation"
+          },
+          "type": "array"
+        },
+        "evaluations": {
+          "items": {
+            "$ref": "#/$defs/Evaluation"
+          },
+          "type": "array"
+        },
+        "learningQuestions": {
+          "items": {
+            "$ref": "#/$defs/LearningQuestion"
+          },
+          "type": "array"
+        },
+        "reviewMeetings": {
+          "items": {
+            "$ref": "#/$defs/ReviewMeeting"
           },
           "type": "array"
         }
@@ -1948,6 +2104,22 @@
         "basis"
       ]
     },
+    "QualityAssurance": {
+      "properties": {
+        "checks": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "lastAssessed": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
     "QualityReview": {
       "properties": {
         "plausible": {
@@ -2010,6 +2182,47 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
+        "name"
+      ]
+    },
+    "ReviewMeeting": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "frequency": {
+          "type": "string"
+        },
+        "participants": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "ownerActorId": {
+          "type": "string"
+        },
+        "nextDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "questionIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
         "name"
       ]
     },

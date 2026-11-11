@@ -201,6 +201,8 @@ type Indicator struct {
 	// measured values and is not a causal link; an indicator that has its own
 	// observation uses that and ignores the composition.
 	ComposedOf *Composition `json:"composedOf,omitempty"`
+	// QualityAssurance says how the indicator's data is checked.
+	QualityAssurance *QualityAssurance `json:"qualityAssurance,omitempty"`
 	// DataAvailability says whether the data this indicator needs is
 	// public, already held internally, new to collect, held by a partner,
 	// or not yet known.
@@ -395,6 +397,11 @@ type Audience struct {
 	// Channels are where they are reached, e.g. annual report, grant
 	// proposal, board deck, newsletter.
 	Channels []string `json:"channels,omitempty"`
+	// Frequency is how often the audience is reported to, as an ISO 8601
+	// duration, e.g. "P3M".
+	Frequency string `json:"frequency,omitempty"`
+	// OwnerID is the actor who prepares what the audience receives.
+	OwnerID string `json:"ownerActorId,omitempty"`
 	// Headline is the short list of indicators this audience is told, in the
 	// order they are shown. It is drawn from the indicators reported to the
 	// audience. Every audience sees the same figure for an indicator; only the

@@ -28,6 +28,9 @@ const (
 	ElementAudience       ElementKind = "audience"
 	ElementTheme          ElementKind = "theme"
 	ElementConsultation   ElementKind = "consultation"
+	ElementEvaluation     ElementKind = "evaluation"
+	ElementQuestion       ElementKind = "learningQuestion"
+	ElementReviewMeeting  ElementKind = "reviewMeeting"
 )
 
 // ElementRef locates an identified element in a document.
@@ -74,6 +77,9 @@ func (d *Model) Elements() []ElementRef {
 	add(ElementTheme, "themes", idsOf(d.Themes, func(v Theme) string { return v.ID }))
 	add(ElementCriterion, "selectionCriteria", idsOf(d.SelectionCriteria, func(v SelectionCriterion) string { return v.ID }))
 	add(ElementConsultation, "consultations", idsOf(d.Consultations, func(v Consultation) string { return v.ID }))
+	add(ElementEvaluation, "evaluations", idsOf(d.Evaluations, func(v Evaluation) string { return v.ID }))
+	add(ElementQuestion, "learningQuestions", idsOf(d.LearningQuestions, func(v LearningQuestion) string { return v.ID }))
+	add(ElementReviewMeeting, "reviewMeetings", idsOf(d.ReviewMeetings, func(v ReviewMeeting) string { return v.ID }))
 	return out
 }
 
@@ -204,6 +210,7 @@ func AllElementKinds() []ElementKind {
 		ElementOutcome, ElementGroup, ElementLink, ElementIntervention, ElementAssumption,
 		ElementIndicator, ElementActor, ElementEvidence, ElementExternalFactor, ElementRisk,
 		ElementDecision, ElementPathway, ElementMetric, ElementTerm, ElementCause, ElementEffect, ElementTargetGroup, ElementAudience, ElementTheme, ElementCriterion, ElementConsultation,
+		ElementEvaluation, ElementQuestion, ElementReviewMeeting,
 	}
 }
 
@@ -256,6 +263,21 @@ func (d *Model) Criterion(id string) (*SelectionCriterion, bool) {
 // Metric returns the metric with the given ID.
 func (d *Model) Metric(id string) (*Metric, bool) {
 	return find(d.Metrics, id, func(v Metric) string { return v.ID })
+}
+
+// Evaluation returns the evaluation with the given ID.
+func (d *Model) Evaluation(id string) (*Evaluation, bool) {
+	return find(d.Evaluations, id, func(v Evaluation) string { return v.ID })
+}
+
+// LearningQuestion returns the learning question with the given ID.
+func (d *Model) LearningQuestion(id string) (*LearningQuestion, bool) {
+	return find(d.LearningQuestions, id, func(v LearningQuestion) string { return v.ID })
+}
+
+// ReviewMeeting returns the review meeting with the given ID.
+func (d *Model) ReviewMeeting(id string) (*ReviewMeeting, bool) {
+	return find(d.ReviewMeetings, id, func(v ReviewMeeting) string { return v.ID })
 }
 
 // Pathway returns the pathway with the given ID.

@@ -404,6 +404,12 @@
       "caveats": [
         "Counts general availability only"
       ],
+      "qualityAssurance": {
+        "checks": [
+          "Each release confirmed against the provider's public changelog"
+        ],
+        "lastAssessed": "2026-09-01"
+      },
       "dataAvailability": "public",
       "collection": {
         "mode": "derived",
@@ -879,6 +885,8 @@
       "id": "aud-board",
       "name": "Steering board",
       "needs": "Whether adoption is on track and where it is stuck.",
+      "frequency": "P3M",
+      "ownerActorId": "act-proponent",
       "channels": [
         "board deck",
         "quarterly summary"
@@ -985,6 +993,68 @@
       ],
       "changedIds": [
         "oc-idp-support"
+      ]
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "eval-midterm",
+      "title": "Midterm adoption review",
+      "type": "midterm",
+      "questions": [
+        "Are providers shipping because of the reference implementation?"
+      ],
+      "method": "Provider interviews and release-note analysis",
+      "evaluator": "external",
+      "ownerActorId": "act-proponent",
+      "startDate": "2027-01-01",
+      "endDate": "2027-03-31",
+      "status": "planned",
+      "budget": "Evaluation consultant",
+      "relatedIds": [
+        "ln-spec-idp",
+        "asm-idp-incentive",
+        "lq-incentive"
+      ],
+      "provenance": {
+        "basis": "stated"
+      }
+    }
+  ],
+  "learningQuestions": [
+    {
+      "id": "lq-incentive",
+      "question": "Do providers adopt for customer demand or for interoperability?",
+      "rationale": "Decides whether to court enterprises or providers first.",
+      "methods": [
+        "Provider interviews"
+      ],
+      "ownerActorId": "act-proponent",
+      "dueDate": "2026-12-31",
+      "status": "answered",
+      "answer": "Customer demand, by most accounts.",
+      "relatedIds": [
+        "asm-idp-incentive",
+        "ln-idp-require"
+      ],
+      "provenance": {
+        "basis": "stated"
+      }
+    }
+  ],
+  "reviewMeetings": [
+    {
+      "id": "mtg-quarterly",
+      "name": "Quarterly learning review",
+      "purpose": "Take up the learning questions and decide what to change.",
+      "frequency": "P3M",
+      "participants": [
+        "Standards working group"
+      ],
+      "ownerActorId": "act-proponent",
+      "nextDate": "2026-12-15",
+      "questionIds": [
+        "lq-incentive"
       ]
     }
   ]

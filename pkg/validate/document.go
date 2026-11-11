@@ -83,6 +83,7 @@ func Document(doc *impact.Model, opts ...Option) []Issue {
 	c.causesAndGroups()
 	c.provenance()
 	c.consultations()
+	c.learning()
 	return c.issues
 }
 
@@ -790,6 +791,12 @@ func (c *checker) provenance() {
 	for i, v := range d.Pathways {
 		c.prov("pathways", i, v.ID, v.Provenance)
 	}
+	for i, v := range d.Evaluations {
+		c.prov("evaluations", i, v.ID, v.Provenance)
+	}
+	for i, v := range d.LearningQuestions {
+		c.prov("learningQuestions", i, v.ID, v.Provenance)
+	}
 }
 
 func (c *checker) prov(array string, i int, element string, p *impact.Provenance) {
@@ -891,11 +898,14 @@ func (c *checker) selection() {
 // audiencesAndThemes checks the audiences and the story codebook.
 func (c *checker) audiencesAndThemes() {
 	for i, a := range c.doc.Audiences {
+		ap := "/audiences/" + strconv.Itoa(i)
 		if strings.TrimSpace(a.Name) == "" {
-			c.errorf("VAL-AUD-001", "/audiences/"+strconv.Itoa(i)+"/name", a.ID, "audience has no name")
+			c.errorf("VAL-AUD-001", ap+"/name", a.ID, "audience has no name")
 		}
+		c.duration(ap+"/frequency", a.ID, a.Frequency)
+		c.actor(ap+"/ownerActorId", a.ID, a.OwnerID)
 		for j, h := range a.Headline {
-			hp := "/audiences/" + strconv.Itoa(i) + "/headline/" + strconv.Itoa(j)
+			hp := ap + "/headline/" + strconv.Itoa(j)
 			if strings.TrimSpace(h.IndicatorID) == "" {
 				c.errorf("VAL-AUD-003", hp+"/indicatorId", a.ID, "headline entry names no indicator")
 				continue
@@ -917,6 +927,70 @@ func (c *checker) audiencesAndThemes() {
 			}
 		}
 		c.refs(p+"/outcomeIds", t.ID, t.OutcomeIDs, impact.ElementOutcome)
+	}
+}
+
+// learning checks the evaluation plan, the learning agenda, and the review
+// meetings.
+func (c *checker) learning() {
+	studied := []impact.ElementKind{
+		impact.ElementOutcome, impact.ElementLink, impact.ElementAssumption,
+		impact.ElementIntervention, impact.ElementIndicator,
+	}
+	for i, e := range c.doc.Evaluations {
+		p := "/evaluations/" + strconv.Itoa(i)
+		if strings.TrimSpace(e.Title) == "" {
+			c.errorf("VAL-EVL-001", p+"/title", e.ID, "evaluation has no title")
+		}
+		for j, q := range e.Questions {
+			if strings.TrimSpace(q) == "" {
+				c.errorf("VAL-EVL-002", p+"/questions/"+strconv.Itoa(j), e.ID, "evaluation question %d is empty", j)
+			}
+		}
+		enum(c, p+"/type", e.ID, e.Type)
+		enum(c, p+"/evaluator", e.ID, e.Evaluator)
+		enum(c, p+"/status", e.ID, e.Status)
+		c.actor(p+"/ownerActorId", e.ID, e.OwnerID)
+		c.dateRange(p, e.ID, e.StartDate, e.EndDate)
+		c.refs(p+"/relatedIds", e.ID, e.RelatedIDs, append(studied, impact.ElementQuestion)...)
+	}
+	for i, q := range c.doc.LearningQuestions {
+		p := "/learningQuestions/" + strconv.Itoa(i)
+		if strings.TrimSpace(q.Question) == "" {
+			c.errorf("VAL-LRN-001", p+"/question", q.ID, "learning question has no question")
+		}
+		if q.Status == impact.QuestionAnswered && strings.TrimSpace(q.Answer) == "" {
+			c.errorf("VAL-LRN-002", p+"/answer", q.ID, "learning question is marked answered but records no answer")
+		}
+		enum(c, p+"/status", q.ID, q.Status)
+		c.actor(p+"/ownerActorId", q.ID, q.OwnerID)
+		c.date(p+"/dueDate", q.ID, q.DueDate)
+		c.refs(p+"/relatedIds", q.ID, q.RelatedIDs, studied...)
+	}
+	for i, m := range c.doc.ReviewMeetings {
+		p := "/reviewMeetings/" + strconv.Itoa(i)
+		if strings.TrimSpace(m.Name) == "" {
+			c.errorf("VAL-MTG-001", p+"/name", m.ID, "review meeting has no name")
+		}
+		c.duration(p+"/frequency", m.ID, m.Frequency)
+		c.actor(p+"/ownerActorId", m.ID, m.OwnerID)
+		c.date(p+"/nextDate", m.ID, m.NextDate)
+		c.refs(p+"/questionIds", m.ID, m.QuestionIDs, impact.ElementQuestion)
+	}
+	for i, ind := range c.doc.Indicators {
+		if qa := ind.QualityAssurance; qa != nil {
+			c.date("/indicators/"+strconv.Itoa(i)+"/qualityAssurance/lastAssessed", ind.ID, qa.LastAssessed)
+		}
+	}
+}
+
+// dateRange checks a start and end date, and that the end is not before the
+// start.
+func (c *checker) dateRange(p, element, start, end string) {
+	c.date(p+"/startDate", element, start)
+	c.date(p+"/endDate", element, end)
+	if validDate(start) && validDate(end) && end < start {
+		c.errorf("VAL-DATE-002", p, element, "end %s is before start %s", end, start)
 	}
 }
 

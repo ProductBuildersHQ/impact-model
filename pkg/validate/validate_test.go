@@ -98,6 +98,26 @@ func TestDocumentIssues(t *testing.T) {
 		{"intervention ends before it starts", func(d *impact.Model) {
 			d.Interventions[0].StartDate, d.Interventions[0].EndDate = "2027-03-01", "2027-02-01"
 		}, "VAL-DATE-002", "/interventions/0", SeverityError},
+		{"evaluation without title", func(d *impact.Model) { d.Evaluations[0].Title = " " }, "VAL-EVL-001", "/evaluations/0/title", SeverityError},
+		{"evaluation with an empty question", func(d *impact.Model) { d.Evaluations[0].Questions = []string{""} }, "VAL-EVL-002", "/evaluations/0/questions/0", SeverityError},
+		{"evaluation type unknown", func(d *impact.Model) { d.Evaluations[0].Type = "summative" }, "VAL-ENUM-001", "/evaluations/0/type", SeverityError},
+		{"evaluation evaluator unknown", func(d *impact.Model) { d.Evaluations[0].Evaluator = "vendor" }, "VAL-ENUM-001", "/evaluations/0/evaluator", SeverityError},
+		{"evaluation ends before it starts", func(d *impact.Model) { d.Evaluations[0].EndDate = "2026-12-01" }, "VAL-DATE-002", "/evaluations/0", SeverityError},
+		{"evaluation related to an actor", func(d *impact.Model) { d.Evaluations[0].RelatedIDs = []string{"act-idp"} }, "VAL-REF-002", "/evaluations/0/relatedIds/0", SeverityError},
+		{"evaluation owner unknown", func(d *impact.Model) { d.Evaluations[0].OwnerID = "act-ghost" }, "VAL-REF-001", "/evaluations/0/ownerActorId", SeverityError},
+		{"learning question empty", func(d *impact.Model) { d.LearningQuestions[0].Question = "" }, "VAL-LRN-001", "/learningQuestions/0/question", SeverityError},
+		{"answered without an answer", func(d *impact.Model) { d.LearningQuestions[0].Answer = "" }, "VAL-LRN-002", "/learningQuestions/0/answer", SeverityError},
+		{"question status unknown", func(d *impact.Model) { d.LearningQuestions[0].Status = "done" }, "VAL-ENUM-001", "/learningQuestions/0/status", SeverityError},
+		{"question about another question", func(d *impact.Model) { d.LearningQuestions[0].RelatedIDs = []string{"lq-incentive"} }, "VAL-REF-002", "/learningQuestions/0/relatedIds/0", SeverityError},
+		{"question due date bad", func(d *impact.Model) { d.LearningQuestions[0].DueDate = "soon" }, "VAL-DATE-001", "/learningQuestions/0/dueDate", SeverityError},
+		{"review meeting without name", func(d *impact.Model) { d.ReviewMeetings[0].Name = "" }, "VAL-MTG-001", "/reviewMeetings/0/name", SeverityError},
+		{"review meeting frequency bad", func(d *impact.Model) { d.ReviewMeetings[0].Frequency = "quarterly" }, "VAL-DUR-001", "/reviewMeetings/0/frequency", SeverityError},
+		{"review meeting takes up an evaluation", func(d *impact.Model) { d.ReviewMeetings[0].QuestionIDs = []string{"eval-midterm"} }, "VAL-REF-002", "/reviewMeetings/0/questionIds/0", SeverityError},
+		{"quality assessed date bad", func(d *impact.Model) {
+			d.Indicators[0].QualityAssurance = &impact.QualityAssurance{LastAssessed: "2026"}
+		}, "VAL-DATE-001", "/indicators/0/qualityAssurance/lastAssessed", SeverityError},
+		{"audience frequency bad", func(d *impact.Model) { d.Audiences[0].Frequency = "often" }, "VAL-DUR-001", "/audiences/0/frequency", SeverityError},
+		{"audience owner unknown", func(d *impact.Model) { d.Audiences[0].OwnerID = "act-ghost" }, "VAL-REF-001", "/audiences/0/ownerActorId", SeverityError},
 		{"intervention targets non-outcome", func(d *impact.Model) { d.Interventions[0].Targets = []string{"asm-no-fork"} }, "VAL-REF-002", "/interventions/0/targets/0", SeverityError},
 		{"indicator measures unknown", func(d *impact.Model) { d.Indicators[0].Measures = "oc-missing" }, "VAL-REF-001", "/indicators/0/measures", SeverityError},
 		{"indicator measures link", func(d *impact.Model) { d.Indicators[0].Measures = "ln-spec-idp" }, "VAL-REF-002", "/indicators/0/measures", SeverityError},

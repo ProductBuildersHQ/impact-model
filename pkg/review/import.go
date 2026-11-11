@@ -163,7 +163,8 @@ var kindOf = map[impact.ElementKind]string{
 	impact.ElementIndicator: "indicator", impact.ElementActor: "actor", impact.ElementEvidence: "evidence",
 	impact.ElementExternalFactor: "factor", impact.ElementRisk: "risk", impact.ElementDecision: "decision",
 	impact.ElementPathway: "pathway", impact.ElementMetric: "metric", impact.ElementTerm: "term",
-	impact.ElementConsultation: "consultation",
+	impact.ElementConsultation: "consultation", impact.ElementEvaluation: "evaluation",
+	impact.ElementQuestion: "question", impact.ElementReviewMeeting: "review-meeting",
 }
 
 // propose turns one resolved row into a patch, or says why it cannot.
