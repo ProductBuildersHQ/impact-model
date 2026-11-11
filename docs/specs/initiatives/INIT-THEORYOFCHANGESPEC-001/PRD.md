@@ -608,6 +608,12 @@ named version, so that both teams work from the same agreed theory.
   the interventions an improvement would change, and each metric with the
   DMAIC phases it serves and what it still needs (baseline, numeric target,
   cadence, data source) before the DMAIC export can chart it.
+- **PRD-FR-517** The model MUST be able to hold its evaluation plan (each
+  evaluation's questions, type, method, evaluator, and dates), a standing
+  learning agenda (each question with the decision it informs, how and by
+  when it will be answered, and what it tests), the review meetings that take
+  the questions up, how each indicator's data is checked, and how often each
+  audience is reported to, so a MEL plan can be drawn from the model alone.
 - **PRD-FR-509** Indicators with a baseline and no target MUST report
   `baseline_only` rather than a failure, so a first measurement year is
   presented as establishing a baseline.
