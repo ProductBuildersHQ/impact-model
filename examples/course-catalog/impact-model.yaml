@@ -168,6 +168,7 @@ interventions:
     ownerActorId: act-commons
     status: in_progress
     resources: Two instructional designers and the learning platform
+    startDate: "2026-01-05"
   - id: int-learner-help
     title: Answer learner questions in a moderated forum
     description: Course staff and volunteer mentors answer questions in a forum the partner hosts.
@@ -177,6 +178,7 @@ interventions:
     ownerActorId: act-forum-host
     status: in_progress
     resources: Volunteer mentors and one forum moderator
+    startDate: "2026-01-05"
   - id: int-course-redesign
     title: Shorten modules and add practice checkpoints
     description: Split long modules into ten-minute lessons and add a checkpoint the learner can finish in one sitting.
@@ -190,6 +192,8 @@ interventions:
         ref: RMI-LANTERNWOOD-007
         url: https://example.org/lanternwood/roadmap/redesign
     resources: One instructional designer for two quarters
+    startDate: "2026-04-01"
+    endDate: "2026-09-30"
   - id: int-sms-reminders
     title: Text learners a reminder each week
     description: Considered and set aside because most learners did not want text messages.
@@ -475,6 +479,13 @@ pathways:
       guardrailIds:
         - ind-nps
       rationale: Completion is where learners are lost; satisfaction watches that shorter lessons do not make courses worse.
+    resources:
+      - name: Instructional design
+        allocation: 3 instructional designers
+      - name: Learning platform
+        allocation: Platform license and hosting
+      - name: Volunteer mentors
+        allocation: About 20 mentors, two hours a week each
     projections:
       - dmaic
     provenance:

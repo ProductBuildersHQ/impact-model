@@ -140,10 +140,10 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Precondition | An outcome that must hold for a higher outcome; incoming links to an outcome are its preconditions |
 | Precondition group | An explicit AND / OR / k-of-n combination of preconditions |
 | Causal link | A directed claim that one outcome (or intervention) contributes to another, with a rationale |
-| Intervention | Something the actors do to bring about outcomes (program, product, policy, advocacy, partnership…). The logic model shows interventions as activities, and the V2MOM projection shows them as a method's projects. An initiative is the organizational effort that delivers one, linked through `initiativeRefs` |
+| Intervention | Something the actors do to bring about outcomes (program, product, policy, advocacy, partnership…). The logic model shows interventions as activities, and the V2MOM projection shows them as a method's projects. An initiative is the organizational effort that delivers one, linked through `initiativeRefs`. `startDate` and `endDate` say when it runs |
 | Assumption | A condition believed to hold for a link or outcome to work, which the initiative does not bring about |
 | Indicator | Measurable evidence that an outcome, output, or assumption is changing |
 | Ceiling of accountability | The line above which outcomes are tracked but not owned |
-| Pathway | A named grouping of outcomes, interventions, and indicators, such as a program area |
+| Pathway | A named grouping of outcomes, interventions, and indicators, such as a program area, with the `resources` it commits |
 | Provenance basis | Whether an element was stated by a source, inferred, proposed as a hypothesis, confirmed, or rejected in review |
 | Observation set | A separate document of measured values, assumption assessments, stories, and learning reviews for a period |

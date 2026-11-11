@@ -10,12 +10,12 @@ elements, how they refer to each other, and the ways to change them.
 | **Outcome** | A change that should happen, at one of five levels: `output`, `short_term`, `medium_term`, `long_term`, or `impact` |
 | **Link** | A causal arrow from one outcome to another, with a rationale and a polarity. A feedback link marks a loop |
 | **Group** | Preconditions for an outcome: all of them, any of them, or at least *k* of *n*. Groups can nest |
-| **Intervention** | Something the program does to bring about outcomes |
+| **Intervention** | Something the program does to bring about outcomes, with the resources it uses and, optionally, when it runs (`startDate`, `endDate`) |
 | **Assumption** | Something that must hold for a link or outcome to work, with a criticality and a status |
 | **Indicator** | How an outcome, activity, or assumption is measured, with a baseline, targets, and a frequency. It can also be worked out from other indicators, such as a cost per outcome |
 | **Actor** | A person or organization who changes, delivers, or co-owns an outcome |
 | **Evidence** | A source that supports or contradicts an element, with a sensitivity |
-| **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by |
+| **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by and the resources it commits |
 | **Cause**, **effect**, **target group** | The problem tree: causes below the core problem (`context.problemStatement`), effects above it, each linked to others through `parents`, and the groups affected. Outcomes say which causes they address and which effects they relieve. A pathway can have its own tree: its `problemStatement`, and the causes and effects that name it in `pathwayIds`. See the [problem tree guide](problem-tree.md) |
 | **Audience**, **theme** | Who needs to see what reported, the short list of numbers each is told, and the codebook for coding stories |
 | **Metric**, **term** | A shared metric library, and a glossary of the words the impact model uses |
@@ -46,6 +46,12 @@ different things, and an impact model can make all of them.
   that reader. The board, funders, and members can each lead with different
   numbers drawn from the same indicators, and every audience sees the same figure
   for an indicator.
+- **Resources and timing** say where effort goes. A pathway's `resources` list
+  what it commits as a whole, each with a name and an allocation such as "2
+  squads" or "15% of the budget". An intervention's `resources` say what that
+  one piece of work uses, and its `startDate` and `endDate` say when it runs;
+  ongoing work has a start and no end. Lint warns when the dates fall outside
+  the time horizon (IMP-INT-008).
 - **Purpose** is `context.mission`, `context.vision`, and `context.values`:
   why the organization exists, what it works toward, and the principles that
   guide how it works, most important first. They are not part of the causal
@@ -60,6 +66,12 @@ impact-model pathway set impact-model.yaml pw-learning \
 impact-model audience set impact-model.yaml aud-board --set 'headline=[
   {"indicatorId":"ind-practice-maturity","label":"Leadership practice across members"},
   {"indicatorId":"ind-reach-network"}]'
+
+# What a pathway commits, and when an intervention runs
+impact-model pathway set impact-model.yaml pw-learning \
+  --set 'resources=[{"name":"Program staff","allocation":"3 staff"}]'
+impact-model intervention set impact-model.yaml int-training-series \
+  --start-date 2026-09-01 --end-date 2027-05-31
 
 # Why the organization exists
 impact-model patch impact-model.yaml - <<'EOF'

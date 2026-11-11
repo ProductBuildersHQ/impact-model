@@ -836,6 +836,7 @@ interventions:
     ownerActorId: act-network
     status: in_progress
     resources: Two program staff and meeting space donated by the county library system
+    startDate: "2026-02-01"
     priority:
       scores:
         - criterionId: crit-feasibility
@@ -873,6 +874,8 @@ interventions:
     ownerActorId: act-training-partner
     status: planned
     resources: Fee-for-service agreement with the training partner
+    startDate: "2026-09-01"
+    endDate: "2027-05-31"
     provenance:
       basis: inferred
       evidenceIds:
@@ -925,6 +928,8 @@ interventions:
     ownerActorId: act-network
     status: completed
     resources: Part of one staff role
+    startDate: "2026-02-01"
+    endDate: "2026-06-30"
     provenance:
       basis: confirmed
       decidedAt: "2026-02-10"
@@ -980,6 +985,8 @@ interventions:
       - Roundtable held twice a year
     ownerActorId: act-regional-funder
     status: planned
+    startDate: "2027-03-01"
+    endDate: "2027-03-31"
     provenance:
       basis: stated
       evidenceIds:
@@ -2741,6 +2748,13 @@ pathways:
       northStarId: ind-practice-maturity
       guardrailIds:
         - ind-retention-learning
+    resources:
+      - name: Program staff
+        allocation: 3 staff
+      - name: Volunteer coaches
+        allocation: A pool of about 15 coaches
+      - name: Training partner
+        allocation: Fee-for-service agreement
     provenance:
       basis: confirmed
       decidedAt: "2026-02-10"
@@ -2765,6 +2779,11 @@ pathways:
       northStarId: ind-overhead-share
       guardrailIds:
         - ind-retention-shared
+    resources:
+      - name: Shared-services coordinator
+        allocation: 1 staff
+      - name: Contracted bookkeepers
+        allocation: Paid from members' service fees
     provenance:
       basis: confirmed
       decidedAt: "2026-02-10"
@@ -2789,6 +2808,11 @@ pathways:
       northStarId: ind-joint-positions
       guardrailIds:
         - ind-reach-civic
+    resources:
+      - name: Policy and organizing staff
+        allocation: 1.5 staff
+      - name: Forum costs
+        allocation: Venue and childcare for four forums a year
     provenance:
       basis: confirmed
       decidedAt: "2026-03-05"

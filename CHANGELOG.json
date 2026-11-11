@@ -11,6 +11,9 @@
     "documentation": [
       {
         "description": "The README and the documentation home present the theory of change and the toolkit as tools for goals, strategy, and results in startups, companies, and nonprofits alike, not as program-evaluation tools"
+      },
+      {
+        "description": "The authoring guide and concepts cover pathway resources and intervention dates, and the course-catalog and intermediary examples carry them"
       }
     ],
     "added": [
@@ -25,6 +28,12 @@
       },
       {
         "description": "In Go: `problemtree.BuildFor`, `ReportFor`, and `ProblemStatement`; `report.DMAICPlan`, `DMAICUse`, and `DMAICNeeds`; and `impact.TimesPerYear`, which the DMAIC lint rules now share"
+      },
+      {
+        "description": "`pathway.resources`: what a pathway commits as a whole, each a `name` with an optional `allocation` and `description`. A resource needs a name (VAL-PTH-008)"
+      },
+      {
+        "description": "`intervention.startDate` and `intervention.endDate`: when an intervention runs. Both are dates, the end is not before the start (VAL-DATE-002), and lint warns when either falls outside the time horizon (IMP-INT-008). `intervention add` and `intervention set` take `--start-date` and `--end-date`"
       }
     ]
   },
