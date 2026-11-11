@@ -199,21 +199,31 @@ func measureStatus(s impact.State) string {
 }
 
 func projectFrom(in impact.Intervention, methodID string) v2mom.Project {
-	p := v2mom.Project{ID: in.ID, Name: in.Title, Description: in.Description, MethodID: methodID, Status: projectStatus(in.Status)}
-	for _, r := range in.InitiativeRefs {
-		if p.ExternalLinks == nil {
-			p.ExternalLinks = map[string]string{}
+	return v2mom.Project{
+		ID: in.ID, Name: in.Title, Description: in.Description, MethodID: methodID, Status: projectStatus(in.Status),
+		ExternalLinks: initiativeLinks(in.InitiativeRefs),
+	}
+}
+
+// initiativeLinks keys an intervention's initiative references by framework,
+// numbering repeats ("jira", "jira-2"); each is the URL, or the reference when
+// there is no URL. It is nil when there are none.
+func initiativeLinks(refs []impact.ExternalRef) map[string]string {
+	var links map[string]string
+	for _, r := range refs {
+		if links == nil {
+			links = map[string]string{}
 		}
 		key, link := string(r.Framework), r.URL
 		if link == "" {
 			link = r.Ref
 		}
-		for n := 2; p.ExternalLinks[key] != ""; n++ {
+		for n := 2; links[key] != ""; n++ {
 			key = string(r.Framework) + "-" + strconv.Itoa(n)
 		}
-		p.ExternalLinks[key] = link
+		links[key] = link
 	}
-	return p
+	return links
 }
 
 // projectStatus maps an intervention's status; a paused intervention has no
