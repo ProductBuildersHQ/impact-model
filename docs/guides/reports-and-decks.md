@@ -45,7 +45,7 @@ outcome-model report learning-review outcome-model.yaml -O obs-q3.yaml --period 
 
 | Kind | What it shows |
 |------|---------------|
-| `exec` | The executive summary: where things stand and what changed |
+| `exec` | The executive summary: where things stand, what each program steers by (its North Star, its one metric that matters, and any guardrail that needs attention), and what changed |
 | `results` | Indicator and outcome results, separating what the organization answers for from what it only monitors |
 | `assumptions` | The assumption register and what moved |
 | `interventions` | Each intervention and what it is delivering |
@@ -80,7 +80,7 @@ outcome-model deck exec outcome-model.yaml -O obs-q3.yaml --export exec.pdf
 | Deck | Contents |
 |------|----------|
 | `workshop` | The problem, the goal and ceiling, a diagram, a logic model table, and the logic model drawn as columns with arrows per pathway, key assumptions, metric definitions, the glossary, and what is still our reading. Needs no observations |
-| `exec` | Where we stand, and what changed since the last snapshot (`--prev`) |
+| `exec` | Where we stand, what each program steers by, and what changed since the last snapshot (`--prev`) |
 | `learning-review` | Behind plan, what we decided, and questions for discussion (`--period`) |
 | `story` | One audience's deck: what you told us you need, the numbers, what we ask of you (`--audience`) |
 

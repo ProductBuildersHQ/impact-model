@@ -29,7 +29,7 @@ outcome-model lint --list
 ```
 
 Validation says a document is well formed; lint says whether the outcome model is
-sound. There are 81 deterministic rules, each with an ID such as `OM-LOG-001`,
+sound. There are 83 deterministic rules, each with an ID such as `OM-LOG-001`,
 grouped by what they look at:
 
 | Area | What the rules look for |
@@ -41,7 +41,7 @@ grouped by what they look at:
 | Collection budget (`BUD`) | Selected indicators fit the staff-time and question budgets and say how data is collected |
 | Accountability and responsibility (`ACC`, `RSP`, `ACT`, `INT`) | A ceiling is declared; outcomes above it are not owned; shared and partner outcomes name who delivers them; every intervention has an owner |
 | The chain from activity to impact (`INT`) | Every intervention says what it produces, leads through the outcomes it targets to an impact, agrees with the links that name it, is measured, and states its resources |
-| North Stars and headline lists (`NSM`, `HLN`, `AUD`, `CTX`) | A North Star measures an outcome at or below the ceiling, has a baseline, a target, and a guardrail, and belongs to its own pathway; a headline list is short, reported to its audience, and producible; an audience told about outcomes is also told numbers; the outcome model states its mission or vision |
+| North Stars and headline lists (`NSM`, `HLN`, `AUD`, `CTX`) | A North Star measures an outcome at or below the ceiling, has a baseline, a target, and a guardrail, and belongs to its own pathway; a one metric that matters belongs to its own pathway and leads to the North Star; a headline list is short, reported to its audience, and producible; an audience told about outcomes is also told numbers; the outcome model states its mission or vision |
 | Provenance and evidence (`PRV`, `EVD`) | Every element says where it comes from; stated elements cite a source; an approved outcome model has no hypotheses among what the organization answers for |
 | Equity, causes, audiences (`EQU`, `CAU`, `AUD`) | Outcomes for target groups are measured by those groups; each deeper cause is addressed or set aside with a reason, and no cause contributes to a deeper one; every audience is the target of something reported |
 | Effects (`EFF`) | Each effect in the problem tree is relieved by an outcome or set aside with a reason, and effects are relieved by long-term or impact outcomes, not only earlier ones |

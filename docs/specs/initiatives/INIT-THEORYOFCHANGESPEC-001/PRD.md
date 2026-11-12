@@ -173,7 +173,9 @@ As an *executive*, I want a one-page summary of progress toward the long-term
 goal, so that I know where the theory is holding, where it is failing, and
 what decision is needed.
 
-- `outcome-model report exec` produces Markdown containing: overall status, pathway
+- `outcome-model report exec` produces Markdown containing: overall status, what
+  each program steers by (its North Star and its one metric that matters, with
+  status and progress, and any guardrail that needs attention), pathway
   status by level, top at-risk outcomes, broken or untested critical
   assumptions, changes since the previous period, and decisions requested.
 - Every status in the report traces to an indicator observation or an

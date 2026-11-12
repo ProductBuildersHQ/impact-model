@@ -150,7 +150,7 @@ How will we know, and what must we learn?
 |------------|---------|-------------|
 | **MEL plan** | How will we know it is working, when will we ask why, and what do we most need to learn? The outcomes as a results framework, interventions as activities, an indicator reference sheet per indicator, assumptions to monitor, and the evaluation plan, learning agenda, review meetings, and reporting schedule. See [the mapping](docs/guides/mel.md) | `export mel` |
 | **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
-| **Status** | How far has it come? Each indicator's progress against its targets by a date, each outcome's and pathway's state, links and assumptions, and a confidence score for each route to impact, all from observations. See [the guide](docs/guides/measurement.md) | `status`, `report exec`, `deck exec` |
+| **Status** | How far has it come? Each indicator's progress against its targets by a date, each outcome's and pathway's state, links and assumptions, and a confidence score for each route to impact, all from observations. The executive report and deck open with each program's North Star and one metric that matters. See [the guide](docs/guides/measurement.md) | `status`, `report exec`, `deck exec` |
 
 ### Improvement
 
@@ -353,7 +353,7 @@ Reading the second diagram:
 |---------|-----|
 | **A model you can trust** | Every element records whether a source *stated* it, you *inferred* it, it is still a *hypothesis*, or reviewers *confirmed* it. Reports show how much of the model is established and how much is our reading |
 | **Edits that cannot make it worse** | One validated, atomic patch engine behind the CLI, the SDK, and the AI tools. A change that adds structural errors is rejected, and `--dry-run` shows the result first |
-| **Quality you can check** | A schema, structural validation, 81 deterministic lint rules, and a rubric for human or AI judges, so "is this a good outcome model?" has an answer you can repeat |
+| **Quality you can check** | A schema, structural validation, 83 deterministic lint rules, and a rubric for human or AI judges, so "is this a good outcome model?" has an answer you can repeat |
 | **Progress you can measure** | Load a spreadsheet of numbers and see which indicators, outcomes, and pathways are on track, with assumptions that can cap a result and a confidence score for each route to impact |
 | **Artifacts for each audience** | Executive and funder reports, audience stories, slide decks, Word and PowerPoint files, CSV tables, and OKR, V2MOM, VSEM, OGSM, Balanced Scorecard, DMAIC, and MEL exports, all from one source and stamped with the version and hash |
 | **Review that comes back** | Send a packet or sheet to reviewers, import their answers as proposed changes you inspect, then record approval |

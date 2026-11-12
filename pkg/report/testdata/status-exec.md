@@ -7,6 +7,17 @@ As of 2026-09-30.
 - **Residents get timely, good-quality services from local nonprofits**: At risk (confidence 0.15)
 - **Residents' priorities shape local public decisions**: At risk (confidence 0.09)
 
+## What each program steers by
+
+| Program | Role | Indicator | Status | Progress |
+|---------|------|-----------|--------|----------|
+| Learning Exchange | North Star | Leadership practice maturity | On track | 0% (0% expected) |
+| Shared Services | North Star | Back-office share of operating budget | On track | 16% (25% expected) |
+| Civic Voice | North Star | Joint positions adopted by members | On track | 20% (30% expected) |
+| Civic Voice | Guardrail | Member organizations reached: Civic Voice | At risk | 18% (28% expected) |
+
+A guardrail appears only when it needs attention.
+
 ## Status by level
 
 | Level | Outcomes | Pathway status |
