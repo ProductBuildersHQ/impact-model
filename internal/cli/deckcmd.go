@@ -146,10 +146,18 @@ func exportDeck(ctx context.Context, md, target string) error {
 }
 
 func runTool(ctx context.Context, tool string, args ...string) error {
+	return runToolEnv(ctx, nil, tool, args...)
+}
+
+// runToolEnv runs tool like runTool, with env added to the environment.
+func runToolEnv(ctx context.Context, env []string, tool string, args ...string) error {
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	c := exec.CommandContext(ctx, tool, args...)
+	if len(env) > 0 {
+		c.Env = append(os.Environ(), env...)
+	}
 	var stderr bytes.Buffer
 	c.Stderr = &stderr
 	if err := c.Run(); err != nil {

@@ -11,6 +11,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/ProductBuildersHQ/outcome-model/internal/zipfix"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/document"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
@@ -242,7 +243,7 @@ func exportDocumentDOCX(cmd *cobra.Command, d *document.Document, d2 string) err
 	}
 	md := d.Markdown(document.MarkdownOptions{
 		Contents:    flagBool(cmd, "contents"),
-		DiagramPath: func(g *document.Diagram) string { return filepath.Join(dir, g.ID+".svg") },
+		DiagramPath: func(g *document.Diagram) string { return g.ID + ".svg" }, // found through --resource-path
 		ImageAttrs:  "width=100%",
 	})
 	src := filepath.Join(dir, "document.md")
@@ -258,7 +259,10 @@ func exportDocumentDOCX(cmd *cobra.Command, d *document.Document, d2 string) err
 		args = append(args, "--reference-doc", ref)
 	}
 	args = append(args, src)
-	if err := runTool(ctx, pandoc, args...); err != nil {
+	if err := runToolEnv(ctx, pandocEnv(cmd), pandoc, args...); err != nil {
+		return &ExitError{Code: ExitUsageErr, Err: err}
+	}
+	if err := zipfix.NormalizeFile(abs); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	return nil
