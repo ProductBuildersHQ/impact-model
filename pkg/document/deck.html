@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+:root {
+  --ink: #1d2433;
+  --muted: #5b6577;
+  --line: #d9dee7;
+  --paper: #ffffff;
+  --backdrop: #e9ecf1;
+  --accent: #2c4a8a;
+  --accent-soft: #e8eefb;
+  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--backdrop); color: var(--ink); font-family: var(--font); }
+.viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.stage { width: 1280px; height: 720px; flex: none; transform-origin: center center; }
+.deck-page { position: relative; width: 1280px; height: 720px; overflow: hidden; background: var(--paper); box-shadow: 0 2px 16px rgba(0,0,0,.12); }
+.deck-page-content { position: absolute; inset: 0; padding: 48px 64px 56px; display: flex; flex-direction: column; }
+.kicker { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
+h1.slide-title { font-size: 34px; line-height: 1.2; margin: 0 0 20px; }
+.body { flex: 1; min-height: 0; overflow: auto; font-size: 19px; line-height: 1.45; }
+.body p { margin: 0 0 12px; }
+.body ul, .body ol { margin: 0 0 12px; padding-left: 26px; }
+.body h1, .body h2, .body h3, .body h4, .body h5, .body h6 { font-size: 20px; margin: 14px 0 8px; }
+.body table { border-collapse: collapse; width: 100%; font-size: 15px; line-height: 1.35; margin: 0 0 12px; }
+.body th, .body td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.body th { background: var(--accent-soft); }
+.body code { font-size: .9em; background: #f2f4f8; padding: 1px 4px; border-radius: 3px; }
+.body pre { background: #f2f4f8; padding: 12px; overflow: auto; font-size: 13px; }
+.title-slide .deck-page-content { justify-content: center; background: linear-gradient(135deg, var(--accent) 0%, #1f3a7a 100%); color: #fff; }
+.title-slide h1 { font-size: 52px; line-height: 1.15; margin: 0 0 18px; max-width: 1000px; }
+.title-slide .subtitle { font-size: 24px; opacity: .9; max-width: 1000px; }
+.title-slide .stamp { margin-top: 36px; font-size: 16px; opacity: .75; }
+.section-slide .deck-page-content { justify-content: center; }
+.section-slide .number { font-size: 96px; font-weight: 700; color: var(--accent-soft); line-height: 1; }
+.section-slide h1 { font-size: 46px; margin: 8px 0 0; color: var(--accent); }
+.agenda ol { font-size: 26px; line-height: 1.7; padding-left: 36px; margin: 0; }
+.diagram { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.diagram svg { max-width: 100%; max-height: 100%; width: 100%; height: 100%; }
+.footer { position: absolute; left: 64px; right: 64px; bottom: 18px; display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.title-slide .footer { color: rgba(255,255,255,.7); }
+.progress { position: fixed; left: 0; bottom: 0; height: 4px; background: var(--accent); transition: width .2s; }
+.nav { position: fixed; right: 16px; top: 12px; display: flex; gap: 8px; opacity: .35; transition: opacity .2s; }
+.nav:hover { opacity: 1; }
+.nav button { font: inherit; font-size: 14px; padding: 6px 12px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 6px; cursor: pointer; }
+.print .deck-page { box-shadow: none; break-after: page; }
+.print .deck-page:last-child { break-after: auto; }
+@page { size: 1280px 720px; margin: 0; }
+@media print { .nav, .progress { display: none; } html, body { background: #fff; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="deck-data" type="application/json">{{DATA}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script>
+(function () {
+  var h = React.createElement;
+  var deck = JSON.parse(document.getElementById("deck-data").textContent);
+  var slides = deck.slides;
+  var W = 1280, H = 720;
+  var printing = new URLSearchParams(window.location.search).has("print");
+  window.__deckMeta = { width: W, height: H, pageCount: slides.length };
+
+  function html(s) { return { __html: s }; }
+
+  function Footer(props) {
+    return h("div", { className: "footer" },
+      h("span", null, deck.title),
+      h("span", null, (props.index + 1) + " / " + slides.length));
+  }
+
+  function Slide(props) {
+    var s = props.slide, kids;
+    var cls = "deck-page";
+    if (s.kind === "title") {
+      cls += " title-slide";
+      kids = [
+        h("h1", { key: "t" }, s.title),
+        s.subtitle ? h("div", { key: "s", className: "subtitle" }, s.subtitle) : null,
+        s.kicker ? h("div", { key: "k", className: "stamp" }, s.kicker) : null
+      ];
+    } else if (s.kind === "section") {
+      cls += " section-slide";
+      kids = [
+        h("div", { key: "n", className: "number" }, String(s.number).padStart(2, "0")),
+        h("h1", { key: "t" }, s.title)
+      ];
+    } else if (s.kind === "agenda") {
+      cls += " agenda";
+      kids = [
+        h("h1", { key: "t", className: "slide-title" }, s.title),
+        h("ol", { key: "l" }, s.items.map(function (it, i) { return h("li", { key: i }, it); }))
+      ];
+    } else if (s.kind === "diagram") {
+      kids = [
+        s.kicker ? h("p", { key: "k", className: "kicker" }, s.kicker) : null,
+        h("h1", { key: "t", className: "slide-title" }, s.title),
+        h("div", { key: "d", className: "diagram", dangerouslySetInnerHTML: html(s.svg) })
+      ];
+    } else {
+      kids = [
+        s.kicker ? h("p", { key: "k", className: "kicker" }, s.kicker) : null,
+        h("h1", { key: "t", className: "slide-title" }, s.title),
+        h("div", { key: "b", className: "body", dangerouslySetInnerHTML: html(s.html) })
+      ];
+    }
+    return h("div", { className: cls, "data-deck-page": props.index + 1 },
+      h("div", { className: "deck-page-content" }, kids),
+      h(Footer, { index: props.index }));
+  }
+
+  function fromHash() {
+    var n = parseInt(window.location.hash.replace("#", ""), 10);
+    return isNaN(n) ? 0 : Math.min(Math.max(n - 1, 0), slides.length - 1);
+  }
+
+  function Presenter() {
+    var st = React.useState(fromHash), index = st[0], setIndex = st[1];
+    var sc = React.useState(1), scale = sc[0], setScale = sc[1];
+
+    function go(i) {
+      var next = Math.min(Math.max(i, 0), slides.length - 1);
+      setIndex(next);
+      if (window.location.hash !== "#" + (next + 1)) {
+        window.history.replaceState(null, "", "#" + (next + 1));
+      }
+    }
+
+    React.useEffect(function () {
+      function fit() {
+        setScale(Math.min(window.innerWidth / W, window.innerHeight / H) * 0.96);
+      }
+      function onKey(e) {
+        if (["ArrowRight", "PageDown", " ", "Enter"].indexOf(e.key) >= 0) { e.preventDefault(); go(index + 1); }
+        else if (["ArrowLeft", "PageUp", "Backspace"].indexOf(e.key) >= 0) { e.preventDefault(); go(index - 1); }
+        else if (e.key === "Home") { go(0); }
+        else if (e.key === "End") { go(slides.length - 1); }
+      }
+      function onHash() { setIndex(fromHash()); }
+      fit();
+      window.addEventListener("resize", fit);
+      window.addEventListener("keydown", onKey);
+      window.addEventListener("hashchange", onHash);
+      return function () {
+        window.removeEventListener("resize", fit);
+        window.removeEventListener("keydown", onKey);
+        window.removeEventListener("hashchange", onHash);
+      };
+    }, [index]);
+
+    return h(React.Fragment, null,
+      h("div", { className: "viewport" },
+        h("div", { className: "stage", style: { transform: "scale(" + scale + ")" } },
+          h(Slide, { slide: slides[index], index: index }))),
+      h("div", { className: "progress", style: { width: ((index + 1) / slides.length * 100) + "%" } }),
+      h("div", { className: "nav" },
+        h("button", { onClick: function () { go(index - 1); }, "aria-label": "Previous slide" }, "←"),
+        h("button", { onClick: function () { go(index + 1); }, "aria-label": "Next slide" }, "→")));
+  }
+
+  function PrintView() {
+    React.useEffect(function () {
+      var fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+      fonts.then(function () { window.__deckReady = true; });
+    }, []);
+    return h("div", { className: "print" },
+      slides.map(function (s, i) { return h(Slide, { key: i, slide: s, index: i }); }));
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(h(printing ? PrintView : Presenter));
+})();
+</script>
+</body>
+</html>
