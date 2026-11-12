@@ -25,6 +25,14 @@ Diagrams are rendered with the [`d2`](https://d2lang.com) tool, and Word
 documents with [Pandoc](https://pandoc.org). If a tool that is needed is not
 installed, nothing is written and the exit code is 3.
 
+A diagram is scaled to fit the page or slide, so a wide one shrinks and its
+labels with it. The theory of change is drawn for that: a row per stage with
+the impact on top, labels wrapped to about 26 characters, and at most three
+boxes side by side. A pathway's theory of change then reads at 9 points or
+more on a portrait Word page. The whole model's diagram, with every pathway
+together, is a map; read the detail in each pathway's. To check a rendered
+diagram, run `d2vision legibility diagram.svg`.
+
 ## Choosing sections
 
 Name a profile with `--profile`, or list sections with `--sections`, in the
@@ -41,7 +49,7 @@ order they should appear. The two cannot be combined. Without either, the
 
 | Section | What it holds |
 |---------|---------------|
-| `theory-of-change` | The theory of change on one page, as a diagram, then the narrative: causes, priorities, assumptions and risks, who does what, and how it is monitored |
+| `theory-of-change` | The theory of change on one page, then each pathway's, as diagrams drawn bottom-up from activities to impact; then the narrative: causes, priorities, assumptions and risks, who does what, and how it is monitored |
 | `problem-trees` | The whole model's problem tree, then each pathway's own |
 | `logic-models` | For each pathway, the layered logic model diagram and its table |
 | `outcome-map` | Outcomes by level, for each pathway |
@@ -84,6 +92,9 @@ The `.html` output is one file that opens in any browser. It starts with a
 title slide and a contents slide, and then gives each section a divider
 slide, each heading a slide of its own, and each diagram a full slide. Long
 text and long tables run on to further slides, and a table's header repeats.
+A diagram whose labels would be too small to read once fitted to the slide is
+shown at a readable width instead, and the slide scrolls; the print view
+fits it to the page.
 
 - **Moving around:** the arrow keys, Page Up and Page Down, Space, Home, and
   End. The address keeps the slide number (`deck.html#12`), so a link opens on
