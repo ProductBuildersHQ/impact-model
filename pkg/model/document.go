@@ -133,6 +133,11 @@ type Context struct {
 	// objective.
 	Objective *Objective `json:"objective,omitempty"`
 	Narrative string     `json:"narrative,omitempty"`
+	// Background introduces the organization to a reader new to it: who it
+	// is, why it began, whom it serves, and what it has done. Paragraphs are
+	// separated by a blank line. A document opens with it; without it, the
+	// document uses the description of the perspective's actor.
+	Background string `json:"background,omitempty"`
 }
 
 // Objective is the one thing the model sets out to achieve. It names the

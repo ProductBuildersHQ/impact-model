@@ -619,6 +619,9 @@
         },
         "narrative": {
           "type": "string"
+        },
+        "background": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
