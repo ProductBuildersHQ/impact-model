@@ -9,42 +9,49 @@ flowchart LR
   classDef medium_term fill:#dfe8f6,stroke:#3f5fa8
   classDef outputs fill:#ece4fb,stroke:#7e57c2
   classDef short_term fill:#e1f3fd,stroke:#2d9cdb
-  classDef stage fill:transparent,stroke-width:0px
+  classDef stage fill:#f4f6fa,stroke:#dde3ec,stroke-width:1px
   subgraph n_inputs["Inputs"]
-    n_inputs__input1["Two program staff and meeting space donated by the county library system"]
-    n_inputs__input2["One program staff member and a pool of volunteer coaches"]
-    n_inputs__input3["Fee-for-service agreement with the training partner"]
+    direction TB
+    n_inputs__input1["Two program staff<br/>and meeting space<br/>donated by the<br/>county library<br/>system"]
+    n_inputs__input2["One program staff<br/>member and a pool of<br/>volunteer coaches"]
+    n_inputs__input3["Fee-for-service<br/>agreement with the<br/>training partner"]
   end
   subgraph n_activities["Activities"]
-    n_activities_int_peer_cohorts["Run mixed-size peer-learning cohorts"]
-    n_activities_int_leader_coaching["Offer one-to-one leadership coaching"]
-    n_activities_int_training_series["Deliver a management skills training series (inferred)"]
+    direction TB
+    n_activities_int_peer_cohorts["Run mixed-size<br/>peer-learning<br/>cohorts"]
+    n_activities_int_leader_coaching["Offer one-to-one<br/>leadership coaching"]
+    n_activities_int_training_series["Deliver a management<br/>skills training<br/>series (inferred)"]
   end
   subgraph n_outputs["Outputs"]
+    direction TB
     n_outputs__output1["Cohort sessions held"]
-    n_outputs__output2["Peer-pairing introductions"]
-    n_outputs_oc_out_cohorts["Peer-learning cohorts and coaching sessions delivered"]
-    n_outputs__output3["Coaching hours delivered"]
+    n_outputs__output2["Peer-pairing<br/>introductions"]
+    n_outputs_oc_out_cohorts["Peer-learning<br/>cohorts and coaching<br/>sessions delivered"]
+    n_outputs__output3["Coaching hours<br/>delivered"]
     n_outputs__output4["Workshops delivered"]
-    n_outputs__output5["Participant materials"]
+    n_outputs__output5["Participant<br/>materials"]
   end
   subgraph n_short_term["Short-term outcomes"]
-    n_short_term_oc_st_peer_ties["Members form peer relationships across sizes (inferred)"]
-    n_short_term_oc_st_leader_skills["Leaders gain coaching-based skills and confidence"]
+    direction TB
+    n_short_term_oc_st_peer_ties["Members form peer<br/>relationships across<br/>sizes (inferred)"]
+    n_short_term_oc_st_leader_skills["Leaders gain<br/>coaching-based<br/>skills and<br/>confidence"]
   end
   subgraph n_medium_term["Medium-term outcomes"]
-    n_medium_term_oc_im_peer_network["Members turn to each other for advice and joint work (inferred)"]
-    n_medium_term_oc_im_joint_positions["Members adopt and share joint positions on local issues (hypothesis)"]
-    n_medium_term_oc_im_leaders_practice["Member leaders apply improved management practices"]
+    direction TB
+    n_medium_term_oc_im_peer_network["Members turn to each<br/>other for advice and<br/>joint work<br/>(inferred)"]
+    n_medium_term_oc_im_joint_positions["Members adopt and<br/>share joint<br/>positions on local<br/>issues (hypothesis)"]
+    n_medium_term_oc_im_leaders_practice["Member leaders apply<br/>improved management<br/>practices"]
   end
   subgraph n_long_term["Long-term outcomes"]
-    n_long_term_oc_lt_collab["Members routinely collaborate instead of duplicating effort"]
-    n_long_term_oc_lt_collective_voice["Local government and funders consult members through a coordinated channel (hypothesis)"]
-    n_long_term_oc_lt_capable_members["Member nonprofits run strong, well-managed organizations"]
+    direction TB
+    n_long_term_oc_lt_collab["Members routinely<br/>collaborate instead<br/>of duplicating<br/>effort"]
+    n_long_term_oc_lt_collective_voice["Local government and<br/>funders consult<br/>members through a<br/>coordinated channel<br/>(hypothesis)"]
+    n_long_term_oc_lt_capable_members["Member nonprofits<br/>run strong,<br/>well-managed<br/>organizations"]
   end
   subgraph n_impact["Impact"]
-    n_impact_oc_resident_voice["Residents' priorities shape local public decisions (hypothesis)"]
-    n_impact_oc_resident_access["Residents get timely, good-quality services from local nonprofits (inferred)"]
+    direction TB
+    n_impact_oc_resident_voice["Residents'<br/>priorities shape<br/>local public<br/>decisions<br/>(hypothesis)"]
+    n_impact_oc_resident_access["Residents get<br/>timely, good-quality<br/>services from local<br/>nonprofits<br/>(inferred)"]
   end
   n_inputs__input1 --> n_activities_int_peer_cohorts
   n_activities_int_peer_cohorts --> n_outputs__output1
@@ -120,41 +127,48 @@ flowchart LR
   classDef medium_term fill:#dfe8f6,stroke:#3f5fa8
   classDef outputs fill:#ece4fb,stroke:#7e57c2
   classDef short_term fill:#e1f3fd,stroke:#2d9cdb
-  classDef stage fill:transparent,stroke-width:0px
+  classDef stage fill:#f4f6fa,stroke:#dde3ec,stroke-width:1px
   subgraph n_inputs["Inputs"]
-    n_inputs__input1["One shared-services coordinator and contracted bookkeepers"]
-    n_inputs__input2["Part of one staff role"]
+    direction TB
+    n_inputs__input1["One shared-services<br/>coordinator and<br/>contracted<br/>bookkeepers"]
+    n_inputs__input2["Part of one staff<br/>role"]
   end
   subgraph n_activities["Activities"]
-    n_activities_int_pooled_backoffice["Run pooled bookkeeping and payroll help"]
-    n_activities_int_group_purchasing["Negotiate group purchasing agreements"]
-    n_activities_int_grants_calendar["Maintain a shared grants calendar"]
+    direction TB
+    n_activities_int_pooled_backoffice["Run pooled<br/>bookkeeping and<br/>payroll help"]
+    n_activities_int_group_purchasing["Negotiate group<br/>purchasing<br/>agreements"]
+    n_activities_int_grants_calendar["Maintain a shared<br/>grants calendar"]
   end
   subgraph n_outputs["Outputs"]
-    n_outputs__output1["Member accounts onboarded"]
+    direction TB
+    n_outputs__output1["Member accounts<br/>onboarded"]
     n_outputs__output2["Shared service desk"]
-    n_outputs_oc_out_services["Pooled service contracts and group purchasing deals in place"]
-    n_outputs__output3["Vendor agreements signed"]
-    n_outputs_oc_out_calendar["Shared grants calendar published and kept current (inferred)"]
-    n_outputs__output4["Monthly calendar update"]
+    n_outputs_oc_out_services["Pooled service<br/>contracts and group<br/>purchasing deals in<br/>place"]
+    n_outputs__output3["Vendor agreements<br/>signed"]
+    n_outputs_oc_out_calendar["Shared grants<br/>calendar published<br/>and kept current<br/>(inferred)"]
+    n_outputs__output4["Monthly calendar<br/>update"]
     n_outputs__output5["Deadline reminders"]
   end
   subgraph n_short_term["Short-term outcomes"]
-    n_short_term_oc_st_pooled_use["Members use pooled back-office services (inferred)"]
-    n_short_term_oc_st_calendar_use["Members consult the shared grants calendar when planning (hypothesis)"]
+    direction TB
+    n_short_term_oc_st_pooled_use["Members use pooled<br/>back-office services<br/>(inferred)"]
+    n_short_term_oc_st_calendar_use["Members consult the<br/>shared grants<br/>calendar when<br/>planning<br/>(hypothesis)"]
   end
   subgraph n_medium_term["Medium-term outcomes"]
-    n_medium_term_oc_im_lower_overhead["Members spend less staff time and money on back-office work"]
-    n_medium_term_oc_im_grant_pipeline["Members apply for more grants that fit their mission (inferred)"]
+    direction TB
+    n_medium_term_oc_im_lower_overhead["Members spend less<br/>staff time and money<br/>on back-office work"]
+    n_medium_term_oc_im_grant_pipeline["Members apply for<br/>more grants that fit<br/>their mission<br/>(inferred)"]
   end
   subgraph n_long_term["Long-term outcomes"]
-    n_long_term_oc_lt_capable_members["Member nonprofits run strong, well-managed organizations"]
-    n_long_term_oc_lt_collab["Members routinely collaborate instead of duplicating effort"]
-    n_long_term_oc_lt_sustainable["Members have diversified, stable funding (inferred)"]
+    direction TB
+    n_long_term_oc_lt_capable_members["Member nonprofits<br/>run strong,<br/>well-managed<br/>organizations"]
+    n_long_term_oc_lt_collab["Members routinely<br/>collaborate instead<br/>of duplicating<br/>effort"]
+    n_long_term_oc_lt_sustainable["Members have<br/>diversified, stable<br/>funding (inferred)"]
   end
   subgraph n_impact["Impact"]
-    n_impact_oc_resident_access["Residents get timely, good-quality services from local nonprofits (inferred)"]
-    n_impact_oc_resident_voice["Residents' priorities shape local public decisions (hypothesis)"]
+    direction TB
+    n_impact_oc_resident_access["Residents get<br/>timely, good-quality<br/>services from local<br/>nonprofits<br/>(inferred)"]
+    n_impact_oc_resident_voice["Residents'<br/>priorities shape<br/>local public<br/>decisions<br/>(hypothesis)"]
   end
   n_inputs__input1 --> n_activities_int_pooled_backoffice
   n_activities_int_pooled_backoffice --> n_outputs__output1
@@ -222,37 +236,43 @@ flowchart LR
   classDef medium_term fill:#dfe8f6,stroke:#3f5fa8
   classDef outputs fill:#ece4fb,stroke:#7e57c2
   classDef short_term fill:#e1f3fd,stroke:#2d9cdb
-  classDef stage fill:transparent,stroke-width:0px
+  classDef stage fill:#f4f6fa,stroke:#dde3ec,stroke-width:1px
   subgraph n_activities["Activities"]
-    n_activities_int_policy_briefings["Publish plain-language policy briefings (hypothesis)"]
-    n_activities_int_joint_forums["Convene member forums to draft joint positions"]
-    n_activities_int_liaison_channel["Set up a standing liaison channel with the county planning office"]
-    n_activities_int_funder_roundtable["Host a funder and member roundtable"]
+    direction TB
+    n_activities_int_policy_briefings["Publish<br/>plain-language<br/>policy briefings<br/>(hypothesis)"]
+    n_activities_int_joint_forums["Convene member<br/>forums to draft<br/>joint positions"]
+    n_activities_int_liaison_channel["Set up a standing<br/>liaison channel with<br/>the county planning<br/>office"]
+    n_activities_int_funder_roundtable["Host a funder and<br/>member roundtable"]
   end
   subgraph n_outputs["Outputs"]
-    n_outputs_oc_out_briefings["Policy briefings and joint-position drafts produced (hypothesis)"]
+    direction TB
+    n_outputs_oc_out_briefings["Policy briefings and<br/>joint-position<br/>drafts produced<br/>(hypothesis)"]
     n_outputs__output1["Briefings published"]
     n_outputs__output2["Forums held"]
-    n_outputs__output3["Joint position drafts"]
-    n_outputs__output4["Quarterly liaison meeting"]
-    n_outputs__output5["Named contacts on both sides"]
-    n_outputs__output6["Roundtable held twice a year"]
+    n_outputs__output3["Joint position<br/>drafts"]
+    n_outputs__output4["Quarterly liaison<br/>meeting"]
+    n_outputs__output5["Named contacts on<br/>both sides"]
+    n_outputs__output6["Roundtable held<br/>twice a year"]
   end
   subgraph n_short_term["Short-term outcomes"]
-    n_short_term_oc_st_policy_know["Members understand local policy and funding processes (inferred)"]
-    n_short_term_oc_st_channel["A standing channel exists between members and the county planning office"]
+    direction TB
+    n_short_term_oc_st_policy_know["Members understand<br/>local policy and<br/>funding processes<br/>(inferred)"]
+    n_short_term_oc_st_channel["A standing channel<br/>exists between<br/>members and the<br/>county planning<br/>office"]
   end
   subgraph n_medium_term["Medium-term outcomes"]
-    n_medium_term_oc_im_joint_positions["Members adopt and share joint positions on local issues (hypothesis)"]
-    n_medium_term_oc_im_officials_engage["Local officials and funders engage members in planning"]
+    direction TB
+    n_medium_term_oc_im_joint_positions["Members adopt and<br/>share joint<br/>positions on local<br/>issues (hypothesis)"]
+    n_medium_term_oc_im_officials_engage["Local officials and<br/>funders engage<br/>members in planning"]
   end
   subgraph n_long_term["Long-term outcomes"]
-    n_long_term_oc_lt_collab["Members routinely collaborate instead of duplicating effort"]
-    n_long_term_oc_lt_collective_voice["Local government and funders consult members through a coordinated channel (hypothesis)"]
+    direction TB
+    n_long_term_oc_lt_collab["Members routinely<br/>collaborate instead<br/>of duplicating<br/>effort"]
+    n_long_term_oc_lt_collective_voice["Local government and<br/>funders consult<br/>members through a<br/>coordinated channel<br/>(hypothesis)"]
   end
   subgraph n_impact["Impact"]
-    n_impact_oc_resident_access["Residents get timely, good-quality services from local nonprofits (inferred)"]
-    n_impact_oc_resident_voice["Residents' priorities shape local public decisions (hypothesis)"]
+    direction TB
+    n_impact_oc_resident_access["Residents get<br/>timely, good-quality<br/>services from local<br/>nonprofits<br/>(inferred)"]
+    n_impact_oc_resident_voice["Residents'<br/>priorities shape<br/>local public<br/>decisions<br/>(hypothesis)"]
   end
   n_activities_int_policy_briefings --> n_outputs__output1
   n_activities_int_policy_briefings --> n_outputs_oc_out_briefings

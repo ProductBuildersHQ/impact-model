@@ -194,31 +194,38 @@ flowchart LR
   classDef medium_term fill:#dfe8f6,stroke:#3f5fa8
   classDef outputs fill:#ece4fb,stroke:#7e57c2
   classDef short_term fill:#e1f3fd,stroke:#2d9cdb
-  classDef stage fill:transparent,stroke-width:0px
+  classDef stage fill:#f4f6fa,stroke:#dde3ec,stroke-width:1px
   subgraph n_inputs["Inputs"]
-    n_inputs__input1["Two engineers and an event budget"]
+    direction TB
+    n_inputs__input1["Two engineers and an event<br/>budget"]
   end
   subgraph n_activities["Activities"]
-    n_activities_int_interop["Run interoperability events"]
-    n_activities_int_reference["Publish reference implementations"]
+    direction TB
+    n_activities_int_interop["Run interoperability<br/>events"]
+    n_activities_int_reference["Publish reference<br/>implementations"]
   end
   subgraph n_outputs["Outputs"]
+    direction TB
     n_outputs__output1["Interop test suite"]
     n_outputs__output2["Event reports"]
-    n_outputs_oc_reference_impl["Open reference implementations are available"]
+    n_outputs_oc_reference_impl["Open reference<br/>implementations are<br/>available"]
   end
   subgraph n_short_term["Short-term outcomes"]
-    n_short_term_oc_spec_stable["A stable, interoperable specification exists"]
+    direction TB
+    n_short_term_oc_spec_stable["A stable, interoperable<br/>specification exists"]
   end
   subgraph n_medium_term["Medium-term outcomes"]
-    n_medium_term_oc_idp_support["Major identity providers support the standard (inferred)"]
-    n_medium_term_oc_platform_support["Agent platforms support the standard"]
+    direction TB
+    n_medium_term_oc_idp_support["Major identity providers<br/>support the standard<br/>(inferred)"]
+    n_medium_term_oc_platform_support["Agent platforms support<br/>the standard"]
   end
   subgraph n_long_term["Long-term outcomes"]
-    n_long_term_oc_enterprise_require["Enterprises require the standard in procurement (hypothesis)"]
+    direction TB
+    n_long_term_oc_enterprise_require["Enterprises require the<br/>standard in procurement<br/>(hypothesis)"]
   end
   subgraph n_impact["Impact"]
-    n_impact_oc_safer_agents["Agent access across the market is scoped and auditable"]
+    direction TB
+    n_impact_oc_safer_agents["Agent access across the<br/>market is scoped and<br/>auditable"]
   end
   n_inputs__input1 --> n_activities_int_interop
   n_activities_int_interop --> n_outputs__output1

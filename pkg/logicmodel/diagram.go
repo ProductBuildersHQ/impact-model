@@ -7,15 +7,33 @@ import (
 	"github.com/grokify/d2vision/legibility"
 )
 
-// The look of the diagram. A stage heading has no box of its own, and each
-// stage's items share a color.
+// The diagram is drawn bottom-up, a band per stage with the impact on top, so
+// it suits a portrait page. ELK lays it out and routes every arrow around the
+// boxes. Boxes are one width, so they line up in columns, and labels are
+// wrapped to suit it. The sizes keep a pathway's labels readable on a portrait
+// Word page, as checked with d2vision's legibility analysis.
 const (
 	stageClass = "stage"
-	// columnGap leaves room between columns for the arrows.
-	columnGap = 90
-	// itemGap spaces the items in a column.
-	itemGap = 24
+	// LayoutEngine is the D2 layout engine the diagram is drawn with.
+	LayoutEngine = "elk"
+	// boxFont is the label size in pixels; a stage heading is larger.
+	boxFont = 24
 )
+
+// boxSize is the width of every box, in pixels, and the line length its
+// labels are wrapped to, in characters.
+type boxSize struct{ width, wrap int }
+
+// boxSizes are chosen by the most boxes in one stage, which sit side by side:
+// a wide stage gets narrower boxes so the diagram stays narrow enough to read.
+var boxSizes = []struct {
+	upTo int
+	size boxSize
+}{
+	{3, boxSize{width: 330, wrap: 26}},
+	{4, boxSize{width: 290, wrap: 22}},
+	{0, boxSize{width: 270, wrap: 20}}, // more than four
+}
 
 var stageStyle = map[StageID]generate.StyleSpec{
 	StageInputs:     {Fill: "#fff1dc", Stroke: "#e08a1e"},
@@ -27,89 +45,59 @@ var stageStyle = map[StageID]generate.StyleSpec{
 	StageImpact:     {Fill: "#c5cfe8", Stroke: "#1f3a7a"},
 }
 
-// Spec describes the diagram for d2vision: one container for each stage, laid
-// out as a row of columns, a node for each item, and the edges between them.
-// D2 and Mermaid are both written from it.
-func (g *Graph) Spec() *generate.DiagramSpec {
-	round := generate.IntPtr(12)
-	spec := &generate.DiagramSpec{
-		Direction:     "right",
-		GridColumns:   len(g.Stages),
-		HorizontalGap: columnGap,
-		Classes: map[string]generate.StyleSpec{
-			stageClass: {Fill: "transparent", StrokeWidth: generate.IntPtr(0), FontSize: generate.IntPtr(22), Bold: generate.BoolPtr(true)},
-		},
-	}
-	for _, st := range g.Stages {
-		style := stageStyle[st.Stage]
-		style.BorderRadius = round
-		spec.Classes[string(st.Stage)] = style
-	}
-	for _, st := range g.Stages {
-		c := generate.ContainerSpec{
-			ID:          string(st.Stage),
-			Label:       st.Stage.Name(),
-			Class:       stageClass,
-			GridColumns: 1,
-			VerticalGap: itemGap,
-		}
-		for _, n := range st.Nodes {
-			c.Nodes = append(c.Nodes, generate.NodeSpec{ID: diagramID(n.ID), Label: n.Label, Class: string(st.Stage)})
-		}
-		spec.Containers = append(spec.Containers, c)
-	}
-	spec.Edges = g.edgeSpecs()
-	return spec
+// stageBand is the light band behind each stage, so it is clear which stage a
+// box belongs to when arrows within a stage stack its boxes.
+var stageBand = generate.StyleSpec{
+	Fill:        "#f4f6fa",
+	Stroke:      "#dde3ec",
+	StrokeWidth: generate.IntPtr(1),
+	FontSize:    generate.IntPtr(boxFont + 4),
+	Bold:        generate.BoolPtr(true),
 }
 
-// The theory of change is drawn bottom-up, a row per stage with the impact on
-// top, so it suits a portrait page. Labels are wrapped and a long stage takes
-// more than one row of boxes, which keeps the diagram narrow enough for its
-// labels to read at 9 points or more on a portrait Word page, as checked with
-// d2vision's legibility analysis.
-const (
-	// theoryWrap is the most characters on a line of a label.
-	theoryWrap = 26
-	// theoryFont is the label size in pixels; a stage heading is larger.
-	theoryFont = 24
-	// theoryPerRow is the most boxes side by side in a stage.
-	theoryPerRow = 3
-	// theoryGap spaces the rows, and the boxes within a stage.
-	theoryGap = 24
-)
+// sizeFor picks the box size for the widest stage of the graph.
+func (g *Graph) sizeFor() boxSize {
+	widest := 0
+	for _, st := range g.Stages {
+		widest = max(widest, len(st.Nodes))
+	}
+	for _, s := range boxSizes {
+		if s.upTo == 0 || widest <= s.upTo {
+			return s.size
+		}
+	}
+	return boxSizes[len(boxSizes)-1].size
+}
 
-// TheorySpec describes the theory of change for d2vision: a row for each
-// stage, from activities at the bottom to impact at the top, with wrapped
-// labels. D2 and Mermaid are both written from it.
-func (g *Graph) TheorySpec() *generate.DiagramSpec {
-	round := generate.IntPtr(12)
+// Spec describes the diagram for d2vision: a band for each stage, from the
+// first stage at the bottom to impact on top, a box for each item, and the
+// arrows between them, drawn with ELK. D2 and Mermaid are both written from
+// it.
+func (g *Graph) Spec() *generate.DiagramSpec {
+	size := g.sizeFor()
 	spec := &generate.DiagramSpec{
-		GridRows:    len(g.Stages),
-		VerticalGap: theoryGap,
-		Classes: map[string]generate.StyleSpec{
-			stageClass: {Fill: "transparent", StrokeWidth: generate.IntPtr(0), FontSize: generate.IntPtr(theoryFont + 4), Bold: generate.BoolPtr(true)},
-		},
+		LayoutEngine: LayoutEngine,
+		Direction:    "up",
+		Classes:      map[string]generate.StyleSpec{stageClass: stageBand},
 	}
 	for _, st := range g.Stages {
 		style := stageStyle[st.Stage]
-		style.BorderRadius = round
-		style.FontSize = generate.IntPtr(theoryFont)
+		style.BorderRadius = generate.IntPtr(12)
+		style.FontSize = generate.IntPtr(boxFont)
+		style.Width = generate.IntPtr(size.width)
 		spec.Classes[string(st.Stage)] = style
 	}
-	for i := len(g.Stages) - 1; i >= 0; i-- {
-		st := g.Stages[i]
+	for _, st := range g.Stages {
 		c := generate.ContainerSpec{
-			ID:            string(st.Stage),
-			Label:         st.Stage.Name(),
-			Class:         stageClass,
-			GridColumns:   min(len(st.Nodes), theoryPerRow),
-			HorizontalGap: theoryGap,
-			VerticalGap:   theoryGap,
+			ID:        string(st.Stage),
+			Label:     st.Stage.Name(),
+			Class:     stageClass,
+			Direction: "right",
 		}
 		for _, n := range st.Nodes {
 			c.Nodes = append(c.Nodes, generate.NodeSpec{
 				ID:    diagramID(n.ID),
-				Label: legibility.Wrap(n.Label, theoryWrap),
+				Label: legibility.Wrap(n.Label, size.wrap),
 				Class: string(st.Stage),
 			})
 		}
@@ -137,16 +125,21 @@ func (g *Graph) edgeSpecs() []generate.EdgeSpec {
 	return out
 }
 
-// D2 writes the diagram as D2. Laid out with a grid, the stages stay in their
-// columns, in order.
+// D2 writes the diagram as D2, naming ELK as its layout engine.
 func (g *Graph) D2() string {
 	return generate.NewGenerator().Generate(g.Spec())
 }
 
-// Mermaid writes the diagram as a Mermaid flowchart. Mermaid has no grid, so it
-// places the columns itself.
+// Mermaid writes the diagram as a Mermaid flowchart, left to right with each
+// stage's boxes stacked, which suits the landscape slides it is shown on.
+// Mermaid places the boxes itself.
 func (g *Graph) Mermaid() (string, error) {
-	return generate.NewGenerator().Mermaid(g.Spec())
+	spec := g.Spec()
+	spec.Direction = "right"
+	for i := range spec.Containers {
+		spec.Containers[i].Direction = "down"
+	}
+	return generate.NewGenerator().Mermaid(spec)
 }
 
 // diagramID makes an element ID usable as a node name: a dot would read as a

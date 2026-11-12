@@ -8,80 +8,77 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
-// wideView has five activities, one with a long title, under one outcome.
-func wideView() *report.View {
+// wideView has n activities, one with a long title, under one outcome.
+func wideView(n int) *report.View {
 	v := &report.View{
 		Document: report.DocumentView{Title: "Network"},
 		Filter:   "pw-net",
 		Pathways: []report.PathwayView{{ID: "pw-net", Title: "Network and Evidence"}},
 		Outcomes: []report.OutcomeView{{ID: "oc-served", Title: "Residents served", Level: model.LevelImpact}},
 	}
-	for _, id := range []string{"a", "b", "c", "d"} {
-		v.Interventions = append(v.Interventions, report.InterventionView{ID: "int-" + id, Title: "Activity " + id, Targets: []string{"oc-served"}})
-	}
 	v.Interventions = append(v.Interventions, report.InterventionView{
 		ID: "int-long", Title: "Deliver capacity building trainings, workshops, and cohort programs for nonprofit staff", Targets: []string{"oc-served"},
 	})
+	for i := 1; i < n; i++ {
+		id := string(rune('a' + i))
+		v.Interventions = append(v.Interventions, report.InterventionView{ID: "int-" + id, Title: "Activity " + id, Targets: []string{"oc-served"}})
+	}
 	return v
 }
 
-// The theory of change is drawn bottom-up: a row per stage, impact first, at
-// most three boxes side by side, with labels wrapped and enlarged.
-func TestTheorySpecIsBottomUp(t *testing.T) {
-	g := Build(wideView()).TheoryOfChange()
-	spec := g.TheorySpec()
-	if spec.GridRows != len(g.Stages) || spec.GridColumns != 0 || len(spec.Containers) != len(g.Stages) {
-		t.Fatalf("rows %d, columns %d, containers %d for %d stages", spec.GridRows, spec.GridColumns, len(spec.Containers), len(g.Stages))
-	}
-	if spec.Containers[0].ID != string(StageImpact) || spec.Containers[len(spec.Containers)-1].ID != string(StageActivities) {
-		t.Errorf("rows run %s to %s, want impact to activities", spec.Containers[0].ID, spec.Containers[len(spec.Containers)-1].ID)
-	}
-	acts := spec.Containers[len(spec.Containers)-1]
-	if len(acts.Nodes) != 5 || acts.GridColumns != theoryPerRow {
-		t.Errorf("activities: %d nodes in %d columns, want 5 in %d", len(acts.Nodes), acts.GridColumns, theoryPerRow)
-	}
-	if spec.Containers[0].GridColumns != 1 {
-		t.Errorf("one impact outcome takes %d columns", spec.Containers[0].GridColumns)
-	}
-	var long string
-	for _, n := range acts.Nodes {
-		if n.ID == "int-long" {
-			long = n.Label
+// Every box is one width, and labels are wrapped to suit it; a wider stage
+// gets narrower boxes.
+func TestBoxesShareAWidthChosenByTheWidestStage(t *testing.T) {
+	for _, c := range []struct {
+		activities int
+		want       boxSize
+	}{
+		{2, boxSize{330, 26}},
+		{3, boxSize{330, 26}},
+		{4, boxSize{290, 22}},
+		{9, boxSize{270, 20}},
+	} {
+		g := Build(wideView(c.activities)).TheoryOfChange()
+		if got := g.sizeFor(); got != c.want {
+			t.Errorf("%d activities: size %+v, want %+v", c.activities, got, c.want)
 		}
-	}
-	for _, line := range strings.Split(long, "\n") {
-		if len(line) > theoryWrap {
-			t.Errorf("line %q is longer than %d", line, theoryWrap)
+		spec := g.Spec()
+		for _, st := range g.Stages {
+			cls := spec.Classes[string(st.Stage)]
+			if cls.Width == nil || *cls.Width != c.want.width || cls.FontSize == nil || *cls.FontSize != boxFont {
+				t.Errorf("%d activities: class %s = %+v", c.activities, st.Stage, cls)
+			}
 		}
-	}
-	if strings.Count(long, "\n") < 2 {
-		t.Errorf("long label not wrapped: %q", long)
-	}
-	if f := spec.Classes[string(StageActivities)].FontSize; f == nil || *f != theoryFont {
-		t.Errorf("activity font = %v, want %d", f, theoryFont)
-	}
-	if len(spec.Edges) != len(g.Edges) {
-		t.Errorf("%d edges for %d graph edges", len(spec.Edges), len(g.Edges))
+		for _, ct := range spec.Containers {
+			for _, n := range ct.Nodes {
+				for _, line := range strings.Split(n.Label, "\n") {
+					if len(line) > c.want.wrap {
+						t.Errorf("%d activities: line %q is longer than %d", c.activities, line, c.want.wrap)
+					}
+				}
+			}
+		}
 	}
 }
 
-// A pathway's theory of change is titled with the pathway, and the logic
-// model keeps its columns.
+// A pathway's theory of change is titled with the pathway and drawn with ELK,
+// bottom-up, with wrapped labels.
 func TestTheoryOfChangeDiagramNamesItsPathway(t *testing.T) {
-	text, err := TheoryOfChangeDiagram(wideView(), FormatD2)
+	text, err := TheoryOfChangeDiagram(wideView(2), FormatD2)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasPrefix(text, "## Theory of change: Network and Evidence\n") || !strings.Contains(text, "grid-rows: 2") {
-		t.Errorf("unexpected diagram:\n%s", text)
+	for _, want := range []string{
+		"## Theory of change: Network and Evidence\n",
+		"layout-engine: elk",
+		"direction: up",
+		`"Deliver capacity building\ntrainings, workshops, and\ncohort programs for\nnonprofit staff"`,
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("missing %q:\n%s", want, text)
+		}
 	}
-	if !strings.Contains(text, `"Deliver capacity building\ntrainings, workshops, and\ncohort programs for\nnonprofit staff"`) {
-		t.Errorf("label not wrapped in the D2:\n%s", text)
-	}
-	if lm := Build(wideView()).D2(); strings.Contains(lm, "grid-rows") || !strings.Contains(lm, "grid-columns") {
-		t.Errorf("the logic model lost its columns:\n%s", lm)
-	}
-	mm, err := TheoryOfChangeDiagram(wideView(), FormatMermaid)
+	mm, err := TheoryOfChangeDiagram(wideView(2), FormatMermaid)
 	if err != nil || !strings.Contains(mm, "```mermaid") || !strings.Contains(mm, "<br/>") {
 		t.Errorf("mermaid (%v):\n%s", err, mm)
 	}
@@ -89,7 +86,7 @@ func TestTheoryOfChangeDiagramNamesItsPathway(t *testing.T) {
 
 // The whole outcome model comes first, then each pathway.
 func TestTheoryOfChangeDiagrams(t *testing.T) {
-	text, err := TheoryOfChangeDiagrams(view(), []*report.View{wideView()}, FormatD2)
+	text, err := TheoryOfChangeDiagrams(view(), []*report.View{wideView(2)}, FormatD2)
 	if err != nil {
 		t.Fatal(err)
 	}

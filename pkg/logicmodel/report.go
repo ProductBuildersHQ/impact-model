@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/grokify/d2vision/generate"
-
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -50,20 +48,19 @@ func Diagrams(whole *report.View, pathways []*report.View, f Format) (string, er
 // TheoryOfChangeDiagram renders the theory of change of a view: for the whole
 // outcome model, every pathway's activities and outcomes together on one page;
 // for a pathway's view, that pathway's. It is drawn bottom-up (see
-// Graph.TheorySpec) in a fenced block that names its format, under a heading,
+// Graph.Spec) in a fenced block that names its format, under a heading,
 // then the feedback loops it leaves out.
 func TheoryOfChangeDiagram(v *report.View, f Format) (string, error) {
 	g := Build(v).TheoryOfChange()
-	spec := g.TheorySpec()
 	var text string
 	switch f {
 	case FormatMermaid:
 		var err error
-		if text, err = generate.NewGenerator().Mermaid(spec); err != nil {
+		if text, err = g.Mermaid(); err != nil {
 			return "", err
 		}
 	case FormatD2:
-		text = generate.NewGenerator().Generate(spec)
+		text = g.D2()
 	default:
 		return "", fmt.Errorf("logicmodel: unknown diagram format %q", f)
 	}
