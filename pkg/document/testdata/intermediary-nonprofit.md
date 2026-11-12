@@ -17,160 +17,169 @@ Outcome model: Theory of Change, Logic Models, VSEM, Monitoring, Evaluation, and
 ### Theory of change on one page
 
 ```d2
-grid-columns: 5
-horizontal-gap: 90
-direction: right
+grid-rows: 5
+vertical-gap: 24
 
 classes: {
   activities: {
     style.fill: "#e4f3e5"
     style.stroke: "#2e7d32"
     style.border-radius: 12
+    style.font-size: 24
   }
   impact: {
     style.fill: "#c5cfe8"
     style.stroke: "#1f3a7a"
     style.border-radius: 12
+    style.font-size: 24
   }
   long_term: {
     style.fill: "#d3dcee"
     style.stroke: "#2c4a8a"
     style.border-radius: 12
+    style.font-size: 24
   }
   medium_term: {
     style.fill: "#dfe8f6"
     style.stroke: "#3f5fa8"
     style.border-radius: 12
+    style.font-size: 24
   }
   short_term: {
     style.fill: "#e1f3fd"
     style.stroke: "#2d9cdb"
     style.border-radius: 12
+    style.font-size: 24
   }
   stage: {
     style.fill: "transparent"
     style.stroke-width: 0
-    style.font-size: 22
+    style.font-size: 28
     style.bold: true
   }
 }
 
-activities: Activities {
-  grid-columns: 1
+impact: Impact {
+  grid-columns: 2
+  horizontal-gap: 24
   vertical-gap: 24
   class: stage
 
-  "int-peer-cohorts": Run mixed-size peer-learning cohorts {
-    class: activities
+  "oc-resident-access": "Residents get timely,\ngood-quality services from\nlocal nonprofits\n(inferred)" {
+    class: impact
   }
-  "int-leader-coaching": Offer one-to-one leadership coaching {
-    class: activities
-  }
-  "int-training-series": Deliver a management skills training series (inferred) {
-    class: activities
-  }
-  "int-pooled-backoffice": Run pooled bookkeeping and payroll help {
-    class: activities
-  }
-  "int-group-purchasing": Negotiate group purchasing agreements {
-    class: activities
-  }
-  "int-grants-calendar": Maintain a shared grants calendar {
-    class: activities
-  }
-  "int-policy-briefings": Publish plain-language policy briefings (hypothesis) {
-    class: activities
-  }
-  "int-joint-forums": Convene member forums to draft joint positions {
-    class: activities
-  }
-  "int-liaison-channel": Set up a standing liaison channel with the county planning office {
-    class: activities
-  }
-  "int-funder-roundtable": Host a funder and member roundtable {
-    class: activities
-  }
-}
-
-short_term: Short-term outcomes {
-  grid-columns: 1
-  vertical-gap: 24
-  class: stage
-
-  "oc-st-peer-ties": Members form peer relationships across sizes (inferred) {
-    class: short_term
-  }
-  "oc-st-leader-skills": Leaders gain coaching-based skills and confidence {
-    class: short_term
-  }
-  "oc-st-pooled-use": Members use pooled back-office services (inferred) {
-    class: short_term
-  }
-  "oc-st-calendar-use": Members consult the shared grants calendar when planning (hypothesis) {
-    class: short_term
-  }
-  "oc-st-policy-know": Members understand local policy and funding processes (inferred) {
-    class: short_term
-  }
-  "oc-st-channel": A standing channel exists between members and the county planning office {
-    class: short_term
-  }
-}
-
-medium_term: Medium-term outcomes {
-  grid-columns: 1
-  vertical-gap: 24
-  class: stage
-
-  "oc-im-peer-network": Members turn to each other for advice and joint work (inferred) {
-    class: medium_term
-  }
-  "oc-im-leaders-practice": Member leaders apply improved management practices {
-    class: medium_term
-  }
-  "oc-im-lower-overhead": Members spend less staff time and money on back-office work {
-    class: medium_term
-  }
-  "oc-im-grant-pipeline": Members apply for more grants that fit their mission (inferred) {
-    class: medium_term
-  }
-  "oc-im-joint-positions": Members adopt and share joint positions on local issues (hypothesis) {
-    class: medium_term
-  }
-  "oc-im-officials-engage": Local officials and funders engage members in planning {
-    class: medium_term
+  "oc-resident-voice": "Residents' priorities\nshape local public\ndecisions (hypothesis)" {
+    class: impact
   }
 }
 
 long_term: Long-term outcomes {
-  grid-columns: 1
+  grid-columns: 3
+  horizontal-gap: 24
   vertical-gap: 24
   class: stage
 
-  "oc-lt-capable-members": Member nonprofits run strong, well-managed organizations {
+  "oc-lt-capable-members": "Member nonprofits run\nstrong, well-managed\norganizations" {
     class: long_term
   }
-  "oc-lt-collab": Members routinely collaborate instead of duplicating effort {
+  "oc-lt-collab": "Members routinely\ncollaborate instead of\nduplicating effort" {
     class: long_term
   }
-  "oc-lt-sustainable": Members have diversified, stable funding (inferred) {
+  "oc-lt-sustainable": "Members have diversified,\nstable funding (inferred)" {
     class: long_term
   }
-  "oc-lt-collective-voice": Local government and funders consult members through a coordinated channel (hypothesis) {
+  "oc-lt-collective-voice": "Local government and\nfunders consult members\nthrough a coordinated\nchannel (hypothesis)" {
     class: long_term
   }
 }
 
-impact: Impact {
-  grid-columns: 1
+medium_term: Medium-term outcomes {
+  grid-columns: 3
+  horizontal-gap: 24
   vertical-gap: 24
   class: stage
 
-  "oc-resident-access": Residents get timely, good-quality services from local nonprofits (inferred) {
-    class: impact
+  "oc-im-peer-network": "Members turn to each other\nfor advice and joint work\n(inferred)" {
+    class: medium_term
   }
-  "oc-resident-voice": 'Residents'' priorities shape local public decisions (hypothesis)' {
-    class: impact
+  "oc-im-leaders-practice": "Member leaders apply\nimproved management\npractices" {
+    class: medium_term
+  }
+  "oc-im-lower-overhead": "Members spend less staff\ntime and money on\nback-office work" {
+    class: medium_term
+  }
+  "oc-im-grant-pipeline": "Members apply for more\ngrants that fit their\nmission (inferred)" {
+    class: medium_term
+  }
+  "oc-im-joint-positions": "Members adopt and share\njoint positions on local\nissues (hypothesis)" {
+    class: medium_term
+  }
+  "oc-im-officials-engage": "Local officials and\nfunders engage members in\nplanning" {
+    class: medium_term
+  }
+}
+
+short_term: Short-term outcomes {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-st-peer-ties": "Members form peer\nrelationships across sizes\n(inferred)" {
+    class: short_term
+  }
+  "oc-st-leader-skills": "Leaders gain\ncoaching-based skills and\nconfidence" {
+    class: short_term
+  }
+  "oc-st-pooled-use": "Members use pooled\nback-office services\n(inferred)" {
+    class: short_term
+  }
+  "oc-st-calendar-use": "Members consult the shared\ngrants calendar when\nplanning (hypothesis)" {
+    class: short_term
+  }
+  "oc-st-policy-know": "Members understand local\npolicy and funding\nprocesses (inferred)" {
+    class: short_term
+  }
+  "oc-st-channel": "A standing channel exists\nbetween members and the\ncounty planning office" {
+    class: short_term
+  }
+}
+
+activities: Activities {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "int-peer-cohorts": "Run mixed-size\npeer-learning cohorts" {
+    class: activities
+  }
+  "int-leader-coaching": "Offer one-to-one\nleadership coaching" {
+    class: activities
+  }
+  "int-training-series": "Deliver a management\nskills training series\n(inferred)" {
+    class: activities
+  }
+  "int-pooled-backoffice": "Run pooled bookkeeping and\npayroll help" {
+    class: activities
+  }
+  "int-group-purchasing": "Negotiate group purchasing\nagreements" {
+    class: activities
+  }
+  "int-grants-calendar": "Maintain a shared grants\ncalendar" {
+    class: activities
+  }
+  "int-policy-briefings": "Publish plain-language\npolicy briefings\n(hypothesis)" {
+    class: activities
+  }
+  "int-joint-forums": "Convene member forums to\ndraft joint positions" {
+    class: activities
+  }
+  "int-liaison-channel": "Set up a standing liaison\nchannel with the county\nplanning office" {
+    class: activities
+  }
+  "int-funder-roundtable": "Host a funder and member\nroundtable" {
+    class: activities
   }
 }
 
@@ -215,6 +224,424 @@ Feedback, not drawn:
 
 - Members routinely collaborate instead of duplicating effort leads back to Members form peer relationships across sizes (inferred)
 
+### Theory of change: Learning Exchange
+
+```d2
+grid-rows: 5
+vertical-gap: 24
+
+classes: {
+  activities: {
+    style.fill: "#e4f3e5"
+    style.stroke: "#2e7d32"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  impact: {
+    style.fill: "#c5cfe8"
+    style.stroke: "#1f3a7a"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  long_term: {
+    style.fill: "#d3dcee"
+    style.stroke: "#2c4a8a"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  medium_term: {
+    style.fill: "#dfe8f6"
+    style.stroke: "#3f5fa8"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  short_term: {
+    style.fill: "#e1f3fd"
+    style.stroke: "#2d9cdb"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  stage: {
+    style.fill: "transparent"
+    style.stroke-width: 0
+    style.font-size: 28
+    style.bold: true
+  }
+}
+
+impact: Impact {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-resident-voice": "Residents' priorities\nshape local public\ndecisions (hypothesis)" {
+    class: impact
+  }
+  "oc-resident-access": "Residents get timely,\ngood-quality services from\nlocal nonprofits\n(inferred)" {
+    class: impact
+  }
+}
+
+long_term: Long-term outcomes {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-lt-collab": "Members routinely\ncollaborate instead of\nduplicating effort" {
+    class: long_term
+  }
+  "oc-lt-collective-voice": "Local government and\nfunders consult members\nthrough a coordinated\nchannel (hypothesis)" {
+    class: long_term
+  }
+  "oc-lt-capable-members": "Member nonprofits run\nstrong, well-managed\norganizations" {
+    class: long_term
+  }
+}
+
+medium_term: Medium-term outcomes {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-im-peer-network": "Members turn to each other\nfor advice and joint work\n(inferred)" {
+    class: medium_term
+  }
+  "oc-im-joint-positions": "Members adopt and share\njoint positions on local\nissues (hypothesis)" {
+    class: medium_term
+  }
+  "oc-im-leaders-practice": "Member leaders apply\nimproved management\npractices" {
+    class: medium_term
+  }
+}
+
+short_term: Short-term outcomes {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-st-peer-ties": "Members form peer\nrelationships across sizes\n(inferred)" {
+    class: short_term
+  }
+  "oc-st-leader-skills": "Leaders gain\ncoaching-based skills and\nconfidence" {
+    class: short_term
+  }
+}
+
+activities: Activities {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "int-peer-cohorts": "Run mixed-size\npeer-learning cohorts" {
+    class: activities
+  }
+  "int-leader-coaching": "Offer one-to-one\nleadership coaching" {
+    class: activities
+  }
+  "int-training-series": "Deliver a management\nskills training series\n(inferred)" {
+    class: activities
+  }
+}
+
+activities."int-peer-cohorts" -> short_term."oc-st-peer-ties"
+activities."int-peer-cohorts" -> short_term."oc-st-leader-skills"
+activities."int-leader-coaching" -> short_term."oc-st-leader-skills"
+activities."int-leader-coaching" -> short_term."oc-st-peer-ties"
+activities."int-training-series" -> short_term."oc-st-leader-skills"
+short_term."oc-st-leader-skills" -> medium_term."oc-im-leaders-practice"
+short_term."oc-st-peer-ties" -> medium_term."oc-im-peer-network"
+medium_term."oc-im-leaders-practice" -> long_term."oc-lt-capable-members"
+medium_term."oc-im-peer-network" -> long_term."oc-lt-collab"
+short_term."oc-st-peer-ties" -> medium_term."oc-im-joint-positions"
+medium_term."oc-im-joint-positions" -> long_term."oc-lt-collab"
+medium_term."oc-im-joint-positions" -> long_term."oc-lt-collective-voice"
+long_term."oc-lt-capable-members" -> impact."oc-resident-access"
+long_term."oc-lt-collab" -> impact."oc-resident-access"
+long_term."oc-lt-collective-voice" -> impact."oc-resident-voice"
+long_term."oc-lt-collab" -> impact."oc-resident-voice"
+```
+
+Feedback, not drawn:
+
+- Members routinely collaborate instead of duplicating effort leads back to Members form peer relationships across sizes (inferred)
+
+### Theory of change: Shared Services
+
+```d2
+grid-rows: 5
+vertical-gap: 24
+
+classes: {
+  activities: {
+    style.fill: "#e4f3e5"
+    style.stroke: "#2e7d32"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  impact: {
+    style.fill: "#c5cfe8"
+    style.stroke: "#1f3a7a"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  long_term: {
+    style.fill: "#d3dcee"
+    style.stroke: "#2c4a8a"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  medium_term: {
+    style.fill: "#dfe8f6"
+    style.stroke: "#3f5fa8"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  short_term: {
+    style.fill: "#e1f3fd"
+    style.stroke: "#2d9cdb"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  stage: {
+    style.fill: "transparent"
+    style.stroke-width: 0
+    style.font-size: 28
+    style.bold: true
+  }
+}
+
+impact: Impact {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-resident-access": "Residents get timely,\ngood-quality services from\nlocal nonprofits\n(inferred)" {
+    class: impact
+  }
+  "oc-resident-voice": "Residents' priorities\nshape local public\ndecisions (hypothesis)" {
+    class: impact
+  }
+}
+
+long_term: Long-term outcomes {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-lt-capable-members": "Member nonprofits run\nstrong, well-managed\norganizations" {
+    class: long_term
+  }
+  "oc-lt-collab": "Members routinely\ncollaborate instead of\nduplicating effort" {
+    class: long_term
+  }
+  "oc-lt-sustainable": "Members have diversified,\nstable funding (inferred)" {
+    class: long_term
+  }
+}
+
+medium_term: Medium-term outcomes {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-im-lower-overhead": "Members spend less staff\ntime and money on\nback-office work" {
+    class: medium_term
+  }
+  "oc-im-grant-pipeline": "Members apply for more\ngrants that fit their\nmission (inferred)" {
+    class: medium_term
+  }
+}
+
+short_term: Short-term outcomes {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-st-pooled-use": "Members use pooled\nback-office services\n(inferred)" {
+    class: short_term
+  }
+  "oc-st-calendar-use": "Members consult the shared\ngrants calendar when\nplanning (hypothesis)" {
+    class: short_term
+  }
+}
+
+activities: Activities {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "int-pooled-backoffice": "Run pooled bookkeeping and\npayroll help" {
+    class: activities
+  }
+  "int-group-purchasing": "Negotiate group purchasing\nagreements" {
+    class: activities
+  }
+  "int-grants-calendar": "Maintain a shared grants\ncalendar" {
+    class: activities
+  }
+}
+
+activities."int-pooled-backoffice" -> short_term."oc-st-pooled-use"
+activities."int-group-purchasing" -> short_term."oc-st-pooled-use"
+activities."int-grants-calendar" -> short_term."oc-st-calendar-use"
+short_term."oc-st-pooled-use" -> medium_term."oc-im-lower-overhead"
+short_term."oc-st-calendar-use" -> medium_term."oc-im-grant-pipeline"
+medium_term."oc-im-lower-overhead" -> long_term."oc-lt-capable-members"
+medium_term."oc-im-lower-overhead" -> long_term."oc-lt-collab"
+medium_term."oc-im-lower-overhead" -> long_term."oc-lt-sustainable"
+medium_term."oc-im-grant-pipeline" -> long_term."oc-lt-sustainable"
+long_term."oc-lt-capable-members" -> impact."oc-resident-access"
+long_term."oc-lt-collab" -> impact."oc-resident-access"
+long_term."oc-lt-sustainable" -> impact."oc-resident-access"
+long_term."oc-lt-collab" -> impact."oc-resident-voice"
+```
+
+### Theory of change: Civic Voice
+
+```d2
+grid-rows: 5
+vertical-gap: 24
+
+classes: {
+  activities: {
+    style.fill: "#e4f3e5"
+    style.stroke: "#2e7d32"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  impact: {
+    style.fill: "#c5cfe8"
+    style.stroke: "#1f3a7a"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  long_term: {
+    style.fill: "#d3dcee"
+    style.stroke: "#2c4a8a"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  medium_term: {
+    style.fill: "#dfe8f6"
+    style.stroke: "#3f5fa8"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  short_term: {
+    style.fill: "#e1f3fd"
+    style.stroke: "#2d9cdb"
+    style.border-radius: 12
+    style.font-size: 24
+  }
+  stage: {
+    style.fill: "transparent"
+    style.stroke-width: 0
+    style.font-size: 28
+    style.bold: true
+  }
+}
+
+impact: Impact {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-resident-access": "Residents get timely,\ngood-quality services from\nlocal nonprofits\n(inferred)" {
+    class: impact
+  }
+  "oc-resident-voice": "Residents' priorities\nshape local public\ndecisions (hypothesis)" {
+    class: impact
+  }
+}
+
+long_term: Long-term outcomes {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-lt-collab": "Members routinely\ncollaborate instead of\nduplicating effort" {
+    class: long_term
+  }
+  "oc-lt-collective-voice": "Local government and\nfunders consult members\nthrough a coordinated\nchannel (hypothesis)" {
+    class: long_term
+  }
+}
+
+medium_term: Medium-term outcomes {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-im-joint-positions": "Members adopt and share\njoint positions on local\nissues (hypothesis)" {
+    class: medium_term
+  }
+  "oc-im-officials-engage": "Local officials and\nfunders engage members in\nplanning" {
+    class: medium_term
+  }
+}
+
+short_term: Short-term outcomes {
+  grid-columns: 2
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "oc-st-policy-know": "Members understand local\npolicy and funding\nprocesses (inferred)" {
+    class: short_term
+  }
+  "oc-st-channel": "A standing channel exists\nbetween members and the\ncounty planning office" {
+    class: short_term
+  }
+}
+
+activities: Activities {
+  grid-columns: 3
+  horizontal-gap: 24
+  vertical-gap: 24
+  class: stage
+
+  "int-policy-briefings": "Publish plain-language\npolicy briefings\n(hypothesis)" {
+    class: activities
+  }
+  "int-joint-forums": "Convene member forums to\ndraft joint positions" {
+    class: activities
+  }
+  "int-liaison-channel": "Set up a standing liaison\nchannel with the county\nplanning office" {
+    class: activities
+  }
+  "int-funder-roundtable": "Host a funder and member\nroundtable" {
+    class: activities
+  }
+}
+
+activities."int-policy-briefings" -> short_term."oc-st-policy-know"
+activities."int-joint-forums" -> short_term."oc-st-policy-know"
+activities."int-joint-forums" -> medium_term."oc-im-joint-positions"
+activities."int-liaison-channel" -> short_term."oc-st-channel"
+activities."int-funder-roundtable" -> short_term."oc-st-channel"
+activities."int-funder-roundtable" -> medium_term."oc-im-officials-engage"
+short_term."oc-st-policy-know" -> medium_term."oc-im-joint-positions"
+medium_term."oc-im-joint-positions" -> long_term."oc-lt-collab"
+medium_term."oc-im-joint-positions" -> long_term."oc-lt-collective-voice"
+medium_term."oc-im-officials-engage" -> long_term."oc-lt-collective-voice"
+short_term."oc-st-channel" -> medium_term."oc-im-officials-engage"
+long_term."oc-lt-collab" -> impact."oc-resident-access"
+long_term."oc-lt-collective-voice" -> impact."oc-resident-voice"
+long_term."oc-lt-collab" -> impact."oc-resident-voice"
+```
 
 ### Narrative summary
 

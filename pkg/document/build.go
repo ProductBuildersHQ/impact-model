@@ -122,7 +122,7 @@ func section(k SectionKind, body string) Section {
 func sectionBody(in Input, k SectionKind) (string, error) {
 	switch k {
 	case SectionTheoryOfChange:
-		diagram, err := logicmodel.TheoryOfChangeDiagram(in.Whole, logicmodel.FormatD2)
+		diagram, err := logicmodel.TheoryOfChangeDiagrams(in.Whole, in.Pathways, logicmodel.FormatD2)
 		if err != nil {
 			return "", err
 		}
