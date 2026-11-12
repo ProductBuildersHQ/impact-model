@@ -1,127 +1,151 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://productbuildershq.com/impact-model/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/concepts/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/concepts/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/credits/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/credits/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/design/example-feedback/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/design/example-feedback/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/design/adrs/0001-rename-to-impact-model/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/design/adrs/0001-rename-to-impact-model/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/evals/rubric-discrimination/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/design/adrs/0002-rename-to-outcome-model/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/evals/rubric-discrimination/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/authoring/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/cli/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/authoring/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/dmaic/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/bsc/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/examples/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/cli/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/getting-started/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/dmaic/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/mcp-and-skills/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/examples/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/measurement/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/getting-started/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/problem-tree/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/mcp-and-skills/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/quality-and-judging/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/measurement/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/reports-and-decks/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/mel/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/review-round-trip/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/ogsm/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/guides/v2mom/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/problem-tree/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/integration/usm-ufm-contract/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/quality-and-judging/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/releases/changelog/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/reports-and-decks/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/releases/v0.1.0/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/review-round-trip/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/releases/v0.2.0/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/v2mom/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/releases/v0.3.0/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/guides/vsem/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/releases/v0.4.0/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/integration/usm-ufm-contract/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/releases/v0.5.0/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/releases/changelog/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/research/theory-of-change/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/releases/v0.1.0/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/PLAN/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/releases/v0.2.0/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/PRD/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/releases/v0.3.0/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/ROADMAP/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/releases/v0.4.0/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
     <url>
-         <loc>https://productbuildershq.com/impact-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/TRD/</loc>
-         <lastmod>2026-11-02</lastmod>
+         <loc>https://productbuildershq.com/outcome-model/releases/v0.5.0/</loc>
+         <lastmod>2026-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://productbuildershq.com/outcome-model/releases/v0.6.0/</loc>
+         <lastmod>2026-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://productbuildershq.com/outcome-model/research/theory-of-change/</loc>
+         <lastmod>2026-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://productbuildershq.com/outcome-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/PLAN/</loc>
+         <lastmod>2026-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://productbuildershq.com/outcome-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/PRD/</loc>
+         <lastmod>2026-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://productbuildershq.com/outcome-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/ROADMAP/</loc>
+         <lastmod>2026-11-12</lastmod>
+    </url>
+    <url>
+         <loc>https://productbuildershq.com/outcome-model/specs/initiatives/INIT-THEORYOFCHANGESPEC-001/TRD/</loc>
+         <lastmod>2026-11-12</lastmod>
     </url>
 </urlset>
