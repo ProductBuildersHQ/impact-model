@@ -208,6 +208,59 @@ func init() {
 		return out
 	})
 
+	// ---- the one metric that matters --------------------------------------
+	oneMetrics := func(c *Context, fn func(p indexed[model.Pathway], om model.Indicator) []Finding) []Finding {
+		var out []Finding
+		for _, p := range activePathways(c.Doc) {
+			if p.v.Focus == nil || p.v.Focus.OneMetricID == "" {
+				continue
+			}
+			om, ok := c.Doc.Indicator(p.v.Focus.OneMetricID)
+			if !ok {
+				continue // validation reports the unknown reference
+			}
+			out = append(out, fn(p, *om)...)
+		}
+		return out
+	}
+	omPath := func(p indexed[model.Pathway]) string { return at("pathways", p.i) + "/focus/oneMetricId" }
+
+	register("OM-NSM-008", validate.SeverityWarning, "A one metric that matters is an indicator of its own pathway.", func(c *Context) []Finding {
+		return oneMetrics(c, func(p indexed[model.Pathway], om model.Indicator) []Finding {
+			if c.Doc.IndicatorServes(om, p.v.ID) {
+				return nil
+			}
+			return []Finding{{Path: omPath(p), Element: p.v.ID,
+				Message: fmt.Sprintf("the one metric that matters %q does not serve this pathway: it measures %q, which the pathway does not list", om.ID, om.Measures)}}
+		})
+	})
+
+	register("OM-NSM-009", validate.SeverityInfo, "A one metric that matters, other than the North Star, leads to the North Star.", func(c *Context) []Finding {
+		return oneMetrics(c, func(p indexed[model.Pathway], om model.Indicator) []Finding {
+			nsID := p.v.Focus.NorthStarID
+			if nsID == "" || nsID == om.ID {
+				return nil
+			}
+			ns, ok := c.Doc.Indicator(nsID)
+			if !ok || om.Measures == ns.Measures {
+				return nil
+			}
+			// Only a measure of an outcome or an intervention sits on the
+			// causal chain. One that monitors an assumption, such as the
+			// riskiest one, is a legitimate focus that leads nowhere by link.
+			switch c.Doc.IndicatorTier(om) {
+			case model.TierActivity, model.TierOutput, model.TierOutcome, model.TierImpact:
+			default:
+				return nil
+			}
+			if slices.Contains(c.Graph.Downstream(om.Measures), ns.Measures) {
+				return nil
+			}
+			return []Finding{{Path: omPath(p), Element: p.v.ID,
+				Message: fmt.Sprintf("the one metric that matters %q measures %q, which does not lead to %q, measured by the North Star %q; a focus for now should move the lasting goal", om.ID, om.Measures, ns.Measures, ns.ID)}}
+		})
+	})
+
 	// ---- framing ----------------------------------------------------------
 	register("OM-CTX-001", validate.SeverityInfo, "The outcome model states its mission or its vision.", func(c *Context) []Finding {
 		if c.Doc.Context.Mission != "" || c.Doc.Context.Vision != "" {

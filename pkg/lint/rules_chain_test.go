@@ -159,6 +159,17 @@ func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 				focus(d, model.Focus{NorthStarID: "ind-ns"})
 			}},
 
+		// ---- the one metric that matters
+		{"OM-NSM-008", "pw-1", func(d *model.Model) {
+			addIndicator(d, "ind-om", "oc-s2") // oc-s2 is not listed by pw-1
+			focus(d, model.Focus{OneMetricID: "ind-om"})
+		}, func(d *model.Model) { d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-s2") }},
+		{"OM-NSM-009", "pw-1", func(d *model.Model) {
+			d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-b")
+			addIndicator(d, "ind-ns", "oc-a")
+			addIndicator(d, "ind-om", "oc-b") // oc-b leads to the impact, not to oc-a
+			focus(d, model.Focus{NorthStarID: "ind-ns", OneMetricID: "ind-om"})
+		}, func(d *model.Model) { indicator(d, "ind-om").Measures = "oc-s1" }},
 		// ---- framing
 		{"OM-CTX-001", "", func(d *model.Model) {},
 			func(d *model.Model) { d.Context.Mission = "Why we exist." }},
@@ -186,9 +197,29 @@ func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 func TestNewRulesAreQuietWhenTheFieldsAreAbsent(t *testing.T) {
 	d := clean()
 	for _, rule := range []string{"OM-HLN-001", "OM-HLN-002", "OM-HLN-003", "OM-HLN-004",
-		"OM-NSM-001", "OM-NSM-002", "OM-NSM-003", "OM-NSM-004", "OM-NSM-005", "OM-NSM-006", "OM-NSM-007", "OM-AUD-002"} {
+		"OM-NSM-001", "OM-NSM-002", "OM-NSM-003", "OM-NSM-004", "OM-NSM-005", "OM-NSM-006", "OM-NSM-007", "OM-NSM-008", "OM-NSM-009", "OM-AUD-002"} {
 		if got := fires(t, d, rule); len(got) != 0 {
 			t.Errorf("%s reported %v on a document with no audiences, pathways, or focus", rule, got)
 		}
+	}
+}
+
+// A one metric that matters may be the North Star itself, an intervention's
+// measure that leads to it, or a measure of an assumption, such as the
+// riskiest one: none of these is reported as leading away from the North Star.
+func TestOneMetricThatLeadsToTheNorthStarOrTestsAnAssumptionIsAccepted(t *testing.T) {
+	for name, om := range map[string]func(d *model.Model) string{
+		"the North Star itself": func(d *model.Model) string { return "ind-ns" },
+		"an intervention":       func(d *model.Model) string { addIndicator(d, "ind-om", "int-1"); return "ind-om" },
+		"an assumption":         func(d *model.Model) string { addIndicator(d, "ind-om", "asm-1"); return "ind-om" },
+	} {
+		t.Run(name, func(t *testing.T) {
+			d := chainDoc()
+			addIndicator(d, "ind-ns", "oc-a")
+			d.Pathways[0].Focus = &model.Focus{NorthStarID: "ind-ns", OneMetricID: om(d)}
+			if got := fires(t, d, "OM-NSM-009"); len(got) != 0 {
+				t.Errorf("OM-NSM-009 reported %v", got)
+			}
+		})
 	}
 }
