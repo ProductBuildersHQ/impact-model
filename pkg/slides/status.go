@@ -63,7 +63,8 @@ func label(s string) string {
 	return report.Label(s)
 }
 
-// Exec renders the executive deck: the headline, status by level, the
+// Exec renders the executive deck: the headline, what each program steers by,
+// status by level, the
 // pathway diagram colored by health, where attention is needed, broken
 // assumptions, what changed, decisions requested, and how to read the
 // numbers.
@@ -90,6 +91,18 @@ func Exec(in report.StatusInput, o Options) string {
 		d.line("- **%s**: %s%s", oneLine(titles[i.OutcomeID]), label(string(i.PathwayState)), conf)
 	}
 	d.notes("Confidence is a rule-based score from evidence and assumptions, not a probability. It is explained on the last slide.")
+
+	if rows := report.Steering(in); len(rows) > 0 {
+		d.slide("")
+		d.line("# What each program steers by")
+		d.line("")
+		d.line("| Program | Role | Indicator | Status | Progress |")
+		d.line("|---------|------|-----------|--------|----------|")
+		for _, r := range rows {
+			d.line("| %s | %s | %s | %s | %s |", cell(cut(r.Pathway, 60)), r.Role, cell(cut(r.Indicator, 80)), label(r.State), r.Progress)
+		}
+		d.notes("The North Star is the lasting value each program delivers; the one metric that matters is where the team is focused now. A guardrail is shown only when it needs attention.")
+	}
 
 	d.slide("")
 	d.line("# Status by level")

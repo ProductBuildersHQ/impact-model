@@ -94,7 +94,8 @@ func confidenceNote(st *model.Status) string {
 		st.Options.Tolerance*100, st.Options.Rollup, w.Evidence, w.Assumptions, w.Rationale)
 }
 
-// Exec renders the executive summary: the headline, status by level, where
+// Exec renders the executive summary: the headline, what each program steers
+// by, status by level, where
 // attention is needed, broken or untested critical assumptions, what changed,
 // and decisions requested.
 func Exec(in StatusInput) string {
@@ -114,6 +115,7 @@ func Exec(in StatusInput) string {
 		b.WriteString("\n")
 	}
 	b.WriteString("\n")
+	b.WriteString(steering(in))
 
 	b.WriteString("## Status by level\n\n| Level | Outcomes | Pathway status |\n|-------|----------|----------------|\n")
 	for _, lv := range model.AllLevels() {
