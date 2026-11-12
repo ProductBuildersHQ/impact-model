@@ -162,6 +162,9 @@ func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 		// ---- framing
 		{"IMP-CTX-001", "", func(d *impact.Model) {},
 			func(d *impact.Model) { d.Context.Mission = "Why we exist." }},
+		{"IMP-CTX-002", "", func(d *impact.Model) {
+			d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-impact-2", Title: "A second impact", Level: impact.LevelImpact})
+		}, func(d *impact.Model) { d.Context.Objective = &impact.Objective{Statement: "One objective"} }},
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%s/%s/%d", tt.rule, tt.element, i), func(t *testing.T) {

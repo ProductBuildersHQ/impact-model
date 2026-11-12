@@ -8,6 +8,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 	"github.com/grokify/prism-roadmap/goals/mel"
+	"github.com/grokify/prism-roadmap/goals/ogsm"
 	"github.com/grokify/prism-roadmap/goals/okr"
 	"github.com/grokify/prism-roadmap/goals/v2mom"
 	"github.com/grokify/prism-roadmap/goals/vsem"
@@ -121,6 +122,26 @@ func TestExportMEL(t *testing.T) {
 	}
 	first := run(t, "", "export", "mel", exTheory, "-O", exObs)
 	if again := run(t, "", "export", "mel", exTheory, "-O", exObs); again.stdout != first.stdout {
+		t.Error("two exports differ")
+	}
+}
+
+func TestExportOGSM(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "ogsm.json")
+	r := run(t, "", "export", "ogsm", exTheory, "-O", exObs, "-o", out)
+	wantCode(t, r, ExitOK)
+	plan, err := ogsm.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := ogsm.Errors(plan.Validate(ogsm.StrictValidationOptions())); len(errs) != 0 {
+		t.Errorf("exported OGSM does not meet the strict options: %+v", errs)
+	}
+	if plan.Objective.Statement == "" || len(plan.Goals) == 0 || len(plan.Strategies) == 0 || len(plan.Measures) == 0 || len(plan.Actions) == 0 {
+		t.Errorf("objective, goals, strategies, measures, or actions missing")
+	}
+	first := run(t, "", "export", "ogsm", exTheory, "-O", exObs)
+	if again := run(t, "", "export", "ogsm", exTheory, "-O", exObs); again.stdout != first.stdout {
 		t.Error("two exports differ")
 	}
 }

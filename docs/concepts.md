@@ -20,7 +20,8 @@ projections of it, drawn by the `report` command:
 OKRs and outcome journeys are projections too, written by `export okr` and
 `export journey` for the PRISM planning tools, and so is a V2MOM, written by
 `export v2mom` (see the [V2MOM guide](guides/v2mom.md)), a VSEM, written by
-`export vsem` (see the [VSEM guide](guides/vsem.md)), and a DMAIC metrics
+`export vsem` (see the [VSEM guide](guides/vsem.md)), an OGSM, written by
+`export ogsm` (see the [OGSM guide](guides/ogsm.md)), and a DMAIC metrics
 document for pathways marked `projections: [dmaic]`, written by `export dmaic`
 (see the [DMAIC guide](guides/dmaic.md)), and a monitoring, evaluation, and learning plan, written by `export mel` (see the [MEL guide](guides/mel.md)).
 
@@ -111,6 +112,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Learning reviews (MEL) | `ObservationSet.Reviews[]` | 035 |
 | Evaluation plan, learning agenda, review meetings (MEL) | `Model.Evaluations[]`, `Model.LearningQuestions[]`, `Model.ReviewMeetings[]` | IMPACTMODEL-022 |
 | How an indicator's data is checked; how often an audience is reported to | `Indicator.QualityAssurance`; `Audience.Frequency`, `Audience.OwnerID` | IMPACTMODEL-022 |
+| The one objective the model sets out to achieve | `Context.Objective` (`Objective`: `Statement`, `OutcomeIDs`) | IMPACTMODEL-024 |
 | Computed status, diffs between periods | `Status`, `StatusDiff` | 005 (types), 017–020 (computation) |
 
 ## Alignment and integration

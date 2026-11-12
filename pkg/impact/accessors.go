@@ -284,3 +284,38 @@ func (d *Model) ReviewMeeting(id string) (*ReviewMeeting, bool) {
 func (d *Model) Pathway(id string) (*Pathway, bool) {
 	return find(d.Pathways, id, func(v Pathway) string { return v.ID })
 }
+
+// ObjectiveOutcomes returns the outcomes the model's objective stands for: the
+// outcomes context.objective names, or, without one, the impact outcomes. Only
+// outcomes review has not rejected are returned.
+func (d *Model) ObjectiveOutcomes() []Outcome {
+	var out []Outcome
+	if o := d.Context.Objective; o != nil && len(o.OutcomeIDs) > 0 {
+		for _, id := range o.OutcomeIDs {
+			if oc, ok := d.Outcome(id); ok && !oc.Rejected() {
+				out = append(out, *oc)
+			}
+		}
+		return out
+	}
+	for _, oc := range d.ImpactOutcomes() {
+		if !oc.Rejected() {
+			out = append(out, oc)
+		}
+	}
+	return out
+}
+
+// ObjectiveStatement returns the model's objective in words: the statement of
+// context.objective, or the title of the one outcome the objective stands for.
+// It reports false when the objective is ambiguous: no statement, and several
+// outcomes or none.
+func (d *Model) ObjectiveStatement() (string, bool) {
+	if o := d.Context.Objective; o != nil && o.Statement != "" {
+		return o.Statement, true
+	}
+	if outcomes := d.ObjectiveOutcomes(); len(outcomes) == 1 {
+		return outcomes[0].Title, true
+	}
+	return "", false
+}

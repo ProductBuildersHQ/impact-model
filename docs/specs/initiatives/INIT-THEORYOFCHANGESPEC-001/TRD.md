@@ -65,7 +65,7 @@ no persistence, no statistical inference).
 | TRD-011 | Renderers MUST NOT emit `restricted` evidence excerpts | PRD-FR-503 | Test with restricted evidence asserts absence |
 | TRD-012 | `spec/` MUST embed `toc.md` template and `toc.rubric.yaml` that parses into `rubric.RubricSet` and passes its `Validate()` | PRD-FR-601 | `spec_test.go` |
 | TRD-013 | `pkg/mcp` MUST expose the six tools in §6.3 over stdio with the official Go SDK | PRD-FR-602 | In-memory transport integration test |
-| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), MEL plans (per §6.17; refused without an outcome), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
+| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), MEL plans (per §6.17; refused without an outcome), OGSM documents (one strategy per pathway, per §6.18; refused without a clear objective or a pathway), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
 | TRD-015 | `pkg/ref` MUST parse and format the reference grammar in §6.7 | PRD-FR-604 | Parse/format round-trip and invalid-input tests |
 | TRD-016 | Core types MUST reuse `prism-core` `Person`, `Risk`, `CapabilityRef`, health and trend constants instead of redefining them | PRD G-7 | Code review; grep test for duplicate type names |
 | TRD-017 | `pkg/impact` MUST define `Pathway`, `Metric`, `Audience`, `GlossaryTerm`, `Theme`, `SelectionCriterion`, `MeasurementBudget`, and the indicator extensions in §7.1 | PRD-FR-112…117 | Round-trip tests; schema lint |
@@ -174,7 +174,7 @@ no persistence, no statistical inference).
 | `pkg/lint` | Quality rules | Rule registry, §6.4 rules, options (disable / severity override), SummaryReport output. |
 | `pkg/measure` | Measurement | §6.5 algorithms; produces `impact.Status`; `Diff(prev, cur)`. |
 | `pkg/report` | Rendering | View model, standard templates (embedded), Mermaid builder, user templates. |
-| `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToVSEM`, `ToDMAIC`, `ToMEL`; prism-roadmap import is confined here. |
+| `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToVSEM`, `ToDMAIC`, `ToMEL`, `ToOGSM`; prism-roadmap import is confined here. |
 | `pkg/service` | Service layer | One function per user operation (Validate, Lint, Graph, Status, Report, Export, Schema) used by CLI and MCP. |
 | `pkg/mcp` | MCP server | Tool registration and JSON I/O over `pkg/service`. |
 | `spec/` | Spec content | `toc.md` template, `toc.rubric.yaml`, judge instructions; embedded. |
@@ -234,7 +234,7 @@ no persistence, no statistical inference).
 | `impact-model report <kind> <toc> [-O <obs>...] [--as-of] [--pathway ID] [--audience ID] [--template file] [--out file]` | `kind` (status): `exec`, `results`, `assumptions`, `interventions`, `evidence-gaps`, `story`, `learning-review`, `portfolio`, `narrative`, `actors`, `full`, `custom`; `kind` (definition, no observations needed): `pathway`, `logic-model`, `metrics`, `metric-selection`, `collection-plan`, `glossary`, `definitions` (all definition reports) | 0; 2 |
 | `impact-model import observations --csv <file> --map <mapping.yaml> --model <toc> [--out obs.yaml]` | CSV → ObservationSet; unmatched rows to stderr and `--unmatched file` | 0 all rows imported; 1 some rows unmatched; 2 error |
 | `impact-model export csv <table> <toc> [-O obs...]` | `table`: `indicators`, `metrics`, `metric-selection`, `collection-plan`, `glossary`, `results`, `themes` | 0; 2 |
-| `impact-model export okr\|journey\|v2mom\|vsem\|dmaic\|mel <model> [-O obs...]` | PRISM exports | 0; 2 |
+| `impact-model export okr\|journey\|v2mom\|vsem\|dmaic\|mel\|ogsm <model> [-O obs...]` | PRISM exports | 0; 2 |
 | `impact-model schema [name]` | List or print embedded schemas | 0; 2 |
 | `impact-model init [--template program\|market]` | Write a starter document | 0; 2 |
 | `impact-model mcp` | Start MCP server on stdio | 0 on clean shutdown |
@@ -309,6 +309,7 @@ func ToOutcomeJourneys(doc *impact.Document, st *impact.Status) ([]journey.Outco
 func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) // wraps ErrNotV2MOMReady
 func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error)    // wraps ErrNotVSEMReady
 func ToMEL(doc *impact.Model, st *impact.Status) (*mel.Plan, error)       // wraps ErrNotMELReady
+func ToOGSM(doc *impact.Model, st *impact.Status) (*ogsm.OGSM, error)     // wraps ErrNotOGSMReady
 func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) // wraps ErrNotDMAICReady
 ```
 
@@ -328,7 +329,7 @@ require a DAG), `ErrUnsupportedFormat`. Callers use `errors.Is`.
 | `impact_report` | `{ document \| path, observations…, kind, asOf? }` | `{ format: "markdown", content }` |
 | `impact_patch` | `{ document \| path, patch[], dryRun?, allowErrors? }` | `{ applied, document?, issuesIntroduced[], issuesResolved[] }`; with `path` and not `dryRun`, writes canonical file |
 | `impact_deck` | `{ document \| path, observations…, kind, audience? }` | `{ format: "marp", content }` (no export) |
-| `impact_export` | `{ document \| path, observations…, kind: "okr"\|"journey"\|"v2mom"\|"vsem"\|"dmaic"\|"mel", asOf? }` | `{ kind, document, omissions?[] }`; a model the format cannot be drawn from is refused with an error naming what to add |
+| `impact_export` | `{ document \| path, observations…, kind: "okr"\|"journey"\|"v2mom"\|"vsem"\|"dmaic"\|"mel"\|"ogsm", asOf? }` | `{ kind, document, omissions?[] }`; a model the format cannot be drawn from is refused with an error naming what to add |
 | `impact_diff` | `{ old: { document \| path }, new: { document \| path } }` | the structural diff |
 | `impact_judge_bundle` | `{ document \| path, profile? }` | judge bundle JSON |
 
@@ -402,6 +403,7 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | IMP-LRN-001 | warning | Once the model plans evaluations or learning questions, every `high`/`critical` assumption not yet shown to hold (status empty, `untested`, `at_risk`, or `invalidated`) is named by a learning question or an evaluation |
 | IMP-LRN-002 | info | Every open learning question is taken up by a review meeting |
 | IMP-LRN-003 | warning | Evaluation dates and learning question due dates fall within the document's time horizon |
+| IMP-CTX-002 | info | The objective is clear: `context.objective` is set, or the model has a single impact outcome (a plan with one objective, such as an OGSM, cannot otherwise be drawn) |
 
 Rule IDs are permanent. Retired rules keep their ID reserved.
 
@@ -840,6 +842,27 @@ plan's budget.
 Lint IMP-LRN-001 to 003 check the plan once it exists: critical assumptions are
 taken up, open questions are reviewed, and dates fall within the time horizon.
 
+### 6.18 OGSM (`pkg/impact`, `pkg/prismx`)
+
+An OGSM (Objective, Goals, Strategies, Measures) is drawn from the model alone,
+into prism-roadmap's `goals/ogsm` document.
+
+| OGSM part | Model source | Gap and resolution |
+|-----------|--------------|--------------------|
+| Objective | The one impact outcome, or none when there are several | **Added** `context.objective {statement, outcomeIds[]}`. Without it, a model with one impact outcome uses that outcome; with several, the objective is ambiguous (IMP-CTX-002) |
+| Objective due date | `context.timeHorizon.end` | None |
+| Goals | Indicators of the outcomes the objective stands for (`objective.outcomeIds`, or the impact outcomes) | None |
+| Strategies | Pathways that are not rejected | None. A strategy serves the goals whose outcomes its own outcomes are or lead to, through causal links (not feedback) and precondition groups |
+| Measures | Each pathway's focus: North Star, one metric that matters, guardrails | None; an indicator that is already a goal is not repeated |
+| Actions | Each pathway's interventions, with owner, status, and dates (§6.16) | None |
+| Strategy priority | None | Left blank, as for VSEM |
+
+**Mapping rules.** The export is refused (`ErrNotOGSMReady`) when the
+objective is ambiguous or there is no pathway that is not rejected. An
+intervention or indicator in more than one pathway is listed under the first.
+A paused intervention has no action status. Frequencies are written in words
+as for VSEM.
+
 ## 7. Data Design
 
 ### 7.1 Document model (`pkg/impact`)
@@ -892,7 +915,7 @@ type Document struct {
 | Type | Key fields | Notes |
 |------|-----------|-------|
 | `Perspective` | `actorId`, `role` (`proponent`, `funder`, `implementer`, `observer`), `futureRef?` | Whose theory this is. USM uses the actor; UFM uses `futureRef` to group a ToC under a competing future. |
-| `Context` | `problemStatement` (req), `rootCauses[]`, `targetPopulation`, `market?` (ExternalRef), `geography?`, `timeHorizon {start,end}` (optional, keeping the minimal document small; date-range lint rules apply only when set), `mission`, `vision`, `values[] {name (req), description}` (ordered, most important first; a value needs a name and names are unique: VAL-DOC-006, VAL-DOC-007), `narrative` | Problem analysis / problem tree inputs. Mission, vision, and values frame the model and are not outcomes; the V2MOM export needs the vision and at least one value. |
+| `Context` | `problemStatement` (req), `rootCauses[]`, `targetPopulation`, `market?` (ExternalRef), `geography?`, `timeHorizon {start,end}` (optional, keeping the minimal document small; date-range lint rules apply only when set), `mission`, `vision`, `values[] {name (req), description}` (ordered, most important first; a value needs a name and names are unique: VAL-DOC-006, VAL-DOC-007), `objective? {statement, outcomeIds[]}` (the one thing the model sets out to achieve; a statement is needed unless it names exactly one outcome, VAL-OBJ-001), `narrative` | Problem analysis / problem tree inputs. Mission, vision, and values frame the model and are not outcomes; the V2MOM export needs the vision and at least one value. |
 | `Ceiling` | `level` (outcome level) or `outcomeIds[]`, `rationale` | Ceiling of accountability; outcomes above it are tracked but not owned. |
 | `Outcome` | `id`, `title` (req; a positive condition, not an activity), `description`, `level` (req: `impact`, `long_term`, `medium_term`, `short_term`, `output`), `sphere` (`control`, `influence`, `interest`), `logic` {`type`: `all`/`any`/`at_least`, `k`} over ungrouped incoming links (default `all`), `category` (open string; recommended vocabularies: ORS `impact`/`influence`/`leverage`/`capacity`, COM-B `reach`/`capability`/`opportunity`/`motivation`/`behavior`/`direct_benefit`/`wellbeing`, MSD AAER `adopt`/`adapt`/`expand`/`respond`), `changeType` (`knowledge`, `attitude`, `skill`, `behavior`, `practice`, `policy`, `norm`, `condition`, `investment`, `adoption`), `population`, `actorIds[]` (who changes / co-owners — supports collective outcomes), `contributesTo[]` (outcomes in a parent theory, as `model:<doc>#<outcome>` references; resolved by `validate --parent` / `validate.Family`), `responsibility` (`own` default, `shared`, `partner`, `unaddressed`), `deliveredBy[]` (actor IDs), `addressesCauses[]` (cause IDs), `addressesEffects[]` (effect IDs), `targetGroupIds[]`, `priority?` {`scores[]` {criterionId, score 1–5, note}, `rationale`}, `tags[]` | Graph node. Indicators reference outcomes, not vice versa. `partner` / `unaddressed` outcomes stay in the graph and are monitored (UNDG: monitor the whole solution tree) but are excluded from accountability counts. |
 | `Cause` | `id`, `statement` (req), `level` (req: `immediate`, `underlying`, `structural`), `parents[]` (cause IDs it contributes to; empty for a direct cause of the core problem), `affectedGroupIds[]`, `evidenceIds[]`, `pathwayIds[]` (pathways whose own tree it belongs to), `outOfScope?` {reason}, `provenance?` | Problem tree roots; outcomes map to causes via `addressesCauses`. Causes form a network; validation rejects a cause among its own parents (VAL-CAU-003) and a parent chain that loops (VAL-CAU-004). |
@@ -1177,3 +1200,5 @@ No open question blocks implementation.
 | 0.8 | 2026-11-11 | John Wang | Pathway resources and intervention dates, lint IMP-INT-008, the VSEM gap analysis and mapping (§6.16), and `export vsem` (TRD-014) |
 | 0.9 | 2026-11-11 | John Wang | Evaluations, learning questions, review meetings, indicator quality assurance, audience reporting frequency and owner, lint IMP-LRN-001 to 003, and the MEL gap analysis and mapping (§6.17) |
 | 0.10 | 2026-11-11 | John Wang | `export mel` and `ToMEL` per the MEL mapping (§6.17, TRD-014) |
+| 0.11 | 2026-11-11 | John Wang | `context.objective`, lint IMP-CTX-002, and the OGSM gap analysis and mapping (§6.18) |
+| 0.12 | 2026-11-11 | John Wang | `export ogsm` and `ToOGSM` per the OGSM mapping (§6.18, TRD-014) |

@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 22 of 27 phases completed
+**Status:** In progress — 23 of 27 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -627,14 +627,14 @@
 ## Phase 27 — OGSM
 
 **Theme:** OGSM (Objective, Goals, Strategies, Measures) as a stand-alone format in prism-roadmap, the impact model naming its objective, and an export that needs nothing else
-**Status:** Proposed — 0 of 2 items completed
+**Status:** Completed — 2 of 2 items completed
 
-- [ ] `RMI-IMPACTMODEL-024` Hold everything an OGSM needs in the impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-024` Hold everything an OGSM needs in the impact model
+  - Type: capability · Status: completed
   - Depends on: `RMI-IMPACTMODEL-020`
   - Acceptance: a gap analysis of OGSM against the model recorded in the TRD; a way to name the objective when more than one impact outcome exists, with a lint rule when it is ambiguous; schemas regenerated; examples carry the new field
 
-- [ ] `RMI-IMPACTMODEL-025` Export an OGSM projection of an impact model
-  - Type: capability · Status: proposed
+- [x] `RMI-IMPACTMODEL-025` Export an OGSM projection of an impact model
+  - Type: capability · Status: completed
   - Depends on: `RMI-PRISMROADMAP-024` (goals/ogsm in prism-roadmap), `RMI-IMPACTMODEL-024`
   - Acceptance: prismx.ToOGSM linked by ID and refusing a model without a clear objective or pathways; export ogsm in the CLI, the service layer, and the MCP server; golden tests on the examples; an OGSM guide and credits entry

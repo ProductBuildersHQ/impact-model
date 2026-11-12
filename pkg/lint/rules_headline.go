@@ -215,6 +215,17 @@ func init() {
 		}
 		return []Finding{{Path: "/context", Message: "neither a mission nor a vision is stated, so the impact model does not say why the organization exists or what it works toward"}}
 	})
+
+	register("IMP-CTX-002", validate.SeverityInfo, "The impact model's objective is clear: context.objective, or a single impact outcome.", func(c *Context) []Finding {
+		if _, ok := c.Doc.ObjectiveStatement(); ok {
+			return nil
+		}
+		n := len(c.Doc.ObjectiveOutcomes())
+		if n == 0 {
+			return nil // no impact outcome yet; the structure rules say so
+		}
+		return []Finding{{Path: "/context", Message: fmt.Sprintf("%d impact outcomes and no context.objective, so a plan with one objective, such as an OGSM, cannot be drawn; name the objective", n)}}
+	})
 }
 
 // joinWords joins the words as "a", "a or b", or "a, b, or c".

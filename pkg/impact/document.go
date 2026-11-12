@@ -126,8 +126,22 @@ type Context struct {
 	// Values are the principles that guide how the organization works, most
 	// important first. Like the mission and vision they frame the impact model
 	// and are not outcomes.
-	Values    []Value `json:"values,omitempty"`
-	Narrative string  `json:"narrative,omitempty"`
+	Values []Value `json:"values,omitempty"`
+	// Objective is the one thing the model sets out to achieve over its time
+	// horizon, for plans that name a single objective, such as an OGSM. When it
+	// is absent, a model with a single impact outcome has that outcome as its
+	// objective.
+	Objective *Objective `json:"objective,omitempty"`
+	Narrative string     `json:"narrative,omitempty"`
+}
+
+// Objective is the one thing the model sets out to achieve. It names the
+// outcomes that say it has been reached; their indicators are its goals.
+type Objective struct {
+	// Statement is the objective in words. It may be left out when the
+	// objective names exactly one outcome, whose title is then the statement.
+	Statement  string   `json:"statement,omitempty"`
+	OutcomeIDs []string `json:"outcomeIds,omitempty"`
 }
 
 // Value is one principle that guides how the organization works.

@@ -58,6 +58,11 @@ different things, and an impact model can make all of them.
   guide how it works, most important first. They are not part of the causal
   chain. A V2MOM needs the vision and at least one value; a VSEM needs the
   vision or the mission.
+- **The objective** is `context.objective`: the one thing the model sets out
+  to achieve, as a statement and the outcomes that say it has been reached.
+  A model with a single impact outcome has that outcome as its objective; one
+  with several should name the objective, which plans with one objective,
+  such as an OGSM, need (IMP-CTX-002; see the [OGSM guide](ogsm.md)).
 
 ```bash
 # A pathway's North Star, and what watches it
@@ -74,6 +79,13 @@ impact-model pathway set impact-model.yaml pw-learning \
   --set 'resources=[{"name":"Program staff","allocation":"3 staff"}]'
 impact-model intervention set impact-model.yaml int-training-series \
   --start-date 2026-09-01 --end-date 2027-05-31
+
+# The one thing the model sets out to achieve
+impact-model patch impact-model.yaml - <<'EOF'
+[{"op":"add","path":"/context/objective","value":{
+  "statement":"Member nonprofits are strong and connected enough that residents are served and heard",
+  "outcomeIds":["oc-resident-access","oc-resident-voice"]}}]
+EOF
 
 # Why the organization exists
 impact-model patch impact-model.yaml - <<'EOF'

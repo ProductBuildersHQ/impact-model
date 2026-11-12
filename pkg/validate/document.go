@@ -242,6 +242,12 @@ func (c *checker) context() {
 		}
 		seenValue[name] = true
 	}
+	if o := d.Context.Objective; o != nil {
+		c.refs("/context/objective/outcomeIds", "", o.OutcomeIDs, impact.ElementOutcome)
+		if strings.TrimSpace(o.Statement) == "" && len(o.OutcomeIDs) != 1 {
+			c.errorf("VAL-OBJ-001", "/context/objective", "", "objective needs a statement unless it names exactly one outcome")
+		}
+	}
 	if h := d.Context.TimeHorizon; h != nil {
 		c.date("/context/timeHorizon/start", "", h.Start)
 		c.date("/context/timeHorizon/end", "", h.End)

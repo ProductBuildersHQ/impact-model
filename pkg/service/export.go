@@ -10,7 +10,7 @@ import (
 )
 
 // PRISMExportKinds are the documents an impact model exports for the PRISM tools.
-var PRISMExportKinds = []string{"okr", "journey", "v2mom", "vsem", "dmaic", "mel"}
+var PRISMExportKinds = []string{"okr", "journey", "v2mom", "vsem", "dmaic", "mel", "ogsm"}
 
 // PRISMExport is one document exported for the PRISM tools, and what was left
 // out of it.
@@ -29,7 +29,7 @@ type PRISMExport struct {
 // nil, for an export without observations. It is the one place the command
 // line and the MCP server export from, so both refuse the same incomplete
 // models with the same errors (prismx.ErrNotV2MOMReady, ErrNotVSEMReady,
-// ErrNotDMAICReady, ErrNotMELReady).
+// ErrNotDMAICReady, ErrNotMELReady, ErrNotOGSMReady).
 func ExportPRISM(kind string, doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (PRISMExport, error) {
 	out := PRISMExport{Kind: kind}
 	var err error
@@ -46,6 +46,8 @@ func ExportPRISM(kind string, doc *impact.Model, st *impact.Status, sets []*impa
 		out.Document, out.Omissions, err = prismx.ToDMAIC(doc, st, sets)
 	case "mel":
 		out.Document, err = prismx.ToMEL(doc, st)
+	case "ogsm":
+		out.Document, err = prismx.ToOGSM(doc, st)
 	default:
 		return PRISMExport{}, fmt.Errorf("unknown export %q (want one of %s)", kind, strings.Join(PRISMExportKinds, ", "))
 	}

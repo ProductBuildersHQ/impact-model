@@ -321,3 +321,32 @@ func TestAccessors(t *testing.T) {
 		t.Fatal("nil document should have no elements")
 	}
 }
+
+func TestObjective(t *testing.T) {
+	d := &Model{Outcomes: []Outcome{
+		{ID: "oc-a", Title: "A", Level: LevelImpact},
+		{ID: "oc-b", Title: "B", Level: LevelImpact},
+		{ID: "oc-c", Title: "C", Level: LevelLongTerm},
+	}}
+	if _, ok := d.ObjectiveStatement(); ok {
+		t.Error("two impact outcomes and no objective should be ambiguous")
+	}
+	if got := d.ObjectiveOutcomes(); len(got) != 2 {
+		t.Errorf("without an objective, the impact outcomes stand for it: %v", got)
+	}
+	d.Outcomes[1].Provenance = &Provenance{Basis: BasisRejected}
+	if s, ok := d.ObjectiveStatement(); !ok || s != "A" {
+		t.Errorf("one impact outcome left: %q, %v", s, ok)
+	}
+	d.Context.Objective = &Objective{OutcomeIDs: []string{"oc-c"}}
+	if s, ok := d.ObjectiveStatement(); !ok || s != "C" {
+		t.Errorf("an objective naming one outcome takes its title: %q, %v", s, ok)
+	}
+	d.Context.Objective = &Objective{Statement: "Win", OutcomeIDs: []string{"oc-a", "oc-c"}}
+	if s, ok := d.ObjectiveStatement(); !ok || s != "Win" {
+		t.Errorf("a statement wins: %q, %v", s, ok)
+	}
+	if got := d.ObjectiveOutcomes(); len(got) != 2 || got[1].ID != "oc-c" {
+		t.Errorf("the objective's outcomes, in its order: %v", got)
+	}
+}
