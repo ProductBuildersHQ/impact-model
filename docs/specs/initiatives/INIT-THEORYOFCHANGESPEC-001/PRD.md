@@ -113,8 +113,10 @@ summary, pathway diagram, results framework, assumption register — in seconds.
 ### 2.2 Non-Goals
 
 - **Building USM or UFM.** This initiative defines the ToC building block and
-  its integration contract only. Balanced Scorecard modeling, futures
-  comparison, and market-share forecasting belong to those initiatives.
+  its integration contract only. Combining an impact model with a Balanced
+  Scorecard from one market participant's perspective, futures comparison,
+  and market-share forecasting belong to those initiatives. Drawing one
+  impact model as a Balanced Scorecard is in scope (PRD-FR-519).
 - **A diagram editor or web UI.** Output is files (Markdown, Mermaid, JSON,
   HTML via existing PRISM/site tooling later). Visual editing is out of scope.
 - **Causal inference or statistics.** We record evidence strength and compute
@@ -618,6 +620,10 @@ named version, so that both teams work from the same agreed theory.
   to achieve, in words and as the outcomes that say it has been reached, so a
   plan with a single objective, such as an OGSM, can be drawn from a model with
   several impact outcomes.
+- **PRD-FR-519** The model MUST be able to place outcomes in Balanced
+  Scorecard perspectives, name the actor who answers for each, and mark each
+  indicator as a lead or a lag measure, so a Balanced Scorecard, with a
+  strategy map drawn from the causal links, can be drawn from the model alone.
 - **PRD-FR-509** Indicators with a baseline and no target MUST report
   `baseline_only` rather than a failure, so a first measurement year is
   presented as establishing a baseline.
