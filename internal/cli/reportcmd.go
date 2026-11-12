@@ -270,7 +270,7 @@ export stamp ("# model:<id> version:<v> hash:<h>"); --no-stamp leaves it off.`,
 	}
 	csv.Flags().StringP("out", "o", "", "write to this file instead of standard output")
 	asOfFlags(csv)
-	export.AddCommand(csv, newExportDocCmd("docx"), newExportDocCmd("pptx"), newReviewPacketCmd(e), newReviewSheetCmd(e))
+	export.AddCommand(csv, newExportDocCmd("docx"), newExportDocCmd("pptx"), newReviewPacketCmd(e), newReviewSheetCmd(e), newExportDocumentCmd(e))
 	for _, kind := range service.PRISMExportKinds {
 		export.AddCommand(newPrismExportCmd(e, kind))
 	}
