@@ -92,3 +92,23 @@ func TestIndicatorCompositionFlags(t *testing.T) {
 	}
 }
 
+// pathway focus starts a new one metric that matters and closes the current
+// one the day before.
+func TestPathwayFocusStartsANewOneMetric(t *testing.T) {
+	path := fixtureCopy(t, "full.json", "doc.json")
+	r := run(t, "", "pathway", "focus", path, "pw-supply", "--one-metric", "ind-reference-downloads",
+		"--from", "2027-01-01", "--stage", "growth", "--reason", "Adoption beyond the first providers")
+	wantCode(t, r, 0)
+	doc, err := modelio.LoadDocument(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pw, _ := doc.Pathway("pw-supply")
+	ms := pw.Focus.OneMetrics
+	if len(ms) != 3 || ms[1].To != "2026-12-31" || ms[2] != (model.OneMetric{IndicatorID: "ind-reference-downloads",
+		From: "2027-01-01", Stage: "growth", Reason: "Adoption beyond the first providers"}) {
+		t.Errorf("one metrics = %+v", ms)
+	}
+	r = run(t, "", "pathway", "focus", path, "pw-supply", "--one-metric", "ind-idp-count", "--from", "2026-12-01")
+	wantCode(t, r, ExitUsageErr)
+}

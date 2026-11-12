@@ -340,6 +340,9 @@ validated path as "outcome-model patch": it is atomic, and nothing is
 written if the result would have more structural errors than before.`, article(k.Name)),
 	}
 	parent.AddCommand(newAddCmd(e, k, flags), newSetCmd(e, k, flags), newRmCmd(e, k))
+	if k.Name == "pathway" {
+		parent.AddCommand(newFocusCmd(e))
+	}
 	return parent
 }
 
