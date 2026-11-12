@@ -49,7 +49,7 @@ func (r *Result) Markdown() string {
 	fmt.Fprintf(&b, "%d element(s) added, %d changed, %d removed.\n\n", added, changed, removed)
 
 	if len(r.Document) > 0 {
-		b.WriteString("## The impact model\n\n")
+		b.WriteString("## The outcome model\n\n")
 		for _, f := range r.Document {
 			fmt.Fprintf(&b, "- `%s`: %s\n", f.Path, arrow(f))
 		}

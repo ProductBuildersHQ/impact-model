@@ -30,7 +30,7 @@ var selectors = []struct {
 func newGraphCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "graph <model-file>",
-		Short: "Analyze the causal graph of an impact model",
+		Short: "Analyze the causal graph of an outcome model",
 		Long: `Summarize or query the causal graph: outcomes and interventions joined by
 causal links. Feedback links are excluded from every structural query.
 

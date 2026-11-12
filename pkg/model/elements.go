@@ -3,7 +3,7 @@ package model
 import core "github.com/grokify/prism-core"
 
 // Outcome is a node in the pathway of change: a condition that must exist
-// for the impact model to work and does not yet exist. Incoming causal links are
+// for the outcome model to work and does not yet exist. Incoming causal links are
 // its preconditions.
 type Outcome struct {
 	ID          string `json:"id" jsonschema:"required"`
@@ -48,7 +48,7 @@ type Outcome struct {
 	Priority *Priority `json:"priority,omitempty"`
 	// AudienceIDs are the audiences who need to see this outcome reported.
 	AudienceIDs []string `json:"audienceIds,omitempty"`
-	// ContributesTo lists outcomes in a parent impact model this outcome
+	// ContributesTo lists outcomes in a parent outcome model this outcome
 	// contributes to, as element references (model:<doc>#<outcome>).
 	ContributesTo []string    `json:"contributesTo,omitempty"`
 	Tags          []string    `json:"tags,omitempty"`
@@ -366,7 +366,7 @@ type Cause struct {
 
 // Effect is a branch of the problem tree: a consequence of the core problem,
 // directly or through other effects. Outcomes name the effects they relieve,
-// so the impact model can be checked against the harm it is meant to reduce.
+// so the outcome model can be checked against the harm it is meant to reduce.
 type Effect struct {
 	ID        string `json:"id" jsonschema:"required"`
 	Statement string `json:"statement" jsonschema:"required"`
@@ -504,7 +504,7 @@ type Evidence struct {
 	AccessedAt  string      `json:"accessedAt,omitempty" jsonschema:"format=date"`
 }
 
-// ExternalFactor is a condition outside the impact model's control that helps or
+// ExternalFactor is a condition outside the outcome model's control that helps or
 // hinders change.
 type ExternalFactor struct {
 	ID          string     `json:"id" jsonschema:"required"`
@@ -517,7 +517,7 @@ type ExternalFactor struct {
 	Provenance *Provenance `json:"provenance,omitempty"`
 }
 
-// Risk is a prism-core risk attached to elements of the impact model.
+// Risk is a prism-core risk attached to elements of the outcome model.
 type Risk struct {
 	core.Risk
 	AppliesTo            []string     `json:"appliesTo,omitempty"`
@@ -526,7 +526,7 @@ type Risk struct {
 	Provenance           *Provenance  `json:"provenance,omitempty"`
 }
 
-// Provenance records why an element is in the impact model: its basis and the
+// Provenance records why an element is in the outcome model: its basis and the
 // evidence behind it. Most elements carry one, so a draft built from public
 // sources can say what a source stated and what an analyst inferred.
 type Provenance struct {
@@ -584,7 +584,7 @@ func (m Metric) Rejected() bool { return m.Provenance.IsRejected() }
 // Rejected reports whether the pathway was rejected.
 func (p Pathway) Rejected() bool { return p.Provenance.IsRejected() }
 
-// Consultation records one validation of the impact model with stakeholders: the
+// Consultation records one validation of the outcome model with stakeholders: the
 // step validated, how, who took part (as groups), what they said, and what
 // changed as a result.
 type Consultation struct {
@@ -602,7 +602,7 @@ type Consultation struct {
 
 // Pathway is a named grouping of outcomes and interventions, such as a
 // program area or a strategy. Detail for a pathway may live in a child
-// Impact model that points back with the document's parent field.
+// Outcome model that points back with the document's parent field.
 type Pathway struct {
 	ID          string      `json:"id" jsonschema:"required"`
 	Title       string      `json:"title" jsonschema:"required"`
@@ -616,7 +616,7 @@ type Pathway struct {
 	OwnerID          string   `json:"ownerActorId,omitempty"`
 	OutcomeIDs       []string `json:"outcomeIds,omitempty"`
 	InterventionIDs  []string `json:"interventionIds,omitempty"`
-	// ChildModel references an impact model that elaborates this pathway
+	// ChildModel references an outcome model that elaborates this pathway
 	// (model:<doc>).
 	ChildModel string `json:"childModel,omitempty" jsonschema:"pattern=^model:[a-z][a-z0-9]*(-[a-z0-9]+)*$"`
 	// Focus names the metrics this program is steered by.
@@ -673,7 +673,7 @@ type ExternalRef struct {
 	Attributes map[string]string `json:"attributes,omitempty"`
 }
 
-// Alignment links an element of this impact model to an external element, such as
+// Alignment links an element of this outcome model to an external element, such as
 // a Balanced Scorecard objective or an OKR key result.
 type Alignment struct {
 	ElementID string      `json:"elementId" jsonschema:"required"`

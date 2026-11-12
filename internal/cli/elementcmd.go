@@ -288,7 +288,7 @@ var elementFlags = map[string][]elementFlag{
 		s("owner", "ownerActorId", "owning actor ID"),
 		ss("outcomes", "outcomeIds", "outcome IDs in the pathway"),
 		ss("interventions", "interventionIds", "intervention IDs in the pathway"),
-		s("child", "childModel", "Impact model that elaborates this pathway, as model:<doc>"),
+		s("child", "childModel", "Outcome model that elaborates this pathway, as model:<doc>"),
 		s("north-star", "focus.northStarId", "indicator ID of the pathway's North Star: an outcome metric, never an output"),
 		s("one-metric", "focus.oneMetricId", "indicator ID to focus on at the pathway's current stage"),
 		ss("guardrails", "focus.guardrailIds", "indicator IDs watched so the North Star is not pursued at their cost"),
@@ -312,7 +312,7 @@ var provenanceKinds = []string{
 func init() {
 	for _, kind := range provenanceKinds {
 		elementFlags[kind] = append(elementFlags[kind],
-			s("basis", "provenance.basis", "why it is in the impact model: stated, inferred, hypothesis, confirmed, or rejected"),
+			s("basis", "provenance.basis", "why it is in the outcome model: stated, inferred, hypothesis, confirmed, or rejected"),
 			ss("sources", "provenance.evidenceIds", "evidence IDs that support the basis"),
 			s("basis-note", "provenance.note", "note on the basis"),
 			s("decided-at", "provenance.decidedAt", "date a confirmed or rejected basis was decided (YYYY-MM-DD)"),

@@ -1,4 +1,4 @@
-// Package tocio loads and writes impact model documents.
+// Package tocio loads and writes outcome model documents.
 //
 // Documents may be authored as JSON or YAML. YAML is converted to JSON
 // before schema validation and decoding, so both formats validate and

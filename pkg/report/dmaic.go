@@ -95,7 +95,7 @@ func DMAICNeeds(ind model.Indicator) []string {
 	return out
 }
 
-// DMAICPlan renders the DMAIC plan of an impact model: for each pathway
+// DMAICPlan renders the DMAIC plan of an outcome model: for each pathway
 // marked `projections: [dmaic]`, or for the one pathway named, the problem
 // the effort improves (Define), the interventions it can change (Improve),
 // and a table of its indicators with the DMAIC phases each serves and what

@@ -44,7 +44,7 @@ func refusal(t *testing.T, err error, code string) Refusal {
 	return Refusal{}
 }
 
-// cleared confirms every hypothesis so the impact model is ready.
+// cleared confirms every hypothesis so the outcome model is ready.
 func cleared(t *testing.T, doc *model.Model) {
 	t.Helper()
 	ids, err := Hypotheses(doc)

@@ -58,7 +58,7 @@ func TestBundleIsDeterministicAndHashed(t *testing.T) {
 	ja, _ := json.Marshal(a)
 	jb, _ := json.Marshal(b)
 	if string(ja) != string(jb) || a.BundleHash == "" {
-		t.Error("two bundles of the same impact model differ")
+		t.Error("two bundles of the same outcome model differ")
 	}
 	if a.Kind != BundleKind || a.Profile != "core" || a.Rubric == nil || a.Lint == nil || a.Instructions == "" || !strings.Contains(a.Narrative, "assessment") {
 		t.Errorf("bundle is incomplete: %+v", a)
@@ -70,7 +70,7 @@ func TestBundleIsDeterministicAndHashed(t *testing.T) {
 		t.Fatal(err)
 	}
 	if c.BundleHash == a.BundleHash {
-		t.Error("editing the impact model did not change the hash")
+		t.Error("editing the outcome model did not change the hash")
 	}
 	dev, err := Build(load(t), "development")
 	if err != nil {
@@ -277,7 +277,7 @@ func TestSummarizeSingleJudgeAndFailures(t *testing.T) {
 	_, names, vs = recordAll(t, b, map[string]*Verdict{"blocker": blocking})
 	s, _ = Summarize(b, names, vs, rubric.AggregationMajority)
 	if s.Pass || !strings.Contains(strings.Join(s.Reasons, ";"), "structural_integrity") {
-		t.Errorf("a failed blocking category must fail the impact model: %+v", s.Reasons)
+		t.Errorf("a failed blocking category must fail the outcome model: %+v", s.Reasons)
 	}
 
 	lots := verdict(b, "finder", nil)
@@ -287,7 +287,7 @@ func TestSummarizeSingleJudgeAndFailures(t *testing.T) {
 	_, names, vs = recordAll(t, b, map[string]*Verdict{"finder": lots})
 	s, _ = Summarize(b, names, vs, rubric.AggregationMajority)
 	if s.Pass {
-		t.Error("high findings above the rubric's limit must fail the impact model")
+		t.Error("high findings above the rubric's limit must fail the outcome model")
 	}
 
 	if _, err := Summarize(b, nil, nil, rubric.AggregationMajority); err == nil {

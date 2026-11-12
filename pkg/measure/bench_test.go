@@ -38,7 +38,7 @@ func BenchmarkValidateLintAndStatus(b *testing.B) {
 }
 
 // The specification budgets one second for validate, lint, and status on a
-// Impact model of this size. The pipeline takes a few dozen milliseconds on a
+// Outcome model of this size. The pipeline takes a few dozen milliseconds on a
 // laptop, so a busy machine passes with room to spare and a change that
 // makes it an order of magnitude slower fails.
 func TestLargeTheoryStaysWithinTheTimeBudget(t *testing.T) {

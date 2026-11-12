@@ -25,7 +25,7 @@ func TestLintFindsErrorsAndExitsOne(t *testing.T) {
 	if !strings.Contains(r.stdout, "NO-GO") || !strings.Contains(r.stdout, "OM-MEA-001 oc-enterprise-require") {
 		t.Errorf("stdout = %.400s", r.stdout)
 	}
-	// Disabling the failing rule makes the impact model GO.
+	// Disabling the failing rule makes the outcome model GO.
 	wantCode(t, run(t, "", "lint", path, "--disable", "OM-MEA-001"), ExitOK)
 }
 

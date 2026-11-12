@@ -2,7 +2,7 @@
 // renders from. One model feeds every output, so a number or a label never
 // differs between a report and a deck.
 //
-// A View is derived from an impact model document and its causal graph,
+// A View is derived from an outcome model document and its causal graph,
 // and optionally from a computed status snapshot. Without a status it
 // supports the definition reports (diagram, logic models, metric
 // definitions, glossary) that need no data.
@@ -25,7 +25,7 @@ const ViewVersion = "1"
 type Options struct {
 	// Pathway restricts the view to one pathway: its outcomes and
 	// interventions plus everything downstream of them, so the route to
-	// impact stays visible. Empty means the whole impact model.
+	// impact stays visible. Empty means the whole outcome model.
 	Pathway string
 }
 
@@ -61,7 +61,7 @@ type View struct {
 	Unmarked    int                 `json:"unmarkedCount"`
 }
 
-// DocumentView is the impact model's identity and context.
+// DocumentView is the outcome model's identity and context.
 type DocumentView struct {
 	ID               string `json:"id"`
 	Title            string `json:"title"`
@@ -72,7 +72,7 @@ type DocumentView struct {
 	Geography        string `json:"geography,omitempty"`
 	TimeStart        string `json:"timeStart,omitempty"`
 	TimeEnd          string `json:"timeEnd,omitempty"`
-	// Perspective names the actor whose impact model this is.
+	// Perspective names the actor whose outcome model this is.
 	Perspective string `json:"perspective,omitempty"`
 	// Ceiling describes the ceiling of accountability in words.
 	Ceiling          string   `json:"ceiling,omitempty"`

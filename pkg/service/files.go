@@ -43,10 +43,10 @@ func InitDocument(o InitOptions) (*model.Model, error) {
 		o.ID = "my-outcome-model"
 	}
 	if o.Name == "" {
-		o.Name = "My impact model"
+		o.Name = "My outcome model"
 	}
 	if o.Problem == "" {
-		o.Problem = "TODO: describe the problem this impact model addresses, for whom, and where."
+		o.Problem = "TODO: describe the problem this outcome model addresses, for whom, and where."
 	}
 	doc := model.NewModel(o.ID, o.Problem)
 	doc.Metadata.Name = o.Name
@@ -95,7 +95,7 @@ type FormatResult struct {
 }
 
 // FormatFile rewrites a file in canonical form. With check it only reports
-// whether the file would change. With sortElements, an impact model has
+// whether the file would change. With sortElements, an outcome model has
 // its element lists ordered by ID first.
 func FormatFile(path string, check, sortElements bool) (FormatResult, error) {
 	data, f, err := readInput(path)
@@ -155,7 +155,7 @@ type PatchResult struct {
 	Document []byte `json:"-"`
 }
 
-// PatchFile applies a patch to an impact model file and, unless DryRun,
+// PatchFile applies a patch to an outcome model file and, unless DryRun,
 // writes the canonical result in the file's own format. Nothing is written
 // when the patch is rejected or changes nothing.
 func PatchFile(path string, p edit.Patch, o PatchOptions) (*PatchResult, error) {

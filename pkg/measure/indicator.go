@@ -1,6 +1,6 @@
 // Package measure turns observations into status: how far each indicator has
 // moved, whether that is on track, and what that means for outcomes and
-// pathways. Everything here is a pure function of the impact model, the
+// pathways. Everything here is a pure function of the outcome model, the
 // observations, and the as-of date; it never reads the clock.
 package measure
 

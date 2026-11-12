@@ -50,7 +50,7 @@ func statusInput(t *testing.T) (report.StatusInput, []*model.ObservationSet) {
 
 func TestStatusDeckGoldens(t *testing.T) {
 	in, sets := statusInput(t)
-	golden(t, "exec.md", Exec(in, Options{Stamp: "Impact model riverbend-network · version 0.2 · hash abc123"}))
+	golden(t, "exec.md", Exec(in, Options{Stamp: "Outcome model riverbend-network · version 0.2 · hash abc123"}))
 	golden(t, "learning-review.md", LearningReview(report.LearningInput{StatusInput: in, Sets: sets, Period: "2026-Q3"}, Options{}))
 	story, err := Story(in, sets, "aud-funders", Options{})
 	if err != nil {

@@ -3427,7 +3427,7 @@ reviewMeetings:
       - lq-members-deliver
   - id: mtg-annual
     name: Annual strategy review with the board
-    purpose: Review the year against the impact model and revise it.
+    purpose: Review the year against the outcome model and revise it.
     frequency: P1Y
     participants:
       - Network board

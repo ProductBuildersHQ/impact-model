@@ -90,7 +90,7 @@ func TestJudgeShowRecordSummary(t *testing.T) {
 		t.Errorf("conservative summary = %+v (%v)", s, err)
 	}
 
-	// Editing the impact model moves to a new bundle with no verdicts yet.
+	// Editing the outcome model moves to a new bundle with no verdicts yet.
 	wantCode(t, run(t, "", "outcome", "set", theory, "oc-spec-stable", "--title", "Edited after judging"), ExitOK)
 	wantCode(t, run(t, "", "judge", "summary", theory), ExitUsageErr)
 }

@@ -2,8 +2,8 @@ package model
 
 import "slices"
 
-// ObservationSet holds measurements for one impact model, usually for
-// one period. It is a separate document so the slow-changing impact model and the
+// ObservationSet holds measurements for one outcome model, usually for
+// one period. It is a separate document so the slow-changing outcome model and the
 // fast-changing measurements have independent histories.
 type ObservationSet struct {
 	Schema      string `json:"$schema,omitempty"`
@@ -67,7 +67,7 @@ type AssumptionAssessment struct {
 	EvidenceIDs  []string         `json:"evidenceIds,omitempty"`
 }
 
-// Story is one account of change, coded against the impact model's theme codebook.
+// Story is one account of change, coded against the outcome model's theme codebook.
 // Stories describe aggregate patterns; ActorID may be an anonymized label.
 type Story struct {
 	ID    string `json:"id" jsonschema:"required"`
@@ -110,7 +110,7 @@ type Note struct {
 	RelatedIDs []string `json:"relatedIds,omitempty"`
 }
 
-// ActorRegistry is a shared list of actors that several impact models reference,
+// ActorRegistry is a shared list of actors that several outcome models reference,
 // for example the champions of competing futures.
 type ActorRegistry struct {
 	Schema      string  `json:"$schema,omitempty"`

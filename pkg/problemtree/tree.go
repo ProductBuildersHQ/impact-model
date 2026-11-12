@@ -1,4 +1,4 @@
-// Package problemtree draws the problem tree of an impact model: the causes
+// Package problemtree draws the problem tree of an outcome model: the causes
 // (roots) below the core problem and the effects (branches) above it, with
 // arrows that flow upward from the deepest causes to the core problem and on
 // to the furthest effects.

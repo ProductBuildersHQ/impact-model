@@ -156,4 +156,4 @@ Work down this list. For each: agree, change, remove, or not sure. Record what t
 
 # Export details
 
-Impact model open-agent-auth · version 0.1 · hash 9714c12f79c2
+Outcome model open-agent-auth · version 0.1 · hash 9714c12f79c2

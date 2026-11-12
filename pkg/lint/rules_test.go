@@ -8,7 +8,7 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// clean returns a small impact model that breaks none of the structure or logic
+// clean returns a small outcome model that breaks none of the structure or logic
 // rules: one impact reached by two medium-term outcomes, each reached from a
 // short-term outcome that an intervention brings about.
 func clean() *model.Model {

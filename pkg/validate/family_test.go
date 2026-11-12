@@ -47,7 +47,7 @@ func TestPathwayIssues(t *testing.T) {
 	}
 }
 
-// umbrella is a parent impact model the full fixture elaborates.
+// umbrella is a parent outcome model the full fixture elaborates.
 func umbrella() *model.Model {
 	d := model.NewModel("agent-ecosystem-trust", "Agents cannot yet be trusted across organizations.")
 	d.Outcomes = []model.Outcome{

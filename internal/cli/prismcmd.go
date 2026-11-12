@@ -25,7 +25,7 @@ now, from the latest observation or the baseline, and the dated targets it is
 meant to reach. With observations (-O), target confidence comes from the
 status.`
 	case "v2mom":
-		short, long = "Export the impact model as a V2MOM", `Export the impact model as a V2MOM (Vision, Values, Methods, Obstacles,
+		short, long = "Export the outcome model as a V2MOM", `Export the outcome model as a V2MOM (Vision, Values, Methods, Obstacles,
 Measures):
 
   Vision     context.vision
@@ -40,7 +40,7 @@ With observations (-O), the measures carry current values, progress, and
 status. A model without a vision, values, or a pathway is refused, with a
 message naming what to add.`
 	case "vsem":
-		short, long = "Export the impact model as a VSEM", `Export the impact model as a VSEM (Vision, Strategy, Execution, Metrics):
+		short, long = "Export the outcome model as a VSEM", `Export the outcome model as a VSEM (Vision, Strategy, Execution, Metrics):
 
   Vision     context.vision, and context.mission
   Strategy   one per pathway, with the resources it commits
@@ -69,10 +69,10 @@ Analyze, Improve, Control) metrics document:
                otherwise Analyze
 
 Process capability is not filled: it needs specification limits, which an
-impact model does not record. A model with no marked pathway, or none with a
+outcome model does not record. A model with no marked pathway, or none with a
 numeric indicator, is refused.`
 	case "mel":
-		short, long = "Export the impact model as a MEL plan", `Export the impact model as a monitoring, evaluation, and learning (MEL) plan:
+		short, long = "Export the outcome model as a MEL plan", `Export the outcome model as a monitoring, evaluation, and learning (MEL) plan:
 
   Results      the outcomes at their levels, each contributing to the
                outcomes its links and precondition groups lead to (feedback
@@ -89,7 +89,7 @@ numeric indicator, is refused.`
 With observations (-O), the indicators carry their latest values. A model
 with no outcome that review has not rejected is refused.`
 	case "ogsm":
-		short, long = "Export the impact model as an OGSM", `Export the impact model as an OGSM (Objective, Goals, Strategies, Measures):
+		short, long = "Export the outcome model as an OGSM", `Export the outcome model as an OGSM (Objective, Goals, Strategies, Measures):
 
   Objective   context.objective, or the model's one impact outcome, due at
               the end of the time horizon
@@ -105,7 +105,7 @@ progress, and status. A model with several impact outcomes and no
 context.objective, or without a pathway, is refused, with a message naming
 what to add.`
 	case "bsc":
-		short, long = "Export the impact model as a Balanced Scorecard", `Export the impact model as a Balanced Scorecard:
+		short, long = "Export the outcome model as a Balanced Scorecard", `Export the outcome model as a Balanced Scorecard:
 
   Mission, vision  context.mission and context.vision
   Perspectives     those the outcomes use, top first: mission, financial,

@@ -44,16 +44,16 @@ func New(root string) (*Server, error) {
 func (s *Server) MCP() *sdk.Server {
 	srv := sdk.NewServer(&sdk.Implementation{Name: "outcome-model", Version: Version}, nil)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_schema", Description: "List the embedded JSON Schemas, or return one by name."}, s.schemaTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_validate", Description: "Validate an impact model against its schema and structurally. Returns whether it is valid and every issue found."}, s.validateTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_lint", Description: "Check the quality of an impact model with the lint rules. Returns a structured-evaluation summary report."}, s.lintTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_validate", Description: "Validate an outcome model against its schema and structurally. Returns whether it is valid and every issue found."}, s.validateTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_lint", Description: "Check the quality of an outcome model with the lint rules. Returns a structured-evaluation summary report."}, s.lintTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_graph", Description: "Query the causal graph: summary, upstream, downstream, paths, cycles, levels, orphans, dead-ends, or a Mermaid diagram."}, s.graphTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_status", Description: "Compute a status snapshot of an impact model from observation sets as of a date."}, s.statusTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_status", Description: "Compute a status snapshot of an outcome model from observation sets as of a date."}, s.statusTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_report", Description: "Render a report as Markdown: a definition report, or a status report such as exec or story."}, s.reportTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_export", Description: "Export the impact model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, mel, ogsm, or bsc. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_patch", Description: "Apply an RFC 6902 JSON Patch to an impact model atomically. Elements may be addressed by id: /outcomes/@oc-skills/title. A patch that adds validation errors is rejected."}, s.patchTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_export", Description: "Export the outcome model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, mel, ogsm, or bsc. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_patch", Description: "Apply an RFC 6902 JSON Patch to an outcome model atomically. Elements may be addressed by id: /outcomes/@oc-skills/title. A patch that adds validation errors is rejected."}, s.patchTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_deck", Description: "Generate a slide deck as Marp Markdown: workshop, exec, learning-review, or story. Nothing is rendered to PDF."}, s.deckTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_judge_bundle", Description: "Build the bundle a judge reads to review an impact model against the rubric. Makes no model calls."}, s.judgeTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_diff", Description: "Compare two versions of an impact model by element id."}, s.diffTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_judge_bundle", Description: "Build the bundle a judge reads to review an outcome model against the rubric. Makes no model calls."}, s.judgeTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_diff", Description: "Compare two versions of an outcome model by element id."}, s.diffTool)
 	return srv
 }
 
@@ -285,7 +285,7 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 	return nil, out, err
 }
 
-// statusInput evaluates the impact model for a status report or deck. A narrative,
+// statusInput evaluates the outcome model for a status report or deck. A narrative,
 // actors, or custom report with no observations and no date has no status.
 func (s *Server) statusInput(doc *model.Model, obs Observations, asOf, kind string) (report.StatusInput, []*model.ObservationSet, bool, error) {
 	sets, err := s.loadObservations(obs)
@@ -346,7 +346,7 @@ func (s *Server) patchTool(_ context.Context, _ *sdk.CallToolRequest, in patchIn
 	if err != nil {
 		return nil, patchOut{}, err
 	}
-	// An impact model given by path is written back unless this is a dry run.
+	// An outcome model given by path is written back unless this is a dry run.
 	if path != "" && !in.DryRun {
 		res, err := service.PatchFile(path, patch, service.PatchOptions{AllowErrors: in.AllowErrors})
 		if err != nil {

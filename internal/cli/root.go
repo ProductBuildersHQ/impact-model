@@ -59,8 +59,8 @@ func NewRootCmd(in io.Reader, out, errOut io.Writer) *cobra.Command {
 	e := &env{in: in, out: out, errOut: errOut}
 	root := &cobra.Command{
 		Use:   "outcome-model",
-		Short: "Capture, check, edit, and report on impact models",
-		Long: `outcome-model works with impact model documents (JSON or YAML) and the
+		Short: "Capture, check, edit, and report on outcome models",
+		Long: `outcome-model works with outcome model documents (JSON or YAML) and the
 observation sets that measure them.
 
 Exit codes: 0 success; 1 the input is invalid or a change was rejected;

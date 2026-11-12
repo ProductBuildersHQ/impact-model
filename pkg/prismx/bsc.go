@@ -10,11 +10,11 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotBSCReady is returned, wrapped, when an impact model lacks what a
+// ErrNotBSCReady is returned, wrapped, when an outcome model lacks what a
 // Balanced Scorecard requires: an outcome placed in a scorecard perspective.
-var ErrNotBSCReady = errors.New("the impact model cannot be drawn as a Balanced Scorecard")
+var ErrNotBSCReady = errors.New("the outcome model cannot be drawn as a Balanced Scorecard")
 
-// ToBSC exports the impact model as a Balanced Scorecard.
+// ToBSC exports the outcome model as a Balanced Scorecard.
 //
 //   - The mission and vision are context.mission and context.vision.
 //   - The perspectives are those the outcomes use, top first: mission,

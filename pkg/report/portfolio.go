@@ -18,7 +18,7 @@ func Portfolio(in StatusInput, cost *burden.Report) string {
 	var b strings.Builder
 	b.WriteString(header(in, "portfolio"))
 	if len(in.View.Pathways) == 0 {
-		b.WriteString("This impact model has no pathways, so there is nothing to compare.\n\n")
+		b.WriteString("This outcome model has no pathways, so there is nothing to compare.\n\n")
 		return b.String()
 	}
 	costOf := map[string]burden.Group{}

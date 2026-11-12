@@ -15,10 +15,10 @@ func newMCPCmd() *cobra.Command {
 		Use:   "mcp",
 		Short: "Serve the tools to an AI agent over MCP (stdio)",
 		Long: `Start a Model Context Protocol server on standard input and output, so an AI
-assistant can validate, lint, query, measure, report on, and edit an impact model.
+assistant can validate, lint, query, measure, report on, and edit an outcome model.
 
 Tools: outcome_schema, outcome_validate, outcome_lint, outcome_graph, outcome_status, outcome_report,
-outcome_patch, outcome_deck, outcome_judge_bundle, outcome_diff. A tool takes an impact model inline
+outcome_patch, outcome_deck, outcome_judge_bundle, outcome_diff. A tool takes an outcome model inline
 (document) or by path. A path must lie inside --root, which defaults to the
 current directory: ".." is refused, and so is a symbolic link that leaves the
 root. outcome_patch rejects any patch that adds validation errors.

@@ -11,7 +11,7 @@ import (
 // ImportReview maps a review response onto doc as proposals. doc is never
 // modified. Quoted text is matched against the statements the review packet
 // showed, and the response's hash against the current document's. step is
-// the consultation step to record; empty means the whole impact model.
+// the consultation step to record; empty means the whole outcome model.
 func ImportReview(doc *model.Model, resp *model.ReviewResponse, step model.ConsultationStep) (*review.Result, error) {
 	g, err := BuildGraph(doc)
 	if err != nil {

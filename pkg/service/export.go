@@ -9,7 +9,7 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/prismx"
 )
 
-// PRISMExportKinds are the documents an impact model exports for the PRISM tools.
+// PRISMExportKinds are the documents an outcome model exports for the PRISM tools.
 var PRISMExportKinds = []string{"okr", "journey", "v2mom", "vsem", "dmaic", "mel", "ogsm", "bsc"}
 
 // PRISMExport is one document exported for the PRISM tools, and what was left
@@ -24,7 +24,7 @@ type PRISMExport struct {
 	Omissions []prismx.Omission `json:"omissions,omitempty"`
 }
 
-// ExportPRISM draws the impact model as the export kind. On error the
+// ExportPRISM draws the outcome model as the export kind. On error the
 // result carries no document, but may still list omissions. st and sets may be
 // nil, for an export without observations. It is the one place the command
 // line and the MCP server export from, so both refuse the same incomplete

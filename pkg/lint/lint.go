@@ -1,6 +1,6 @@
-// Package lint checks the quality of an impact model with deterministic
+// Package lint checks the quality of an outcome model with deterministic
 // rules, each with a stable ID and a severity. Validation answers "is this a
-// well-formed document?"; lint answers "is this a sound impact model?".
+// well-formed document?"; lint answers "is this a sound outcome model?".
 //
 // Rules are registered in a Registry. A profile picks how much to report:
 // draft runs the errors and the structural rules, so a small valid document

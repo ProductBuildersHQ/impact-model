@@ -106,14 +106,14 @@ func render(e *env, cmd *cobra.Command, path string, csv bool, fn func(*model.Mo
 func newReportCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "report <kind> <model-file>",
-		Short: "Render a report from an impact model",
+		Short: "Render a report from an outcome model",
 		Long: `Render a report as portable Markdown.
 
 Definition reports need no observations, so a workshop can review them before
 any data exists. Kinds: ` + strings.Join(report.DefinitionKinds, ", ") + `.
 "definitions" renders all of them as one document.
 
-Status reports describe how far the impact model has come, from observation files
+Status reports describe how far the outcome model has come, from observation files
 (-o) as of a date (--as-of, or the latest date in the observations). Kinds:
 exec, results, assumptions, interventions, evidence-gaps, full, story
 (--audience), headline (--audience narrows it), metric-tree (--pathway narrows it), learning-review (--period), portfolio, narrative, actors, and
@@ -252,7 +252,7 @@ func statusReportText(cmd *cobra.Command, kind string, in report.StatusInput, se
 func newExportCmd(e *env) *cobra.Command {
 	export := &cobra.Command{
 		Use:   "export",
-		Short: "Export tables from an impact model",
+		Short: "Export tables from an outcome model",
 	}
 	csv := &cobra.Command{
 		Use:   "csv <table> <model-file>",

@@ -102,7 +102,7 @@ func init() {
 		return out
 	})
 
-	register("OM-MEA-004", validate.SeverityWarning, "Target dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-MEA-004", validate.SeverityWarning, "Target dates fall within the time horizon of the outcome model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil
@@ -255,7 +255,7 @@ func init() {
 			return a.Test == "" || !watched
 		})
 
-	register("OM-ASM-003", validate.SeverityInfo, "The impact model states at least one contextual or external assumption.", func(c *Context) []Finding {
+	register("OM-ASM-003", validate.SeverityInfo, "The outcome model states at least one contextual or external assumption.", func(c *Context) []Finding {
 		if len(c.Doc.Assumptions) == 0 {
 			return nil // nothing is assumed yet; other rules say so
 		}
@@ -264,10 +264,10 @@ func init() {
 				return nil
 			}
 		}
-		return []Finding{{Path: "/assumptions", Message: "no assumption is about the context or outside forces; impact models that look only inward miss what can go wrong around them"}}
+		return []Finding{{Path: "/assumptions", Message: "no assumption is about the context or outside forces; outcome models that look only inward miss what can go wrong around them"}}
 	})
 
-	register("OM-ASM-005", validate.SeverityInfo, "An impact model with shared or partner outcomes states a partnership assumption.", func(c *Context) []Finding {
+	register("OM-ASM-005", validate.SeverityInfo, "An outcome model with shared or partner outcomes states a partnership assumption.", func(c *Context) []Finding {
 		shared := false
 		for _, o := range activeOutcomes(c.Doc) {
 			r := o.v.EffectiveResponsibility()

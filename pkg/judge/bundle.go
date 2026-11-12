@@ -1,9 +1,9 @@
-// Package judge prepares an impact model for review by an LLM-as-a-Judge
+// Package judge prepares an outcome model for review by an LLM-as-a-Judge
 // and checks, stores, and combines what the judges return. It makes no model
 // calls: a judge, human or agent, reads a bundle and returns a verdict.
 //
 // A bundle carries a hash of its content, and a verdict carries the hash of
-// the bundle it judged, so a verdict can never be applied to an impact model that has
+// the bundle it judged, so a verdict can never be applied to an outcome model that has
 // since changed.
 package judge
 
@@ -34,7 +34,7 @@ type Bundle struct {
 	Profile string `json:"profile"`
 	// Rubric is what the judge scores against.
 	Rubric *rubric.RubricSet `json:"rubric"`
-	// Document is the impact model in canonical JSON. Evidence that is restricted,
+	// Document is the outcome model in canonical JSON. Evidence that is restricted,
 	// or has no sensitivity set, is stripped of its excerpt, summary, and URL.
 	Document json.RawMessage `json:"document"`
 	// Narrative is the definitions pack and the assessment, in Markdown.

@@ -9,9 +9,9 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// Evaluate computes the status of an impact model at asOf from observation sets.
-// g is the impact model's graph. The result is a pure function of its inputs: the
-// same impact model, observations, date, and options always give a byte-identical
+// Evaluate computes the status of an outcome model at asOf from observation sets.
+// g is the outcome model's graph. The result is a pure function of its inputs: the
+// same outcome model, observations, date, and options always give a byte-identical
 // snapshot, and the clock is never read.
 //
 // The steps are: derive values for theme-count and roll-up indicators from
@@ -115,7 +115,7 @@ func derivedObservations(doc *model.Model, sets []*model.ObservationSet, asOf ti
 	}
 
 	// Roll-ups can depend on other roll-ups, so repeat until nothing new is
-	// derived; an impact model with more passes than indicators has a loop, which
+	// derived; an outcome model with more passes than indicators has a loop, which
 	// validation does not forbid, and is cut off there.
 	done := map[string]bool{}
 	for pass := 0; pass < len(doc.Indicators); pass++ {

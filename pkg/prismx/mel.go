@@ -12,11 +12,11 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotMELReady is returned, wrapped, when an impact model has no outcome
+// ErrNotMELReady is returned, wrapped, when an outcome model has no outcome
 // that review has not rejected, so a MEL plan would have no results.
-var ErrNotMELReady = errors.New("the impact model cannot be drawn as a MEL plan")
+var ErrNotMELReady = errors.New("the outcome model cannot be drawn as a MEL plan")
 
-// ToMEL exports the impact model as a monitoring, evaluation, and learning
+// ToMEL exports the outcome model as a monitoring, evaluation, and learning
 // plan.
 //
 //   - Results are the outcomes, at the same five levels. A result contributes

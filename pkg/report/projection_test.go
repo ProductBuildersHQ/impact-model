@@ -20,7 +20,7 @@ func TestProjectionGoldens(t *testing.T) {
 	golden(t, "logic-model-diagram.md", LogicModelDiagrams(whole, pathways))
 }
 
-// An impact model with no pathways projects the whole impact model once.
+// An outcome model with no pathways projects the whole outcome model once.
 func TestProjectionsOfATheoryWithNoPathways(t *testing.T) {
 	doc := fullDoc(t)
 	doc.Pathways = nil

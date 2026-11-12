@@ -1,4 +1,4 @@
-// Package share prepares impact model artifacts for sharing outside the
+// Package share prepares outcome model artifacts for sharing outside the
 // tools: the export stamp every artifact carries, and the Markdown profile
 // that Pandoc converts to DOCX and PPTX. It only produces text. Rendering
 // diagrams and running Pandoc are done by the command line, never here.
@@ -12,7 +12,7 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-// Stamp identifies exactly which version of which impact model an artifact was
+// Stamp identifies exactly which version of which outcome model an artifact was
 // made from, so a reader can tell whether it is out of date.
 type Stamp struct {
 	ModelID string `json:"modelId"`
@@ -54,7 +54,7 @@ func (s Stamp) shortHash() string {
 
 // Line is the one-line form used in footers and on title slides.
 func (s Stamp) Line() string {
-	line := fmt.Sprintf("Impact model %s · version %s · hash %s", s.ModelID, s.Version, s.shortHash())
+	line := fmt.Sprintf("Outcome model %s · version %s · hash %s", s.ModelID, s.Version, s.shortHash())
 	if s.AsOf != "" {
 		line += " · as of " + s.AsOf
 	}

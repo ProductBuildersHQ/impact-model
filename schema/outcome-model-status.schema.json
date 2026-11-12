@@ -364,6 +364,6 @@
       ]
     }
   },
-  "title": "Impact Model Status",
+  "title": "Outcome Model Status",
   "description": "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date."
 }

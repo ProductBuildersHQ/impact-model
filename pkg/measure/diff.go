@@ -6,7 +6,7 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// Diff lists what changed between two status snapshots of the same impact model:
+// Diff lists what changed between two status snapshots of the same outcome model:
 // the state of indicators, links, and assumptions, and both states and the
 // confidence of outcomes (their pathway state is the pathway's status).
 // Changes come in a fixed order: indicators, outcomes, links, assumptions,

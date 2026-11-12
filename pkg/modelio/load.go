@@ -68,7 +68,7 @@ func decode[T any](j []byte, schemaName string) (*T, error) {
 	return &v, nil
 }
 
-// ParseDocument parses an impact model in the given format. The input is
+// ParseDocument parses an outcome model in the given format. The input is
 // converted to JSON, validated against the embedded schema, and decoded
 // strictly. A failure wraps ErrInvalidDocument; schema failures also wrap
 // the validator's error, whose output lists JSON-pointer locations.
@@ -151,7 +151,7 @@ func readFile(path string) ([]byte, Format, error) {
 	return data, f, nil
 }
 
-// LoadDocument reads and parses an impact model file (.json, .yaml, or
+// LoadDocument reads and parses an outcome model file (.json, .yaml, or
 // .yml).
 func LoadDocument(path string) (*model.Model, error) {
 	data, f, err := readFile(path)
@@ -183,7 +183,7 @@ func LoadObservations(paths ...string) ([]*model.ObservationSet, error) {
 	return sets, nil
 }
 
-// MergeObservations combines observation sets for one impact model into
+// MergeObservations combines observation sets for one outcome model into
 // a single set. Observations, assessments, and notes are concatenated in
 // input order; the merged Period is the common period if all sets share one
 // and empty otherwise. Sets for different documents cannot be merged.

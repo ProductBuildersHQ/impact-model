@@ -1,4 +1,4 @@
-// Package schemagen generates the JSON Schemas for the impact model
+// Package schemagen generates the JSON Schemas for the outcome model
 // document kinds from the Go types in pkg/model.
 //
 // Go structs are the source of truth. Enumeration types are emitted as
@@ -33,13 +33,13 @@ type Definition struct {
 // Definitions returns the schemas this module publishes, in a stable order.
 func Definitions() []Definition {
 	return []Definition{
-		{"outcome-model", "Impact Model", "An impact model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence.", &model.Model{}},
-		{"observation-set", "Impact Model Observation Set", "Indicator observations, assumption assessments, and notes for one impact model and period.", &model.ObservationSet{}},
-		{"outcome-model-status", "Impact Model Status", "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date.", &model.Status{}},
-		{"status-diff", "Impact Model Status Diff", "Changes between two status snapshots.", &model.StatusDiff{}},
-		{"actor-registry", "Impact Model Actor Registry", "A shared list of actors referenced by several impact models.", &model.ActorRegistry{}},
-		{"csv-mapping", "Impact Model CSV Mapping", "How the columns of a spreadsheet map onto indicator observations.", &model.CSVMapping{}},
-		{"review-response", "Impact Model Review Response", "What reviewers said about an impact model, by element, independent of the channel it was collected through.", &model.ReviewResponse{}},
+		{"outcome-model", "Outcome Model", "An outcome model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence.", &model.Model{}},
+		{"observation-set", "Outcome Model Observation Set", "Indicator observations, assumption assessments, and notes for one outcome model and period.", &model.ObservationSet{}},
+		{"outcome-model-status", "Outcome Model Status", "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date.", &model.Status{}},
+		{"status-diff", "Outcome Model Status Diff", "Changes between two status snapshots.", &model.StatusDiff{}},
+		{"actor-registry", "Outcome Model Actor Registry", "A shared list of actors referenced by several outcome models.", &model.ActorRegistry{}},
+		{"csv-mapping", "Outcome Model CSV Mapping", "How the columns of a spreadsheet map onto indicator observations.", &model.CSVMapping{}},
+		{"review-response", "Outcome Model Review Response", "What reviewers said about an outcome model, by element, independent of the channel it was collected through.", &model.ReviewResponse{}},
 	}
 }
 

@@ -26,7 +26,7 @@ type SheetMeta struct {
 var sheetColumns = []string{"kind", "id", "decision", "suggested_change", "comment"}
 
 // FromSheet reads a returned review sheet (see share.ReviewSheet) into a
-// response. The export stamp row, if still present, supplies the impact model's
+// response. The export stamp row, if still present, supplies the outcome model's
 // ID, version, and hash. Rows the reviewer left untouched are skipped. A
 // sheet with no stamp and no override yields an empty hash, which the import
 // reports as stale.

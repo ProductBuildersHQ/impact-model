@@ -57,7 +57,7 @@ func init() {
 			}
 			if !leads {
 				out = append(out, Finding{Path: at("interventions", in.i) + "/targets", Element: in.v.ID,
-					Message: "no outcome this intervention targets leads to an impact outcome, so the work does not connect to what the impact model is for"})
+					Message: "no outcome this intervention targets leads to an impact outcome, so the work does not connect to what the outcome model is for"})
 			}
 		}
 		return out
@@ -106,7 +106,7 @@ func init() {
 		return out
 	})
 
-	register("OM-INT-008", validate.SeverityWarning, "Interventions run within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-INT-008", validate.SeverityWarning, "Interventions run within the time horizon of the outcome model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil

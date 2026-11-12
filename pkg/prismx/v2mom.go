@@ -13,11 +13,11 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotV2MOMReady is returned, wrapped, when an impact model lacks what a
+// ErrNotV2MOMReady is returned, wrapped, when an outcome model lacks what a
 // V2MOM requires: a vision, at least one value, and at least one pathway.
-var ErrNotV2MOMReady = errors.New("the impact model cannot be drawn as a V2MOM")
+var ErrNotV2MOMReady = errors.New("the outcome model cannot be drawn as a V2MOM")
 
-// ToV2MOM exports the impact model as a V2MOM.
+// ToV2MOM exports the outcome model as a V2MOM.
 //
 //   - Vision is context.vision, and Values are context.values in order.
 //   - Each pathway is a Method. Its measures are the indicators of its focus:

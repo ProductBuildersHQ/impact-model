@@ -9,11 +9,11 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
-// view is a small impact model: two activities share a resource, one lists an
+// view is a small outcome model: two activities share a resource, one lists an
 // output, and the outcomes run from output level to impact.
 func view() *report.View {
 	return &report.View{
-		Document: report.DocumentView{Title: "Whole impact model"},
+		Document: report.DocumentView{Title: "Whole outcome model"},
 		Interventions: []report.InterventionView{
 			{ID: "int-a", Title: "Run workshops", Resources: "Two staff", Outputs: []string{"Workshops held"}, Targets: []string{"oc-skills"}},
 			{ID: "int-b", Title: "Coach leaders", Resources: "Two staff", Targets: []string{"oc-reach"}},
@@ -56,7 +56,7 @@ func TestStagesRunFromInputsToImpact(t *testing.T) {
 	if !slices.Equal(got, want) {
 		t.Errorf("stages = %v, want %v", got, want)
 	}
-	if g.Title != "Whole impact model" {
+	if g.Title != "Whole outcome model" {
 		t.Errorf("title = %q", g.Title)
 	}
 }
@@ -97,7 +97,7 @@ func TestFeedbackIsKeptApart(t *testing.T) {
 		t.Errorf("note:\n%s", note)
 	}
 	if feedbackNote(Build(view())) != "" {
-		t.Error("An impact model with no feedback gets no note")
+		t.Error("An outcome model with no feedback gets no note")
 	}
 }
 

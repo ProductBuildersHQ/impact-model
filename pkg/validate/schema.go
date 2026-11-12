@@ -66,7 +66,7 @@ func schemaIssues(name string, j []byte) []Issue {
 	return out
 }
 
-// Source validates raw input of any document kind and, for a impact model of
+// Source validates raw input of any document kind and, for a outcome model of
 // Change that conforms to its schema, also runs the structural checks of
 // Document. The returned document is nil unless the input passed the schema.
 func Source(data []byte, f modelio.Format, opts ...Option) (*model.Model, []Issue) {

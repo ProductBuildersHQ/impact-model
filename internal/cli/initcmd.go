@@ -15,8 +15,8 @@ import (
 func newInitCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Write a starter impact model",
-		Long: `Write a small starter impact model that already passes validation, with
+		Short: "Write a starter outcome model",
+		Long: `Write a small starter outcome model that already passes validation, with
 TODO placeholders to replace. The output is YAML unless --format json is
 given or --out ends in .json.
 

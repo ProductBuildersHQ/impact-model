@@ -199,7 +199,7 @@ func newExecDeckCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "exec <model-file> -O <observations>...",
 		Short: "Generate the executive deck",
-		Long: `Generate the executive deck from a status snapshot: where the impact model stands,
+		Long: `Generate the executive deck from a status snapshot: where the outcome model stands,
 status by level, the pathway coloured by status, where attention is needed,
 assumptions to watch, what changed, decisions needed, and how to read the
 numbers. The date is --as-of, or the latest date in the observations.

@@ -1,4 +1,4 @@
-// Package graph builds the causal graph of an impact model document and
+// Package graph builds the causal graph of an outcome model document and
 // answers structural questions about it: transitive preconditions and
 // consequences, paths to impact, cycles, levels, orphans, dead ends, and the
 // ceiling of accountability.

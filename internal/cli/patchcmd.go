@@ -15,8 +15,8 @@ import (
 func newPatchCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "patch <model-file> <patch-file|->",
-		Short: "Apply a JSON Patch to an impact model",
-		Long: `Apply an RFC 6902 JSON Patch to an impact model, atomically.
+		Short: "Apply a JSON Patch to an outcome model",
+		Long: `Apply an RFC 6902 JSON Patch to an outcome model, atomically.
 
 Pointers may address array elements by ID: /outcomes/@oc-adoption/title
 selects the outcome with id oc-adoption, and /outcomes/- appends. The patch

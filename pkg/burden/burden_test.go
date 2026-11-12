@@ -90,7 +90,7 @@ func TestCompute(t *testing.T) {
 		t.Errorf("mode order = %v", got)
 	}
 	if r.Budget != nil {
-		t.Error("An impact model with no budget got a budget check")
+		t.Error("An outcome model with no budget got a budget check")
 	}
 }
 

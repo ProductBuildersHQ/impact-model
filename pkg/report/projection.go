@@ -16,7 +16,7 @@ import (
 
 const projectionNote = "_This is a view of the causal model. It flattens the links between outcomes; the pathway diagram shows them._\n\n"
 
-// views returns the views to project: one per pathway, or the whole impact model
+// views returns the views to project: one per pathway, or the whole outcome model
 // when it has none.
 func views(whole *View, pathways []*View) []*View {
 	if len(pathways) == 0 {

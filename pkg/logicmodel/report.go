@@ -17,7 +17,7 @@ const (
 )
 
 // Diagrams renders the layered logic model diagram of each pathway, or of the
-// whole impact model when it has no pathways, each under a heading and in a fenced
+// whole outcome model when it has no pathways, each under a heading and in a fenced
 // block that names its format.
 func Diagrams(whole *report.View, pathways []*report.View, f Format) (string, error) {
 	views := pathways

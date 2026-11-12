@@ -1,4 +1,4 @@
-// Package testfixture builds impact models for tests and benchmarks that need a
+// Package testfixture builds outcome models for tests and benchmarks that need a
 // size the hand-written fixtures do not reach.
 package testfixture
 
@@ -9,7 +9,7 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// Large builds a layered impact model of 200 outcomes, 400 links, and 300
+// Large builds a layered outcome model of 200 outcomes, 400 links, and 300
 // indicators with 5,000 observations: the size the specification budgets a
 // second for.
 func Large() (*model.Model, []*model.ObservationSet) {
@@ -18,7 +18,7 @@ func Large() (*model.Model, []*model.ObservationSet) {
 		indicators = 300
 		perLayer   = 40 // five layers of 40
 	)
-	d := model.NewModel("large", "A large impact model.")
+	d := model.NewModel("large", "A large outcome model.")
 	levels := []model.Level{model.LevelOutput, model.LevelShortTerm, model.LevelMediumTerm, model.LevelLongTerm, model.LevelImpact}
 	for i := 0; i < outcomes; i++ {
 		d.Outcomes = append(d.Outcomes, model.Outcome{ID: fmt.Sprintf("oc-%03d", i), Title: fmt.Sprintf("Outcome %d", i), Level: levels[i/perLayer]})

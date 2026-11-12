@@ -105,7 +105,7 @@ func TestStampForms(t *testing.T) {
 	if got, want := s.CSVRow(), "# model:t1 version:0.3 hash:"+s.ContentHash+"\r\n"; got != want {
 		t.Errorf("CSVRow = %q, want %q", got, want)
 	}
-	if got := s.Line(); got != "Impact model t1 · version 0.3 · hash abababababab · as of 2026-09-30" {
+	if got := s.Line(); got != "Outcome model t1 · version 0.3 · hash abababababab · as of 2026-09-30" {
 		t.Errorf("Line = %q", got)
 	}
 	block := s.YAMLBlock(`A "quoted" title`)

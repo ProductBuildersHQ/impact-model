@@ -77,6 +77,6 @@
       ]
     }
   },
-  "title": "Impact Model CSV Mapping",
+  "title": "Outcome Model CSV Mapping",
   "description": "How the columns of a spreadsheet map onto indicator observations."
 }

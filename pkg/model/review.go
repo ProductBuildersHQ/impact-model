@@ -55,17 +55,17 @@ func AllReviewOrigins() []ReviewOrigin {
 // Valid reports whether v is a known ReviewOrigin.
 func (v ReviewOrigin) Valid() bool { return slices.Contains(AllReviewOrigins(), v) }
 
-// ReviewResponse carries what reviewers said about an impact model, in a form that
+// ReviewResponse carries what reviewers said about an outcome model, in a form that
 // does not depend on the channel it was collected through. Importing it
-// proposes changes; it never changes the impact model.
+// proposes changes; it never changes the outcome model.
 type ReviewResponse struct {
 	Schema      string `json:"$schema,omitempty"`
 	Kind        Kind   `json:"kind" jsonschema:"required,enum=ReviewResponse"`
 	SpecVersion string `json:"specVersion" jsonschema:"required"`
 	ModelID     string `json:"modelId" jsonschema:"required"`
 	Version     string `json:"version,omitempty"`
-	// ContentHash is the hash of the impact model the reviewers saw, from the
-	// export stamp. A different hash means the impact model has changed since.
+	// ContentHash is the hash of the outcome model the reviewers saw, from the
+	// export stamp. A different hash means the outcome model has changed since.
 	ContentHash string `json:"contentHash" jsonschema:"required"`
 	// Reviewers name groups or roles, never individuals.
 	Reviewers []string     `json:"reviewers" jsonschema:"required"`

@@ -126,10 +126,10 @@ func TestImportObservationsReportsUnmatchedRows(t *testing.T) {
 
 func TestImportObservationsUsageErrors(t *testing.T) {
 	for name, args := range map[string][]string{
-		"no flags":               {"import", "observations"},
-		"missing sheet":          {"import", "observations", "--csv", exSheet + ".none", "--map", exMap, "--model", exTheory},
-		"missing map":            {"import", "observations", "--csv", exSheet, "--map", exMap + ".none", "--model", exTheory},
-		"map is an impact model": {"import", "observations", "--csv", exSheet, "--map", exTheory, "--model", exTheory},
+		"no flags":                {"import", "observations"},
+		"missing sheet":           {"import", "observations", "--csv", exSheet + ".none", "--map", exMap, "--model", exTheory},
+		"missing map":             {"import", "observations", "--csv", exSheet, "--map", exMap + ".none", "--model", exTheory},
+		"map is an outcome model": {"import", "observations", "--csv", exSheet, "--map", exTheory, "--model", exTheory},
 	} {
 		if r := run(t, "", args...); r.code != ExitUsageErr {
 			t.Errorf("%s: exit %d, want %d (%s)", name, r.code, ExitUsageErr, r.err)

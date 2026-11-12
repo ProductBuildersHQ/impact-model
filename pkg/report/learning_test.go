@@ -120,7 +120,7 @@ func TestPortfolioWithoutPathways(t *testing.T) {
 	in.View.Pathways = nil
 	cost, _ := burden.Compute(in.Doc)
 	if !strings.Contains(Portfolio(in, cost), "no pathways") {
-		t.Error("An impact model with no pathways should say so")
+		t.Error("An outcome model with no pathways should say so")
 	}
 }
 

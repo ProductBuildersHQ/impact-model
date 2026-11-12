@@ -207,10 +207,10 @@ func outsideAccountability(v *View, st *model.Status) string {
 		b.WriteString("\n")
 	}
 	list("Delivered by partners", "These are part of the solution and are monitored, but others answer for them.", partner)
-	list("Needed, and delivered by no one", "The impact model depends on these. Nobody has taken them on.", unaddressed)
+	list("Needed, and delivered by no one", "The outcome model depends on these. Nobody has taken them on.", unaddressed)
 	list("Above the ceiling of accountability", "These are tracked and contributed to, but not owned.", above)
 	if b.Len() == 0 {
-		return "Everything in this impact model is within what the organization answers for.\n\n"
+		return "Everything in this outcome model is within what the organization answers for.\n\n"
 	}
 	return b.String()
 }
@@ -230,7 +230,7 @@ func implementation(v *View) string {
 	return b.String()
 }
 
-// monitoring sets out how the impact model will be watched and tested: the
+// monitoring sets out how the outcome model will be watched and tested: the
 // assumptions that need testing, how often indicators are collected, and
 // the questions an evaluation should answer.
 func monitoring(v *View, doc *model.Model) string {
@@ -320,7 +320,7 @@ func keyMessages(v *View) string {
 		fmt.Fprintf(&b, "- The change this work is for: %s.\n", strings.Join(goals, "; "))
 	}
 	if v.Document.Ceiling != "" {
-		fmt.Fprintf(&b, "- The organization answers for the impact model up to: %s.\n", v.Document.Ceiling)
+		fmt.Fprintf(&b, "- The organization answers for the outcome model up to: %s.\n", v.Document.Ceiling)
 	}
 	fmt.Fprintf(&b, "- %d outcome(s) are the organization's to deliver or share; %d are monitored but delivered by others or beyond the ceiling.\n", accountable, monitored)
 	return b.String()

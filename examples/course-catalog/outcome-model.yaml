@@ -3,7 +3,7 @@ specVersion: "0.1"
 id: lanternwood-catalog
 metadata:
   name: Lanternwood Learning Commons course catalog (fictional example)
-  description: A fictional impact model for a free catalog of on-demand certificate courses for nonprofit staff, measured weekly and improved with DMAIC. Every organization, number, and URL is invented.
+  description: A fictional outcome model for a free catalog of on-demand certificate courses for nonprofit staff, measured weekly and improved with DMAIC. Every organization, number, and URL is invented.
   status: draft
   owner: Lanternwood Learning Commons
   tags:

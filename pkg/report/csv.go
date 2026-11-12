@@ -14,7 +14,7 @@ import (
 // only when needed. Multi-valued cells are joined with "; ". Rows follow the
 // view's order, so output is deterministic.
 
-// CSVTables lists the tables ExportCSV can write from an impact model alone.
+// CSVTables lists the tables ExportCSV can write from an outcome model alone.
 var CSVTables = []string{"indicators", "metrics", "glossary", "metric-selection", "collection-plan"}
 
 // CSV renders one named table. The selection and collection tables are built

@@ -15,13 +15,13 @@ import (
 // file.
 const maxInline = modelio.MaxFileBytes
 
-// Source names an impact model: inline as the document argument, or by path inside
+// Source names an outcome model: inline as the document argument, or by path inside
 // the server root. Inline is preferred for agents, since it needs no file.
 type Source struct {
-	// Document is the impact model itself: a JSON object, or a string of JSON or YAML.
-	Document any `json:"document,omitempty" jsonschema:"the impact model, as a JSON object or a string of JSON or YAML"`
-	// Path is an impact model file inside the server root.
-	Path string `json:"path,omitempty" jsonschema:"An impact model file inside the server root, used when document is not given"`
+	// Document is the outcome model itself: a JSON object, or a string of JSON or YAML.
+	Document any `json:"document,omitempty" jsonschema:"the outcome model, as a JSON object or a string of JSON or YAML"`
+	// Path is an outcome model file inside the server root.
+	Path string `json:"path,omitempty" jsonschema:"An outcome model file inside the server root, used when document is not given"`
 }
 
 // Observations names observation sets the same two ways.
@@ -50,8 +50,8 @@ func inlineBytes(v any) ([]byte, modelio.Format, error) {
 	}
 }
 
-// load reads the impact model a Source names. It returns the resolved path when
-// the impact model came from a file, else "".
+// load reads the outcome model a Source names. It returns the resolved path when
+// the outcome model came from a file, else "".
 func (s *Server) load(src Source) (*model.Model, string, error) {
 	switch {
 	case src.Document != nil:

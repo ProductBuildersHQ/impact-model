@@ -83,7 +83,7 @@ func TestExportsCarryTheStamp(t *testing.T) {
 		t.Errorf("CSV should start with the stamp row:\n%.200s", csv.stdout)
 	}
 	deck := run(t, "", "deck", "workshop", path)
-	if !strings.Contains(deck.stdout, "_Impact model open-agent-auth · version ") {
+	if !strings.Contains(deck.stdout, "_Outcome model open-agent-auth · version ") {
 		t.Errorf("deck title slide is missing the stamp:\n%.600s", deck.stdout)
 	}
 	bare := run(t, "", "report", "glossary", path, "--no-stamp")
@@ -182,7 +182,7 @@ func TestExportDocxEndToEnd(t *testing.T) {
 		}
 		body = string(data)
 	}
-	for _, want := range []string{"General availability", "Impact model open-agent-auth", "as of 2026-09-30"} {
+	for _, want := range []string{"General availability", "Outcome model open-agent-auth", "as of 2026-09-30"} {
 		if !strings.Contains(body, want) {
 			t.Errorf("the DOCX is missing %q", want)
 		}

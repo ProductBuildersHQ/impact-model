@@ -15,16 +15,16 @@ import (
 func newDiffCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "diff <old> <new>",
-		Short: "Show what changed between two versions of an impact model",
-		Long: `Compare two versions of an impact model by element. A change is keyed by the element's
+		Short: "Show what changed between two versions of an outcome model",
+		Long: `Compare two versions of an outcome model by element. A change is keyed by the element's
 ID, so a retitled outcome is one changed element, and a rejected one shows as a
-rejection. Field order and file format do not matter: the same impact model in YAML
+rejection. Field order and file format do not matter: the same outcome model in YAML
 and in JSON has no differences. The revision log is not compared.
 
 The result is Markdown, or JSON with --format json.
 
 With --revision, nothing is shown. Instead the command prints a patch that
-appends a draft revision to the newer impact model, recording the version, date,
+appends a draft revision to the newer outcome model, recording the version, date,
 and trigger given and listing every element ID that changed. Review it, then
 apply it with 'outcome-model patch'.`,
 		Example: `  outcome-model diff outcome-model-v1.yaml outcome-model-v2.yaml
@@ -35,7 +35,7 @@ apply it with 'outcome-model patch'.`,
 	}
 	f := cmd.Flags()
 	f.Bool("revision", false, "print a patch that adds a draft revision for the change")
-	f.String("version", "", "version label for the draft revision (default: the newer impact model's version)")
+	f.String("version", "", "version label for the draft revision (default: the newer outcome model's version)")
 	f.String("date", "", "date of the draft revision, YYYY-MM-DD (required with --revision)")
 	f.String("trigger", string(model.TriggerLearning), "what prompted the change: "+triggerNames())
 	f.StringP("out", "o", "", "write to this file instead of standard output")
@@ -106,7 +106,7 @@ func revisionPatchText(cmd *cobra.Command, res *diff.Result, cur *model.Model) (
 		version = cur.Metadata.Version
 	}
 	if version == "" {
-		return "", usageErr("--revision needs --version: the newer impact model declares none")
+		return "", usageErr("--revision needs --version: the newer outcome model declares none")
 	}
 	trigger := model.RevisionTrigger(flagString(cmd, "trigger"))
 	if !trigger.Valid() {

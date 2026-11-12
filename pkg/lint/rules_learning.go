@@ -25,7 +25,7 @@ func takenUp(d *model.Model, id string) bool {
 }
 
 func init() {
-	register("OM-LRN-001", validate.SeverityWarning, "Once the impact model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one.", func(c *Context) []Finding {
+	register("OM-LRN-001", validate.SeverityWarning, "Once the outcome model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one.", func(c *Context) []Finding {
 		if len(c.Doc.LearningQuestions) == 0 && len(c.Doc.Evaluations) == 0 {
 			return nil // no evaluation plan or learning agenda yet; OM-ASM-004 covers testing
 		}
@@ -65,7 +65,7 @@ func init() {
 		return out
 	})
 
-	register("OM-LRN-003", validate.SeverityWarning, "Evaluation dates and learning question due dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-LRN-003", validate.SeverityWarning, "Evaluation dates and learning question due dates fall within the time horizon of the outcome model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil

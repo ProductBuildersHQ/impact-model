@@ -1,7 +1,7 @@
-// Package burden totals what it costs to collect the indicators an impact model
+// Package burden totals what it costs to collect the indicators an outcome model
 // selects: staff minutes per week and questions per respondent per year,
 // overall and per pathway and collection mode, against the measurement
-// budget. It reads only the document and never the clock, so the same impact model
+// budget. It reads only the document and never the clock, so the same outcome model
 // always gives the same totals.
 package burden
 
@@ -100,7 +100,7 @@ type Line struct {
 	Totals
 }
 
-// Report is the collection burden of an impact model.
+// Report is the collection burden of an outcome model.
 type Report struct {
 	// Lines are the selected indicators in document order.
 	Lines []Line `json:"lines"`
@@ -116,7 +116,7 @@ type Report struct {
 	// Uncosted lists selected indicators with no collection data, which the
 	// totals therefore leave out.
 	Uncosted []string `json:"uncosted"`
-	// Budget is nil when the impact model declares none.
+	// Budget is nil when the outcome model declares none.
 	Budget *Budget `json:"budget,omitempty"`
 }
 

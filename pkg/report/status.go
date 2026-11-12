@@ -104,7 +104,7 @@ func Exec(in StatusInput) string {
 
 	b.WriteString("## Headline\n\n")
 	if len(in.Status.Overall) == 0 {
-		b.WriteString("This impact model has no impact outcome yet.\n\n")
+		b.WriteString("This outcome model has no impact outcome yet.\n\n")
 	}
 	for _, i := range in.Status.Overall {
 		fmt.Fprintf(&b, "- **%s**: %s", mdText(titles[i.OutcomeID]), statusLabel(string(i.PathwayState)))

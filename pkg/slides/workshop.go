@@ -1,4 +1,4 @@
-// Package slides renders impact model slide decks as Marp Markdown.
+// Package slides renders outcome model slide decks as Marp Markdown.
 //
 // Decks are built from the same report.View as the Markdown reports, so a
 // number or a label never differs between a deck and a report. This package
@@ -75,11 +75,11 @@ func SlideCount(markdown string) int {
 // Workshop renders the workshop deck: the problem, the goal and what the
 // organization is accountable for, the pathway diagram, a logic model per
 // pathway, the key assumptions, the metric definitions, the glossary, how
-// much of the impact model is established versus inferred, and the open questions
+// much of the outcome model is established versus inferred, and the open questions
 // for the room. It needs no observations.
 //
-// whole is the view of the entire impact model; pathways are the per-pathway
-// views from report.PathwayViews (empty when the impact model has none).
+// whole is the view of the entire outcome model; pathways are the per-pathway
+// views from report.PathwayViews (empty when the outcome model has none).
 func Workshop(whole *report.View, pathways []*report.View, o Options) string {
 	theme := o.Theme
 	if theme == "" {
@@ -283,7 +283,7 @@ func (d *deck) glossary(v *report.View) {
 	}
 }
 
-// basis shows how much of the impact model is established, the heart of an honest
+// basis shows how much of the outcome model is established, the heart of an honest
 // draft.
 func (d *deck) basis(v *report.View) {
 	if len(v.BasisCounts) == 0 {

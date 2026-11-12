@@ -2565,6 +2565,6 @@
       ]
     }
   },
-  "title": "Impact Model",
-  "description": "An impact model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence."
+  "title": "Outcome Model",
+  "description": "An outcome model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence."
 }

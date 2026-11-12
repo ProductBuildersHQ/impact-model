@@ -26,8 +26,8 @@ func newImportReviewCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "review <model-file> [response-file]",
 		Short: "Turn reviewers' answers into proposed changes",
-		Long: `Read what reviewers said about an impact model and propose what to do about it. The
-Impact model is never changed. The command writes:
+		Long: `Read what reviewers said about an outcome model and propose what to do about it. The
+Outcome model is never changed. The command writes:
 
   - a patch of the changes it could work out (--out), to be looked over and
     then applied with 'outcome-model patch';
@@ -47,7 +47,7 @@ How a row is handled:
 
 A row with no element ID is matched to an element by its quoted text, and
 flagged if no single element matches. If the response was written against a
-different version of the impact model (its hash differs), every row is flagged,
+different version of the outcome model (its hash differs), every row is flagged,
 though changes are still proposed.
 
 Exit code 0 means every row became a change. Exit code 1 means a person has to
@@ -175,7 +175,7 @@ func writeJSONFile(path string, v any) error {
 func printImport(e *env, path string, rows int, res *review.Result) {
 	fmt.Fprintf(e.out, "%s: %d row(s): %d became changes, %d need a person\n", path, rows, res.Mapped, len(res.Flags))
 	if res.Stale {
-		fmt.Fprintln(e.out, "warning: the impact model has changed since it was reviewed; check every row")
+		fmt.Fprintln(e.out, "warning: the outcome model has changed since it was reviewed; check every row")
 	}
 	for _, f := range res.Flags {
 		target := f.ElementID

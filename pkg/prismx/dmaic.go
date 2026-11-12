@@ -13,10 +13,10 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotDMAICReady is returned, wrapped, when an impact model has nothing to
+// ErrNotDMAICReady is returned, wrapped, when an outcome model has nothing to
 // draw as DMAIC: no pathway marked for it, or no indicator of such a pathway
 // with a numeric baseline and target.
-var ErrNotDMAICReady = errors.New("the impact model cannot be drawn as DMAIC")
+var ErrNotDMAICReady = errors.New("the outcome model cannot be drawn as DMAIC")
 
 // Omission is an indicator of a DMAIC pathway that the export leaves out,
 // and why. DMAIC metrics are numbers with a baseline and a target, so an
@@ -36,7 +36,7 @@ type Omission struct {
 //     current value is the latest of them, or the baseline before any. Control limits are computed from
 //     the observations, as an individuals chart, only when there are at least
 //     model.DMAICMinPoints of them. Process capability is never filled: it
-//     needs specification limits, which an impact model does not record.
+//     needs specification limits, which an outcome model does not record.
 //   - A metric's root causes are the causes its outcome addresses, and its
 //     initiatives are the pathway's interventions aimed at that outcome.
 //   - A metric's phase is derived, as a convention: Control once the target is

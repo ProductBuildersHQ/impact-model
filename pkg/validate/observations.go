@@ -8,7 +8,7 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// Observations checks observation sets against the impact model they measure.
+// Observations checks observation sets against the outcome model they measure.
 // Every indicator and assumption reference must resolve (nothing is dropped
 // silently), values must fit the indicator's measurement type, and dates
 // must be valid. Issues carry Source "observations[i]" when more than one
@@ -124,7 +124,7 @@ func (c *checker) observation(p string, o model.Observation) {
 	}
 }
 
-// stories checks stories against the impact model's codebook and audiences, and
+// stories checks stories against the outcome model's codebook and audiences, and
 // holds them to the consent rules: every story states its consent, and a
 // quote without granted consent is reported so it is never shown by accident.
 func (c *checker) stories(set *model.ObservationSet) {

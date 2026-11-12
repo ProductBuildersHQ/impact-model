@@ -56,7 +56,7 @@ func (c *checker) errorf(code, path, element, format string, args ...any) {
 	c.add(code, SeverityError, path, element, format, args...)
 }
 
-// Document checks an impact model for structural problems and returns
+// Document checks an outcome model for structural problems and returns
 // the issues in document order. A nil result means the document is
 // structurally sound.
 func Document(doc *model.Model, opts ...Option) []Issue {
@@ -200,7 +200,7 @@ func (c *checker) header() {
 		c.errorf("VAL-DOC-003", "/id", "", "document id: %v", err)
 	}
 	if len(d.Outcomes) == 0 {
-		c.errorf("VAL-DOC-004", "/outcomes", "", "An impact model needs at least one outcome")
+		c.errorf("VAL-DOC-004", "/outcomes", "", "An outcome model needs at least one outcome")
 	}
 }
 
@@ -587,7 +587,7 @@ func (c *checker) docRef(path, element, v string) {
 }
 
 // contributesTo checks an outcome's references to outcomes in another
-// Impact model. Whether they resolve is checked by Family, which needs both
+// Outcome model. Whether they resolve is checked by Family, which needs both
 // documents.
 func (c *checker) contributesTo(path string, o model.Outcome) {
 	for i, v := range o.ContributesTo {
@@ -602,7 +602,7 @@ func (c *checker) contributesTo(path string, o model.Outcome) {
 			c.errorf("VAL-PTH-002", p, o.ID, "%q refers to this document; use a link", v)
 		case c.doc.Parent != "":
 			if parent, perr := ref.Parse(c.doc.Parent); perr == nil && r.Doc != parent.Doc {
-				c.errorf("VAL-PTH-003", p, o.ID, "%q is not in the parent impact model %q", v, c.doc.Parent)
+				c.errorf("VAL-PTH-003", p, o.ID, "%q is not in the parent outcome model %q", v, c.doc.Parent)
 			}
 		}
 	}

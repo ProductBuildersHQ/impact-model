@@ -209,14 +209,14 @@ func init() {
 	})
 
 	// ---- framing ----------------------------------------------------------
-	register("OM-CTX-001", validate.SeverityInfo, "The impact model states its mission or its vision.", func(c *Context) []Finding {
+	register("OM-CTX-001", validate.SeverityInfo, "The outcome model states its mission or its vision.", func(c *Context) []Finding {
 		if c.Doc.Context.Mission != "" || c.Doc.Context.Vision != "" {
 			return nil
 		}
-		return []Finding{{Path: "/context", Message: "neither a mission nor a vision is stated, so the impact model does not say why the organization exists or what it works toward"}}
+		return []Finding{{Path: "/context", Message: "neither a mission nor a vision is stated, so the outcome model does not say why the organization exists or what it works toward"}}
 	})
 
-	register("OM-CTX-002", validate.SeverityInfo, "The impact model's objective is clear: context.objective, or a single impact outcome.", func(c *Context) []Finding {
+	register("OM-CTX-002", validate.SeverityInfo, "The outcome model's objective is clear: context.objective, or a single impact outcome.", func(c *Context) []Finding {
 		if _, ok := c.Doc.ObjectiveStatement(); ok {
 			return nil
 		}

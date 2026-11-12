@@ -11,7 +11,7 @@ post-course Net Promoter Score as the guardrail.
 
 ## Files
 
-- `outcome-model.yaml`: the impact model
+- `outcome-model.yaml`: the outcome model
 - `observations-2026-h1.yaml`: 24 weeks of observations for the weekly indicators
 
 ## Features shown

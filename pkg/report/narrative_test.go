@@ -20,7 +20,7 @@ func TestNarrativeAndActorsGoldens(t *testing.T) {
 	golden(t, "status-results.md", Results(in))
 }
 
-// mixed is a small impact model with every kind of responsibility.
+// mixed is a small outcome model with every kind of responsibility.
 func mixed(t *testing.T) (*model.Model, *View) {
 	t.Helper()
 	d := model.NewModel("mixed", "People cannot reach services.")

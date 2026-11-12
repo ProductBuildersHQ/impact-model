@@ -35,7 +35,7 @@ func WorkshopDeck(doc *model.Model, theme, stamp string) (string, error) {
 
 // DefinitionReport renders a definition report (see report.DefinitionKinds)
 // as Markdown. pathway restricts the report to one pathway; it is empty for
-// the whole impact model. Definition reports need no observations.
+// the whole outcome model. Definition reports need no observations.
 func DefinitionReport(doc *model.Model, kind, pathway string) (string, error) {
 	if !slices.Contains(report.DefinitionKinds, kind) {
 		return "", fmt.Errorf("unknown definition report %q (want one of %s)", kind, strings.Join(report.DefinitionKinds, ", "))

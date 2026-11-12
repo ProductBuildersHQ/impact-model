@@ -11,7 +11,7 @@ import (
 
 // StatusInputFor evaluates doc against the observation sets as of asOf and
 // returns what the status reports and decks are made from. prev, if given,
-// is an earlier snapshot of the same impact model; the input then carries what
+// is an earlier snapshot of the same outcome model; the input then carries what
 // changed since.
 func StatusInputFor(doc *model.Model, sets []*model.ObservationSet, asOf time.Time, opts model.StatusOptions, prev *model.Status) (report.StatusInput, error) {
 	g, err := BuildGraph(doc)

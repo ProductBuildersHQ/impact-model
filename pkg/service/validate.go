@@ -23,10 +23,10 @@ type Report struct {
 // Valid reports whether the input has no error-severity issues.
 func (r Report) Valid() bool { return !validate.HasErrors(r.Issues) }
 
-// ValidateBytes validates one input of any document kind. A impact model of
+// ValidateBytes validates one input of any document kind. A outcome model of
 // Change is checked against its schema and structurally; other kinds are
 // checked against their schema. When against is given, an observation set
-// is also checked against that impact model.
+// is also checked against that outcome model.
 func ValidateBytes(source string, data []byte, f modelio.Format, against *model.Model, opts ...validate.Option) Report {
 	r := Report{Source: source, Format: f, Issues: []validate.Issue{}}
 	if kind, err := modelio.DetectKind(data, f); err == nil {
@@ -55,9 +55,9 @@ func ValidateFile(path string, against *model.Model, opts ...validate.Option) (R
 	return ValidateBytes(path, data, f, against, opts...), nil
 }
 
-// ValidateFamily checks that child impact models resolve against their parent:
+// ValidateFamily checks that child outcome models resolve against their parent:
 // each names the parent, and every outcome reference into the parent
-// exists there. Only impact model files can be children.
+// exists there. Only outcome model files can be children.
 func ValidateFamily(parentPath string, childPaths ...string) (Report, error) {
 	parent, err := modelio.LoadDocument(parentPath)
 	if err != nil {
@@ -78,7 +78,7 @@ func ValidateFamily(parentPath string, childPaths ...string) (Report, error) {
 	}, nil
 }
 
-// ValidateFutures checks impact models that describe competing futures of one
+// ValidateFutures checks outcome models that describe competing futures of one
 // market against one another (see validate.Futures). Each must also be valid
 // alone; use ValidateFile with the shared actor registry for that.
 func ValidateFutures(paths ...string) (Report, error) {

@@ -106,7 +106,7 @@ func TestIdenticalAndReformattedTheoriesDoNotDiffer(t *testing.T) {
 	if !strings.Contains(res.Markdown(), "Nothing changed.") {
 		t.Error("an empty diff should say so")
 	}
-	// The same impact model read from YAML and from JSON is the same impact model.
+	// The same outcome model read from YAML and from JSON is the same outcome model.
 	canon, _ := modelio.Canonical(load(t), modelio.FormatYAML)
 	fromYAML, err := modelio.ParseDocument(canon, modelio.FormatYAML)
 	if err != nil {
@@ -121,7 +121,7 @@ func TestRevisionLogIsNotPartOfTheDiff(t *testing.T) {
 	cur := load(t)
 	cur.Revisions = append(cur.Revisions, model.Revision{Version: "9", Date: "2026-01-01", Summary: "x"})
 	if res, _ := Compare(load(t), cur); !res.Empty() {
-		t.Errorf("a new log entry is not a change to the impact model: %+v", res)
+		t.Errorf("a new log entry is not a change to the outcome model: %+v", res)
 	}
 }
 
@@ -158,7 +158,7 @@ func TestDraftRevisionListsEveryChangedIDAndApplies(t *testing.T) {
 	if got := applied.Document.Revisions; len(got) != len(cur.Revisions)+1 || got[len(got)-1].Version != "0.2" {
 		t.Errorf("revisions = %+v", got)
 	}
-	// An impact model with no revision log gets one.
+	// An outcome model with no revision log gets one.
 	bare := load(t)
 	bare.Revisions = nil
 	p2, _ := RevisionPatch(rev, false)

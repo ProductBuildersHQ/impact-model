@@ -10,11 +10,11 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotVSEMReady is returned, wrapped, when an impact model lacks what a VSEM
+// ErrNotVSEMReady is returned, wrapped, when an outcome model lacks what a VSEM
 // requires: a vision or mission, and at least one pathway.
-var ErrNotVSEMReady = errors.New("the impact model cannot be drawn as a VSEM")
+var ErrNotVSEMReady = errors.New("the outcome model cannot be drawn as a VSEM")
 
-// ToVSEM exports the impact model as a VSEM (Vision, Strategy, Execution,
+// ToVSEM exports the outcome model as a VSEM (Vision, Strategy, Execution,
 // Metrics).
 //
 //   - Vision is context.vision, and Mission context.mission.

@@ -71,12 +71,12 @@ func TestValidateObservationsAgainstTheory(t *testing.T) {
 		t.Fatalf("schema-only report = %+v", r)
 	}
 	if r := ValidateBytes("obs", obs, modelio.FormatJSON, fullDoc(t)); !r.Valid() {
-		t.Fatalf("report against impact model = %+v", r)
+		t.Fatalf("report against outcome model = %+v", r)
 	}
 	other := strings.Replace(string(obs), `"indicatorId": "ind-idp-count"`, `"indicatorId": "ind-ghost"`, 1)
 	r := ValidateBytes("obs", []byte(other), modelio.FormatJSON, fullDoc(t))
 	if r.Valid() || r.Issues[0].Code != "VAL-REF-001" {
-		t.Fatalf("unknown indicator should fail against the impact model: %+v", r)
+		t.Fatalf("unknown indicator should fail against the outcome model: %+v", r)
 	}
 }
 

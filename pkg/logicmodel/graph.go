@@ -1,6 +1,6 @@
 // Package logicmodel derives the layered graph of a logic model from a report
 // view: columns for the stages from inputs to impact, a box for each item in a
-// stage, and an arrow wherever the impact model says one thing leads to another.
+// stage, and an arrow wherever the outcome model says one thing leads to another.
 //
 // The graph holds no layout and no styling. It is the one description of the
 // diagram that every output is made from.
@@ -59,7 +59,7 @@ func (s StageID) Name() string {
 // Node is one item in a stage.
 type Node struct {
 	// ID is the element's ID, or a made-up one, starting with an underscore, for
-	// an input or an output that is only text in the impact model.
+	// an input or an output that is only text in the outcome model.
 	ID string
 	// Label is the text shown, with a mark when the element is inferred or a
 	// hypothesis.
@@ -79,7 +79,7 @@ type StageNodes struct {
 
 // Graph is the layered graph of a logic model.
 type Graph struct {
-	// Title is the pathway's title, or the impact model's.
+	// Title is the pathway's title, or the outcome model's.
 	Title string
 	// Stages holds the stages that have nodes, in order.
 	Stages []StageNodes
@@ -101,7 +101,7 @@ type Graph struct {
 // directly. Outcomes are placed by level, with output-level outcomes in the
 // outputs stage, and every causal link between two of them is an edge.
 // Within a stage, nodes are ordered to keep arrows from crossing where they
-// can, and otherwise stay in the order of the impact model. A link that runs back to
+// can, and otherwise stay in the order of the outcome model. A link that runs back to
 // an earlier stage is feedback and is kept apart from the edges.
 func Build(v *report.View) *Graph {
 	b := &builder{stage: map[string]StageID{}, nodes: map[StageID][]Node{}, seen: map[Edge]bool{}}

@@ -219,7 +219,7 @@ func TestWrongTheoryRefused(t *testing.T) {
 	resp := response()
 	resp.ModelID = "another-model"
 	if _, err := Import(load(t), resp, opts()); err == nil {
-		t.Fatal("a response for another impact model was accepted")
+		t.Fatal("a response for another outcome model was accepted")
 	}
 }
 

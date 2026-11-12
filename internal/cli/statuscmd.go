@@ -21,20 +21,20 @@ import (
 func newStatusCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "status <model-file> -O <observations>...",
-		Short: "Compute how far an impact model has come, as of a date",
+		Short: "Compute how far an outcome model has come, as of a date",
 		Long: `Compute a status snapshot: for each indicator its progress against what the
 targets call for by the date; for each outcome its own state and its pathway
 state (what leads to it); for each link and assumption its state; and a
 confidence score for the routes to impact.
 
 The date is --as-of, or by default the latest date in the observations. The
-snapshot is a pure function of the impact model, the observations, and the date.
+snapshot is a pure function of the outcome model, the observations, and the date.
 
 By default a summary is printed. With --format json the snapshot is printed as
 JSON. --out writes the snapshot as JSON to a file whatever the format. With
 --prev, the changes since an earlier snapshot are listed too.
 
-Exit code 1 means the impact model or the observations are invalid.`,
+Exit code 1 means the outcome model or the observations are invalid.`,
 		Example: `  outcome-model status outcome-model.yaml -O obs-q3.yaml --as-of 2026-09-30 --out status-q3.json
   outcome-model status outcome-model.yaml -O obs-q3.yaml -O obs-q4.yaml --prev status-q3.json`,
 		Args: cobra.ExactArgs(1),
@@ -55,7 +55,7 @@ func statusFlags(cmd *cobra.Command) {
 	f.String("rollup", string(model.RollupWorst), "how indicators combine into an outcome: worst or mean")
 }
 
-// loadStatus evaluates the impact model at path against the observation files and
+// loadStatus evaluates the outcome model at path against the observation files and
 // date given by the flags. It reports observation problems on e.errOut and
 // returns exit code 1 for them. The date is --as-of, else the latest date in
 // the observations.
@@ -241,7 +241,7 @@ were unmatched (the rest are still written); 2 means an error.`,
 	f := cmd.Flags()
 	f.String("csv", "", "the spreadsheet to read (required)")
 	f.String("map", "", "the column mapping file (required)")
-	f.String("model", "", "the impact model the sheet measures (required)")
+	f.String("model", "", "the outcome model the sheet measures (required)")
 	f.StringP("out", "o", "", "write the observation set here (default: standard output, YAML)")
 	f.String("unmatched", "", "write the unmatched rows to this CSV file")
 	for _, name := range []string{"csv", "map", "model"} {

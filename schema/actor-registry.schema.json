@@ -232,6 +232,6 @@
       ]
     }
   },
-  "title": "Impact Model Actor Registry",
-  "description": "A shared list of actors referenced by several impact models."
+  "title": "Outcome Model Actor Registry",
+  "description": "A shared list of actors referenced by several outcome models."
 }

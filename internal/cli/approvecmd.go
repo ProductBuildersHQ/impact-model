@@ -16,14 +16,14 @@ import (
 func newApproveCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "approve <model-file> --version <label> --date <YYYY-MM-DD> --approver <name[:role]>...",
-		Short: "Record an impact model as approved",
-		Long: `Mark an impact model approved: set its status to approved and its version label, and
+		Short: "Record an outcome model as approved",
+		Long: `Mark an outcome model approved: set its status to approved and its version label, and
 append a revision (trigger: review) naming the approvers. The change is made
 through the patch engine, in the file's own format.
 
 Approval is refused, with exit code 1 and nothing written, when:
 
-  - the impact model has validation errors;
+  - the outcome model has validation errors;
   - elements are still hypotheses. Confirm or reject them, or use --force with
     --reason, which is recorded in the revision;
   - the version label is missing or already in use, the date is missing, or
@@ -36,7 +36,7 @@ Approver names are people: use a name or role you are happy to publish.`,
 		RunE: func(cmd *cobra.Command, args []string) error { return runApprove(e, cmd, args[0]) },
 	}
 	f := cmd.Flags()
-	f.String("version", "", "version label for the approved impact model (required)")
+	f.String("version", "", "version label for the approved outcome model (required)")
 	f.String("date", "", "date of approval, YYYY-MM-DD (required)")
 	f.StringSlice("approver", nil, "approver as name or name:role (repeatable, required)")
 	f.String("summary", "", "what was approved")

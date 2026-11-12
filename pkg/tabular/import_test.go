@@ -121,7 +121,7 @@ func TestFixedIndicatorSheet(t *testing.T) {
 		t.Errorf("result = %+v", res)
 	}
 	bad := run(t, "d,v\r\n2026-10-31,10\r\n", &model.CSVMapping{Columns: model.CSVColumns{IndicatorFixed: "ind-ghost", Date: "d", Value: "v"}})
-	if len(bad.Unmatched) != 1 || !strings.Contains(bad.Unmatched[0].Reason, "not in the impact model") {
+	if len(bad.Unmatched) != 1 || !strings.Contains(bad.Unmatched[0].Reason, "not in the outcome model") {
 		t.Errorf("unknown fixed indicator: %+v", bad.Unmatched)
 	}
 }
@@ -137,11 +137,11 @@ func TestLevelColumn(t *testing.T) {
 func TestMappingErrorsAreWholeFileErrors(t *testing.T) {
 	doc := load(t)
 	tests := map[string]*model.CSVMapping{
-		"missing column":     {Columns: model.CSVColumns{Indicator: "Nope", Date: "Month end", Value: "Value"}},
-		"no date":            {Columns: model.CSVColumns{Indicator: "Measure", Value: "Value"}},
-		"no indicator":       {Columns: model.CSVColumns{Date: "Month end", Value: "Value"}},
-		"no value":           {Columns: model.CSVColumns{Indicator: "Measure", Date: "Month end"}},
-		"wrong impact model": {ModelID: "another", Columns: model.CSVColumns{Indicator: "Measure", Date: "Month end", Value: "Value"}},
+		"missing column":      {Columns: model.CSVColumns{Indicator: "Nope", Date: "Month end", Value: "Value"}},
+		"no date":             {Columns: model.CSVColumns{Indicator: "Measure", Value: "Value"}},
+		"no indicator":        {Columns: model.CSVColumns{Date: "Month end", Value: "Value"}},
+		"no value":            {Columns: model.CSVColumns{Indicator: "Measure", Date: "Month end"}},
+		"wrong outcome model": {ModelID: "another", Columns: model.CSVColumns{Indicator: "Measure", Date: "Month end", Value: "Value"}},
 	}
 	for name, m := range tests {
 		if _, err := Import(strings.NewReader(header), m, doc); !errors.Is(err, ErrMapping) {

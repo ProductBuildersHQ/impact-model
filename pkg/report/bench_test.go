@@ -38,7 +38,7 @@ func BenchmarkExecReport(b *testing.B) {
 	}
 }
 
-// The executive report for an impact model of 200 outcomes, 400 links, and 300
+// The executive report for an outcome model of 200 outcomes, 400 links, and 300
 // indicators must take under a second, from graph to rendered text.
 func TestExecReportForALargeTheoryTakesUnderASecond(t *testing.T) {
 	if testing.Short() {

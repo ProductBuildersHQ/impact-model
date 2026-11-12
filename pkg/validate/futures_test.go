@@ -97,7 +97,7 @@ func TestReferencesToTheoriesOutsideTheSetAreNotChecked(t *testing.T) {
 	}
 }
 
-// The competing-futures example is three impact models and one registry that
+// The competing-futures example is three outcome models and one registry that
 // validate with no change to the schema.
 func TestCompetingFuturesExample(t *testing.T) {
 	data, err := os.ReadFile("../../examples/competing-futures/actors.yaml")

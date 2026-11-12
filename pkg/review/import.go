@@ -1,6 +1,6 @@
-// Package review turns what reviewers said about an impact model into proposals.
+// Package review turns what reviewers said about an outcome model into proposals.
 //
-// Importing a ReviewResponse never changes the impact model. It produces a patch a
+// Importing a ReviewResponse never changes the outcome model. It produces a patch a
 // human can apply, notes for the rows that need a human decision, and a
 // consultation record. Nothing here reads files or the clock.
 package review
@@ -56,12 +56,12 @@ type Result struct {
 	// Flags are the rows that need a human decision.
 	Flags []Flag `json:"flags"`
 	// Stale is true when the response was written against a different
-	// version of the impact model. Every row is then flagged, and operations are
+	// version of the outcome model. Every row is then flagged, and operations are
 	// still proposed against current IDs.
 	Stale bool `json:"stale"`
 	// Mapped is the number of rows that became operations.
 	Mapped int `json:"mapped"`
-	// Consultation records the review in the impact model's own terms.
+	// Consultation records the review in the outcome model's own terms.
 	Consultation model.Consultation `json:"consultation"`
 }
 
@@ -75,7 +75,7 @@ func Import(doc *model.Model, resp *model.ReviewResponse, o Options) (*Result, e
 		return nil, fmt.Errorf("review: nil document or response")
 	}
 	if resp.ModelID != "" && doc.ID != "" && resp.ModelID != doc.ID {
-		return nil, fmt.Errorf("review: response is for impact model %q, not %q", resp.ModelID, doc.ID)
+		return nil, fmt.Errorf("review: response is for outcome model %q, not %q", resp.ModelID, doc.ID)
 	}
 	res := &Result{
 		Patch: edit.Patch{},
@@ -117,7 +117,7 @@ func Import(doc *model.Model, resp *model.ReviewResponse, o Options) (*Result, e
 		res.Patch = append(res.Patch, patch...)
 		res.Mapped++
 		if res.Stale {
-			flag("the impact model has changed since this was reviewed")
+			flag("the outcome model has changed since this was reviewed")
 		}
 	}
 	res.Consultation = consultation(doc, resp, o.Step)
@@ -130,12 +130,12 @@ func Import(doc *model.Model, resp *model.ReviewResponse, o Options) (*Result, e
 func resolve(doc *model.Model, row model.ReviewItem, candidates []Candidate) (id, reason string) {
 	if row.ElementID != "" {
 		if _, ok := doc.Element(row.ElementID); !ok {
-			return "", fmt.Sprintf("no element %q in the impact model", row.ElementID)
+			return "", fmt.Sprintf("no element %q in the outcome model", row.ElementID)
 		}
 		return row.ElementID, ""
 	}
 	if strings.TrimSpace(row.QuotedText) == "" {
-		return "", "no element id and no quoted text; a comment about the whole impact model"
+		return "", "no element id and no quoted text; a comment about the whole outcome model"
 	}
 	want := normalize(row.QuotedText)
 	var found []string
@@ -229,7 +229,7 @@ func parseChange(s string) (map[string]any, bool) {
 }
 
 // consultation builds the record of the review. Its ID avoids the IDs the
-// Impact model already uses.
+// Outcome model already uses.
 func consultation(doc *model.Model, resp *model.ReviewResponse, step model.ConsultationStep) model.Consultation {
 	if step == "" {
 		step = model.StepWhole

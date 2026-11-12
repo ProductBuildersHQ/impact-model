@@ -53,7 +53,7 @@ func (r *Result) Rows() int { return r.Imported + len(r.Unmatched) + r.Blank }
 // dropped. A leading byte-order mark is ignored.
 func Import(src io.Reader, m *model.CSVMapping, doc *model.Model) (*Result, error) {
 	if m.ModelID != "" && doc.ID != "" && m.ModelID != doc.ID {
-		return nil, fmt.Errorf("%w: the mapping is for impact model %q, not %q", ErrMapping, m.ModelID, doc.ID)
+		return nil, fmt.Errorf("%w: the mapping is for outcome model %q, not %q", ErrMapping, m.ModelID, doc.ID)
 	}
 	data, err := io.ReadAll(src)
 	if err != nil {
@@ -289,7 +289,7 @@ func (im *importer) indicator(rec []string) (model.Indicator, string) {
 func (im *importer) lookup(id string) (model.Indicator, string) {
 	ind, ok := im.indicators[id]
 	if !ok {
-		return model.Indicator{}, fmt.Sprintf("indicator %q is not in the impact model", id)
+		return model.Indicator{}, fmt.Sprintf("indicator %q is not in the outcome model", id)
 	}
 	return ind, ""
 }

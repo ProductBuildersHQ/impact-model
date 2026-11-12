@@ -76,7 +76,7 @@ func Exec(in report.StatusInput, o Options) string {
 	d.line("# Where we stand")
 	d.line("")
 	if len(in.Status.Overall) == 0 {
-		d.line("This impact model has no impact outcome yet.")
+		d.line("This outcome model has no impact outcome yet.")
 	}
 	titles := map[string]string{}
 	for _, oc := range in.View.Outcomes {
@@ -141,7 +141,7 @@ func Exec(in report.StatusInput, o Options) string {
 			}
 			d.line("")
 		}
-		d.notes("These are the beliefs the impact model leans on that are broken, at risk, or still untested.")
+		d.notes("These are the beliefs the outcome model leans on that are broken, at risk, or still untested.")
 	}
 
 	if in.Diff != nil && len(in.Diff.Changes) > 0 {
@@ -235,7 +235,7 @@ func LearningReview(in report.LearningInput, o Options) string {
 		for _, m := range moves {
 			d.line("- %s", m)
 		}
-		d.notes("An assumption that moved is the impact model telling us something. Ask what it changes.")
+		d.notes("An assumption that moved is the outcome model telling us something. Ask what it changes.")
 	}
 
 	d.themesAndStories(in)
@@ -305,7 +305,7 @@ func (d *deck) themesAndStories(in report.LearningInput) {
 		}
 		d.line("| %s%s | %d |", cell(c.Label), note, c.Count)
 	}
-	d.notes("A new theme is worth a conversation: it may be something the impact model did not expect.")
+	d.notes("A new theme is worth a conversation: it may be something the outcome model did not expect.")
 	for i, group := range chunk(shown, storiesPerSlide) {
 		d.slide("")
 		d.line("# Stories%s", pageSuffix(i, len(shown), storiesPerSlide))

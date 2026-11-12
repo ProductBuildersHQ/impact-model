@@ -126,7 +126,7 @@ func TestSchemaTool(t *testing.T) {
 		t.Fatalf("names: %v %q", out, errText)
 	}
 	out, errText = call(t, cs, "outcome_schema", map[string]any{"name": "outcome-model"})
-	if errText != "" || out["title"] != "Impact Model" {
+	if errText != "" || out["title"] != "Outcome Model" {
 		t.Fatalf("schema: %v %q", out["title"], errText)
 	}
 	if _, errText := call(t, cs, "outcome_schema", map[string]any{"name": "nope"}); errText == "" {
@@ -156,7 +156,7 @@ func TestValidateAndLintByPathAndInline(t *testing.T) {
 	if _, errText := call(t, cs, "outcome_lint", map[string]any{"path": "outcome-model.yaml", "disable": []string{"OM-NOPE-001"}}); errText == "" {
 		t.Error("an unknown rule was accepted")
 	}
-	// The same impact model as a string of YAML.
+	// The same outcome model as a string of YAML.
 	out, errText = call(t, cs, "outcome_validate", map[string]any{"document": read(t, exTheory)})
 	if errText != "" || out["valid"] != true {
 		t.Fatalf("validate YAML string: %v %q", out, errText)
@@ -218,7 +218,7 @@ func TestGraphStatusReportDeckJudgeAndDiff(t *testing.T) {
 
 	out, errText = call(t, cs, "outcome_diff", map[string]any{"old": map[string]any{"path": "outcome-model.yaml"}, "new": map[string]any{"path": "outcome-model.yaml"}})
 	if errText != "" || len(out["changes"].([]any)) != 0 {
-		t.Fatalf("diff of an impact model with itself: %v %q", out, errText)
+		t.Fatalf("diff of an outcome model with itself: %v %q", out, errText)
 	}
 }
 

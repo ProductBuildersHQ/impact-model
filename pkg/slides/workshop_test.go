@@ -90,7 +90,7 @@ func TestWorkshopStructure(t *testing.T) {
 func TestWorkshopIsDeterministic(t *testing.T) {
 	whole, pathways := views(t, fullDoc(t))
 	if a, b := Workshop(whole, pathways, Options{}), Workshop(whole, pathways, Options{}); a != b {
-		t.Error("two renders of the same impact model differ")
+		t.Error("two renders of the same outcome model differ")
 	}
 }
 

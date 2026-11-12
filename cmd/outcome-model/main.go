@@ -1,4 +1,4 @@
-// Command outcome-model captures, checks, edits, and reports on impact models
+// Command outcome-model captures, checks, edits, and reports on outcome models
 // of Change.
 package main
 

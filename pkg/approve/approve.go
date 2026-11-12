@@ -1,5 +1,5 @@
-// Package approve builds the patch that records an impact model as approved, and
-// refuses when the impact model is not ready. It only builds the patch; applying it
+// Package approve builds the patch that records an outcome model as approved, and
+// refuses when the outcome model is not ready. It only builds the patch; applying it
 // is the patch engine's job, so approval is an ordinary, reviewable edit.
 package approve
 
@@ -17,12 +17,12 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
-// StatusApproved is the metadata status of an approved impact model.
+// StatusApproved is the metadata status of an approved outcome model.
 const StatusApproved = "approved"
 
 // Request describes an approval.
 type Request struct {
-	// Version is the label the approved impact model carries. It must differ from
+	// Version is the label the approved outcome model carries. It must differ from
 	// the version already recorded.
 	Version string
 	// Date is the day of approval (YYYY-MM-DD).
@@ -63,7 +63,7 @@ func (e *RefusedError) Error() string {
 func (e *RefusedError) Unwrap() error { return ErrRefused }
 
 // Build returns the patch that approves doc. It refuses when the request is
-// incomplete, when the impact model has validation errors, or when it still holds
+// incomplete, when the outcome model has validation errors, or when it still holds
 // hypotheses (unless forced with a reason).
 func Build(doc *model.Model, req Request) (edit.Patch, error) {
 	var refusals []Refusal
@@ -84,7 +84,7 @@ func Build(doc *model.Model, req Request) (edit.Patch, error) {
 		add("request", "forcing approval requires a reason")
 	}
 	if errs := errorIssues(doc); len(errs) > 0 {
-		add("errors", fmt.Sprintf("the impact model has %d validation error(s)", len(errs)), issueIDs(errs)...)
+		add("errors", fmt.Sprintf("the outcome model has %d validation error(s)", len(errs)), issueIDs(errs)...)
 	}
 	hyp, err := Hypotheses(doc)
 	if err != nil {

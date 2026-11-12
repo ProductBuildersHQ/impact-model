@@ -304,7 +304,7 @@ func init() {
 		for _, o := range activeOutcomes(c.Doc) {
 			r := o.v.Responsibility
 			if (r == model.ResponsibilityPartner || r == model.ResponsibilityUnaddressed) && !measured[o.v.ID] && (o.v.Level == model.LevelImpact || c.Graph.HasPathToImpact(o.v.ID)) {
-				out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: "this outcome is not the organization's to deliver but the impact model depends on it; monitor it with an indicator"})
+				out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: "this outcome is not the organization's to deliver but the outcome model depends on it; monitor it with an indicator"})
 			}
 		}
 		return out
@@ -331,7 +331,7 @@ func init() {
 		return out
 	})
 
-	register("OM-VAL-001", validate.SeverityInfo, "The main steps of the impact model have been checked with the people it concerns.", func(c *Context) []Finding {
+	register("OM-VAL-001", validate.SeverityInfo, "The main steps of the outcome model have been checked with the people it concerns.", func(c *Context) []Finding {
 		if len(c.Doc.Consultations) == 0 && len(c.Doc.Outcomes) < 3 {
 			return nil // too small a draft to need it
 		}
@@ -381,14 +381,14 @@ func init() {
 		return out
 	})
 
-	register("OM-PRV-003", validate.SeverityWarning, "An approved impact model has no hypotheses among what the organization answers for.", func(c *Context) []Finding {
+	register("OM-PRV-003", validate.SeverityWarning, "An approved outcome model has no hypotheses among what the organization answers for.", func(c *Context) []Finding {
 		if c.Doc.Metadata.Status != "approved" {
 			return nil
 		}
 		var out []Finding
 		for _, e := range provenanceElements(c) {
 			if e.prov != nil && e.prov.Basis == model.BasisHypothesis && e.accountable {
-				out = append(out, Finding{Path: at(e.array, e.index) + "/provenance", Element: e.id, Message: "the impact model is approved but this element is still a hypothesis; confirm it or reject it"})
+				out = append(out, Finding{Path: at(e.array, e.index) + "/provenance", Element: e.id, Message: "the outcome model is approved but this element is still a hypothesis; confirm it or reject it"})
 			}
 		}
 		return out

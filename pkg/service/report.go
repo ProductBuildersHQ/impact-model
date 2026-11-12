@@ -38,7 +38,7 @@ type ReportParams struct {
 
 // StatusReport renders a report made from a status snapshot. sets are the
 // observation sets the snapshot was computed from. withStatus is false only
-// for a narrative, actors, or custom report of an impact model with no
+// for a narrative, actors, or custom report of an outcome model with no
 // observations, whose input then has a view without status.
 func StatusReport(kind string, in report.StatusInput, sets []*model.ObservationSet, p ReportParams, withStatus bool) (string, error) {
 	var status *model.Status
@@ -88,7 +88,7 @@ func StatusReport(kind string, in report.StatusInput, sets []*model.ObservationS
 	return "", fmt.Errorf("unknown status report %q", kind)
 }
 
-// ViewWithoutStatus builds the report input for an impact model that has no
+// ViewWithoutStatus builds the report input for an outcome model that has no
 // observations.
 func ViewWithoutStatus(doc *model.Model) (report.StatusInput, error) {
 	g, err := BuildGraph(doc)

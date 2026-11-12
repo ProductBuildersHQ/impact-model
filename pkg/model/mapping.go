@@ -4,7 +4,7 @@ package model
 // observations. It is read from YAML or JSON.
 type CSVMapping struct {
 	Schema string `json:"$schema,omitempty"`
-	// ModelID is the impact model the spreadsheet measures.
+	// ModelID is the outcome model the spreadsheet measures.
 	ModelID string     `json:"modelId" jsonschema:"required"`
 	Columns CSVColumns `json:"columns" jsonschema:"required"`
 	// IndicatorAliases map spreadsheet labels (a column heading's cell

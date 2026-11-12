@@ -30,7 +30,7 @@ func MetricTree(in StatusInput, pathwayID string) (string, error) {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s: metric tree\n\nAs of %s.\n\n", mdText(in.View.Document.Title), in.Status.AsOf)
 	if len(pws) == 0 {
-		b.WriteString("The impact model has no pathways.\n")
+		b.WriteString("The outcome model has no pathways.\n")
 		return b.String(), nil
 	}
 	for _, p := range pws {

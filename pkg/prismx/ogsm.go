@@ -11,11 +11,11 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotOGSMReady is returned, wrapped, when an impact model lacks what an
+// ErrNotOGSMReady is returned, wrapped, when an outcome model lacks what an
 // OGSM requires: one clear objective and at least one pathway.
-var ErrNotOGSMReady = errors.New("the impact model cannot be drawn as an OGSM")
+var ErrNotOGSMReady = errors.New("the outcome model cannot be drawn as an OGSM")
 
-// ToOGSM exports the impact model as an OGSM (Objective, Goals, Strategies,
+// ToOGSM exports the outcome model as an OGSM (Objective, Goals, Strategies,
 // Measures).
 //
 //   - The objective is context.objective, or the model's one impact outcome,

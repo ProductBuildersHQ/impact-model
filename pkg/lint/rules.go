@@ -93,7 +93,7 @@ func outcomeLevel(d *model.Model, id string) (model.Level, bool) {
 // ---- structure -------------------------------------------------------------
 
 func init() {
-	register("OM-STR-001", validate.SeverityError, "The impact model has at least one impact outcome.", func(c *Context) []Finding {
+	register("OM-STR-001", validate.SeverityError, "The outcome model has at least one impact outcome.", func(c *Context) []Finding {
 		for _, o := range activeOutcomes(c.Doc) {
 			if o.v.Level == model.LevelImpact {
 				return nil
@@ -295,7 +295,7 @@ func init() {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			if o.v.Level == model.LevelImpact && len(incomingSources(c.Doc, o.v.ID)) < 2 {
-				out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: "a single chain leads to this impact; impact models with one chain are usually incomplete"})
+				out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: "a single chain leads to this impact; outcome models with one chain are usually incomplete"})
 			}
 		}
 		return out

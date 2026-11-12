@@ -1,6 +1,6 @@
-// Package prismx exports an impact model and its status to PRISM
+// Package prismx exports an outcome model and its status to PRISM
 // documents: OKRs and outcome journeys. It is the only package that imports
-// them. The model and the tools never do, so an impact model stays usable without
+// them. The model and the tools never do, so an outcome model stays usable without
 // the PRISM family; a test checks that boundary.
 package prismx
 

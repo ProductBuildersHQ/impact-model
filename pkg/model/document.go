@@ -1,6 +1,6 @@
-// Package toc defines the impact model document model.
+// Package toc defines the outcome model document model.
 //
-// A Document holds the impact model: its context, outcomes connected by causal
+// A Document holds the outcome model: its context, outcomes connected by causal
 // links (optionally combined through precondition groups), interventions,
 // assumptions, indicators, actors, evidence, external factors, risks,
 // alignments to other frameworks, decisions, and a revision log.
@@ -27,7 +27,7 @@ const (
 	KindReviewResponse Kind = "ReviewResponse"
 )
 
-// Model is an impact model.
+// Model is an outcome model.
 type Model struct {
 	Schema      string `json:"$schema,omitempty"`
 	Kind        Kind   `json:"kind" jsonschema:"required,enum=OutcomeModel"`
@@ -35,7 +35,7 @@ type Model struct {
 	// ID is the document slug used in references (model:<id>).
 	ID       string        `json:"id" jsonschema:"required"`
 	Metadata core.Metadata `json:"metadata"`
-	// Perspective is whose impact model this is.
+	// Perspective is whose outcome model this is.
 	Perspective *Perspective `json:"perspective,omitempty"`
 	Context     Context      `json:"context" jsonschema:"required"`
 	Ceiling     *Ceiling     `json:"ceilingOfAccountability,omitempty"`
@@ -55,7 +55,7 @@ type Model struct {
 	Decisions       []Decision          `json:"decisions,omitempty"`
 	Revisions       []Revision          `json:"revisions,omitempty"`
 
-	// Parent references the impact model this one elaborates (model:<doc>).
+	// Parent references the outcome model this one elaborates (model:<doc>).
 	Parent   string    `json:"parent,omitempty" jsonschema:"pattern=^model:[a-z][a-z0-9]*(-[a-z0-9]+)*$"`
 	Pathways []Pathway `json:"pathways,omitempty"`
 
@@ -78,7 +78,7 @@ type Model struct {
 	SelectionCriteria []SelectionCriterion `json:"selectionCriteria,omitempty"`
 	Budget            *MeasurementBudget   `json:"measurementBudget,omitempty"`
 
-	// Consultations record validation of the impact model with stakeholders.
+	// Consultations record validation of the outcome model with stakeholders.
 	Consultations []Consultation `json:"consultations,omitempty"`
 
 	// Evaluations, LearningQuestions, and ReviewMeetings are the evaluation
@@ -99,17 +99,17 @@ func NewModel(id, problemStatement string) *Model {
 	}
 }
 
-// Perspective identifies the actor whose impact model this is and, for competing
+// Perspective identifies the actor whose outcome model this is and, for competing
 // futures, the future it belongs to.
 type Perspective struct {
 	ActorID string          `json:"actorId" jsonschema:"required"`
 	Role    PerspectiveRole `json:"role,omitempty"`
-	// FutureRef groups this impact model under a competing future (e.g.
+	// FutureRef groups this outcome model under a competing future (e.g.
 	// "ufm:<future-slug>").
 	FutureRef string `json:"futureRef,omitempty"`
 }
 
-// Context is the problem analysis the impact model responds to.
+// Context is the problem analysis the outcome model responds to.
 type Context struct {
 	ProblemStatement string       `json:"problemStatement" jsonschema:"required"`
 	RootCauses       []string     `json:"rootCauses,omitempty"`
@@ -118,13 +118,13 @@ type Context struct {
 	Geography        string       `json:"geography,omitempty"`
 	TimeHorizon      *TimeHorizon `json:"timeHorizon,omitempty"`
 	// Mission is why the organization exists and what it does. It frames the
-	// Impact model and is not an outcome: nothing causes it and it is not measured.
+	// Outcome model and is not an outcome: nothing causes it and it is not measured.
 	Mission string `json:"mission,omitempty"`
 	// Vision is the future the organization works toward. The impact
-	// outcomes are how the impact model says it is reached.
+	// outcomes are how the outcome model says it is reached.
 	Vision string `json:"vision,omitempty"`
 	// Values are the principles that guide how the organization works, most
-	// important first. Like the mission and vision they frame the impact model
+	// important first. Like the mission and vision they frame the outcome model
 	// and are not outcomes.
 	Values []Value `json:"values,omitempty"`
 	// Objective is the one thing the model sets out to achieve over its time
@@ -150,7 +150,7 @@ type Value struct {
 	Description string `json:"description,omitempty"`
 }
 
-// TimeHorizon is the period the impact model covers.
+// TimeHorizon is the period the outcome model covers.
 type TimeHorizon struct {
 	Start string `json:"start" jsonschema:"required,format=date"`
 	End   string `json:"end" jsonschema:"required,format=date"`
@@ -176,7 +176,7 @@ type Decision struct {
 	RelatedIDs []string       `json:"relatedIds,omitempty"`
 }
 
-// Revision records a change to the impact model (adaptive management).
+// Revision records a change to the outcome model (adaptive management).
 type Revision struct {
 	Version            string          `json:"version" jsonschema:"required"`
 	Date               string          `json:"date" jsonschema:"required,format=date"`

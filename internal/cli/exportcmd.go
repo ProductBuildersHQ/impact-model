@@ -39,7 +39,7 @@ external tools mmdc (diagrams) and pandoc. If a needed tool is not
 installed, nothing is written and the exit code is 3.
 
 Kinds: %s.`, short, strings.ToUpper(format), kinds),
-		Example: fmt.Sprintf("  outcome-model export %s %s outcome-model.yaml --out impact model.%s --reference-doc template.%s",
+		Example: fmt.Sprintf("  outcome-model export %s %s outcome-model.yaml --out outcome model.%s --reference-doc template.%s",
 			format, strings.Split(kinds, ",")[0], format, format),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -149,7 +149,7 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 	return nil
 }
 
-// reviewView builds the whole impact model view the review exports render.
+// reviewView builds the whole outcome model view the review exports render.
 func reviewView(path string) (*model.Model, *report.View, error) {
 	doc, err := loadForRender(path)
 	if err != nil {

@@ -8,9 +8,9 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// The assessment report renders from an impact model alone. It tells a reader how
+// The assessment report renders from an outcome model alone. It tells a reader how
 // much of a draft is the organization's own word and how much is ours, where
-// the impact model has gaps, and what to ask the organization. It is the document
+// the outcome model has gaps, and what to ask the organization. It is the document
 // to hand over with a draft.
 
 // tagged is one element in the provenance listings.

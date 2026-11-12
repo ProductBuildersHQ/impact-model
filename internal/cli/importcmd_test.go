@@ -53,7 +53,7 @@ func TestImportReviewFromSheet(t *testing.T) {
 		t.Fatal(err)
 	}
 	if string(before) != string(after) {
-		t.Error("the impact model was modified")
+		t.Error("the outcome model was modified")
 	}
 	data, err := os.ReadFile(patchOut)
 	if err != nil {
@@ -85,7 +85,7 @@ func TestImportReviewFlagsRowsAndStaleness(t *testing.T) {
 		t.Errorf("stdout = %q", r.stdout)
 	}
 
-	// Changing the impact model after export makes the sheet's hash stale.
+	// Changing the outcome model after export makes the sheet's hash stale.
 	wantCode(t, run(t, "", "outcome", "set", theory, "oc-spec-stable", "--set", "title=Changed after export"), ExitOK)
 	sheet = answeredSheet(t, theory, nil)
 	stale := strings.Replace(mustRead(t, sheet), "hash:", "hash:0", 1)

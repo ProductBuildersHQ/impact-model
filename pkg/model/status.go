@@ -74,7 +74,7 @@ func AllAssumptionSources() []AssumptionSource {
 // Valid reports whether v is a known AssumptionSource.
 func (v AssumptionSource) Valid() bool { return slices.Contains(AllAssumptionSources(), v) }
 
-// Status is a computed snapshot of an impact model's progress at a date. It is
+// Status is a computed snapshot of an outcome model's progress at a date. It is
 // produced by measurement, never written by hand, and is diffable across
 // periods.
 type Status struct {

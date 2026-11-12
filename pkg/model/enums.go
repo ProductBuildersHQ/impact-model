@@ -233,7 +233,7 @@ func AllAssumptionStatuses() []AssumptionStatus {
 // Valid reports whether v is a known AssumptionStatus.
 func (v AssumptionStatus) Valid() bool { return slices.Contains(AllAssumptionStatuses(), v) }
 
-// Criticality is how much the impact model depends on an assumption.
+// Criticality is how much the outcome model depends on an assumption.
 type Criticality string
 
 const (
@@ -332,7 +332,7 @@ func AllActorTypes() []ActorType {
 // Valid reports whether v is a known ActorType.
 func (v ActorType) Valid() bool { return slices.Contains(AllActorTypes(), v) }
 
-// ActorRole is a role an actor plays in the impact model.
+// ActorRole is a role an actor plays in the outcome model.
 type ActorRole string
 
 const (
@@ -358,7 +358,7 @@ func AllActorRoles() []ActorRole {
 // Valid reports whether v is a known ActorRole.
 func (v ActorRole) Valid() bool { return slices.Contains(AllActorRoles(), v) }
 
-// Stance is an actor's position toward the impact model's goal.
+// Stance is an actor's position toward the outcome model's goal.
 type Stance string
 
 const (
@@ -378,7 +378,7 @@ func AllStances() []Stance {
 // Valid reports whether v is a known Stance.
 func (v Stance) Valid() bool { return slices.Contains(AllStances(), v) }
 
-// PerspectiveRole is the perspective actor's relationship to the impact model.
+// PerspectiveRole is the perspective actor's relationship to the outcome model.
 type PerspectiveRole string
 
 const (
@@ -667,7 +667,7 @@ func AllClaims() []Claim { return []Claim{ClaimAttribution, ClaimContribution} }
 // Valid reports whether v is a known Claim.
 func (v Claim) Valid() bool { return slices.Contains(AllClaims(), v) }
 
-// Basis records why the impact model contains an element: what we know about
+// Basis records why the outcome model contains an element: what we know about
 // where it came from.
 type Basis string
 
@@ -712,7 +712,7 @@ func AllDataAvailabilities() []DataAvailability {
 // Valid reports whether v is a known DataAvailability.
 func (v DataAvailability) Valid() bool { return slices.Contains(AllDataAvailabilities(), v) }
 
-// ConsultationStep is the part of building the impact model a consultation
+// ConsultationStep is the part of building the outcome model a consultation
 // validated.
 type ConsultationStep string
 

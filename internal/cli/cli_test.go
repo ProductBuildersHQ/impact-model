@@ -439,19 +439,19 @@ func TestValidateWithARegistryAndAsFutures(t *testing.T) {
 	files := []string{futuresDir + "future-open.yaml", futuresDir + "future-bundle.yaml", futuresDir + "future-extension.yaml"}
 	registry := futuresDir + "actors.yaml"
 
-	// Without the registry each impact model warns that it cannot resolve its actors.
+	// Without the registry each outcome model warns that it cannot resolve its actors.
 	r := run(t, "", append([]string{"validate"}, files...)...)
 	wantCode(t, r, ExitOK)
 	if !strings.Contains(r.stdout, "VAL-REF-004") {
 		t.Errorf("expected unresolved-actor warnings:\n%s", r.stdout)
 	}
-	// With it, the impact models are clean, and so are they as a set of futures.
+	// With it, the outcome models are clean, and so are they as a set of futures.
 	r = run(t, "", append(append([]string{"validate"}, files...), "--registry", registry, "--futures")...)
 	wantCode(t, r, ExitOK)
 	if strings.Contains(r.stdout, "warning") || !strings.Contains(r.stdout, "competing futures: ok") {
 		t.Errorf("stdout = %s", r.stdout)
 	}
-	// Two impact models speaking for the same actor in the same future are reported.
+	// Two outcome models speaking for the same actor in the same future are reported.
 	dir := t.TempDir()
 	dup := filepath.Join(dir, "dup.yaml")
 	body := strings.Replace(mustRead(t, files[0]), "id: future-open-wins", "id: future-dup", 1)
