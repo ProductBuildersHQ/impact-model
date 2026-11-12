@@ -26,6 +26,9 @@
       },
       {
         "description": "The North Star and the one metric that matters are checked alike, and the executive report and deck open with what each program steers by"
+      },
+      {
+        "description": "The one metric that matters is dated: a pathway records what the team focused on in each period, and reports use the one for the snapshot's date"
       }
     ],
     "added": [
@@ -82,6 +85,12 @@
       },
       {
         "description": "`report exec` and `deck exec` open with what each program steers by: its North Star and its one metric that matters, with status and progress against what was expected, and any guardrail that is off track, at risk, stale, or without data. In Go: `report.Steering`"
+      },
+      {
+        "description": "`outcome-model pathway focus`: make an indicator the pathway's one metric that matters from a date; the current focus ends the day before and stays on record. In Go: `edit.FocusOn` and `Focus.OneMetricAt`"
+      },
+      {
+        "description": "Reports and exports use the one metric that matters for the snapshot's date: the metric tree, the executive report and deck, and the V2MOM, VSEM, and OGSM exports; without a snapshot, the one that started last. The metric tree also lists the other periods' focus"
       }
     ],
     "changed": [
@@ -95,6 +104,10 @@
       },
       {
         "description": "Lint rule IDs start `OM-` where they started `IMP-`, such as `OM-STR-001`; the MCP tools are `outcome_*` and the agent skills `outcome-*`",
+        "breaking": true
+      },
+      {
+        "description": "`focus.oneMetricId` is replaced by `focus.oneMetrics`, the one metric that matters for each period: `indicatorId`, `from`, an optional `to` (empty while current), `stage`, and `reason`. Periods must not overlap (VAL-PTH-009). To migrate, write the old ID as one entry with the date the focus began. The `--one-metric` flag of `pathway set` is replaced by `pathway focus`",
         "breaking": true
       },
       {

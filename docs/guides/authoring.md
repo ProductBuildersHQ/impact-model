@@ -39,7 +39,7 @@ different things, and an outcome model can make all of them.
   [dmaic]` marks a program measured often enough to improve with DMAIC; lint then
   checks its indicators' cadence and survey sizes. See the [DMAIC guide](dmaic.md).
 - **A North Star** is the one number a program or product steers by. It is set on
-  the pathway, with an optional *one metric that matters* and the guardrails that
+  the pathway, with a dated *one metric that matters* for each period and the guardrails that
   watch what chasing it could harm. It should measure an outcome at or below the
   ceiling of accountability, never an output or an activity.
 - **A headline list** is what an audience is told: a short, ordered list on the

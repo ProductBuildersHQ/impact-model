@@ -158,7 +158,8 @@ A method's measures are the indicators the pathway steers by, from its `focus`:
 
 1. the **North Star**, the one number that best shows the value the program
    delivers
-2. the **one metric that matters**, if the pathway names one for now
+2. the **one metric that matters** on the snapshot's date, or the current one
+   without a snapshot, if the pathway names one
 3. the **guardrails**, which watch what pursuing the North Star could harm
 
 Each measure's description starts with its role, such as "North Star:".

@@ -42,6 +42,7 @@ is the map.
 | Command | What it does |
 |---------|--------------|
 | `<element> add`, `set`, `rm` | Add, change, or remove one element through the validated patch engine |
+| `pathway focus` | Make an indicator a pathway's one metric that matters from a date (`--one-metric`, `--from`, `--stage`, `--reason`); the current focus ends the day before |
 | `patch` | Apply an RFC 6902 JSON Patch atomically, with `@id` pointers |
 | `diff` | Compare two versions by element ID, or print a draft revision patch |
 
