@@ -11,6 +11,7 @@ import (
 	sdk "github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/diff"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/document"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/judge"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
@@ -50,6 +51,7 @@ func (s *Server) MCP() *sdk.Server {
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_status", Description: "Compute a status snapshot of an outcome model from observation sets as of a date."}, s.statusTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_report", Description: "Render a report as Markdown: a definition report, or a status report such as exec or story."}, s.reportTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_export", Description: "Export the outcome model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, mel, ogsm, or bsc. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_document", Description: "Assemble the outcome model as one human-readable Markdown document: the sections of a profile, or the sections listed, in that order, such as theory of change, logic models, VSEM, and MEL. Diagrams are D2 blocks."}, s.documentTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_patch", Description: "Apply an RFC 6902 JSON Patch to an outcome model atomically. Elements may be addressed by id: /outcomes/@oc-skills/title. A patch that adds validation errors is rejected."}, s.patchTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_deck", Description: "Generate a slide deck as Marp Markdown: workshop, exec, learning-review, or story. Nothing is rendered to PDF."}, s.deckTool)
 	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_judge_bundle", Description: "Build the bundle a judge reads to review an outcome model against the rubric. Makes no model calls."}, s.judgeTool)
@@ -262,27 +264,82 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 	if err != nil {
 		return nil, service.PRISMExport{}, err
 	}
-	sets, err := s.loadObservations(in.Observations)
+	st, sets, err := s.optionalStatus(doc, in.Observations, in.AsOf)
 	if err != nil {
 		return nil, service.PRISMExport{}, err
 	}
-	var st *model.Status
-	if len(sets) > 0 || in.AsOf != "" {
-		at, err := asOfDate(in.AsOf, sets)
-		if err != nil {
-			return nil, service.PRISMExport{}, err
-		}
-		if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
-			return nil, service.PRISMExport{}, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
-		}
-		input, err := service.StatusInputFor(doc, sets, at, model.DefaultStatusOptions(), nil)
-		if err != nil {
-			return nil, service.PRISMExport{}, err
-		}
-		st = input.Status
-	}
 	out, err := service.ExportPRISM(in.Kind, doc, st, sets)
 	return nil, out, err
+}
+
+// optionalStatus evaluates the outcome model when observations or a date are
+// given; otherwise the status is nil.
+func (s *Server) optionalStatus(doc *model.Model, obs Observations, asOf string) (*model.Status, []*model.ObservationSet, error) {
+	sets, err := s.loadObservations(obs)
+	if err != nil {
+		return nil, nil, err
+	}
+	if len(sets) == 0 && asOf == "" {
+		return nil, nil, nil
+	}
+	at, err := asOfDate(asOf, sets)
+	if err != nil {
+		return nil, nil, err
+	}
+	if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
+		return nil, nil, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
+	}
+	input, err := service.StatusInputFor(doc, sets, at, model.DefaultStatusOptions(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	return input.Status, sets, nil
+}
+
+// ---- outcome_document -----------------------------------------------------------
+
+type documentIn struct {
+	Source
+	Observations
+	AsOf            string   `json:"asOf,omitempty" jsonschema:"the status date, YYYY-MM-DD; default: the latest date in the observations"`
+	Profile         string   `json:"profile,omitempty" jsonschema:"a named list of sections: nonprofit (the default), strategy, improvement, evaluation, or full"`
+	Sections        []string `json:"sections,omitempty" jsonschema:"the sections to include, in order, instead of a profile: theory-of-change, problem-trees, logic-models, outcome-map, logframe, metrics, vsem, ogsm, mel, dmaic, glossary"`
+	SkipUnavailable bool     `json:"skipUnavailable,omitempty" jsonschema:"leave out a section the model cannot be drawn as, such as an OGSM without an objective, instead of failing"`
+}
+
+type documentOut struct {
+	Format  string             `json:"format"`
+	Content string             `json:"content"`
+	Skipped []document.Skipped `json:"skipped,omitempty"`
+}
+
+func (s *Server) documentTool(_ context.Context, _ *sdk.CallToolRequest, in documentIn) (*sdk.CallToolResult, documentOut, error) {
+	var sections []document.SectionKind
+	var err error
+	switch {
+	case len(in.Sections) > 0 && in.Profile != "":
+		return nil, documentOut{}, fmt.Errorf("give sections or a profile, not both")
+	case len(in.Sections) > 0:
+		sections, err = document.ParseSections(strings.Join(in.Sections, ","))
+	case in.Profile != "":
+		sections, err = document.ProfileSections(in.Profile)
+	}
+	if err != nil {
+		return nil, documentOut{}, err
+	}
+	doc, _, err := s.load(in.Source)
+	if err != nil {
+		return nil, documentOut{}, err
+	}
+	st, sets, err := s.optionalStatus(doc, in.Observations, in.AsOf)
+	if err != nil {
+		return nil, documentOut{}, err
+	}
+	d, err := service.Document(doc, st, sets, document.Options{Sections: sections, SkipUnavailable: in.SkipUnavailable})
+	if err != nil {
+		return nil, documentOut{}, err
+	}
+	return nil, documentOut{Format: "markdown", Content: d.Markdown(document.MarkdownOptions{Contents: true}), Skipped: d.Skipped}, nil
 }
 
 // statusInput evaluates the outcome model for a status report or deck. A narrative,
