@@ -34,6 +34,7 @@ you would use them. The strategy formats are alternatives to one another, so
 they are listed alphabetically.
 
 ```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 1000}}}%%
 flowchart TB
   classDef model fill:#fff4cc,stroke:#b8860b,stroke-width:2px,color:#111
   classDef causal fill:#eef7ee,stroke:#2e7d32,color:#111
@@ -42,7 +43,7 @@ flowchart TB
   classDef improve fill:#f3e8fc,stroke:#6a1b9a,color:#111
   classDef spacer fill:transparent,stroke:transparent,stroke-width:1px,color:transparent
 
-  om["<b>Outcome model</b><br/>problem, causes, outcomes,<br/>causal links, assumptions,<br/>evidence, interventions,<br/>indicators, audiences"]:::model
+  om["<b>Outcome model</b><br/>problem, causes, outcomes, causal links, assumptions, evidence, interventions, indicators, audiences"]:::model
 
   subgraph causality["<b>Causality</b>"]
     direction TB
