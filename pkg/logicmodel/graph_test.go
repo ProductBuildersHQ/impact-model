@@ -182,3 +182,55 @@ func TestBuildIsDeterministic(t *testing.T) {
 		}
 	}
 }
+
+func TestTheoryOfChangeJoinsActivitiesToOutcomes(t *testing.T) {
+	full := Build(view())
+	toc := full.TheoryOfChange()
+	for _, st := range toc.Stages {
+		if st.Stage == StageInputs || st.Stage == StageOutputs {
+			t.Errorf("theory of change keeps the %s stage", st.Stage)
+		}
+	}
+	kept := map[string]bool{}
+	for _, st := range toc.Stages {
+		for _, n := range st.Nodes {
+			kept[n.ID] = true
+		}
+	}
+	for _, e := range append(slices.Clone(toc.Edges), toc.Feedback...) {
+		if !kept[e.From] || !kept[e.To] {
+			t.Errorf("edge %s -> %s touches a removed node", e.From, e.To)
+		}
+	}
+	// int-a produced "Workshops held", which led on to oc-skills: the
+	// theory of change joins the activity to that outcome directly.
+	if !slices.Contains(toc.Edges, Edge{From: "int-a", To: "oc-skills"}) {
+		t.Errorf("int-a is not joined to oc-skills through its output: %v", toc.Edges)
+	}
+	seen := map[Edge]bool{}
+	for _, e := range toc.Edges {
+		if seen[e] {
+			t.Errorf("edge %v is drawn twice", e)
+		}
+		seen[e] = true
+	}
+	if len(full.Stages) == len(toc.Stages) {
+		t.Error("TheoryOfChange changed the graph it was called on, or removed nothing")
+	}
+}
+
+func TestTheoryOfChangeDiagramIsOneBlock(t *testing.T) {
+	text, err := TheoryOfChangeDiagram(view(), FormatD2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := strings.Count(text, "```d2"); n != 1 {
+		t.Errorf("want one D2 block, got %d:\n%s", n, text)
+	}
+	if !strings.HasPrefix(text, "## Theory of change on one page\n") || strings.Contains(text, "inputs:") {
+		t.Errorf("unexpected diagram:\n%s", text)
+	}
+	if _, err := TheoryOfChangeDiagram(view(), Format("svg")); err == nil {
+		t.Error("an unknown format is accepted")
+	}
+}

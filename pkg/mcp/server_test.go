@@ -112,7 +112,7 @@ func TestEveryToolIsListed(t *testing.T) {
 			t.Errorf("tool %s lacks a description or a schema", tool.Name)
 		}
 	}
-	for _, want := range []string{"outcome_schema", "outcome_validate", "outcome_lint", "outcome_graph", "outcome_status", "outcome_report", "outcome_export", "outcome_patch", "outcome_deck", "outcome_judge_bundle", "outcome_diff"} {
+	for _, want := range []string{"outcome_schema", "outcome_validate", "outcome_lint", "outcome_graph", "outcome_status", "outcome_report", "outcome_export", "outcome_document", "outcome_patch", "outcome_deck", "outcome_judge_bundle", "outcome_diff"} {
 		if !got[want] {
 			t.Errorf("tool %s is missing", want)
 		}
@@ -384,5 +384,29 @@ func TestExportTool(t *testing.T) {
 	}
 	if _, errText := call(t, cs, "outcome_export", map[string]any{"path": "outcome-model.yaml", "kind": "mystery"}); errText == "" {
 		t.Error("an unknown export was accepted")
+	}
+}
+
+// The document tool assembles the same document as export document, as
+// Markdown with D2 diagrams, and refuses or skips a section it cannot draw.
+func TestDocumentTool(t *testing.T) {
+	cs := connect(t, workDir(t))
+	out, errText := call(t, cs, "outcome_document", map[string]any{"path": "outcome-model.yaml", "sections": []string{"vsem", "theory-of-change"}})
+	if errText != "" {
+		t.Fatalf("document: %s", errText)
+	}
+	md, _ := out["content"].(string)
+	if out["format"] != "markdown" || !strings.Contains(md, "```d2") || strings.Index(md, "\n## VSEM") > strings.Index(md, "\n## Theory of Change") {
+		t.Errorf("document: %.300v", out)
+	}
+	if _, errText := call(t, cs, "outcome_document", map[string]any{"path": "outcome-model.yaml", "sections": []string{"dmaic"}}); !strings.Contains(errText, "projections: [dmaic]") {
+		t.Errorf("dmaic refusal: %q", errText)
+	}
+	out, errText = call(t, cs, "outcome_document", map[string]any{"path": "outcome-model.yaml", "profile": "improvement", "skipUnavailable": true})
+	if errText != "" || out["skipped"] == nil {
+		t.Errorf("skipped dmaic: %q %.200v", errText, out)
+	}
+	if _, errText := call(t, cs, "outcome_document", map[string]any{"path": "outcome-model.yaml", "profile": "full", "sections": []string{"vsem"}}); errText == "" {
+		t.Error("a profile and sections together were accepted")
 	}
 }

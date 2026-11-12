@@ -44,6 +44,7 @@
       ]
     },
     "narrative": "If major identity providers implement the standard, agent platforms adopt it, and enterprises require it.",
+    "background": "A standards working group formed to make agent identity interoperable.\n\nIt publishes the standard and reference implementations.",
     "mission": "Make provider interoperability routine for the enterprises that depend on it.",
     "vision": "Enterprises sign in once and every provider they use honors it.",
     "values": [

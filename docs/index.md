@@ -161,6 +161,7 @@ outcome-model report outcome-map outcome-model.yaml       # the outcome map
 outcome-model report logic-model outcome-model.yaml       # a logic model for each pathway
 outcome-model report logframe outcome-model.yaml          # the logframe matrix
 outcome-model report definitions outcome-model.yaml       # all of them, plus metrics and glossary
+outcome-model report theory-of-change-d2 outcome-model.yaml # the theory of change on one page, in D2
 outcome-model export okr outcome-model.yaml               # OKRs for the PRISM tools
 outcome-model export journey outcome-model.yaml           # outcome journeys for the PRISM tools
 outcome-model export v2mom outcome-model.yaml             # a V2MOM
@@ -169,7 +170,14 @@ outcome-model export ogsm outcome-model.yaml              # an OGSM
 outcome-model export bsc outcome-model.yaml               # a Balanced Scorecard
 outcome-model export dmaic outcome-model.yaml             # DMAIC improvement efforts
 outcome-model export mel outcome-model.yaml               # a monitoring, evaluation, and learning plan
+outcome-model export document outcome-model.yaml --out impact.docx   # chosen projections as one document
 ```
+
+To share them, `export document` puts the projections you choose, in the order
+you choose, into one document for people to read: Markdown, a Word document, or
+a React HTML presentation, with the diagrams drawn. A profile picks a common set,
+such as theory of change, logic models, VSEM, and MEL for a nonprofit. See
+[Documents and presentations](guides/documents.md).
 
 Change the model once and every projection changes with it, so the numbers and
 labels never drift apart. (The outcome map here is the outcomes framework from the

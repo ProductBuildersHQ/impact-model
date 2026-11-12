@@ -12,7 +12,7 @@ projections of it, drawn by the `report` command:
 | Method | Projection shows | Report kinds |
 |--------|------|--------------|
 | Problem tree | The core problem, its causes (roots) below and its effects (branches) above, with the outcomes that address each | `problem-tree`, `problem-tree-d2`, `problem-tree-json`, each with `--pathway` for one program's tree |
-| Theory of change | Pathways of change, with the reasons and assumptions behind each link | `pathway` |
+| Theory of change | Pathways of change, with the reasons and assumptions behind each link | `pathway`, `theory-of-change-d2` (one page), `narrative` |
 | Logic model | Inputs, activities, outputs, and outcomes by level, for each pathway | `logic-model`, `logic-model-layered`, `logic-model-d2` |
 | Outcome map | Outcomes by level, with who is responsible for each | `outcome-map` |
 | Logframe | A matrix of narrative, indicators, verification, and assumptions | `logframe` |
@@ -38,7 +38,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Outcome model document (holds the theory of change of ActKnowledge and UNDG) | `model.Model` (`kind: OutcomeModel`) | 004 |
 | Metadata, owners, status | `Model.Metadata` (`prism-core` `Metadata`) | 004 |
 | Whose outcome model it is (perspective) | `Model.Perspective` (`actorId`, `role`, `futureRef`) | 004 |
-| Problem statement, target population, time horizon, narrative | `Model.Context` | 004 |
+| Problem statement, target population, time horizon, narrative, and a background that introduces the organization | `Model.Context` | 004 |
 | Purpose: why the organization exists and what it works toward (a statement, not a causal element) | `Context.Mission`, `Context.Vision` | 064 |
 | Ceiling of accountability (ActKnowledge) | `Model.Ceiling` | 004 |
 | Revision / adaptive management, quality review (plausible, feasible, testable) | `Model.Revisions[]` (`Revision`, `QualityReview`) | 004 |

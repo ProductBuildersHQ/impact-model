@@ -166,7 +166,7 @@ func summarize(g *graph.Graph) Summary {
 // implicit intervention edges are dotted. Output is deterministic.
 func DOT(g *graph.Graph) string {
 	var b strings.Builder
-	b.WriteString("digraph outcome-model {\n  rankdir=BT;\n")
+	b.WriteString("digraph \"outcome-model\" {\n  rankdir=BT;\n")
 	for _, n := range g.Nodes() {
 		shape, label := "box", n.ID
 		if n.Kind == model.ElementIntervention {

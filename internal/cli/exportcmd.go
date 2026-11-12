@@ -8,9 +8,11 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
+	"github.com/ProductBuildersHQ/outcome-model/internal/zipfix"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
@@ -138,12 +140,19 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
-	args := []string{"-f", "markdown", "-t", format, "-o", abs}
+	// Images are referenced by name and found through --resource-path, so
+	// no scratch path is written into the file.
+	args := []string{"-f", "markdown", "-t", format, "-o", abs, "--resource-path", dir}
 	if ref := flagString(cmd, "reference-doc"); ref != "" {
 		args = append(args, "--reference-doc", ref)
 	}
 	args = append(args, src)
-	if err := runTool(ctx, pandoc, args...); err != nil {
+	if err := runToolEnv(ctx, pandocEnv(cmd), pandoc, args...); err != nil {
+		return &ExitError{Code: ExitUsageErr, Err: err}
+	}
+	// Pandoc stamps some entries with the time it runs; the same input
+	// should give the same file.
+	if err := zipfix.NormalizeFile(abs); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	return nil
@@ -267,8 +276,9 @@ func writeText(e *env, cmd *cobra.Command, text string) error {
 }
 
 // diagramRenderer returns a function that renders Mermaid source to a PNG in
-// dir with mmdc and returns the PNG's absolute path. mmdc is looked up on
-// first use, so documents without diagrams do not need it.
+// dir with mmdc and returns the PNG's file name, which pandoc finds through
+// --resource-path. mmdc is looked up on first use, so documents without
+// diagrams do not need it.
 func diagramRenderer(ctx context.Context, dir string) func(string) (string, error) {
 	n := 0
 	var mmdc string
@@ -289,6 +299,19 @@ func diagramRenderer(ctx context.Context, dir string) func(string) (string, erro
 		if err := runTool(ctx, mmdc, "-i", in, "-o", png, "-s", "2"); err != nil {
 			return "", &ExitError{Code: ExitUsageErr, Err: err}
 		}
-		return png, nil
+		return filepath.Base(png), nil
 	}
+}
+
+// pandocEnv fixes the creation date Pandoc writes into a Word or PowerPoint
+// file, so the same input gives the same file: the --as-of date when it is
+// given, else the date zipfix gives every entry.
+func pandocEnv(cmd *cobra.Command) []string {
+	at := zipfix.Epoch
+	if s := cmd.Flags().Lookup("as-of"); s != nil && s.Value.String() != "" {
+		if t, err := time.Parse(time.DateOnly, s.Value.String()); err == nil {
+			at = t
+		}
+	}
+	return []string{fmt.Sprintf("SOURCE_DATE_EPOCH=%d", at.Unix())}
 }

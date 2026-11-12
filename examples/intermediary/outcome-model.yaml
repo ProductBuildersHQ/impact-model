@@ -39,6 +39,10 @@ context:
       - oc-resident-access
       - oc-resident-voice
   narrative: Riverbend Nonprofit Network is a membership network with about 8 staff. It works through three program areas, each a pathway in this theory. Learning Exchange builds leadership and peer ties, Shared Services lowers overhead and widens the grant pipeline, and Civic Voice helps members take joint positions and be heard by local government and funders. The three pathways converge on shared long-term outcomes about member collaboration, then on resident-level impact. Layer 1 is change in member nonprofits, which the network influences and measures directly. Layer 2 is change for residents, which the network tracks and contributes to but does not own.
+  background: |-
+    Riverbend Nonprofit Network began in 2015, when a dozen nonprofit directors in Riverbend County started meeting to share back-office costs. It is now a membership network of about 150 nonprofits, from food banks to youth programs, with about 8 staff.
+
+    The network runs leadership cohorts and peer circles, a shared bookkeeping and grants service, and a members' forum that takes joint positions to the county and its funders. This example is fictional.
 ceilingOfAccountability:
   level: long_term
   rationale: The network answers for the capability, collaboration, funding stability, and collective voice of its members. Resident-level change depends on many forces besides the members' strength, such as demand, public funding, and the economy, so it is tracked and contributed to but not owned.

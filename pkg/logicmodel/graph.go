@@ -268,3 +268,68 @@ func (b *builder) order() map[StageID][]Node {
 	}
 	return out
 }
+
+// TheoryOfChange returns the graph as a theory of change draws it: the
+// activities and the outcomes they lead to, short-term through impact. The
+// inputs and outputs belong to the logic model and are left out; an activity
+// is joined straight to the outcomes its outputs led to. Built from the whole
+// outcome model's view, it is the theory of change on one page.
+func (g *Graph) TheoryOfChange() *Graph {
+	return g.without(StageInputs, StageOutputs)
+}
+
+// without returns a copy of the graph with the given stages removed. An edge
+// into a removed node is carried on to the kept nodes it leads to, so a chain
+// through a removed stage stays connected; edges are kept in their order and
+// added once. Feedback edges are kept only between kept nodes.
+func (g *Graph) without(stages ...StageID) *Graph {
+	drop := map[string]bool{}
+	out := &Graph{Title: g.Title}
+	for _, st := range g.Stages {
+		if slices.Contains(stages, st.Stage) {
+			for _, n := range st.Nodes {
+				drop[n.ID] = true
+			}
+			continue
+		}
+		out.Stages = append(out.Stages, st)
+	}
+	next := map[string][]string{}
+	for _, e := range g.Edges {
+		next[e.From] = append(next[e.From], e.To)
+	}
+	seen := map[Edge]bool{}
+	add := func(e Edge) {
+		if !seen[e] {
+			seen[e] = true
+			out.Edges = append(out.Edges, e)
+		}
+	}
+	// reach adds an edge from "from" to every kept node reached from "to"
+	// through removed nodes only.
+	var reach func(from, to string, visited map[string]bool)
+	reach = func(from, to string, visited map[string]bool) {
+		if !drop[to] {
+			add(Edge{From: from, To: to})
+			return
+		}
+		if visited[to] {
+			return
+		}
+		visited[to] = true
+		for _, n := range next[to] {
+			reach(from, n, visited)
+		}
+	}
+	for _, e := range g.Edges {
+		if !drop[e.From] {
+			reach(e.From, e.To, map[string]bool{})
+		}
+	}
+	for _, e := range g.Feedback {
+		if !drop[e.From] && !drop[e.To] {
+			out.Feedback = append(out.Feedback, e)
+		}
+	}
+	return out
+}

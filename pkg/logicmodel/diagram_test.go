@@ -7,18 +7,23 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/grokify/d2vision/legibility"
+
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
-func TestSpecHasAColumnForEachStage(t *testing.T) {
+func TestSpecHasABandForEachStage(t *testing.T) {
 	g := Build(view())
 	spec := g.Spec()
-	if spec.GridColumns != len(g.Stages) || len(spec.Containers) != len(g.Stages) {
-		t.Errorf("%d columns and %d containers for %d stages", spec.GridColumns, len(spec.Containers), len(g.Stages))
+	if spec.LayoutEngine != "elk" || spec.Direction != "up" || spec.GridColumns != 0 || spec.GridRows != 0 {
+		t.Errorf("layout = %q %q, grid %d x %d", spec.LayoutEngine, spec.Direction, spec.GridColumns, spec.GridRows)
+	}
+	if len(spec.Containers) != len(g.Stages) {
+		t.Errorf("%d containers for %d stages", len(spec.Containers), len(g.Stages))
 	}
 	for i, c := range spec.Containers {
-		if c.ID != string(g.Stages[i].Stage) || c.Label != g.Stages[i].Stage.Name() || c.GridColumns != 1 {
+		if c.ID != string(g.Stages[i].Stage) || c.Label != g.Stages[i].Stage.Name() || c.Direction != "right" || c.Class != stageClass {
 			t.Errorf("container %d = %+v", i, c)
 		}
 	}
@@ -30,14 +35,15 @@ func TestSpecHasAColumnForEachStage(t *testing.T) {
 func TestD2NamesNodesByTheirStage(t *testing.T) {
 	d2 := Build(view()).D2()
 	for _, want := range []string{
-		"grid-columns: 7",
-		"horizontal-gap: 90",
+		"layout-engine: elk",
+		"direction: up",
 		"classes: {",
+		"width: 330",
 		"inputs: Inputs {",
 		"class: stage",
 		`inputs._input1 -> activities."int-a"`,
 		`activities."int-a" -> outputs._output1`,
-		"Practice applied (inferred)",
+		`"Practice applied\n(inferred)"`,
 	} {
 		if !strings.Contains(d2, want) {
 			t.Errorf("missing %q:\n%s", want, d2)
@@ -62,7 +68,7 @@ func TestMermaidDrawsEveryNodeAndEdge(t *testing.T) {
 	}
 	for _, s := range g.Stages {
 		for _, n := range s.Nodes {
-			if !strings.Contains(out, `"`+n.Label+`"`) {
+			if !strings.Contains(out, `"`+strings.ReplaceAll(legibility.Wrap(n.Label, 26), "\n", "<br/>")+`"`) {
 				t.Errorf("no node %q:\n%s", n.Label, out)
 			}
 		}
@@ -107,8 +113,10 @@ func TestD2CompilesAndKeepsEveryLabel(t *testing.T) {
 			t.Errorf("the heading %q is not in the picture", s.Stage.Name())
 		}
 		for _, n := range s.Nodes {
-			if !strings.Contains(string(svg), n.Label) {
-				t.Errorf("the label %q is not in the picture", n.Label)
+			for _, line := range strings.Split(legibility.Wrap(n.Label, 26), "\n") {
+				if !strings.Contains(string(svg), line) {
+					t.Errorf("the label line %q is not in the picture", line)
+				}
 			}
 		}
 	}

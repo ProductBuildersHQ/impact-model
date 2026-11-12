@@ -65,6 +65,8 @@ func DefinitionReport(doc *model.Model, kind, pathway string) (string, error) {
 		return logicmodel.Diagrams(whole, pathways, logicmodel.FormatMermaid)
 	case "logic-model-d2":
 		return logicmodel.Diagrams(whole, pathways, logicmodel.FormatD2)
+	case "theory-of-change-d2":
+		return logicmodel.TheoryOfChangeDiagram(whole, logicmodel.FormatD2)
 	case "problem-tree":
 		return problemtree.ReportFor(doc, pathway, problemtree.FormatMermaid)
 	case "problem-tree-d2":

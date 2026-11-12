@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/outcome-model`
-**Status:** In progress — 26 of 30 phases completed
+**Status:** In progress — 27 of 31 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; items from before the rename to outcome-model are `RMI-IMPACTMODEL-001` to `-028`; later items are `RMI-OUTCOMEMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -679,3 +679,31 @@
   - Type: capability · Status: completed
   - Depends on: `RMI-OUTCOMEMODEL-001`, `RMI-OUTCOMEMODEL-002`
   - Acceptance: focus.oneMetrics replaces focus.oneMetricId with dated entries (indicatorId, from, to, stage, reason) that do not overlap; Focus.OneMetricAt picks the entry for a date; reports and exports use the snapshot's date; edit.FocusOn and pathway focus close the current focus the day before a new one; cascade drops entries naming a removed indicator; schema regenerated; tests
+
+## Phase 31 — Documents and Presentations
+
+**Theme:** One human-readable document from the outcome model, with the sections and their order chosen by the reader: Markdown, Word, or an HTML presentation, with the diagrams drawn
+**Status:** Completed — 4 of 4 items completed
+
+- [x] `RMI-OUTCOMEMODEL-004` Draw the theory of change on one page
+  - Type: capability · Status: completed
+  - Satisfies: PRD-FR-608, TRD-046
+  - Acceptance: a `theory-of-change-d2` report drawing every pathway's activities and outcomes in one D2 diagram, or one pathway's, inputs and outputs left out with activities joined through them; drawn bottom-up in a band per stage, laid out with ELK so no arrow crosses a box, with boxes of one width and wrapped labels so a pathway's diagram reads at 8 points on a portrait page, checked with d2vision's legibility analysis; unit tests; the reports guide lists it
+
+- [x] `RMI-OUTCOMEMODEL-005` Export the outcome model as one document
+  - Type: capability · Status: completed
+  - Depends on: `RMI-OUTCOMEMODEL-004`, and prism-roadmap's embeddable Markdown renderers (`OmitHeader`, `HeadingOffset`, and DMAIC Markdown)
+  - Satisfies: PRD-FR-608, TRD-047
+  - Acceptance: `pkg/document` with sections and profiles; `export document` to .md, .docx, and .html in the CLI, the service layer, and the MCP server (`outcome_document`); strategy sections through `pkg/prismx` only; golden and determinism tests; a documents guide
+
+- [x] `RMI-OUTCOMEMODEL-006` Show the document as an HTML presentation
+  - Type: capability · Status: completed
+  - Depends on: `RMI-OUTCOMEMODEL-005`
+  - Satisfies: PRD-FR-608, TRD-048
+  - Acceptance: a single-file React presentation with keyboard navigation and slide addresses, long content paginated, and a `?print` view meeting the deck-pdf/v1 contract; deck tests; checked in a headless browser
+
+- [x] `RMI-OUTCOMEMODEL-007` Open a document with the organization's background
+  - Type: capability · Status: completed
+  - Depends on: `RMI-OUTCOMEMODEL-005`
+  - Satisfies: PRD-FR-609, TRD-049
+  - Acceptance: `context.background` in the model and schema; a `background` section first in every profile, with who the organization is, its vision, mission, and values, its programs and activities, and how the document serves the mission and vision; the example carries a fictional background; unit and golden tests; the documents guide covers it
