@@ -110,7 +110,7 @@ that such a reference resolves.
 
 Any of these, in order of preference for a program:
 
-1. The Go packages: `pkg/impact` (types), `pkg/impactio` (read and write), `pkg/measure`
+1. The Go packages: `pkg/model` (types), `pkg/modelio` (read and write), `pkg/measure`
    (status), `pkg/report` (views).
 2. The command line, with `--format json` where offered.
 3. The MCP server (`outcome-model mcp`), which exposes validate, lint, graph, status,

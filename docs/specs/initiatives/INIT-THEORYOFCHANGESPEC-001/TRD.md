@@ -55,11 +55,11 @@ no persistence, no statistical inference).
 
 | TRD ID | Requirement | Source | Verification |
 |--------|-------------|--------|--------------|
-| TRD-001 | `pkg/impact` MUST define `Model` and all element types in §7 with camelCase JSON tags | PRD-FR-101…110 | Round-trip marshal tests; schema lint |
-| TRD-002 | `pkg/impact` MUST define `ObservationSet` as a separate document type | PRD-FR-111 | Round-trip test; schema test |
+| TRD-001 | `pkg/model` MUST define `Model` and all element types in §7 with camelCase JSON tags | PRD-FR-101…110 | Round-trip marshal tests; schema lint |
+| TRD-002 | `pkg/model` MUST define `ObservationSet` as a separate document type | PRD-FR-111 | Round-trip test; schema test |
 | TRD-003 | `cmd/generate-schema` MUST be the only producer of `schema/*.schema.json`; CI MUST fail if regenerating changes any file | PRD-FR-201 | `go generate ./schema && git diff --exit-code schema/` |
 | TRD-004 | `schema` package MUST embed every generated schema and expose `Get(name)` and `Names()` | PRD-FR-202 | `schema_test.go` loads every name |
-| TRD-005 | `pkg/impactio` MUST load `.json`, `.yaml`, `.yml` by converting YAML → JSON before decoding and validating | PRD-FR-203 | Same fixture in both formats yields equal `Model` and equal issues |
+| TRD-005 | `pkg/modelio` MUST load `.json`, `.yaml`, `.yml` by converting YAML → JSON before decoding and validating | PRD-FR-203 | Same fixture in both formats yields equal `Model` and equal issues |
 | TRD-006 | `pkg/validate` MUST report schema, uniqueness, ID-format, and reference errors with JSON-pointer paths | PRD-FR-301 | Table-driven tests per error class |
 | TRD-007 | `pkg/graph` MUST implement the queries in §6.2 in O(V+E) per query (paths enumeration excepted, bounded by `MaxPaths`) | PRD-FR-302 | Unit tests; benchmark on 1,000-node graph |
 | TRD-008 | `pkg/lint` MUST implement the rules in §6.4 with stable IDs and emit a structured-evaluation `summary.SummaryReport` | PRD-FR-303, 304 | Rule registry test; seeded-defect golden test |
@@ -68,10 +68,10 @@ no persistence, no statistical inference).
 | TRD-011 | Renderers MUST NOT emit `restricted` evidence excerpts | PRD-FR-503 | Test with restricted evidence asserts absence |
 | TRD-012 | `spec/` MUST embed `toc.md` template and `toc.rubric.yaml` that parses into `rubric.RubricSet` and passes its `Validate()` | PRD-FR-601 | `spec_test.go` |
 | TRD-013 | `pkg/mcp` MUST expose the six tools in §6.3 over stdio with the official Go SDK | PRD-FR-602 | In-memory transport integration test |
-| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), MEL plans (per §6.17; refused without an outcome), OGSM documents (one strategy per pathway, per §6.18; refused without a clear objective or a pathway), Balanced Scorecards (one objective per outcome in a scorecard perspective, per §6.19; refused without one), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/impact`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
+| TRD-014 | `pkg/prismx` MUST export OKR documents, outcome journeys, V2MOM documents (one method per pathway; refused without a vision, values, or a pathway), VSEM documents (one strategy per pathway, per §6.16; refused without a vision or mission, or a pathway), MEL plans (per §6.17; refused without an outcome), OGSM documents (one strategy per pathway, per §6.18; refused without a clear objective or a pathway), Balanced Scorecards (one objective per outcome in a scorecard perspective, per §6.19; refused without one), and DMAIC metrics documents (one category per pathway marked `dmaic`; control limits only from ≥ 20 observations; refused when nothing is marked or nothing is numeric); no package under `pkg/model`, `pkg/graph`, `pkg/validate`, `pkg/lint`, `pkg/measure` MAY import `prism-roadmap` | PRD-FR-603 | `go list -deps` import-boundary test |
 | TRD-015 | `pkg/ref` MUST parse and format the reference grammar in §6.7 | PRD-FR-604 | Parse/format round-trip and invalid-input tests |
 | TRD-016 | Core types MUST reuse `prism-core` `Person`, `Risk`, `CapabilityRef`, health and trend constants instead of redefining them | PRD G-7 | Code review; grep test for duplicate type names |
-| TRD-017 | `pkg/impact` MUST define `Pathway`, `Metric`, `Audience`, `GlossaryTerm`, `Theme`, `SelectionCriterion`, `MeasurementBudget`, and the indicator extensions in §7.1 | PRD-FR-112…117 | Round-trip tests; schema lint |
+| TRD-017 | `pkg/model` MUST define `Pathway`, `Metric`, `Audience`, `GlossaryTerm`, `Theme`, `SelectionCriterion`, `MeasurementBudget`, and the indicator extensions in §7.1 | PRD-FR-112…117 | Round-trip tests; schema lint |
 | TRD-018 | `ObservationSet` MUST carry `stories`, `learningReviews`, and per-observation `quality` (§7.2) | PRD-FR-118 | Round-trip tests; validation of theme and consent rules |
 | TRD-019 | `pkg/measure` MUST compute metric roll-ups across pathways per §6.5 and return `baseline_only` for indicators without targets | PRD-FR-113, 509 | Table tests |
 | TRD-020 | `pkg/burden` MUST total collection cost per period and per respondent and compare against `MeasurementBudget` | PRD-FR-115 | Unit tests; collection-plan golden |
@@ -79,13 +79,13 @@ no persistence, no statistical inference).
 | TRD-022 | `pkg/report` MUST render the definition reports with no observations and the story, learning-review, and portfolio reports in §6.6 | PRD-FR-505…508 | Golden-file tests |
 | TRD-023 | Story quotes MUST be rendered only when `consent` is `granted` and sensitivity is renderable | PRD-FR-506 | Restricted / no-consent absence tests |
 | TRD-024 | `skills/` MUST contain the agent skills in §6.11; each skill's command sequence MUST be executable by a smoke test | PRD-FR-605 | Skill smoke test runs commands twice and compares outputs |
-| TRD-025 | `pkg/impact` MUST define `Cause`, `Effect`, `Consultation`, `TargetGroup`, outcome `responsibility` / `deliveredBy` / `addressesCauses` / `addressesEffects`, `priority` scores, and the assumption and risk fields in §7.1 | PRD-FR-105, 108, 119…123, 126 | Round-trip tests; schema lint |
+| TRD-025 | `pkg/model` MUST define `Cause`, `Effect`, `Consultation`, `TargetGroup`, outcome `responsibility` / `deliveredBy` / `addressesCauses` / `addressesEffects`, `priority` scores, and the assumption and risk fields in §7.1 | PRD-FR-105, 108, 119…123, 126 | Round-trip tests; schema lint |
 | TRD-026 | Measurement MUST monitor every outcome regardless of responsibility, and reports MUST separate accountable (`own`, `shared`) from monitored-only (`partner`, `unaddressed`) outcomes | PRD-FR-120 | Status and report tests over mixed-responsibility fixture |
 | TRD-027 | `pkg/report` MUST render the `narrative` and `actors` reports in §6.6 | PRD-FR-510, 511 | Golden files |
 | TRD-028 | `spec/` MUST ship the core rubric plus a `development` rubric profile covering the UNDG checklist split in research §9.6 | PRD-FR-601 | Both parse and `Validate()`; checklist-coverage test maps every checklist item to a criterion ID |
-| TRD-029 | `pkg/edit` MUST implement the patch engine in §6.12 (RFC 6902 + ID addressing, atomic apply, error-delta rejection) and be the only mutation path used by CLI, SDK helpers, and MCP | PRD-FR-701, 702, 706 | Engine tests; grep test that `cmd/` and `pkg/mcp` never mutate `impact.Model` directly |
+| TRD-029 | `pkg/edit` MUST implement the patch engine in §6.12 (RFC 6902 + ID addressing, atomic apply, error-delta rejection) and be the only mutation path used by CLI, SDK helpers, and MCP | PRD-FR-701, 702, 706 | Engine tests; grep test that `cmd/` and `pkg/mcp` never mutate `model.Model` directly |
 | TRD-030 | Element commands MUST compile to patches; `rm` MUST report dangling references and honor `--cascade` | PRD-FR-703 | Command ↔ patch equivalence tests; reference tests |
-| TRD-031 | `pkg/impactio` MUST provide canonical serialization (`Format`) for JSON and YAML; idempotent | PRD-FR-704 | Fixture test runs twice |
+| TRD-031 | `pkg/modelio` MUST provide canonical serialization (`Format`) for JSON and YAML; idempotent | PRD-FR-704 | Fixture test runs twice |
 | TRD-032 | `pkg/diff` MUST compute an ID-keyed semantic diff and draft a `Revision` | PRD-FR-705 | Golden diffs |
 | TRD-033 | `pkg/slides` MUST render Marp decks in §6.13 from `report.View`; export runs only in `cmd/outcome-model` via external CLIs | PRD-FR-801, 802; INV-7 | Golden decks; export test skipped when CLIs absent |
 | TRD-034 | `pkg/judge` MUST build judge bundles, validate verdicts as structured-evaluation reports, and aggregate with agreement metrics (§6.14) | PRD-FR-803 | Bundle golden; verdict validation tests; aggregation tests |
@@ -98,7 +98,7 @@ no persistence, no statistical inference).
 | TRD-041 | `outcome-model approve` per §6.15 is the only writer of status `approved` | PRD-FR-707, US-21 | Approval tests; grep test |
 | TRD-042 | `skills/toc-share-google` per §6.11, with manual fallback | PRD-FR-607 | Skill smoke test with recorded tool outputs |
 | TRD-044 | `problemtree.BuildFor` and `ReportFor` MUST draw one pathway's tree: `pathway.problemStatement` (or `context.problemStatement` when empty) as the core problem, and only the causes and effects whose `pathwayIds` name the pathway; a parent outside the pathway's tree is cut, so the node leads straight to the core problem. The pathway's own outcomes are listed first as addressing a node, then any other outcome labelled with its pathway. The `problem-tree*` reports take `--pathway`; the `definitions` pack draws the whole tree then each pathway tree that is not empty | PRD-FR-515 | Unit tests on shared causes, cut parents, the fallback statement, and labels; definitions golden |
-| TRD-045 | The `dmaic-plan` definition report MUST list, for each pathway marked `dmaic` (or the one pathway named), the core problem and its tree's causes deepest first (Define), the live interventions (Improve), and each indicator serving the pathway with its phase use per `report.DMAICUse` and its gaps per `report.DMAICNeeds`; with no marked pathway it says how to mark one. Cadence uses `impact.TimesPerYear`, shared with the OM-DMA lint rules | PRD-FR-516 | Golden on the full fixture; unit tests on phase use and needs |
+| TRD-045 | The `dmaic-plan` definition report MUST list, for each pathway marked `dmaic` (or the one pathway named), the core problem and its tree's causes deepest first (Define), the live interventions (Improve), and each indicator serving the pathway with its phase use per `report.DMAICUse` and its gaps per `report.DMAICNeeds`; with no marked pathway it says how to mark one. Cadence uses `model.TimesPerYear`, shared with the OM-DMA lint rules | PRD-FR-516 | Golden on the full fixture; unit tests on phase use and needs |
 | TRD-043 | `pkg/problemtree` MUST build the problem tree as layered nodes and edges, export it as a d2vision diagram spec (JSON), and render D2 and Mermaid from that spec; the `problem-tree`, `problem-tree-d2`, and `problem-tree-json` reports per §6.6 | PRD-FR-514 | Golden diagram tests on the examples; layering and cycle tests |
 
 ## 3. System Invariants
@@ -138,7 +138,7 @@ no persistence, no statistical inference).
   agent ──► (via MCP tools)                │
             └───────────────┬──────────────┘
                             ▼
-   pkg/impactio  load (YAML→JSON), decode, schema-validate (schema/ embed)
+   pkg/modelio  load (YAML→JSON), decode, schema-validate (schema/ embed)
                             │
           ┌─────────────────┼──────────────────────────┐
           ▼                 ▼                          ▼
@@ -150,7 +150,7 @@ no persistence, no statistical inference).
                       pkg/measure  (indicator → outcome → pathway,
                             │       assumption propagation, confidence)
                             ▼
-                      impact.Status snapshot (JSON, schema-defined)
+                      model.Status snapshot (JSON, schema-defined)
                             │
               ┌─────────────┼──────────────┐
               ▼             ▼              ▼
@@ -167,15 +167,15 @@ no persistence, no statistical inference).
 
 | Component | Purpose | Responsibilities |
 |-----------|---------|------------------|
-| `pkg/impact` | Data model | Go structs, enums with `Valid()`/`All…()` helpers, small accessors (`OutcomeByID`, `IndicatorsFor`). No I/O. |
+| `pkg/model` | Data model | Go structs, enums with `Valid()`/`All…()` helpers, small accessors (`OutcomeByID`, `IndicatorsFor`). No I/O. |
 | `pkg/ref` | References | Grammar in §6.7: parse, format, validate slugs. |
 | `schema/` | Schemas | `//go:embed *.schema.json`; `Get`, `Names`, `Validate(name, []byte)` using `santhosh-tekuri/jsonschema/v6`. |
 | `cmd/generate-schema` | Schema pipeline | Reflect Go types with `invopop/jsonschema`; write files; deterministic output. |
-| `pkg/impactio` | Load / save | File and byte loading for JSON/YAML; merge multiple observation sets; pretty JSON writer. |
+| `pkg/modelio` | Load / save | File and byte loading for JSON/YAML; merge multiple observation sets; pretty JSON writer. |
 | `pkg/validate` | Structural validation | Schema + INV-1 + reference resolution + enum validity → `[]Issue`. |
 | `pkg/graph` | Causal graph | Build from links + intervention targets; queries in §6.2. |
 | `pkg/lint` | Quality rules | Rule registry, §6.4 rules, options (disable / severity override), SummaryReport output. |
-| `pkg/measure` | Measurement | §6.5 algorithms; produces `impact.Status`; `Diff(prev, cur)`. |
+| `pkg/measure` | Measurement | §6.5 algorithms; produces `model.Status`; `Diff(prev, cur)`. |
 | `pkg/report` | Rendering | View model, standard templates (embedded), Mermaid builder, user templates. |
 | `pkg/prismx` | PRISM adapters | `ToOKR`, `ToOutcomeJourneys`, `ToV2MOM`, `ToVSEM`, `ToDMAIC`, `ToMEL`, `ToOGSM`, `ToBSC`; prism-roadmap import is confined here. |
 | `pkg/service` | Service layer | One function per user operation (Validate, Lint, Graph, Status, Report, Export, Schema) used by CLI and MCP. |
@@ -195,13 +195,13 @@ no persistence, no statistical inference).
 
 ### 4.3 Data Flow
 
-1. Load: `impactio.LoadDocument(path)` → bytes → (YAML→JSON) → schema validate →
-   `json.Unmarshal` into `impact.Model`.
+1. Load: `modelio.LoadDocument(path)` → bytes → (YAML→JSON) → schema validate →
+   `json.Unmarshal` into `model.Model`.
 2. Validate: `validate.Model(doc)` → issues. Lint and measure refuse to run
    on documents with `error`-severity validation issues (they return
    `ErrInvalidDocument` wrapping the issues).
 3. Graph: `graph.Build(doc)`; reused by lint, measure, report.
-4. Measure: `measure.Evaluate(doc, g, obsSets, opts)` → `impact.Status`.
+4. Measure: `measure.Evaluate(doc, g, obsSets, opts)` → `model.Status`.
 5. Report: `report.Build(doc, g, status, opts)` → `report.View` → template →
    bytes.
 
@@ -262,10 +262,10 @@ Global flags: `--as-of` (RFC 3339 date; default: today in UTC), `--format`,
 ### 6.2 Library API (Go)
 
 ```go
-// pkg/impactio
-func LoadDocument(path string) (*impact.Document, error)
-func ParseDocument(data []byte, format Format) (*impact.Document, error)
-func LoadObservations(paths ...string) ([]*impact.ObservationSet, error)
+// pkg/modelio
+func LoadDocument(path string) (*model.Document, error)
+func ParseDocument(data []byte, format Format) (*model.Document, error)
+func LoadObservations(paths ...string) ([]*model.ObservationSet, error)
 
 // pkg/validate
 type Severity string // "error" | "warning" | "info"
@@ -276,11 +276,11 @@ type Issue struct {
     Element  string   `json:"element,omitempty"`
     Message  string   `json:"message"`
 }
-func Document(doc *impact.Document) []Issue
-func Observations(doc *impact.Document, sets ...*impact.ObservationSet) []Issue
+func Document(doc *model.Document) []Issue
+func Observations(doc *model.Document, sets ...*model.ObservationSet) []Issue
 
 // pkg/graph
-func Build(doc *impact.Document) (*Graph, error)
+func Build(doc *model.Document) (*Graph, error)
 func (g *Graph) Upstream(id string) []string          // transitive preconditions
 func (g *Graph) Downstream(id string) []string        // transitive consequences
 func (g *Graph) PathsToImpact(id string, max int) [][]string
@@ -292,29 +292,29 @@ func (g *Graph) BelowCeiling(id string) bool          // within ceiling of accou
 
 // pkg/lint
 type Rule interface { ID() string; Severity() validate.Severity; Check(*Context) []Finding }
-func Run(doc *impact.Document, g *graph.Graph, opts Options) (*Result, error) // opts.Profile: draft|standard|full
+func Run(doc *model.Document, g *graph.Graph, opts Options) (*Result, error) // opts.Profile: draft|standard|full
 func (r *Result) SummaryReport(project, version string) *summary.SummaryReport
 
 // pkg/measure
 type Options struct { AsOf time.Time; AtRiskTolerance float64; Rollup RollupMethod }
-func Evaluate(doc *impact.Document, g *graph.Graph, obs []*impact.ObservationSet, opts Options) (*impact.Status, error)
-func Diff(prev, cur *impact.Status) *impact.StatusDiff
+func Evaluate(doc *model.Document, g *graph.Graph, obs []*model.ObservationSet, opts Options) (*model.Status, error)
+func Diff(prev, cur *model.Status) *model.StatusDiff
 
 // pkg/report
-func BuildView(doc *impact.Document, g *graph.Graph, st *impact.Status, opts ViewOptions) (*View, error)
+func BuildView(doc *model.Document, g *graph.Graph, st *model.Status, opts ViewOptions) (*View, error)
 func Render(kind Kind, v *View) ([]byte, error)
 func RenderTemplate(tmpl string, v *View) ([]byte, error)
-func Mermaid(doc *impact.Document, st *impact.Status, opts MermaidOptions) string
+func Mermaid(doc *model.Document, st *model.Status, opts MermaidOptions) string
 
 // pkg/prismx
-func ToOKR(doc *impact.Document, st *impact.Status) (*okr.OKRDocument, error)
-func ToOutcomeJourneys(doc *impact.Document, st *impact.Status) ([]journey.OutcomeJourney, error)
-func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) // wraps ErrNotV2MOMReady
-func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error)    // wraps ErrNotVSEMReady
-func ToMEL(doc *impact.Model, st *impact.Status) (*mel.Plan, error)       // wraps ErrNotMELReady
-func ToOGSM(doc *impact.Model, st *impact.Status) (*ogsm.OGSM, error)     // wraps ErrNotOGSMReady
-func ToBSC(doc *impact.Model, st *impact.Status) (*bsc.BSC, error)        // wraps ErrNotBSCReady
-func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) // wraps ErrNotDMAICReady
+func ToOKR(doc *model.Document, st *model.Status) (*okr.OKRDocument, error)
+func ToOutcomeJourneys(doc *model.Document, st *model.Status) ([]journey.OutcomeJourney, error)
+func ToV2MOM(doc *model.Model, st *model.Status) (*v2mom.V2MOM, error) // wraps ErrNotV2MOMReady
+func ToVSEM(doc *model.Model, st *model.Status) (*vsem.VSEM, error)    // wraps ErrNotVSEMReady
+func ToMEL(doc *model.Model, st *model.Status) (*mel.Plan, error)       // wraps ErrNotMELReady
+func ToOGSM(doc *model.Model, st *model.Status) (*ogsm.OGSM, error)     // wraps ErrNotOGSMReady
+func ToBSC(doc *model.Model, st *model.Status) (*bsc.BSC, error)        // wraps ErrNotBSCReady
+func ToDMAIC(doc *model.Model, st *model.Status, sets []*model.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) // wraps ErrNotDMAICReady
 ```
 
 Errors: functions return wrapped sentinel errors —
@@ -638,12 +638,12 @@ commands, never write the file directly.
 ```go
 type Patch []Op // RFC 6902: add, remove, replace, move, copy, test
 type Result struct {
-    Document         *impact.Document
+    Document         *model.Document
     IssuesIntroduced []validate.Issue
     IssuesResolved   []validate.Issue
     Applied          bool
 }
-func Apply(doc *impact.Document, p Patch, opts Options) (*Result, error) // opts.AllowErrors
+func Apply(doc *model.Document, p Patch, opts Options) (*Result, error) // opts.AllowErrors
 ```
 
 - **Addressing.** Standard JSON Pointers plus an ID segment: `@<id>` selects
@@ -820,7 +820,7 @@ model; two needed fields to be added.
 - Vision metrics are the indicators of `impact`-level outcomes that are not
   already a strategy's metric, in file order.
 
-### 6.17 MEL (`pkg/impact`, `pkg/prismx`)
+### 6.17 MEL (`pkg/model`, `pkg/prismx`)
 
 A monitoring, evaluation, and learning (MEL) plan is drawn from the model
 alone, into prism-roadmap's `goals/mel` document. Monitoring was already in
@@ -850,7 +850,7 @@ plan's budget.
 Lint OM-LRN-001 to 003 check the plan once it exists: critical assumptions are
 taken up, open questions are reviewed, and dates fall within the time horizon.
 
-### 6.18 OGSM (`pkg/impact`, `pkg/prismx`)
+### 6.18 OGSM (`pkg/model`, `pkg/prismx`)
 
 An OGSM (Objective, Goals, Strategies, Measures) is drawn from the model alone,
 into prism-roadmap's `goals/ogsm` document.
@@ -871,7 +871,7 @@ intervention or indicator in more than one pathway is listed under the first.
 A paused intervention has no action status. Frequencies are written in words
 as for VSEM.
 
-### 6.19 Balanced Scorecard (`pkg/impact`, `pkg/prismx`)
+### 6.19 Balanced Scorecard (`pkg/model`, `pkg/prismx`)
 
 A Balanced Scorecard is drawn from the model alone, into prism-roadmap's
 `goals/bsc` document.
@@ -895,7 +895,7 @@ Frequencies are written in words as for VSEM.
 
 ## 7. Data Design
 
-### 7.1 Document model (`pkg/impact`)
+### 7.1 Document model (`pkg/model`)
 
 Go structs are normative; this table summarizes them. All slices are optional
 unless marked required.
@@ -1036,7 +1036,7 @@ type AssumptionAssessment struct {
 }
 ```
 
-`impact.Status` (kind `OutcomeModelStatus`) holds `asOf`, `options`
+`model.Status` (kind `OutcomeModelStatus`) holds `asOf`, `options`
 (weights / tolerance used), and per-element results: `indicators[]`
 (progress, expected, status, health, latest observation), `outcomes[]`
 (status, pathwayStatus, confidence, assumptionBroken[]), `links[]` (state,
@@ -1183,7 +1183,7 @@ Published tags are immutable, so fixes roll forward.
 | Per-outcome `logic` only (no groups) | Cannot express nested logic such as `(A AND B) OR C`; ActKnowledge "clusters" and Davies' critique both call for explicit joint preconditions |
 | Interventions only as nodes with outgoing links (logic-model style) | ActKnowledge places interventions on connectors ("what it takes for A to produce B"); both placements are supported via `Intervention.targets` and `CausalLink.interventionIds` |
 | Agents rewrite whole documents (no patch engine) | Large, unreviewable diffs; easy to drop elements silently; no atomic validation. Patches are small, reviewable, and checkable before write |
-| Third-party JSON Patch library (e.g. evanphx/json-patch) | Lacks ID-segment addressing and error-delta rejection; wrapping it still needs a custom resolver; the in-house engine over `impact.Model` JSON is small and fully tested |
+| Third-party JSON Patch library (e.g. evanphx/json-patch) | Lacks ID-segment addressing and error-delta rejection; wrapping it still needs a custom resolver; the in-house engine over `model.Model` JSON is small and fully tested |
 | Generate PPTX directly from Go | Large dependency and layout effort; Marp gives Markdown-native decks consistent with prism-maturity, with PDF/PPTX export as an optional step |
 | Import Google Drive SDK into this module to publish and read reviews | Couples a spec library to one cloud; violates INV-7; the file-based `ReviewResponse` lets any channel (Google, Microsoft 365, email, workshop notes) feed the same import |
 | Apply review responses directly | Free-text feedback needs judgment; proposals plus `outcome-model patch` keep a human decision on every change and keep INV-9 |

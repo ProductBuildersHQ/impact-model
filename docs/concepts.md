@@ -2,7 +2,7 @@
 
 How each concept from the
 [research brief](research/theory-of-change.md) (§8 entity model, §9.8 UNDG
-implications) maps to the Go model in `pkg/impact`. The
+implications) maps to the Go model in `pkg/model`. The
 [TRD §7](specs/initiatives/INIT-THEORYOFCHANGESPEC-001/TRD.md) is normative;
 this page is the index.
 
@@ -35,7 +35,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 
 | Concept (source) | Go type / field | Delivered by |
 |------------------|-----------------|--------------|
-| Outcome model document (holds the theory of change of ActKnowledge and UNDG) | `impact.Model` (`kind: OutcomeModel`) | 004 |
+| Outcome model document (holds the theory of change of ActKnowledge and UNDG) | `model.Model` (`kind: OutcomeModel`) | 004 |
 | Metadata, owners, status | `Model.Metadata` (`prism-core` `Metadata`) | 004 |
 | Whose outcome model it is (perspective) | `Model.Perspective` (`actorId`, `role`, `futureRef`) | 004 |
 | Problem statement, target population, time horizon, narrative | `Model.Context` | 004 |

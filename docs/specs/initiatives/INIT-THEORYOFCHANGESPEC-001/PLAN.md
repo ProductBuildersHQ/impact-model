@@ -97,9 +97,9 @@ New repository; every component is new.
 | Component | Change | Notes |
 |-----------|--------|-------|
 | Repo scaffold (`go.mod`, CI, `.golangci.yaml`, `CLAUDE.md`, `README.md`, `LICENSE`) | New | Mirrors market-spec / prism conventions |
-| `pkg/impact`, `pkg/ref` | New | Model (including provenance) and reference grammar |
+| `pkg/model`, `pkg/ref` | New | Model (including provenance) and reference grammar |
 | `schema/`, `cmd/generate-schema` | New | Go-first schema pipeline |
-| `pkg/impactio`, `pkg/validate`, `pkg/graph` | New | Load, canonical format, check, analyze |
+| `pkg/modelio`, `pkg/validate`, `pkg/graph` | New | Load, canonical format, check, analyze |
 | `pkg/edit`, `pkg/diff` | New | Patch engine, element commands, theory diff |
 | `pkg/report`, `pkg/slides` | New | Reports and Marp decks from one view model |
 | `pkg/share`, `pkg/review` | New | Sharing exports and stamps; review import and approval |
@@ -125,7 +125,7 @@ by sequence, not by number.
 | P-01 | Scaffold module, CI, lint config, README, CLAUDE.md, LICENSE | — (enabler) | CI green | — |
 | P-02 | Concept-to-type mapping doc and glossary from the research brief | PRD G-1 | Mapping covers research §8.4 and §9.8 | P-01 |
 | P-03 | `pkg/ref` reference grammar | PRD-FR-604; TRD-015 | Round-trip tests | P-01 |
-| P-04 | `pkg/impact` core model with a minimal required set, reusing prism-core | PRD-FR-101…110; TRD-001, 016 | Round-trip, enum, minimal fixture | P-02, P-03 |
+| P-04 | `pkg/model` core model with a minimal required set, reusing prism-core | PRD-FR-101…110; TRD-001, 016 | Round-trip, enum, minimal fixture | P-02, P-03 |
 | P-05 | `ObservationSet`, `Status`, `StatusDiff`, `ActorRegistry` | PRD-FR-111, 406; TRD-002 | Round-trip tests | P-04 |
 | P-06 | Schema pipeline, embed, schemakit lint, drift check | PRD-FR-201, 202; TRD-003, 004 | 0 lint violations; drift check | P-04, P-05 |
 
@@ -133,7 +133,7 @@ by sequence, not by number.
 
 | Step | Approach | Satisfies | Verification | Depends on |
 |------|----------|-----------|--------------|------------|
-| P-07 | `pkg/impactio` load, limits, merge, canonical `Format` | PRD-FR-203, 704; TRD-005, 031 | YAML/JSON equality; fmt idempotence | P-06 |
+| P-07 | `pkg/modelio` load, limits, merge, canonical `Format` | PRD-FR-203, 704; TRD-005, 031 | YAML/JSON equality; fmt idempotence | P-06 |
 | P-08 | `pkg/validate` | PRD-FR-301; TRD-006 | Table tests | P-07 |
 | P-09 | `pkg/graph` | PRD-FR-302; TRD-007 | Unit, property, benchmark | P-08 |
 | P-46 | `pkg/edit` patch engine | PRD-FR-701, 702, G-14; TRD-029 | Rejection and `@id` tests | P-08 |
