@@ -1,11 +1,11 @@
 # Balanced Scorecard
 
 If you plan with a Balanced Scorecard, this page shows where each part comes
-from in an impact model, and what the impact model adds that a scorecard
+from in an outcome model, and what the outcome model adds that a scorecard
 written by hand usually leaves out.
 
 ```bash
-impact-model export bsc impact-model.yaml -O observations.yaml -o bsc.json
+outcome-model export bsc outcome-model.yaml -O observations.yaml -o bsc.json
 ```
 
 The output is a Balanced Scorecard in the JSON format of
@@ -15,7 +15,7 @@ strategy map as a diagram, or as slides.
 
 ## The mapping at a glance
 
-| Scorecard | Comes from | In impact model terms |
+| Scorecard | Comes from | In outcome model terms |
 |-----------|-----------|-----------------------|
 | **Mission** and **vision** | `context.mission`, `context.vision` | Why the organization exists, and the future it works toward |
 | **Perspectives** | the `scorecardPerspective` values the outcomes use | Where an outcome sits: mission, financial, customer, internal process, or learning and growth |
@@ -29,23 +29,23 @@ strategy map as a diagram, or as slides.
 Two rules hold throughout:
 
 - **Nothing is invented.** Every field in the scorecard is copied or
-  translated from something in the impact model. A field the model leaves
+  translated from something in the outcome model. A field the model leaves
   empty stays empty, and a model with no outcome in a scorecard perspective is
   refused instead of written.
 - **Order is kept.** Objectives, measures, themes, and initiatives appear in
-  the order the impact model lists them, so the same model always gives the
+  the order the outcome model lists them, so the same model always gives the
   same scorecard.
 
 ## Placing outcomes in perspectives
 
-A Balanced Scorecard sorts objectives into perspectives. An impact model sorts
+A Balanced Scorecard sorts objectives into perspectives. An outcome model sorts
 outcomes by level instead, so you say which outcomes are scorecard objectives,
 and where they sit:
 
 ```bash
-impact-model outcome set impact-model.yaml oc-im-lower-overhead \
+outcome-model outcome set outcome-model.yaml oc-im-lower-overhead \
   --scorecard-perspective customer --owner act-network
-impact-model indicator set impact-model.yaml ind-overhead-share --lead-lag lead
+outcome-model indicator set outcome-model.yaml ind-overhead-share --lead-lag lead
 ```
 
 | Perspective | `scorecardPerspective` | Usually holds |
@@ -132,7 +132,7 @@ the first objective on each path. Feedback links are left out, since a
 strategy map runs one way.
 
 A strategy map runs from cause at the bottom to effect at the top, so lint
-warns when an objective leads to one in a lower perspective (IMP-BSC-001):
+warns when an objective leads to one in a lower perspective (OM-BSC-001):
 one of the two perspectives may be wrong.
 
 ## Objectives and themes
@@ -192,10 +192,10 @@ the strategy map. An intervention that leads to no objective is left out.
 | A one-sentence strategy | The model's pathways are its strategy; they become the themes |
 | Indicators of outcomes that are not objectives | `report metric-tree` |
 
-## What the impact model adds
+## What the outcome model adds
 
 A scorecard drawn by hand has arrows on its strategy map, but rarely says why
-each one holds. Exported from an impact model:
+each one holds. Exported from an outcome model:
 
 - each arrow stands for a causal chain whose links carry a rationale,
   assumptions, and evidence
@@ -210,7 +210,7 @@ rejected has a `scorecardPerspective`, `export bsc` writes nothing and exits
 with status 2:
 
 ```
-impact-model: impact-model.yaml: the impact model cannot be drawn as a Balanced Scorecard: add a scorecardPerspective to an outcome
+outcome-model: outcome-model.yaml: the outcome model cannot be drawn as a Balanced Scorecard: add a scorecardPerspective to an outcome
 ```
 
 ## Checking the result
@@ -219,14 +219,14 @@ The exported scorecard always passes prism-roadmap's default validation. Its
 strict options also require an owner on every objective and measure, a target
 and a lead or lag type on every measure, both lead and lag measures, an
 objective in every perspective drawn, and a connected strategy map. Lint rules
-IMP-BSC-001 to 004 check the model for the same things before you export. The
+OM-BSC-001 to 004 check the model for the same things before you export. The
 intermediary example meets them.
 
 ## Going the other way
 
 There is no import from a Balanced Scorecard. A scorecard's arrows say that one
-objective helps another, not how or why, so an impact model built from one
-would have to invent the reasoning. Start the impact model from the scorecard
+objective helps another, not how or why, so an outcome model built from one
+would have to invent the reasoning. Start the outcome model from the scorecard
 instead: each objective suggests an outcome in its perspective, each arrow a
 causal link to explain, each measure an indicator, and each initiative an
 intervention.

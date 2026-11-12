@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 var update = flag.Bool("update", false, "rewrite golden files")
@@ -33,13 +33,13 @@ func golden(t *testing.T, name, got string) {
 	}
 }
 
-func fullDoc(t *testing.T) *impact.Model {
+func fullDoc(t *testing.T) *model.Model {
 	t.Helper()
-	data, err := os.ReadFile("../impact/testdata/full.json")
+	data, err := os.ReadFile("../model/testdata/full.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var d impact.Model
+	var d model.Model
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&d); err != nil {
@@ -48,7 +48,7 @@ func fullDoc(t *testing.T) *impact.Model {
 	return &d
 }
 
-func views(t *testing.T, doc *impact.Model) (*report.View, []*report.View) {
+func views(t *testing.T, doc *model.Model) (*report.View, []*report.View) {
 	t.Helper()
 	whole, err := report.BuildView(doc, nil, nil, report.Options{})
 	if err != nil {
@@ -90,7 +90,7 @@ func TestWorkshopStructure(t *testing.T) {
 func TestWorkshopIsDeterministic(t *testing.T) {
 	whole, pathways := views(t, fullDoc(t))
 	if a, b := Workshop(whole, pathways, Options{}), Workshop(whole, pathways, Options{}); a != b {
-		t.Error("two renders of the same impact model differ")
+		t.Error("two renders of the same outcome model differ")
 	}
 }
 

@@ -6,10 +6,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 type flagType int
@@ -288,7 +288,7 @@ var elementFlags = map[string][]elementFlag{
 		s("owner", "ownerActorId", "owning actor ID"),
 		ss("outcomes", "outcomeIds", "outcome IDs in the pathway"),
 		ss("interventions", "interventionIds", "intervention IDs in the pathway"),
-		s("child", "childModel", "Impact model that elaborates this pathway, as model:<doc>"),
+		s("child", "childModel", "Outcome model that elaborates this pathway, as model:<doc>"),
 		s("north-star", "focus.northStarId", "indicator ID of the pathway's North Star: an outcome metric, never an output"),
 		s("one-metric", "focus.oneMetricId", "indicator ID to focus on at the pathway's current stage"),
 		ss("guardrails", "focus.guardrailIds", "indicator IDs watched so the North Star is not pursued at their cost"),
@@ -312,7 +312,7 @@ var provenanceKinds = []string{
 func init() {
 	for _, kind := range provenanceKinds {
 		elementFlags[kind] = append(elementFlags[kind],
-			s("basis", "provenance.basis", "why it is in the impact model: stated, inferred, hypothesis, confirmed, or rejected"),
+			s("basis", "provenance.basis", "why it is in the outcome model: stated, inferred, hypothesis, confirmed, or rejected"),
 			ss("sources", "provenance.evidenceIds", "evidence IDs that support the basis"),
 			s("basis-note", "provenance.note", "note on the basis"),
 			s("decided-at", "provenance.decidedAt", "date a confirmed or rejected basis was decided (YYYY-MM-DD)"),
@@ -337,7 +337,7 @@ func newKindCmd(e *env, k edit.ElementKind) *cobra.Command {
 		Long: fmt.Sprintf(`Add, change, or remove %s.
 
 Each command is compiled to a JSON Patch and applied through the same
-validated path as "impact-model patch": it is atomic, and nothing is
+validated path as "outcome-model patch": it is atomic, and nothing is
 written if the result would have more structural errors than before.`, article(k.Name)),
 	}
 	parent.AddCommand(newAddCmd(e, k, flags), newSetCmd(e, k, flags), newRmCmd(e, k))
@@ -443,7 +443,7 @@ func newAddCmd(e *env, k edit.ElementKind, flags []elementFlag) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add <model-file> --id <id> ...",
 		Short: fmt.Sprintf("Add %s", article(k.Name)),
-		Example: fmt.Sprintf(`  impact-model %s add impact-model.yaml --id %s-new %s`,
+		Example: fmt.Sprintf(`  outcome-model %s add outcome-model.yaml --id %s-new %s`,
 			k.Name, shortPrefix(k.Name), exampleFlags(flags)),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -451,7 +451,7 @@ func newAddCmd(e *env, k edit.ElementKind, flags []elementFlag) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -472,7 +472,7 @@ func newAddCmd(e *env, k edit.ElementKind, flags []elementFlag) *cobra.Command {
 	}
 	if k.Name == "evidence" {
 		cmd.Use = "add <model-file> --title <title> ..."
-		cmd.Example = "  impact-model evidence add impact-model.yaml --title \"Annual report\" --url https://example.org/report --accessed 2026-01-15"
+		cmd.Example = "  outcome-model evidence add outcome-model.yaml --title \"Annual report\" --url https://example.org/report --accessed 2026-01-15"
 		cmd.Flags().String("id", "", "the new element's ID, a lowercase kebab-case slug (default: derived from the title)")
 	} else {
 		cmd.Flags().String("id", "", "the new element's ID, a lowercase kebab-case slug (required)")
@@ -502,7 +502,7 @@ be changed: remove the element and add a new one.`, k.Name),
 			if err != nil {
 				panic(fmt.Sprintf("cli: flag --unset: %v", err))
 			}
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -530,7 +530,7 @@ end is gone, an indicator whose subject is gone, an intervention left with
 no targets, a precondition group left with fewer than two members.`, article(k.Name)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -628,7 +628,7 @@ func article(kind string) string {
 // evidenceID derives an unused evidence ID from a title: "ev-" and a
 // kebab-case slug, with a numeric suffix if the slug is taken. The same
 // document and title always yield the same ID.
-func evidenceID(doc *impact.Model, title string) (string, error) {
+func evidenceID(doc *model.Model, title string) (string, error) {
 	var slug strings.Builder
 	dash := true
 	for _, r := range strings.ToLower(title) {

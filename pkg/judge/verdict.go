@@ -24,7 +24,7 @@ type Verdict struct {
 
 // Errors returned for a verdict that cannot be accepted.
 var (
-	ErrWrongBundle   = errors.New("the verdict judged a different version of the impact model")
+	ErrWrongBundle   = errors.New("the verdict judged a different version of the outcome model")
 	ErrInvalidReport = errors.New("invalid verdict")
 	ErrJudgeName     = errors.New("invalid judge name")
 )
@@ -95,7 +95,7 @@ func ValidJudgeName(name string) bool {
 }
 
 // Dir returns the directory that holds the verdicts for a bundle, beside the
-// Impact model file.
+// Outcome model file.
 func Dir(tocPath, bundleHash string) string {
 	return filepath.Join(filepath.Dir(tocPath), ".toc", "judgements", bundleHash)
 }

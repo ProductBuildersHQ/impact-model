@@ -1,4 +1,4 @@
-// Package graph builds the causal graph of an impact model document and
+// Package graph builds the causal graph of an outcome model document and
 // answers structural questions about it: transitive preconditions and
 // consequences, paths to impact, cycles, levels, orphans, dead ends, and the
 // ceiling of accountability.
@@ -23,8 +23,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // Sentinel errors. Callers match them with errors.Is.
@@ -46,9 +46,9 @@ const maxIssuesInError = 3
 // Node is an outcome or an intervention.
 type Node struct {
 	ID   string
-	Kind impact.ElementKind // impact.ElementOutcome or impact.ElementIntervention
+	Kind model.ElementKind // model.ElementOutcome or model.ElementIntervention
 	// Level is set for outcomes only.
-	Level impact.Level
+	Level model.Level
 }
 
 // Edge is a directed causal edge.
@@ -75,8 +75,8 @@ type Graph struct {
 	// indegree counts non-feedback incoming edges (a self edge counts).
 	hasIn []bool
 
-	groups  []impact.PreconditionGroup
-	ceiling *impact.Ceiling
+	groups  []model.PreconditionGroup
+	ceiling *model.Ceiling
 	// ownedByID marks outcomes that are listed in, or upstream of,
 	// Ceiling.OutcomeIDs.
 	ownedByID []bool
@@ -88,7 +88,7 @@ type Graph struct {
 // Build constructs the graph. It returns an error wrapping
 // ErrInvalidDocument if the document has error-severity validation issues.
 // Build does not modify doc and keeps no reference to it.
-func Build(doc *impact.Model) (*Graph, error) {
+func Build(doc *model.Model) (*Graph, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("%w: nil document", ErrInvalidDocument)
 	}
@@ -100,12 +100,12 @@ func Build(doc *impact.Model) (*Graph, error) {
 	g := &Graph{index: make(map[string]int, len(doc.Outcomes)+len(doc.Interventions))}
 	for _, o := range doc.Outcomes {
 		if !o.Rejected() {
-			g.addNode(Node{ID: o.ID, Kind: impact.ElementOutcome, Level: o.Level})
+			g.addNode(Node{ID: o.ID, Kind: model.ElementOutcome, Level: o.Level})
 		}
 	}
 	for _, in := range doc.Interventions {
 		if !in.Rejected() {
-			g.addNode(Node{ID: in.ID, Kind: impact.ElementIntervention})
+			g.addNode(Node{ID: in.ID, Kind: model.ElementIntervention})
 		}
 	}
 	active := func(id string) bool { _, ok := g.index[id]; return ok }
@@ -156,7 +156,7 @@ func Build(doc *impact.Model) (*Graph, error) {
 			activeGroup[grp.ID] = true
 		}
 	}
-	g.groups = make([]impact.PreconditionGroup, 0, len(doc.Groups))
+	g.groups = make([]model.PreconditionGroup, 0, len(doc.Groups))
 	for _, grp := range doc.Groups {
 		if !activeGroup[grp.ID] {
 			continue
@@ -225,8 +225,8 @@ func (g *Graph) FeedbackEdges() []Edge { return slices.Clone(g.fb) }
 
 // GroupsFor returns the precondition groups whose target is the given
 // outcome, in document order. Groups never affect reachability.
-func (g *Graph) GroupsFor(target string) []impact.PreconditionGroup {
-	var out []impact.PreconditionGroup
+func (g *Graph) GroupsFor(target string) []model.PreconditionGroup {
+	var out []model.PreconditionGroup
 	for _, grp := range g.groups {
 		if grp.Target == target {
 			grp.Members = slices.Clone(grp.Members)
@@ -270,7 +270,7 @@ func (g *Graph) idsOf(mask []bool) []string {
 
 func (g *Graph) isImpact(i int) bool {
 	n := g.nodes[i]
-	return n.Kind == impact.ElementOutcome && n.Level == impact.LevelImpact
+	return n.Kind == model.ElementOutcome && n.Level == model.LevelImpact
 }
 
 // closure marks every node reachable from the starts (inclusive) following
@@ -537,7 +537,7 @@ func (g *Graph) LevelOf(id string) (int, bool) {
 func (g *Graph) Orphans() []string {
 	var out []string
 	for i, n := range g.nodes {
-		if n.Kind == impact.ElementOutcome && !g.hasIn[i] {
+		if n.Kind == model.ElementOutcome && !g.hasIn[i] {
 			out = append(out, n.ID)
 		}
 	}
@@ -546,7 +546,7 @@ func (g *Graph) Orphans() []string {
 
 // DeadEnds returns every node except impact outcomes that has no
 // non-feedback path to an impact outcome, in node order. A document with no
-// impact outcome makes every node a dead end; lint rule IMP-STR-001
+// impact outcome makes every node a dead end; lint rule OM-STR-001
 // reports that case.
 func (g *Graph) DeadEnds() []string {
 	reach := g.canReachImpact()
@@ -572,7 +572,7 @@ func (g *Graph) DeadEnds() []string {
 //   - A ceiling with neither set owns every outcome.
 func (g *Graph) BelowCeiling(id string) bool {
 	i, ok := g.index[id]
-	if !ok || g.nodes[i].Kind != impact.ElementOutcome {
+	if !ok || g.nodes[i].Kind != model.ElementOutcome {
 		return false
 	}
 	c := g.ceiling

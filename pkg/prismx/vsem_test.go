@@ -8,12 +8,12 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/vsem"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestVSEMExportValidates(t *testing.T) {
 	doc, st := example(t)
-	for name, status := range map[string]*impact.Status{"with status": st, "without": nil} {
+	for name, status := range map[string]*model.Status{"with status": st, "without": nil} {
 		out, err := ToVSEM(doc, status)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)
@@ -77,13 +77,13 @@ func TestVSEMMapping(t *testing.T) {
 			t.Errorf("%s dates = %s..%s, want %s..%s", e.ID, e.StartDate, e.EndDate, in.StartDate, in.EndDate)
 		}
 		wantKind := vsem.KindInitiative
-		if in.Type == impact.InterventionProgram {
+		if in.Type == model.InterventionProgram {
 			wantKind = vsem.KindProgram
 		}
 		if e.Kind != wantKind {
 			t.Errorf("%s kind = %q, want %q for type %q", e.ID, e.Kind, wantKind, in.Type)
 		}
-		if e.Status == "" && in.Status != "" && in.Status != impact.InterventionPaused {
+		if e.Status == "" && in.Status != "" && in.Status != model.InterventionPaused {
 			t.Errorf("%s has no status, from %q", e.ID, in.Status)
 		}
 	}
@@ -117,7 +117,7 @@ func TestVSEMMapping(t *testing.T) {
 	for _, m := range vision {
 		ind, _ := doc.Indicator(m.ID)
 		o, _ := doc.Outcome(ind.Measures)
-		if o.Level != impact.LevelImpact {
+		if o.Level != model.LevelImpact {
 			t.Errorf("vision metric %s measures %s at level %s, want impact", m.ID, o.ID, o.Level)
 		}
 	}
@@ -162,12 +162,12 @@ func TestVSEMListsSharedElementsOnce(t *testing.T) {
 func TestVSEMRefusesWhatItCannotDraw(t *testing.T) {
 	tests := []struct {
 		name   string
-		mutate func(d *impact.Model)
+		mutate func(d *model.Model)
 		want   string
 	}{
-		{"no vision or mission", func(d *impact.Model) { d.Context.Vision, d.Context.Mission = "", "" }, "context.vision or context.mission"},
-		{"only rejected pathways", func(d *impact.Model) {
-			var rejected []impact.Pathway
+		{"no vision or mission", func(d *model.Model) { d.Context.Vision, d.Context.Mission = "", "" }, "context.vision or context.mission"},
+		{"only rejected pathways", func(d *model.Model) {
+			var rejected []model.Pathway
 			for _, p := range d.Pathways {
 				if p.Rejected() {
 					rejected = append(rejected, p)

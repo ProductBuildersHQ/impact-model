@@ -1,7 +1,7 @@
 # Measuring Progress
 
-An impact model says what you expect. Measuring says how far you have come. The
-measurement is a pure function of three inputs: the impact model, the observations,
+An outcome model says what you expect. Measuring says how far you have come. The
+measurement is a pure function of three inputs: the outcome model, the observations,
 and a date. The same inputs always give the same answer.
 
 ## Indicators
@@ -33,7 +33,7 @@ What an indicator measures decides its **tier**, which is never stored:
 | `impact` | an impact outcome | residents served, reported as a contribution |
 
 Resources are measured as activity-tier indicators with a unit such as hours or
-dollars. `impact-model report metric-tree` lays a pathway's indicators out in
+dollars. `outcome-model report metric-tree` lays a pathway's indicators out in
 this order.
 
 ### North Star, guardrails, and headline lists
@@ -51,9 +51,9 @@ Three choices sit on top of the tiers, and they are different things:
 - **Purpose** is `context.mission` and `context.vision`, plain statements. They are
   not part of the causal chain.
 
-`impact-model report headline` shows what each audience is told, and the story
-report and deck use the same lists. `impact-model lint` checks all of it: the
-`TOC-NSM-*`, `TOC-HLN-*`, `IMP-AUD-002`, and `IMP-CTX-001` rules.
+`outcome-model report headline` shows what each audience is told, and the story
+report and deck use the same lists. `outcome-model lint` checks all of it: the
+`TOC-NSM-*`, `TOC-HLN-*`, `OM-AUD-002`, and `OM-CTX-001` rules.
 
 ### Working a metric out from others
 
@@ -76,7 +76,7 @@ not both.
 ## Observations
 
 Measurements go in an **observation set**, a separate file that refers to the
-Impact model by ID:
+Outcome model by ID:
 
 ```yaml
 kind: ObservationSet
@@ -101,10 +101,10 @@ optional note. The same file also holds:
 - **Learning reviews**: what changed in a period, the surprises, and decisions.
 - **Notes**: context that belongs with the numbers.
 
-Check a set against the impact model it measures:
+Check a set against the outcome model it measures:
 
 ```bash
-impact-model validate observations-2026-q3.yaml --model impact-model.yaml
+outcome-model validate observations-2026-q3.yaml --model outcome-model.yaml
 ```
 
 ## Load a spreadsheet
@@ -130,7 +130,7 @@ metricAliases:
 ```
 
 ```bash
-impact-model import observations --csv q4.csv --map mapping.yaml --model impact-model.yaml \
+outcome-model import observations --csv q4.csv --map mapping.yaml --model outcome-model.yaml \
   --out obs-q4.yaml --unmatched q4-unmatched.csv
 ```
 
@@ -143,7 +143,7 @@ code is 1 when some rows were unmatched (the rest are still written).
 ## Status
 
 ```bash
-impact-model status impact-model.yaml -O obs-q3.yaml -O obs-q4.yaml --as-of 2026-12-31 --out status-q4.json
+outcome-model status outcome-model.yaml -O obs-q3.yaml -O obs-q4.yaml --as-of 2026-12-31 --out status-q4.json
 ```
 
 `status` prints a summary. `--format json` prints the full snapshot, and `--out`
@@ -188,8 +188,8 @@ impact is derived from its links, so a weak link shows up where it matters.
 Keep each snapshot and compare:
 
 ```bash
-impact-model status impact-model.yaml -O obs-q4.yaml --prev status-q3.json
-impact-model report exec impact-model.yaml -O obs-q4.yaml --prev status-q3.json
+outcome-model status outcome-model.yaml -O obs-q4.yaml --prev status-q3.json
+outcome-model report exec outcome-model.yaml -O obs-q4.yaml --prev status-q3.json
 ```
 
 The comparison lists the indicators, outcomes, links, and assumptions whose

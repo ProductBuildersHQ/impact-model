@@ -5,28 +5,28 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestWeightedScore(t *testing.T) {
-	doc := &impact.Model{SelectionCriteria: []impact.SelectionCriterion{
-		{ID: "a", Weight: 3, AppliesTo: impact.SubjectIndicator},
-		{ID: "cost", Weight: 2, Inverted: true, AppliesTo: impact.SubjectIndicator},
-		{ID: "plain", AppliesTo: impact.SubjectIndicator}, // no weight counts as 1
+	doc := &model.Model{SelectionCriteria: []model.SelectionCriterion{
+		{ID: "a", Weight: 3, AppliesTo: model.SubjectIndicator},
+		{ID: "cost", Weight: 2, Inverted: true, AppliesTo: model.SubjectIndicator},
+		{ID: "plain", AppliesTo: model.SubjectIndicator},
 	}}
 	tests := []struct {
 		name   string
-		scores []impact.CriterionScore
+		scores []model.CriterionScore
 		want   float64
 		ok     bool
 	}{
-		{"one criterion", []impact.CriterionScore{{CriterionID: "a", Score: 4}}, 4, true},
-		{"weights", []impact.CriterionScore{{CriterionID: "a", Score: 5}, {CriterionID: "plain", Score: 1}}, 4, true}, // (15+1)/4
-		{"inverted flips", []impact.CriterionScore{{CriterionID: "cost", Score: 1}}, 5, true},
-		{"mixed", []impact.CriterionScore{{CriterionID: "a", Score: 4}, {CriterionID: "cost", Score: 2}}, 4, true}, // (12+8)/5
-		{"rounds to two places", []impact.CriterionScore{{CriterionID: "a", Score: 4}, {CriterionID: "plain", Score: 2}}, 3.5, true},
-		{"unknown criterion ignored", []impact.CriterionScore{{CriterionID: "ghost", Score: 5}}, 0, false},
+		{"one criterion", []model.CriterionScore{{CriterionID: "a", Score: 4}}, 4, true},
+		{"weights", []model.CriterionScore{{CriterionID: "a", Score: 5}, {CriterionID: "plain", Score: 1}}, 4, true}, // (15+1)/4
+		{"inverted flips", []model.CriterionScore{{CriterionID: "cost", Score: 1}}, 5, true},
+		{"mixed", []model.CriterionScore{{CriterionID: "a", Score: 4}, {CriterionID: "cost", Score: 2}}, 4, true}, // (12+8)/5
+		{"rounds to two places", []model.CriterionScore{{CriterionID: "a", Score: 4}, {CriterionID: "plain", Score: 2}}, 3.5, true},
+		{"unknown criterion ignored", []model.CriterionScore{{CriterionID: "ghost", Score: 5}}, 0, false},
 		{"nothing", nil, 0, false},
 	}
 	for _, tt := range tests {
@@ -56,7 +56,7 @@ func TestMetricSelectionOrdersBestFirst(t *testing.T) {
 }
 
 func TestMetricSelectionEmpty(t *testing.T) {
-	doc := &impact.Model{}
+	doc := &model.Model{}
 	if out := MetricSelection(&View{}, doc); !strings.Contains(out, "No indicator has a selection record") {
 		t.Errorf("empty output = %q", out)
 	}

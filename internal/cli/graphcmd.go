@@ -7,9 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 // selectors maps each query flag to its query.
@@ -30,17 +30,17 @@ var selectors = []struct {
 func newGraphCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "graph <model-file>",
-		Short: "Analyze the causal graph of an impact model",
+		Short: "Analyze the causal graph of an outcome model",
 		Long: `Summarize or query the causal graph: outcomes and interventions joined by
 causal links. Feedback links are excluded from every structural query.
 
 With no query flag, prints a summary. With --format dot, prints the whole
 graph in Graphviz DOT.`,
-		Example: `  impact-model graph impact-model.yaml
-  impact-model graph impact-model.yaml --upstream --from oc-enterprise-require
-  impact-model graph impact-model.yaml --paths --from oc-spec-stable
-  impact-model graph impact-model.yaml --cycles --format json
-  impact-model graph impact-model.yaml --format dot | dot -Tsvg > graph.svg`,
+		Example: `  outcome-model graph outcome-model.yaml
+  outcome-model graph outcome-model.yaml --upstream --from oc-enterprise-require
+  outcome-model graph outcome-model.yaml --paths --from oc-spec-stable
+  outcome-model graph outcome-model.yaml --cycles --format json
+  outcome-model graph outcome-model.yaml --format dot | dot -Tsvg > graph.svg`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format := flagString(cmd, "format")
@@ -59,7 +59,7 @@ graph in Graphviz DOT.`,
 				return usageErr("--%s needs --from <id>", query)
 			}
 
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}

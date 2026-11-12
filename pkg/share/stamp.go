@@ -1,4 +1,4 @@
-// Package share prepares impact model artifacts for sharing outside the
+// Package share prepares outcome model artifacts for sharing outside the
 // tools: the export stamp every artifact carries, and the Markdown profile
 // that Pandoc converts to DOCX and PPTX. It only produces text. Rendering
 // diagrams and running Pandoc are done by the command line, never here.
@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-// Stamp identifies exactly which version of which impact model an artifact was
+// Stamp identifies exactly which version of which outcome model an artifact was
 // made from, so a reader can tell whether it is out of date.
 type Stamp struct {
 	ModelID string `json:"modelId"`
@@ -29,8 +29,8 @@ const unversioned = "unversioned"
 // NewStamp stamps doc. The version is the document's metadata version, else
 // that of its latest revision, else "unversioned". asOf is used as given; a
 // stamp never reads the clock, so the same inputs give the same artifact.
-func NewStamp(doc *impact.Model, asOf string) (Stamp, error) {
-	hash, err := impactio.ContentHash(doc)
+func NewStamp(doc *model.Model, asOf string) (Stamp, error) {
+	hash, err := modelio.ContentHash(doc)
 	if err != nil {
 		return Stamp{}, fmt.Errorf("share: hash document: %w", err)
 	}
@@ -54,7 +54,7 @@ func (s Stamp) shortHash() string {
 
 // Line is the one-line form used in footers and on title slides.
 func (s Stamp) Line() string {
-	line := fmt.Sprintf("Impact model %s · version %s · hash %s", s.ModelID, s.Version, s.shortHash())
+	line := fmt.Sprintf("Outcome model %s · version %s · hash %s", s.ModelID, s.Version, s.shortHash())
 	if s.AsOf != "" {
 		line += " · as of " + s.AsOf
 	}

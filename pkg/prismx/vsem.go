@@ -7,14 +7,14 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/vsem"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotVSEMReady is returned, wrapped, when an impact model lacks what a VSEM
+// ErrNotVSEMReady is returned, wrapped, when an outcome model lacks what a VSEM
 // requires: a vision or mission, and at least one pathway.
-var ErrNotVSEMReady = errors.New("the impact model cannot be drawn as a VSEM")
+var ErrNotVSEMReady = errors.New("the outcome model cannot be drawn as a VSEM")
 
-// ToVSEM exports the impact model as a VSEM (Vision, Strategy, Execution,
+// ToVSEM exports the outcome model as a VSEM (Vision, Strategy, Execution,
 // Metrics).
 //
 //   - Vision is context.vision, and Mission context.mission.
@@ -31,7 +31,7 @@ var ErrNotVSEMReady = errors.New("the impact model cannot be drawn as a VSEM")
 // one pathway is listed under the first. st may be nil; the metrics then have
 // no current value, progress, or status. ToVSEM refuses a model without a
 // vision or mission, or without a pathway.
-func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error) {
+func ToVSEM(doc *model.Model, st *model.Status) (*vsem.VSEM, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
@@ -39,7 +39,7 @@ func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error) {
 	if doc.Context.Vision == "" && doc.Context.Mission == "" {
 		missing = append(missing, "context.vision or context.mission")
 	}
-	var pathways []impact.Pathway
+	var pathways []model.Pathway
 	for _, p := range doc.Pathways {
 		if !p.Rejected() {
 			pathways = append(pathways, p)
@@ -52,7 +52,7 @@ func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error) {
 		return nil, fmt.Errorf("%w: add %s", ErrNotVSEMReady, joinAnd(missing))
 	}
 
-	statuses := map[string]impact.IndicatorStatus{}
+	statuses := map[string]model.IndicatorStatus{}
 	if st != nil {
 		for _, s := range st.Indicators {
 			statuses[s.IndicatorID] = s
@@ -122,9 +122,9 @@ func ToVSEM(doc *impact.Model, st *impact.Status) (*vsem.VSEM, error) {
 	return out, nil
 }
 
-func vsemExecution(doc *impact.Model, in impact.Intervention, strategyID string) vsem.Execution {
+func vsemExecution(doc *model.Model, in model.Intervention, strategyID string) vsem.Execution {
 	kind := vsem.KindInitiative
-	if in.Type == impact.InterventionProgram {
+	if in.Type == model.InterventionProgram {
 		kind = vsem.KindProgram
 	}
 	return vsem.Execution{
@@ -143,7 +143,7 @@ func vsemExecution(doc *impact.Model, in impact.Intervention, strategyID string)
 
 // vsemMetric draws a VSEM metric from an indicator. role names its place in
 // the strategy's focus, such as "North Star"; it is empty for a vision metric.
-func vsemMetric(doc *impact.Model, ind impact.Indicator, strategyID, role string, s impact.IndicatorStatus, withStatus bool) vsem.Metric {
+func vsemMetric(doc *model.Model, ind model.Indicator, strategyID, role string, s model.IndicatorStatus, withStatus bool) vsem.Metric {
 	m := vsem.Metric{
 		ID:          ind.ID,
 		Name:        ind.Name,
@@ -215,15 +215,15 @@ func frequencyLabel(iso string) string {
 
 // executionStatus maps an intervention's status; a paused intervention has no
 // VSEM status and is left blank.
-func executionStatus(s impact.InterventionStatus) string {
+func executionStatus(s model.InterventionStatus) string {
 	switch s {
-	case impact.InterventionPlanned:
+	case model.InterventionPlanned:
 		return vsem.ExecutionPlanned
-	case impact.InterventionInProgress:
+	case model.InterventionInProgress:
 		return vsem.ExecutionInProgress
-	case impact.InterventionCompleted:
+	case model.InterventionCompleted:
 		return vsem.ExecutionCompleted
-	case impact.InterventionCancelled:
+	case model.InterventionCancelled:
 		return vsem.ExecutionCancelled
 	}
 	return ""

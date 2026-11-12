@@ -9,12 +9,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/share"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
 )
 
 // asOfFlags adds the flags that control the export stamp.
@@ -24,7 +24,7 @@ func asOfFlags(cmd *cobra.Command) {
 }
 
 // stampFor builds the export stamp for doc from the --as-of flag.
-func stampFor(cmd *cobra.Command, doc *impact.Model) (share.Stamp, error) {
+func stampFor(cmd *cobra.Command, doc *model.Model) (share.Stamp, error) {
 	s, err := share.NewStamp(doc, flagString(cmd, "as-of"))
 	if err != nil {
 		return share.Stamp{}, &ExitError{Code: ExitUsageErr, Err: err}
@@ -33,8 +33,8 @@ func stampFor(cmd *cobra.Command, doc *impact.Model) (share.Stamp, error) {
 }
 
 // loadForRender loads a document and maps a failure to the exit code.
-func loadForRender(path string) (*impact.Model, error) {
-	doc, err := impactio.LoadDocument(path)
+func loadForRender(path string) (*model.Model, error) {
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		return nil, &ExitError{Code: ExitUsageErr, Err: err}
 	}
@@ -51,7 +51,7 @@ func renderError(path string, err error) error {
 
 // renderJSON loads a document, produces a JSON document with fn, and writes
 // it to --out or standard output, without a stamp.
-func renderJSON(e *env, cmd *cobra.Command, path string, fn func(*impact.Model) (string, error)) error {
+func renderJSON(e *env, cmd *cobra.Command, path string, fn func(*model.Model) (string, error)) error {
 	doc, err := loadForRender(path)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func renderJSON(e *env, cmd *cobra.Command, path string, fn func(*impact.Model) 
 		return renderError(path, err)
 	}
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(text)); err != nil {
+		if err := modelio.WriteFile(out, []byte(text)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil
@@ -73,7 +73,7 @@ func renderJSON(e *env, cmd *cobra.Command, path string, fn func(*impact.Model) 
 // render loads a document, produces text with fn, stamps it (Markdown gets a
 // metadata block, CSV a leading comment row) unless --no-stamp is set, and
 // writes it to --out or standard output.
-func render(e *env, cmd *cobra.Command, path string, csv bool, fn func(*impact.Model) (string, error)) error {
+func render(e *env, cmd *cobra.Command, path string, csv bool, fn func(*model.Model) (string, error)) error {
 	doc, err := loadForRender(path)
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func render(e *env, cmd *cobra.Command, path string, csv bool, fn func(*impact.M
 		}
 	}
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(text)); err != nil {
+		if err := modelio.WriteFile(out, []byte(text)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil
@@ -106,26 +106,26 @@ func render(e *env, cmd *cobra.Command, path string, csv bool, fn func(*impact.M
 func newReportCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "report <kind> <model-file>",
-		Short: "Render a report from an impact model",
+		Short: "Render a report from an outcome model",
 		Long: `Render a report as portable Markdown.
 
 Definition reports need no observations, so a workshop can review them before
 any data exists. Kinds: ` + strings.Join(report.DefinitionKinds, ", ") + `.
 "definitions" renders all of them as one document.
 
-Status reports describe how far the impact model has come, from observation files
+Status reports describe how far the outcome model has come, from observation files
 (-o) as of a date (--as-of, or the latest date in the observations). Kinds:
 exec, results, assumptions, interventions, evidence-gaps, full, story
 (--audience), headline (--audience narrows it), metric-tree (--pathway narrows it), learning-review (--period), portfolio, narrative, actors, and
 custom (--template, a Go text/template over the report view). narrative,
 actors, and custom also work with no observations.`,
-		Example: `  impact-model report definitions impact-model.yaml --out definitions.md
-  impact-model report logic-model impact-model.yaml --pathway pw-supply
-  impact-model report exec impact-model.yaml -O obs-q3.yaml --prev status-q2.json
-  impact-model report story impact-model.yaml -O obs-q3.yaml --audience aud-funders
-  impact-model report headline impact-model.yaml -O obs-q3.yaml
-  impact-model report metric-tree impact-model.yaml -O obs-q3.yaml --pathway pw-supply
-  impact-model report custom impact-model.yaml --template board.tmpl`,
+		Example: `  outcome-model report definitions outcome-model.yaml --out definitions.md
+  outcome-model report logic-model outcome-model.yaml --pathway pw-supply
+  outcome-model report exec outcome-model.yaml -O obs-q3.yaml --prev status-q2.json
+  outcome-model report story outcome-model.yaml -O obs-q3.yaml --audience aud-funders
+  outcome-model report headline outcome-model.yaml -O obs-q3.yaml
+  outcome-model report metric-tree outcome-model.yaml -O obs-q3.yaml --pathway pw-supply
+  outcome-model report custom outcome-model.yaml --template board.tmpl`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if service.IsStatusReport(args[0]) {
@@ -138,7 +138,7 @@ actors, and custom also work with no observations.`,
 				}
 				kind = "logic-model-diagram"
 			}
-			fn := func(doc *impact.Model) (string, error) {
+			fn := func(doc *model.Model) (string, error) {
 				return service.DefinitionReport(doc, kind, flagString(cmd, "pathway"))
 			}
 			if strings.HasSuffix(kind, "-json") {
@@ -166,7 +166,7 @@ func runStatusReport(e *env, cmd *cobra.Command, kind, path string) error {
 	withStatus := !slices.Contains(service.OptionalStatusKinds, kind) || flagString(cmd, "as-of") != "" || len(observationPaths(cmd)) > 0
 	var (
 		in   report.StatusInput
-		sets []*impact.ObservationSet
+		sets []*model.ObservationSet
 		err  error
 	)
 	if withStatus {
@@ -198,7 +198,7 @@ func runStatusReport(e *env, cmd *cobra.Command, kind, path string) error {
 		text = share.StampMarkdown(st, in.Doc.Metadata.Name, text)
 	}
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(text)); err != nil {
+		if err := modelio.WriteFile(out, []byte(text)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil
@@ -215,7 +215,7 @@ func observationPaths(cmd *cobra.Command) []string {
 	return paths
 }
 
-func statusReportText(cmd *cobra.Command, kind string, in report.StatusInput, sets []*impact.ObservationSet, withStatus bool) (string, error) {
+func statusReportText(cmd *cobra.Command, kind string, in report.StatusInput, sets []*model.ObservationSet, withStatus bool) (string, error) {
 	p := service.ReportParams{Audience: flagString(cmd, "audience"), Period: flagString(cmd, "period"), Pathway: flagString(cmd, "pathway")}
 	if kind == "story" && p.Audience == "" {
 		return "", usageErr("the story report needs --audience")
@@ -226,7 +226,7 @@ func statusReportText(cmd *cobra.Command, kind string, in report.StatusInput, se
 			panic(fmt.Sprintf("cli: --prev-observations is not a string slice flag: %v", err))
 		}
 		if len(prev) > 0 {
-			if p.PrevSets, err = impactio.LoadObservations(prev...); err != nil {
+			if p.PrevSets, err = modelio.LoadObservations(prev...); err != nil {
 				return "", &ExitError{Code: ExitUsageErr, Err: err}
 			}
 		}
@@ -252,7 +252,7 @@ func statusReportText(cmd *cobra.Command, kind string, in report.StatusInput, se
 func newExportCmd(e *env) *cobra.Command {
 	export := &cobra.Command{
 		Use:   "export",
-		Short: "Export tables from an impact model",
+		Short: "Export tables from an outcome model",
 	}
 	csv := &cobra.Command{
 		Use:   "csv <table> <model-file>",
@@ -260,10 +260,10 @@ func newExportCmd(e *env) *cobra.Command {
 		Long: `Export a table for spreadsheets. Tables: ` + strings.Join(report.CSVTables, ", ") + `.
 Multi-valued cells are joined with "; ". The first row is a comment carrying the
 export stamp ("# model:<id> version:<v> hash:<h>"); --no-stamp leaves it off.`,
-		Example: `  impact-model export csv indicators impact-model.yaml --out indicators.csv`,
+		Example: `  outcome-model export csv indicators outcome-model.yaml --out indicators.csv`,
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return render(e, cmd, args[1], true, func(doc *impact.Model) (string, error) {
+			return render(e, cmd, args[1], true, func(doc *model.Model) (string, error) {
 				return service.ExportCSV(doc, args[0])
 			})
 		},

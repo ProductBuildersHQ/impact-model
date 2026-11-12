@@ -5,13 +5,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// Evaluate computes the status of an impact model at asOf from observation sets.
-// g is the impact model's graph. The result is a pure function of its inputs: the
-// same impact model, observations, date, and options always give a byte-identical
+// Evaluate computes the status of an outcome model at asOf from observation sets.
+// g is the outcome model's graph. The result is a pure function of its inputs: the
+// same outcome model, observations, date, and options always give a byte-identical
 // snapshot, and the clock is never read.
 //
 // The steps are: derive values for theme-count and roll-up indicators from
@@ -19,11 +19,11 @@ import (
 // work out each assumption's effective status and each link's state and
 // confidence; combine preconditions into pathway states; cap the pathway
 // states of outcomes downstream of broken assumptions; and score confidence.
-func Evaluate(doc *impact.Model, g *graph.Graph, sets []*impact.ObservationSet, asOf time.Time, opts impact.StatusOptions) (*impact.Status, error) {
+func Evaluate(doc *model.Model, g *graph.Graph, sets []*model.ObservationSet, asOf time.Time, opts model.StatusOptions) (*model.Status, error) {
 	observations := derivedObservations(doc, sets, asOf)
 
-	var indicators []impact.IndicatorStatus
-	byIndicator := map[string]impact.IndicatorStatus{}
+	var indicators []model.IndicatorStatus
+	byIndicator := map[string]model.IndicatorStatus{}
 	for _, ind := range doc.Indicators {
 		if ind.Provenance.IsRejected() {
 			continue
@@ -44,18 +44,18 @@ func Evaluate(doc *impact.Model, g *graph.Graph, sets []*impact.ObservationSet, 
 	prop.Apply(pathway)
 	outcomeConf, impactConf := Confidence(doc, g, links)
 
-	st := &impact.Status{
-		Kind: impact.KindStatus, SpecVersion: impact.SpecVersion, ModelID: doc.ID, AsOf: asOf.Format(time.DateOnly), Options: opts,
+	st := &model.Status{
+		Kind: model.KindStatus, SpecVersion: model.SpecVersion, ModelID: doc.ID, AsOf: asOf.Format(time.DateOnly), Options: opts,
 		Indicators: indicators, Links: links, Assumptions: assumptions,
 	}
 	if st.Indicators == nil {
-		st.Indicators = []impact.IndicatorStatus{}
+		st.Indicators = []model.IndicatorStatus{}
 	}
 	for _, o := range doc.Outcomes {
 		if o.Rejected() {
 			continue
 		}
-		os := impact.OutcomeStatus{
+		os := model.OutcomeStatus{
 			OutcomeID: o.ID, State: own[o.ID], PathwayState: pathway[o.ID], Health: Health(pathway[o.ID]),
 			IndicatorIDs: indicatorIDs(doc, byIndicator, o.ID), AssumptionBroken: prop.Broken[o.ID],
 		}
@@ -63,11 +63,11 @@ func Evaluate(doc *impact.Model, g *graph.Graph, sets []*impact.ObservationSet, 
 			os.Confidence = &c
 		}
 		if os.PathwayState == "" {
-			os.PathwayState = impact.StateUnmeasured
+			os.PathwayState = model.StateUnmeasured
 		}
 		st.Outcomes = append(st.Outcomes, os)
-		if o.Level == impact.LevelImpact {
-			is := impact.ImpactStatus{OutcomeID: o.ID, PathwayState: os.PathwayState, Health: os.Health}
+		if o.Level == model.LevelImpact {
+			is := model.ImpactStatus{OutcomeID: o.ID, PathwayState: os.PathwayState, Health: os.Health}
 			if c, ok := impactConf[o.ID]; ok {
 				is.Confidence = &c
 			}
@@ -79,7 +79,7 @@ func Evaluate(doc *impact.Model, g *graph.Graph, sets []*impact.ObservationSet, 
 
 // indicatorIDs lists, in document order, the counted indicators that measure
 // or stand in for an outcome.
-func indicatorIDs(doc *impact.Model, statuses map[string]impact.IndicatorStatus, outcome string) []string {
+func indicatorIDs(doc *model.Model, statuses map[string]model.IndicatorStatus, outcome string) []string {
 	var out []string
 	for _, ind := range doc.Indicators {
 		if _, ok := statuses[ind.ID]; !ok || !Counted(ind) {
@@ -97,8 +97,8 @@ func indicatorIDs(doc *impact.Model, statuses map[string]impact.IndicatorStatus,
 // indicator, the combined value for each roll-up indicator that has none of its
 // own, and the value worked out for each composed indicator that has none.
 // Derived values are dated asOf, since they describe that date.
-func derivedObservations(doc *impact.Model, sets []*impact.ObservationSet, asOf time.Time) []impact.Observation {
-	var obs []impact.Observation
+func derivedObservations(doc *model.Model, sets []*model.ObservationSet, asOf time.Time) []model.Observation {
+	var obs []model.Observation
 	for _, set := range sets {
 		obs = append(obs, set.Observations...)
 	}
@@ -107,15 +107,15 @@ func derivedObservations(doc *impact.Model, sets []*impact.ObservationSet, asOf 
 	for _, ind := range doc.Indicators {
 		// With no observation sets there are no stories to count, which is
 		// no data rather than zero.
-		if len(sets) == 0 || ind.Provenance.IsRejected() || ind.MeasurementType != impact.MeasurementThemeCount {
+		if len(sets) == 0 || ind.Provenance.IsRejected() || ind.MeasurementType != model.MeasurementThemeCount {
 			continue
 		}
 		n := float64(ThemeCount(doc, ind, sets, asOf))
-		obs = append(obs, impact.Observation{IndicatorID: ind.ID, Date: date, Value: &n, Source: "story theme count", Quality: impact.QualityReported})
+		obs = append(obs, model.Observation{IndicatorID: ind.ID, Date: date, Value: &n, Source: "story theme count", Quality: model.QualityReported})
 	}
 
 	// Roll-ups can depend on other roll-ups, so repeat until nothing new is
-	// derived; an impact model with more passes than indicators has a loop, which
+	// derived; an outcome model with more passes than indicators has a loop, which
 	// validation does not forbid, and is cut off there.
 	done := map[string]bool{}
 	for pass := 0; pass < len(doc.Indicators); pass++ {
@@ -128,7 +128,7 @@ func derivedObservations(doc *impact.Model, sets []*impact.ObservationSet, asOf 
 				if cres.Direct {
 					done[ind.ID] = true
 				} else if cres.Value != nil {
-					obs = append(obs, impact.Observation{IndicatorID: ind.ID, Date: date, Value: cres.Value, Quality: cres.Quality, Source: "worked out from " + strconv.Itoa(len(ind.ComposedOf.IndicatorIDs)) + " indicators"})
+					obs = append(obs, model.Observation{IndicatorID: ind.ID, Date: date, Value: cres.Value, Quality: cres.Quality, Source: "worked out from " + strconv.Itoa(len(ind.ComposedOf.IndicatorIDs)) + " indicators"})
 					done[ind.ID] = true
 					added = true
 				}
@@ -144,7 +144,7 @@ func derivedObservations(doc *impact.Model, sets []*impact.ObservationSet, asOf 
 				}
 				continue
 			}
-			obs = append(obs, impact.Observation{IndicatorID: ind.ID, Date: date, Value: res.Value, Source: "rolled up from " + strconv.Itoa(len(ind.RollupFrom)) + " indicators"})
+			obs = append(obs, model.Observation{IndicatorID: ind.ID, Date: date, Value: res.Value, Source: "rolled up from " + strconv.Itoa(len(ind.RollupFrom)) + " indicators"})
 			done[ind.ID] = true
 			added = true
 		}
@@ -159,7 +159,7 @@ func derivedObservations(doc *impact.Model, sets []*impact.ObservationSet, asOf 
 // tagged with any of the indicator's themes, in the observation sets. If the
 // indicator names pathways, only stories about an outcome of one of those
 // pathways count.
-func ThemeCount(doc *impact.Model, ind impact.Indicator, sets []*impact.ObservationSet, asOf time.Time) int {
+func ThemeCount(doc *model.Model, ind model.Indicator, sets []*model.ObservationSet, asOf time.Time) int {
 	var allowed map[string]bool
 	if len(ind.PathwayIDs) > 0 {
 		allowed = map[string]bool{}
@@ -193,7 +193,7 @@ func ThemeCount(doc *impact.Model, ind impact.Indicator, sets []*impact.Observat
 // LatestDate returns the latest date that appears in the observation sets:
 // an observation, an assessment, a story, or a note. It is the natural as-of
 // date when none is given, and reports false when the sets hold no date.
-func LatestDate(sets []*impact.ObservationSet) (time.Time, bool) {
+func LatestDate(sets []*model.ObservationSet) (time.Time, bool) {
 	var latest time.Time
 	found := false
 	consider := func(s string) {

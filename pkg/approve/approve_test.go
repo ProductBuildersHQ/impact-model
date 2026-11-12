@@ -8,14 +8,14 @@ import (
 
 	core "github.com/grokify/prism-core"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-func load(t *testing.T) *impact.Model {
+func load(t *testing.T) *model.Model {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,8 +44,8 @@ func refusal(t *testing.T, err error, code string) Refusal {
 	return Refusal{}
 }
 
-// cleared confirms every hypothesis so the impact model is ready.
-func cleared(t *testing.T, doc *impact.Model) {
+// cleared confirms every hypothesis so the outcome model is ready.
+func cleared(t *testing.T, doc *model.Model) {
 	t.Helper()
 	ids, err := Hypotheses(doc)
 	if err != nil {
@@ -82,7 +82,7 @@ func TestApprove(t *testing.T) {
 		t.Errorf("metadata = %+v", got.Metadata)
 	}
 	rev := got.Revisions[len(got.Revisions)-1]
-	if rev.Version != "1.0.0" || rev.Trigger != impact.TriggerReview || len(rev.Approvers) != 1 ||
+	if rev.Version != "1.0.0" || rev.Trigger != model.TriggerReview || len(rev.Approvers) != 1 ||
 		!rev.Approvers[0].Approved || rev.Approvers[0].ApprovedAt.Format("2006-01-02") != "2026-04-01" {
 		t.Errorf("revision = %+v", rev)
 	}

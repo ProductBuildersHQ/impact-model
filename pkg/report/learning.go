@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // LearningInput adds to a status report what a learning review needs: the
@@ -15,8 +15,8 @@ import (
 // themes are new), and the period's label.
 type LearningInput struct {
 	StatusInput
-	Sets     []*impact.ObservationSet
-	PrevSets []*impact.ObservationSet
+	Sets     []*model.ObservationSet
+	PrevSets []*model.ObservationSet
 	Period   string
 }
 
@@ -66,7 +66,7 @@ func LearningReview(in LearningInput) string {
 	return b.String()
 }
 
-func changeSummary(diff *impact.StatusDiff) string {
+func changeSummary(diff *model.StatusDiff) string {
 	if diff == nil {
 		return "No earlier snapshot was given, so there is nothing to compare with.\n\n"
 	}
@@ -147,7 +147,7 @@ func surpriseTable(heading string, rows []Surprise, asOf string) string {
 	return b.String()
 }
 
-func assumptionMoves(diff *impact.StatusDiff, v *View) string {
+func assumptionMoves(diff *model.StatusDiff, v *View) string {
 	statements := map[string]string{}
 	for _, a := range v.Assumptions {
 		statements[a.ID] = a.Statement
@@ -155,7 +155,7 @@ func assumptionMoves(diff *impact.StatusDiff, v *View) string {
 	var lines []string
 	if diff != nil {
 		for _, c := range diff.Changes {
-			if c.ElementKind == impact.ElementAssumption && c.Field == "status" {
+			if c.ElementKind == model.ElementAssumption && c.Field == "status" {
 				lines = append(lines, fmt.Sprintf("`%s` went from %s to %s: %s", c.ElementID, dash(c.From), dash(c.To), mdText(statements[c.ElementID])))
 			}
 		}
@@ -179,7 +179,7 @@ func ThemeCounts(in LearningInput) []ThemeCount {
 	if err != nil {
 		return nil
 	}
-	count := func(sets []*impact.ObservationSet) map[string]int {
+	count := func(sets []*model.ObservationSet) map[string]int {
 		out := map[string]int{}
 		seen := map[string]bool{}
 		for _, set := range sets {
@@ -247,7 +247,7 @@ func themeSection(in LearningInput) string {
 // dataQuality counts the period's observations by their stated quality and
 // lists the indicators that have gone stale or have no data.
 func dataQuality(in LearningInput) string {
-	counts := map[impact.DataQuality]int{}
+	counts := map[model.DataQuality]int{}
 	unrated, total := 0, 0
 	for _, set := range in.Sets {
 		for _, o := range set.Observations {
@@ -264,7 +264,7 @@ func dataQuality(in LearningInput) string {
 		b.WriteString("There are no observations in this period.\n\n")
 	} else {
 		var parts []string
-		for _, q := range impact.AllDataQualities() {
+		for _, q := range model.AllDataQualities() {
 			if counts[q] > 0 {
 				parts = append(parts, fmt.Sprintf("%d %s", counts[q], q))
 			}
@@ -276,7 +276,7 @@ func dataQuality(in LearningInput) string {
 	}
 	var gaps []string
 	for _, s := range in.Status.Indicators {
-		if s.State == impact.StateStale || s.State == impact.StateNoData {
+		if s.State == model.StateStale || s.State == model.StateNoData {
 			gaps = append(gaps, fmt.Sprintf("`%s` is %s", s.IndicatorID, strings.ToLower(Label(string(s.State)))))
 		}
 	}
@@ -299,12 +299,12 @@ func ReviewQuestions(in LearningInput, ahead, behind []Surprise) []string {
 		qs = append(qs, fmt.Sprintf("What is making \"%s\" (`%s`) go better than planned, and can it be repeated elsewhere?", mdText(s.Name), s.ID))
 	}
 	for _, a := range in.View.Assumptions {
-		if a.Status == string(impact.AssumptionInvalidated) || a.Status == string(impact.AssumptionAtRisk) {
+		if a.Status == string(model.AssumptionInvalidated) || a.Status == string(model.AssumptionAtRisk) {
 			qs = append(qs, fmt.Sprintf("What have we learned about \"%s\" (`%s`), which is now %s, and what does it change?", mdText(a.Statement), a.ID, strings.ToLower(Label(a.Status))))
 		}
 	}
 	for _, s := range in.Status.Indicators {
-		if s.State == impact.StateStale || s.State == impact.StateNoData {
+		if s.State == model.StateStale || s.State == model.StateNoData {
 			qs = append(qs, fmt.Sprintf("What is stopping us collecting `%s`, and is it still worth collecting?", s.IndicatorID))
 		}
 	}
@@ -319,8 +319,8 @@ func ReviewQuestions(in LearningInput, ahead, behind []Surprise) []string {
 
 // recordedReview merges the learning review already recorded for the period,
 // if any.
-func recordedReview(sets []*impact.ObservationSet, period string) string {
-	var found []impact.LearningReview
+func recordedReview(sets []*model.ObservationSet, period string) string {
+	var found []model.LearningReview
 	for _, set := range sets {
 		for _, r := range set.Reviews {
 			if period == "" || r.Period == period {

@@ -5,8 +5,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/problemtree"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/problemtree"
 )
 
 // DMAICPhaseUse records which DMAIC phases an indicator serves, by the
@@ -29,10 +29,10 @@ type DMAICPhaseUse struct {
 //     moves soon after a change is tried.
 //   - Control: it is measured on a schedule at least once a year, so a gain
 //     can be checked for whether it lasts.
-func DMAICUse(doc *impact.Model, p *impact.Pathway, ind impact.Indicator) DMAICPhaseUse {
+func DMAICUse(doc *model.Model, p *model.Pathway, ind model.Indicator) DMAICPhaseUse {
 	u := DMAICPhaseUse{Measure: true}
 	u.Analyze = len(ind.Disaggregation) > 0 || len(ind.TargetGroupIDs) > 0
-	if n, ok := impact.TimesPerYear(ind.Frequency); ok && n >= 0.99 {
+	if n, ok := model.TimesPerYear(ind.Frequency); ok && n >= 0.99 {
 		u.Control = true
 	}
 	if ind.Measures == p.ID {
@@ -43,7 +43,7 @@ func DMAICUse(doc *impact.Model, p *impact.Pathway, ind impact.Indicator) DMAICP
 	}
 	if o, ok := doc.Outcome(ind.Measures); ok {
 		switch o.Level {
-		case impact.LevelLongTerm, impact.LevelImpact:
+		case model.LevelLongTerm, model.LevelImpact:
 			u.Define = true
 		default:
 			u.Improve = aimedAt(doc, p, o.ID)
@@ -56,10 +56,10 @@ func DMAICUse(doc *impact.Model, p *impact.Pathway, ind impact.Indicator) DMAICP
 }
 
 // aimedAt reports whether a live intervention of the pathway targets outcome.
-func aimedAt(doc *impact.Model, p *impact.Pathway, outcome string) bool {
+func aimedAt(doc *model.Model, p *model.Pathway, outcome string) bool {
 	for _, id := range p.InterventionIDs {
 		in, ok := doc.Intervention(id)
-		if ok && !in.Rejected() && in.Status != impact.InterventionCancelled && slices.Contains(in.Targets, outcome) {
+		if ok && !in.Rejected() && in.Status != model.InterventionCancelled && slices.Contains(in.Targets, outcome) {
 			return true
 		}
 	}
@@ -69,8 +69,8 @@ func aimedAt(doc *impact.Model, p *impact.Pathway, outcome string) bool {
 // DMAICNeeds lists what an indicator still needs before the DMAIC export can
 // chart it with control limits: a numeric baseline and target (without them
 // the export leaves it out), a frequency and a data source (to measure it on
-// a schedule), and at least impact.DMAICMinPoints measurements a year.
-func DMAICNeeds(ind impact.Indicator) []string {
+// a schedule), and at least model.DMAICMinPoints measurements a year.
+func DMAICNeeds(ind model.Indicator) []string {
 	var out []string
 	if ind.Baseline == nil || ind.Baseline.Value == nil {
 		out = append(out, "baseline")
@@ -85,24 +85,24 @@ func DMAICNeeds(ind impact.Indicator) []string {
 	if ind.DataSource == "" && (ind.Collection == nil || ind.Collection.System == "") {
 		out = append(out, "data source")
 	}
-	n, ok := impact.TimesPerYear(ind.Frequency)
+	n, ok := model.TimesPerYear(ind.Frequency)
 	switch {
 	case !ok:
 		out = append(out, "frequency")
-	case n < impact.DMAICMinPoints:
-		out = append(out, fmt.Sprintf("%d+ measurements a year for control limits", impact.DMAICMinPoints))
+	case n < model.DMAICMinPoints:
+		out = append(out, fmt.Sprintf("%d+ measurements a year for control limits", model.DMAICMinPoints))
 	}
 	return out
 }
 
-// DMAICPlan renders the DMAIC plan of an impact model: for each pathway
+// DMAICPlan renders the DMAIC plan of an outcome model: for each pathway
 // marked `projections: [dmaic]`, or for the one pathway named, the problem
 // the effort improves (Define), the interventions it can change (Improve),
 // and a table of its indicators with the DMAIC phases each serves and what
 // each still needs before `export dmaic` can chart it. It needs no
 // observations, so a team can plan DMAIC before any data is collected.
-func DMAICPlan(doc *impact.Model, pathway string) (string, error) {
-	var pathways []*impact.Pathway
+func DMAICPlan(doc *model.Model, pathway string) (string, error) {
+	var pathways []*model.Pathway
 	if pathway != "" {
 		p, ok := doc.Pathway(pathway)
 		if !ok {
@@ -112,7 +112,7 @@ func DMAICPlan(doc *impact.Model, pathway string) (string, error) {
 	} else {
 		for i := range doc.Pathways {
 			p := &doc.Pathways[i]
-			if !p.Rejected() && slices.Contains(p.Projections, impact.ProjectionDMAIC) {
+			if !p.Rejected() && slices.Contains(p.Projections, model.ProjectionDMAIC) {
 				pathways = append(pathways, p)
 			}
 		}
@@ -128,7 +128,7 @@ func DMAICPlan(doc *impact.Model, pathway string) (string, error) {
 	b.WriteString("One metric can serve several phases. A metric serves **Define** when it sizes the problem (a long-term or impact outcome, or one that relieves an effect), ")
 	b.WriteString("**Measure** always, **Analyze** when it is broken down by group, **Improve** when it moves soon after an intervention changes, ")
 	b.WriteString("and **Control** when it is measured at least once a year. ")
-	fmt.Fprintf(&b, "`export dmaic` includes a metric once it has a numeric baseline and target, and draws control limits once it has %d measurements.\n\n", impact.DMAICMinPoints)
+	fmt.Fprintf(&b, "`export dmaic` includes a metric once it has a numeric baseline and target, and draws control limits once it has %d measurements.\n\n", model.DMAICMinPoints)
 
 	for _, p := range pathways {
 		if err := dmaicPathway(&b, doc, p); err != nil {
@@ -138,7 +138,7 @@ func DMAICPlan(doc *impact.Model, pathway string) (string, error) {
 	return b.String(), nil
 }
 
-func dmaicPathway(b *strings.Builder, doc *impact.Model, p *impact.Pathway) error {
+func dmaicPathway(b *strings.Builder, doc *model.Model, p *model.Pathway) error {
 	fmt.Fprintf(b, "### %s\n\n", mdText(p.Title))
 
 	fmt.Fprintf(b, "**Define.** Core problem: %s\n\n", mdText(problemtree.ProblemStatement(doc, p)))
@@ -167,7 +167,7 @@ func dmaicPathway(b *strings.Builder, doc *impact.Model, p *impact.Pathway) erro
 	var interventions []string
 	for _, id := range p.InterventionIDs {
 		in, ok := doc.Intervention(id)
-		if !ok || in.Rejected() || in.Status == impact.InterventionCancelled {
+		if !ok || in.Rejected() || in.Status == model.InterventionCancelled {
 			continue
 		}
 		s := fmt.Sprintf("%s (`%s`)", mdText(in.Title), in.ID)

@@ -11,11 +11,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/share"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
 )
 
 // workshopKind is the export kind that selects the workshop deck.
@@ -39,7 +39,7 @@ external tools mmdc (diagrams) and pandoc. If a needed tool is not
 installed, nothing is written and the exit code is 3.
 
 Kinds: %s.`, short, strings.ToUpper(format), kinds),
-		Example: fmt.Sprintf("  impact-model export %s %s impact-model.yaml --out impact model.%s --reference-doc template.%s",
+		Example: fmt.Sprintf("  outcome-model export %s %s outcome-model.yaml --out outcome model.%s --reference-doc template.%s",
 			format, strings.Split(kinds, ",")[0], format, format),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -115,13 +115,13 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 	if err != nil {
 		return toolMissing("pandoc")
 	}
-	dir, err := os.MkdirTemp("", "impact-model-export-")
+	dir, err := os.MkdirTemp("", "outcome-model-export-")
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	defer func() {
 		if err := os.RemoveAll(dir); err != nil {
-			fmt.Fprintf(cmd.ErrOrStderr(), "impact-model: remove %s: %v\n", dir, err)
+			fmt.Fprintf(cmd.ErrOrStderr(), "outcome-model: remove %s: %v\n", dir, err)
 		}
 	}()
 
@@ -131,7 +131,7 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 		return err
 	}
 	src := filepath.Join(dir, "export.md")
-	if err := impactio.WriteFile(src, []byte(md)); err != nil {
+	if err := modelio.WriteFile(src, []byte(md)); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	abs, err := filepath.Abs(out)
@@ -149,8 +149,8 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 	return nil
 }
 
-// reviewView builds the whole impact model view the review exports render.
-func reviewView(path string) (*impact.Model, *report.View, error) {
+// reviewView builds the whole outcome model view the review exports render.
+func reviewView(path string) (*model.Model, *report.View, error) {
 	doc, err := loadForRender(path)
 	if err != nil {
 		return nil, nil, err
@@ -178,8 +178,8 @@ With --format md (the default) the Markdown is written to --out or standard
 output. With --format docx it is converted by pandoc and --out is required;
 if pandoc is missing, nothing is written and the exit code is 3. Sources are
 named by ID and title only: excerpts and URLs are never included.`,
-		Example: `  impact-model export review-packet impact-model.yaml --out packet.md
-  impact-model export review-packet impact-model.yaml --format docx --out packet.docx`,
+		Example: `  outcome-model export review-packet outcome-model.yaml --out packet.md
+  outcome-model export review-packet outcome-model.yaml --format docx --out packet.docx`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format := flagString(cmd, "format")
@@ -228,7 +228,7 @@ func newReviewSheetCmd(e *env) *cobra.Command {
 element with kind, id, statement, basis, and sources, and empty decision,
 suggested_change, and comment columns. The first row is a comment carrying the
 export stamp; --no-stamp leaves it off.`,
-		Example: `  impact-model export review-sheet impact-model.yaml --out sheet.csv`,
+		Example: `  outcome-model export review-sheet outcome-model.yaml --out sheet.csv`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			doc, v, err := reviewView(args[0])
@@ -257,7 +257,7 @@ export stamp; --no-stamp leaves it off.`,
 // writeText writes text to --out or standard output.
 func writeText(e *env, cmd *cobra.Command, text string) error {
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(text)); err != nil {
+		if err := modelio.WriteFile(out, []byte(text)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil
@@ -283,7 +283,7 @@ func diagramRenderer(ctx context.Context, dir string) func(string) (string, erro
 		n++
 		in := filepath.Join(dir, fmt.Sprintf("d%d.mmd", n))
 		png := filepath.Join(dir, fmt.Sprintf("d%d.png", n))
-		if err := impactio.WriteFile(in, []byte(source)); err != nil {
+		if err := modelio.WriteFile(in, []byte(source)); err != nil {
 			return "", &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		if err := runTool(ctx, mmdc, "-i", in, "-o", png, "-s", "2"); err != nil {

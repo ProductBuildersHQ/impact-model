@@ -8,25 +8,25 @@ import (
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/schema"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/schema"
 )
 
 // Schema validates raw input against the schema for its declared kind and
 // returns one issue per violation, each with the JSON pointer of the
 // offending value. Input that cannot be parsed, or whose kind is missing or
 // unknown, yields a single issue. A nil result means the input conforms.
-func Schema(data []byte, f impactio.Format) []Issue {
-	j, err := impactio.ToJSON(data, f)
+func Schema(data []byte, f modelio.Format) []Issue {
+	j, err := modelio.ToJSON(data, f)
 	if err != nil {
 		return []Issue{{Code: "VAL-SCH-002", Severity: SeverityError, Path: "", Message: err.Error()}}
 	}
-	kind, err := impactio.DetectKind(data, f)
+	kind, err := modelio.DetectKind(data, f)
 	if err != nil {
 		return []Issue{{Code: "VAL-SCH-003", Severity: SeverityError, Path: "/kind", Message: err.Error()}}
 	}
-	name, err := impactio.SchemaName(kind)
+	name, err := modelio.SchemaName(kind)
 	if err != nil {
 		return []Issue{{Code: "VAL-SCH-003", Severity: SeverityError, Path: "/kind", Message: err.Error()}}
 	}
@@ -66,19 +66,19 @@ func schemaIssues(name string, j []byte) []Issue {
 	return out
 }
 
-// Source validates raw input of any document kind and, for a impact model of
+// Source validates raw input of any document kind and, for a outcome model of
 // Change that conforms to its schema, also runs the structural checks of
 // Document. The returned document is nil unless the input passed the schema.
-func Source(data []byte, f impactio.Format, opts ...Option) (*impact.Model, []Issue) {
+func Source(data []byte, f modelio.Format, opts ...Option) (*model.Model, []Issue) {
 	issues := Schema(data, f)
 	if len(issues) > 0 {
 		return nil, issues
 	}
-	kind, err := impactio.DetectKind(data, f)
-	if err != nil || kind != impact.KindImpactModel {
+	kind, err := modelio.DetectKind(data, f)
+	if err != nil || kind != model.KindOutcomeModel {
 		return nil, nil
 	}
-	doc, err := impactio.ParseDocument(data, f)
+	doc, err := modelio.ParseDocument(data, f)
 	if err != nil {
 		return nil, []Issue{{Code: "VAL-SCH-002", Severity: SeverityError, Message: fmt.Sprint(err)}}
 	}

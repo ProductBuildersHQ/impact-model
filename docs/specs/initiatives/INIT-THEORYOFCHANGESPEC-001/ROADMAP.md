@@ -1,10 +1,10 @@
-# ROADMAP — Impact Model Specification — Go-first model, JSON Schema, measurement, and leadership reporting
+# ROADMAP — Outcome Model Specification — Go-first model, JSON Schema, measurement, and leadership reporting
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
-**Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 24 of 28 phases completed
+**Repository:** `github.com/ProductBuildersHQ/outcome-model`
+**Status:** In progress — 25 of 29 phases completed
 
-> RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
+> RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; items from before the rename to outcome-model are `RMI-IMPACTMODEL-001` to `-028`; later items are `RMI-OUTCOMEMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
 ## Phase 1 — Core Model and Schema
 
@@ -652,3 +652,12 @@
   - Type: capability · Status: completed
   - Depends on: `RMI-PRISMROADMAP-025` (goals/bsc in prism-roadmap), `RMI-IMPACTMODEL-026`
   - Acceptance: prismx.ToBSC linked by ID, the strategy map drawn from causal links; export bsc in the CLI, the service layer, and the MCP server; tests on the examples; a Balanced Scorecard guide and credits entry
+
+## Phase 29 — Outcome Model
+
+**Theme:** Rename the project to the outcome model, which covers strategy, causality, measurement and learning, and improvement in one document
+**Status:** Completed — 1 of 1 items completed
+
+- [x] `RMI-IMPACTMODEL-028` Rename the project to outcome-model
+  - Type: enabler · Status: completed
+  - Acceptance: module path github.com/ProductBuildersHQ/outcome-model; packages pkg/model and pkg/modelio; command outcome-model; kinds OutcomeModel and OutcomeModelStatus; schemas outcome-model and outcome-model-status; default file outcome-model.yaml; MCP tools and skills renamed; docs and README describe the outcome model and its four views; an ADR records the decision

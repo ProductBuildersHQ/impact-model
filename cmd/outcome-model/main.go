@@ -1,0 +1,13 @@
+// Command outcome-model captures, checks, edits, and reports on outcome models
+// of Change.
+package main
+
+import (
+	"os"
+
+	"github.com/ProductBuildersHQ/outcome-model/internal/cli"
+)
+
+func main() {
+	os.Exit(cli.Execute(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+}

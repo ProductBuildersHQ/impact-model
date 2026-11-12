@@ -3,8 +3,8 @@
 ## Install
 
 ```bash
-go install github.com/ProductBuildersHQ/impact-model/cmd/impact-model@latest
-impact-model --version
+go install github.com/ProductBuildersHQ/outcome-model/cmd/outcome-model@latest
+outcome-model --version
 ```
 
 The tool is a single Go binary. Three optional programs add output formats; the
@@ -18,30 +18,30 @@ without writing anything:
 | [Pandoc](https://pandoc.org) (`pandoc`) | Word and PowerPoint export |
 
 Markdown reports, CSV tables, Marp Markdown, and everything that checks or
-measures an impact model need none of them.
+measures an outcome model need none of them.
 
-## Create an impact model
+## Create an outcome model
 
 ```bash
-impact-model init --id my-program --name "My program" --out impact-model.yaml
+outcome-model init --id my-program --name "My program" --out outcome-model.yaml
 ```
 
-This writes a small starter impact model that already passes validation, with `TODO`
-placeholders to replace. An impact model is a YAML or JSON file; the format follows the
+This writes a small starter outcome model that already passes validation, with `TODO`
+placeholders to replace. An outcome model is a YAML or JSON file; the format follows the
 file extension. Open it in any editor, or change it through the commands in
-[Authoring an impact model](authoring.md).
+[Authoring an outcome model](authoring.md).
 
 ## Check it
 
 ```bash
-impact-model validate impact-model.yaml   # schema and structure
-impact-model lint impact-model.yaml       # is the impact model sound?
-impact-model fmt impact-model.yaml        # write it in canonical form
+outcome-model validate outcome-model.yaml   # schema and structure
+outcome-model lint outcome-model.yaml       # is the outcome model sound?
+outcome-model fmt outcome-model.yaml        # write it in canonical form
 ```
 
 `validate` says the document is well formed: the schema, duplicate IDs,
 references that do not resolve, invalid values, bad dates. `lint` says whether
-the impact model is sound. A new impact model is GO under `--profile draft`; the default
+the outcome model is sound. A new outcome model is GO under `--profile draft`; the default
 `standard` profile also reports warnings.
 
 `fmt` rewrites a file in canonical form: a stable field order, two-space
@@ -52,17 +52,17 @@ canonical; put notes in `description` and `narrative` fields.
 ## Ask questions of the causal graph
 
 ```bash
-impact-model graph impact-model.yaml                      # a summary
-impact-model graph impact-model.yaml --orphans            # outcomes nothing leads to
-impact-model graph impact-model.yaml --dead-ends          # outcomes that lead nowhere
-impact-model graph impact-model.yaml --upstream --from oc-adoption
-impact-model graph impact-model.yaml --format dot | dot -Tsvg > graph.svg
+outcome-model graph outcome-model.yaml                      # a summary
+outcome-model graph outcome-model.yaml --orphans            # outcomes nothing leads to
+outcome-model graph outcome-model.yaml --dead-ends          # outcomes that lead nowhere
+outcome-model graph outcome-model.yaml --upstream --from oc-adoption
+outcome-model graph outcome-model.yaml --format dot | dot -Tsvg > graph.svg
 ```
 
 ## Get a first report
 
 ```bash
-impact-model report definitions impact-model.yaml --out definitions.md
+outcome-model report definitions outcome-model.yaml --out definitions.md
 ```
 
 This renders the problem tree (once the model records causes or effects), the
@@ -75,24 +75,24 @@ core problem, its causes below, and its effects above. See the
 [problem tree guide](problem-tree.md).
 
 ```bash
-impact-model report problem-tree impact-model.yaml --out problem-tree.md
+outcome-model report problem-tree outcome-model.yaml --out problem-tree.md
 ```
 
 ## Measure progress
 
 Once you have numbers, put them in an observation set (see
-[Measuring progress](measurement.md)) and ask how far the impact model has come:
+[Measuring progress](measurement.md)) and ask how far the outcome model has come:
 
 ```bash
-impact-model status impact-model.yaml -O observations.yaml
-impact-model report exec impact-model.yaml -O observations.yaml -o exec.md
+outcome-model status outcome-model.yaml -O observations.yaml
+outcome-model report exec outcome-model.yaml -O observations.yaml -o exec.md
 ```
 
 ## Working in a Git repository
 
 Specifications are meant to be diffed and reviewed. Two habits help:
 
-- Run `impact-model fmt --check *.yaml` in CI. It exits with code 1 if any
+- Run `outcome-model fmt --check *.yaml` in CI. It exits with code 1 if any
   file is not in canonical form.
 - Add a `.gitattributes` line so Windows checkouts keep LF line endings. The
   canonical form is byte-exact LF, and a checkout that converts to CRLF will
@@ -117,5 +117,5 @@ Specifications are meant to be diffed and reviewed. Two habits help:
 
 ## Next
 
-Read [Authoring an impact model](authoring.md), or open a complete impact model in
+Read [Authoring an outcome model](authoring.md), or open a complete outcome model in
 [Examples](examples.md).

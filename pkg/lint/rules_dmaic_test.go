@@ -5,15 +5,15 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // dmaicDoc is the chain document with its pathway marked for DMAIC and one
 // weekly indicator of the pathway's outcome that is measured from a system.
-func dmaicDoc() *impact.Model {
+func dmaicDoc() *model.Model {
 	d := chainDoc()
-	d.Pathways[0].Projections = []impact.Projection{impact.ProjectionDMAIC}
-	addIndicator(d, "ind-weekly", "oc-s1", func(i *impact.Indicator) {
+	d.Pathways[0].Projections = []model.Projection{model.ProjectionDMAIC}
+	addIndicator(d, "ind-weekly", "oc-s1", func(i *model.Indicator) {
 		i.Frequency, i.DataSource = "P1W", "Learning platform"
 	})
 	return d
@@ -22,44 +22,44 @@ func dmaicDoc() *impact.Model {
 // Each case seeds one defect, checks the rule reports it, repairs it, and checks
 // the rule falls quiet.
 func TestDMAICRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
-	survey := func(respondents int) func(*impact.Indicator) {
-		return func(i *impact.Indicator) {
+	survey := func(respondents int) func(*model.Indicator) {
+		return func(i *model.Indicator) {
 			i.Frequency = "P1W"
-			i.Collection = &impact.Collection{Mode: impact.ModeSurvey, System: "Survey tool", RespondentsPerYear: respondents}
+			i.Collection = &model.Collection{Mode: model.ModeSurvey, System: "Survey tool", RespondentsPerYear: respondents}
 		}
 	}
 	tests := []struct {
 		rule, element string
-		defect, fix   func(d *impact.Model)
+		defect, fix   func(d *model.Model)
 	}{
-		{"IMP-DMA-001", "ind-weekly",
-			func(d *impact.Model) { indicator(d, "ind-weekly").Frequency = "" },
-			func(d *impact.Model) { indicator(d, "ind-weekly").Frequency = "P1W" }},
-		{"IMP-DMA-001", "ind-weekly",
-			func(d *impact.Model) { indicator(d, "ind-weekly").DataSource = "" },
-			func(d *impact.Model) {
-				indicator(d, "ind-weekly").Collection = &impact.Collection{Mode: impact.ModePassive, System: "Learning platform"}
+		{"OM-DMA-001", "ind-weekly",
+			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "" },
+			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P1W" }},
+		{"OM-DMA-001", "ind-weekly",
+			func(d *model.Model) { indicator(d, "ind-weekly").DataSource = "" },
+			func(d *model.Model) {
+				indicator(d, "ind-weekly").Collection = &model.Collection{Mode: model.ModePassive, System: "Learning platform"}
 			}},
-		{"IMP-DMA-002", "ind-weekly",
-			func(d *impact.Model) { indicator(d, "ind-weekly").Frequency = "P1M" },
-			func(d *impact.Model) { indicator(d, "ind-weekly").Frequency = "P2W" }},
-		{"IMP-DMA-002", "ind-weekly",
-			func(d *impact.Model) { indicator(d, "ind-weekly").Frequency = "P3M" },
-			func(d *impact.Model) { d.Pathways[0].Projections = nil }},
-		{"IMP-DMA-003", "ind-nps",
-			func(d *impact.Model) { addIndicator(d, "ind-nps", "oc-s1", survey(0)) },
-			func(d *impact.Model) { indicator(d, "ind-nps").Collection.RespondentsPerYear = 5200 }},
+		{"OM-DMA-002", "ind-weekly",
+			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P1M" },
+			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P2W" }},
+		{"OM-DMA-002", "ind-weekly",
+			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P3M" },
+			func(d *model.Model) { d.Pathways[0].Projections = nil }},
+		{"OM-DMA-003", "ind-nps",
+			func(d *model.Model) { addIndicator(d, "ind-nps", "oc-s1", survey(0)) },
+			func(d *model.Model) { indicator(d, "ind-nps").Collection.RespondentsPerYear = 5200 }},
 		// 780 a year, weekly, is 15 per measurement; monthly it is 65.
-		{"IMP-DMA-003", "ind-nps",
-			func(d *impact.Model) { addIndicator(d, "ind-nps", "oc-s1", survey(780)) },
-			func(d *impact.Model) { indicator(d, "ind-nps").Frequency = "P1M" }},
+		{"OM-DMA-003", "ind-nps",
+			func(d *model.Model) { addIndicator(d, "ind-nps", "oc-s1", survey(780)) },
+			func(d *model.Model) { indicator(d, "ind-nps").Frequency = "P1M" }},
 		// A sample of half the people asked halves the responses.
-		{"IMP-DMA-003", "ind-nps",
-			func(d *impact.Model) {
+		{"OM-DMA-003", "ind-nps",
+			func(d *model.Model) {
 				addIndicator(d, "ind-nps", "oc-s1", survey(2600))
 				indicator(d, "ind-nps").Collection.SampleRate = 0.5
 			},
-			func(d *impact.Model) { indicator(d, "ind-nps").Collection.SampleRate = 0 }},
+			func(d *model.Model) { indicator(d, "ind-nps").Collection.SampleRate = 0 }},
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%s/%d", tt.rule, i), func(t *testing.T) {
@@ -80,11 +80,11 @@ func TestDMAICRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 // when its indicators are measured once a year.
 func TestDMAICRulesAreQuietForUnmarkedPathways(t *testing.T) {
 	d := chainDoc()
-	addIndicator(d, "ind-yearly", "oc-s1", func(i *impact.Indicator) {
+	addIndicator(d, "ind-yearly", "oc-s1", func(i *model.Indicator) {
 		i.Frequency = "P1Y"
-		i.Collection = &impact.Collection{Mode: impact.ModeSurvey, RespondentsPerYear: 12}
+		i.Collection = &model.Collection{Mode: model.ModeSurvey, RespondentsPerYear: 12}
 	})
-	for _, rule := range []string{"IMP-DMA-001", "IMP-DMA-002", "IMP-DMA-003"} {
+	for _, rule := range []string{"OM-DMA-001", "OM-DMA-002", "OM-DMA-003"} {
 		if got := fires(t, d, rule); len(got) != 0 {
 			t.Errorf("%s reported %v on a pathway not marked for DMAIC", rule, got)
 		}

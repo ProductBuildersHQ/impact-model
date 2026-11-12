@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/impact-model/schema/v0/observation-set.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/observation-set.schema.json",
   "$ref": "#/$defs/ObservationSet",
   "$defs": {
     "AssumptionAssessment": {
@@ -289,6 +289,6 @@
       ]
     }
   },
-  "title": "Impact Model Observation Set",
-  "description": "Indicator observations, assumption assessments, and notes for one impact model and period."
+  "title": "Outcome Model Observation Set",
+  "description": "Indicator observations, assumption assessments, and notes for one outcome model and period."
 }

@@ -1,8 +1,8 @@
-// Package schemagen generates the JSON Schemas for the impact model
-// document kinds from the Go types in pkg/impact.
+// Package schemagen generates the JSON Schemas for the outcome model
+// document kinds from the Go types in pkg/model.
 //
 // Go structs are the source of truth. Enumeration types are emitted as
-// string enums whose values come from the pkg/impact All… functions, so the
+// string enums whose values come from the pkg/model All… functions, so the
 // schema and the code cannot drift.
 package schemagen
 
@@ -15,11 +15,11 @@ import (
 
 	"github.com/invopop/jsonschema"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // BaseURL is the prefix of every schema $id.
-const BaseURL = "https://github.com/ProductBuildersHQ/impact-model/schema/v0/"
+const BaseURL = "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/"
 
 // Definition describes one generated schema.
 type Definition struct {
@@ -33,13 +33,13 @@ type Definition struct {
 // Definitions returns the schemas this module publishes, in a stable order.
 func Definitions() []Definition {
 	return []Definition{
-		{"impact-model", "Impact Model", "An impact model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence.", &impact.Model{}},
-		{"observation-set", "Impact Model Observation Set", "Indicator observations, assumption assessments, and notes for one impact model and period.", &impact.ObservationSet{}},
-		{"impact-model-status", "Impact Model Status", "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date.", &impact.Status{}},
-		{"status-diff", "Impact Model Status Diff", "Changes between two status snapshots.", &impact.StatusDiff{}},
-		{"actor-registry", "Impact Model Actor Registry", "A shared list of actors referenced by several impact models.", &impact.ActorRegistry{}},
-		{"csv-mapping", "Impact Model CSV Mapping", "How the columns of a spreadsheet map onto indicator observations.", &impact.CSVMapping{}},
-		{"review-response", "Impact Model Review Response", "What reviewers said about an impact model, by element, independent of the channel it was collected through.", &impact.ReviewResponse{}},
+		{"outcome-model", "Outcome Model", "An outcome model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence.", &model.Model{}},
+		{"observation-set", "Outcome Model Observation Set", "Indicator observations, assumption assessments, and notes for one outcome model and period.", &model.ObservationSet{}},
+		{"outcome-model-status", "Outcome Model Status", "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date.", &model.Status{}},
+		{"status-diff", "Outcome Model Status Diff", "Changes between two status snapshots.", &model.StatusDiff{}},
+		{"actor-registry", "Outcome Model Actor Registry", "A shared list of actors referenced by several outcome models.", &model.ActorRegistry{}},
+		{"csv-mapping", "Outcome Model CSV Mapping", "How the columns of a spreadsheet map onto indicator observations.", &model.CSVMapping{}},
+		{"review-response", "Outcome Model Review Response", "What reviewers said about an outcome model, by element, independent of the channel it was collected through.", &model.ReviewResponse{}},
 	}
 }
 
@@ -98,72 +98,72 @@ func GenerateOne(d Definition) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// EnumValues maps each pkg/impact enumeration type to its values.
+// EnumValues maps each pkg/model enumeration type to its values.
 func EnumValues() map[reflect.Type][]string {
 	m := map[reflect.Type][]string{}
 	add := func(t reflect.Type, values []string) { m[t] = values }
-	add(typeOf[impact.Level](), strs(impact.AllLevels()))
-	add(typeOf[impact.Sphere](), strs(impact.AllSpheres()))
-	add(typeOf[impact.ScorecardPerspective](), strs(impact.AllScorecardPerspectives()))
-	add(typeOf[impact.LeadLag](), strs(impact.AllLeadLags()))
-	add(typeOf[impact.LogicType](), strs(impact.AllLogicTypes()))
-	add(typeOf[impact.ChangeType](), strs(impact.AllChangeTypes()))
-	add(typeOf[impact.LinkType](), strs(impact.AllLinkTypes()))
-	add(typeOf[impact.Polarity](), strs(impact.AllPolarities()))
-	add(typeOf[impact.LoopType](), strs(impact.AllLoopTypes()))
-	add(typeOf[impact.InterventionType](), strs(impact.AllInterventionTypes()))
-	add(typeOf[impact.InterventionStatus](), strs(impact.AllInterventionStatuses()))
-	add(typeOf[impact.AssumptionType](), strs(impact.AllAssumptionTypes()))
-	add(typeOf[impact.AssumptionStatus](), strs(impact.AllAssumptionStatuses()))
-	add(typeOf[impact.Criticality](), strs(impact.AllCriticalities()))
-	add(typeOf[impact.Rating](), strs(impact.AllRatings()))
-	add(typeOf[impact.MeasurementType](), strs(impact.AllMeasurementTypes()))
-	add(typeOf[impact.Direction](), strs(impact.AllDirections()))
-	add(typeOf[impact.ActorType](), strs(impact.AllActorTypes()))
-	add(typeOf[impact.ActorRole](), strs(impact.AllActorRoles()))
-	add(typeOf[impact.Stance](), strs(impact.AllStances()))
-	add(typeOf[impact.PerspectiveRole](), strs(impact.AllPerspectiveRoles()))
-	add(typeOf[impact.EvidenceType](), strs(impact.AllEvidenceTypes()))
-	add(typeOf[impact.Strength](), strs(impact.AllStrengths()))
-	add(typeOf[impact.EvidenceDirection](), strs(impact.AllEvidenceDirections()))
-	add(typeOf[impact.ProcessTracingTest](), strs(impact.AllProcessTracingTests()))
-	add(typeOf[impact.Sensitivity](), strs(impact.AllSensitivities()))
-	add(typeOf[impact.FactorKind](), strs(impact.AllFactorKinds()))
-	add(typeOf[impact.RiskCategory](), strs(impact.AllRiskCategories()))
-	add(typeOf[impact.PathwayKind](), strs(impact.AllPathwayKinds()))
-	add(typeOf[impact.Projection](), strs(impact.AllProjections()))
-	add(typeOf[impact.Aggregation](), strs(impact.AllAggregations()))
-	add(typeOf[impact.CompositionOp](), strs(impact.AllCompositionOps()))
-	add(typeOf[impact.MetricLayer](), strs(impact.AllMetricLayers()))
-	add(typeOf[impact.Claim](), strs(impact.AllClaims()))
-	add(typeOf[impact.Basis](), strs(impact.AllBases()))
-	add(typeOf[impact.DataAvailability](), strs(impact.AllDataAvailabilities()))
-	add(typeOf[impact.ConsultationStep](), strs(impact.AllConsultationSteps()))
-	add(typeOf[impact.Responsibility](), strs(impact.AllResponsibilities()))
-	add(typeOf[impact.CauseLevel](), strs(impact.AllCauseLevels()))
-	add(typeOf[impact.Consent](), strs(impact.AllConsents()))
-	add(typeOf[impact.CollectionMode](), strs(impact.AllCollectionModes()))
-	add(typeOf[impact.SelectionStatus](), strs(impact.AllSelectionStatuses()))
-	add(typeOf[impact.SelectionSubject](), strs(impact.AllSelectionSubjects()))
-	add(typeOf[impact.ReviewMethod](), strs(impact.AllReviewMethods()))
-	add(typeOf[impact.ReviewDecision](), strs(impact.AllReviewDecisions()))
-	add(typeOf[impact.ReviewOrigin](), strs(impact.AllReviewOrigins()))
-	add(typeOf[impact.ConsultationMethod](), strs(impact.AllConsultationMethods()))
-	add(typeOf[impact.Framework](), strs(impact.AllFrameworks()))
-	add(typeOf[impact.Relation](), strs(impact.AllRelations()))
-	add(typeOf[impact.RevisionTrigger](), strs(impact.AllRevisionTriggers()))
-	add(typeOf[impact.QualityRating](), strs(impact.AllQualityRatings()))
-	add(typeOf[impact.DecisionStatus](), strs(impact.AllDecisionStatuses()))
-	add(typeOf[impact.DataQuality](), strs(impact.AllDataQualities()))
-	add(typeOf[impact.State](), strs(impact.AllStates()))
-	add(typeOf[impact.LinkState](), strs(impact.AllLinkStates()))
-	add(typeOf[impact.RollupMethod](), strs(impact.AllRollupMethods()))
-	add(typeOf[impact.AssumptionSource](), strs(impact.AllAssumptionSources()))
-	add(typeOf[impact.ElementKind](), strs(impact.AllElementKinds()))
-	add(typeOf[impact.EvaluationType](), strs(impact.AllEvaluationTypes()))
-	add(typeOf[impact.Evaluator](), strs(impact.AllEvaluators()))
-	add(typeOf[impact.EvaluationStatus](), strs(impact.AllEvaluationStatuses()))
-	add(typeOf[impact.QuestionStatus](), strs(impact.AllQuestionStatuses()))
+	add(typeOf[model.Level](), strs(model.AllLevels()))
+	add(typeOf[model.Sphere](), strs(model.AllSpheres()))
+	add(typeOf[model.ScorecardPerspective](), strs(model.AllScorecardPerspectives()))
+	add(typeOf[model.LeadLag](), strs(model.AllLeadLags()))
+	add(typeOf[model.LogicType](), strs(model.AllLogicTypes()))
+	add(typeOf[model.ChangeType](), strs(model.AllChangeTypes()))
+	add(typeOf[model.LinkType](), strs(model.AllLinkTypes()))
+	add(typeOf[model.Polarity](), strs(model.AllPolarities()))
+	add(typeOf[model.LoopType](), strs(model.AllLoopTypes()))
+	add(typeOf[model.InterventionType](), strs(model.AllInterventionTypes()))
+	add(typeOf[model.InterventionStatus](), strs(model.AllInterventionStatuses()))
+	add(typeOf[model.AssumptionType](), strs(model.AllAssumptionTypes()))
+	add(typeOf[model.AssumptionStatus](), strs(model.AllAssumptionStatuses()))
+	add(typeOf[model.Criticality](), strs(model.AllCriticalities()))
+	add(typeOf[model.Rating](), strs(model.AllRatings()))
+	add(typeOf[model.MeasurementType](), strs(model.AllMeasurementTypes()))
+	add(typeOf[model.Direction](), strs(model.AllDirections()))
+	add(typeOf[model.ActorType](), strs(model.AllActorTypes()))
+	add(typeOf[model.ActorRole](), strs(model.AllActorRoles()))
+	add(typeOf[model.Stance](), strs(model.AllStances()))
+	add(typeOf[model.PerspectiveRole](), strs(model.AllPerspectiveRoles()))
+	add(typeOf[model.EvidenceType](), strs(model.AllEvidenceTypes()))
+	add(typeOf[model.Strength](), strs(model.AllStrengths()))
+	add(typeOf[model.EvidenceDirection](), strs(model.AllEvidenceDirections()))
+	add(typeOf[model.ProcessTracingTest](), strs(model.AllProcessTracingTests()))
+	add(typeOf[model.Sensitivity](), strs(model.AllSensitivities()))
+	add(typeOf[model.FactorKind](), strs(model.AllFactorKinds()))
+	add(typeOf[model.RiskCategory](), strs(model.AllRiskCategories()))
+	add(typeOf[model.PathwayKind](), strs(model.AllPathwayKinds()))
+	add(typeOf[model.Projection](), strs(model.AllProjections()))
+	add(typeOf[model.Aggregation](), strs(model.AllAggregations()))
+	add(typeOf[model.CompositionOp](), strs(model.AllCompositionOps()))
+	add(typeOf[model.MetricLayer](), strs(model.AllMetricLayers()))
+	add(typeOf[model.Claim](), strs(model.AllClaims()))
+	add(typeOf[model.Basis](), strs(model.AllBases()))
+	add(typeOf[model.DataAvailability](), strs(model.AllDataAvailabilities()))
+	add(typeOf[model.ConsultationStep](), strs(model.AllConsultationSteps()))
+	add(typeOf[model.Responsibility](), strs(model.AllResponsibilities()))
+	add(typeOf[model.CauseLevel](), strs(model.AllCauseLevels()))
+	add(typeOf[model.Consent](), strs(model.AllConsents()))
+	add(typeOf[model.CollectionMode](), strs(model.AllCollectionModes()))
+	add(typeOf[model.SelectionStatus](), strs(model.AllSelectionStatuses()))
+	add(typeOf[model.SelectionSubject](), strs(model.AllSelectionSubjects()))
+	add(typeOf[model.ReviewMethod](), strs(model.AllReviewMethods()))
+	add(typeOf[model.ReviewDecision](), strs(model.AllReviewDecisions()))
+	add(typeOf[model.ReviewOrigin](), strs(model.AllReviewOrigins()))
+	add(typeOf[model.ConsultationMethod](), strs(model.AllConsultationMethods()))
+	add(typeOf[model.Framework](), strs(model.AllFrameworks()))
+	add(typeOf[model.Relation](), strs(model.AllRelations()))
+	add(typeOf[model.RevisionTrigger](), strs(model.AllRevisionTriggers()))
+	add(typeOf[model.QualityRating](), strs(model.AllQualityRatings()))
+	add(typeOf[model.DecisionStatus](), strs(model.AllDecisionStatuses()))
+	add(typeOf[model.DataQuality](), strs(model.AllDataQualities()))
+	add(typeOf[model.State](), strs(model.AllStates()))
+	add(typeOf[model.LinkState](), strs(model.AllLinkStates()))
+	add(typeOf[model.RollupMethod](), strs(model.AllRollupMethods()))
+	add(typeOf[model.AssumptionSource](), strs(model.AllAssumptionSources()))
+	add(typeOf[model.ElementKind](), strs(model.AllElementKinds()))
+	add(typeOf[model.EvaluationType](), strs(model.AllEvaluationTypes()))
+	add(typeOf[model.Evaluator](), strs(model.AllEvaluators()))
+	add(typeOf[model.EvaluationStatus](), strs(model.AllEvaluationStatuses()))
+	add(typeOf[model.QuestionStatus](), strs(model.AllQuestionStatuses()))
 	return m
 }
 

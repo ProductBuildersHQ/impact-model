@@ -5,31 +5,31 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
-func load(t *testing.T) *impact.Model {
+func load(t *testing.T) *model.Model {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 	return doc
 }
 
-func mapping() *impact.CSVMapping {
-	return &impact.CSVMapping{
+func mapping() *model.CSVMapping {
+	return &model.CSVMapping{
 		ModelID: "riverbend-network", Period: "2026-Q4",
-		Columns:          impact.CSVColumns{Indicator: "Measure", Date: "Month end", Value: "Value", Pathway: "Program", Quality: "Quality", Source: "Source"},
+		Columns:          model.CSVColumns{Indicator: "Measure", Date: "Month end", Value: "Value", Pathway: "Program", Quality: "Quality", Source: "Source"},
 		IndicatorAliases: map[string]string{"Participant retention (Learning)": "ind-retention-learning"},
 		MetricAliases:    map[string]string{"Hours": "met-attendee-hours"},
 		DateFormat:       "02/01/2006",
 	}
 }
 
-func run(t *testing.T, sheet string, m *impact.CSVMapping) *Result {
+func run(t *testing.T, sheet string, m *model.CSVMapping) *Result {
 	t.Helper()
 	res, err := Import(strings.NewReader(sheet), m, load(t))
 	if err != nil {
@@ -59,7 +59,7 @@ func TestImportsRowsInAllTheWaysAnIndicatorCanBeNamed(t *testing.T) {
 		t.Errorf("observations = %v, want %v", got, want)
 	}
 	first := res.Set.Observations[0]
-	if *first.Value != 410 || first.Quality != impact.QualityVerified || first.Source != "Sign-in sheets" {
+	if *first.Value != 410 || first.Quality != model.QualityVerified || first.Source != "Sign-in sheets" {
 		t.Errorf("first = %+v", first)
 	}
 	if res.Set.ModelID != "riverbend-network" || res.Set.Period != "2026-Q4" {
@@ -115,19 +115,19 @@ func TestEverySeededBadRowIsReportedAndNoneIsDropped(t *testing.T) {
 }
 
 func TestFixedIndicatorSheet(t *testing.T) {
-	m := &impact.CSVMapping{ModelID: "riverbend-network", Columns: impact.CSVColumns{IndicatorFixed: "ind-hours-learning", Date: "d", Value: "v"}}
+	m := &model.CSVMapping{ModelID: "riverbend-network", Columns: model.CSVColumns{IndicatorFixed: "ind-hours-learning", Date: "d", Value: "v"}}
 	res := run(t, "d,v\r\n2026-10-31,10\r\n2026-11-30,20\r\n", m)
 	if res.Imported != 2 || res.Set.Observations[1].IndicatorID != "ind-hours-learning" {
 		t.Errorf("result = %+v", res)
 	}
-	bad := run(t, "d,v\r\n2026-10-31,10\r\n", &impact.CSVMapping{Columns: impact.CSVColumns{IndicatorFixed: "ind-ghost", Date: "d", Value: "v"}})
-	if len(bad.Unmatched) != 1 || !strings.Contains(bad.Unmatched[0].Reason, "not in the impact model") {
+	bad := run(t, "d,v\r\n2026-10-31,10\r\n", &model.CSVMapping{Columns: model.CSVColumns{IndicatorFixed: "ind-ghost", Date: "d", Value: "v"}})
+	if len(bad.Unmatched) != 1 || !strings.Contains(bad.Unmatched[0].Reason, "not in the outcome model") {
 		t.Errorf("unknown fixed indicator: %+v", bad.Unmatched)
 	}
 }
 
 func TestLevelColumn(t *testing.T) {
-	m := &impact.CSVMapping{Columns: impact.CSVColumns{Indicator: "i", Date: "d", Level: "l"}}
+	m := &model.CSVMapping{Columns: model.CSVColumns{Indicator: "i", Date: "d", Level: "l"}}
 	res := run(t, "i,d,l\r\nind-practice-maturity,2026-10-31,Emerging\r\nind-practice-maturity,2026-11-30,\r\n", m)
 	if res.Imported != 1 || len(res.Unmatched) != 1 || !strings.Contains(res.Unmatched[0].Reason, "no level") {
 		t.Errorf("result = %+v", res)
@@ -136,12 +136,12 @@ func TestLevelColumn(t *testing.T) {
 
 func TestMappingErrorsAreWholeFileErrors(t *testing.T) {
 	doc := load(t)
-	tests := map[string]*impact.CSVMapping{
-		"missing column":     {Columns: impact.CSVColumns{Indicator: "Nope", Date: "Month end", Value: "Value"}},
-		"no date":            {Columns: impact.CSVColumns{Indicator: "Measure", Value: "Value"}},
-		"no indicator":       {Columns: impact.CSVColumns{Date: "Month end", Value: "Value"}},
-		"no value":           {Columns: impact.CSVColumns{Indicator: "Measure", Date: "Month end"}},
-		"wrong impact model": {ModelID: "another", Columns: impact.CSVColumns{Indicator: "Measure", Date: "Month end", Value: "Value"}},
+	tests := map[string]*model.CSVMapping{
+		"missing column":      {Columns: model.CSVColumns{Indicator: "Nope", Date: "Month end", Value: "Value"}},
+		"no date":             {Columns: model.CSVColumns{Indicator: "Measure", Value: "Value"}},
+		"no indicator":        {Columns: model.CSVColumns{Date: "Month end", Value: "Value"}},
+		"no value":            {Columns: model.CSVColumns{Indicator: "Measure", Date: "Month end"}},
+		"wrong outcome model": {ModelID: "another", Columns: model.CSVColumns{Indicator: "Measure", Date: "Month end", Value: "Value"}},
 	}
 	for name, m := range tests {
 		if _, err := Import(strings.NewReader(header), m, doc); !errors.Is(err, ErrMapping) {
@@ -154,8 +154,8 @@ func TestMappingErrorsAreWholeFileErrors(t *testing.T) {
 }
 
 func TestHeaderMatchingIgnoresCaseAndAByteOrderMark(t *testing.T) {
-	res := run(t, "\xef\xbb\xbfMEASURE,month end,VALUE\r\nind-hours-learning,31/10/2026,5\r\n", &impact.CSVMapping{
-		Columns: impact.CSVColumns{Indicator: "measure", Date: "Month End", Value: "value"}, DateFormat: "02/01/2006",
+	res := run(t, "\xef\xbb\xbfMEASURE,month end,VALUE\r\nind-hours-learning,31/10/2026,5\r\n", &model.CSVMapping{
+		Columns: model.CSVColumns{Indicator: "measure", Date: "Month End", Value: "value"}, DateFormat: "02/01/2006",
 	})
 	if res.Imported != 1 {
 		t.Errorf("result = %+v", res)
@@ -180,8 +180,8 @@ func TestUnmatchedRowsRoundTripAsASheet(t *testing.T) {
 func TestImportIsDeterministic(t *testing.T) {
 	sheet := header + "ind-hours-learning,31/10/2026,410,,,\r\nHours,30/11/2026,1,pw-civic,,\r\n"
 	a, b := run(t, sheet, mapping()), run(t, sheet, mapping())
-	ja, _ := impactio.Canonical(a.Set, impactio.FormatJSON)
-	jb, _ := impactio.Canonical(b.Set, impactio.FormatJSON)
+	ja, _ := modelio.Canonical(a.Set, modelio.FormatJSON)
+	jb, _ := modelio.Canonical(b.Set, modelio.FormatJSON)
 	if string(ja) != string(jb) {
 		t.Error("two imports differ")
 	}

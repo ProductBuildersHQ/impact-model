@@ -1,4 +1,4 @@
-module github.com/ProductBuildersHQ/impact-model
+module github.com/ProductBuildersHQ/outcome-model
 
 go 1.26.5
 

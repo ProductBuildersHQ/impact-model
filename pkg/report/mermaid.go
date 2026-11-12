@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // MermaidOptions configures the pathway diagram.
@@ -112,7 +112,7 @@ func (r *mermaidRenderer) splitByCeiling() (owned, above []OutcomeView) {
 
 // levels writes one subgraph per outcome level, highest first.
 func (r *mermaidRenderer) levels(indent int, outcomes []OutcomeView) {
-	for _, level := range impact.AllLevels() {
+	for _, level := range model.AllLevels() {
 		var members []OutcomeView
 		for _, o := range outcomes {
 			if o.Level == level {
@@ -228,7 +228,7 @@ func (r *mermaidRenderer) linkLine(l LinkView) string {
 		label = l.LoopType + " loop"
 	case l.Feedback:
 		label = "feedback"
-	case l.Polarity == string(impact.PolarityNegative):
+	case l.Polarity == string(model.PolarityNegative):
 		label = "reduces"
 	}
 	arrow := "-->"

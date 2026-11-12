@@ -1,4 +1,4 @@
-// Package ref provides typed references to impact model documents and
+// Package ref provides typed references to outcome model documents and
 // the elements inside them.
 //
 // The reference grammar is
@@ -14,7 +14,7 @@
 //	model:agent-auth-open-standard#oc-idp-support
 //
 // References are stable across repositories, so other models (for example a
-// strategy or futures model) can point at a impact model or one of its elements
+// strategy or futures model) can point at a outcome model or one of its elements
 // without importing it.
 package ref
 
@@ -25,7 +25,7 @@ import (
 	"strings"
 )
 
-// Prefix is the scheme prefix of every impact model reference.
+// Prefix is the scheme prefix of every outcome model reference.
 const Prefix = "model:"
 
 // MaxSlugLength is the maximum length of a document slug or element ID.
@@ -59,7 +59,7 @@ func IsSlug(s string) bool {
 	return ValidateSlug(s) == nil
 }
 
-// Ref identifies an impact model document and, optionally, one element
+// Ref identifies an outcome model document and, optionally, one element
 // within it.
 type Ref struct {
 	// Doc is the document slug (the document's id).

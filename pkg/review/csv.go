@@ -8,7 +8,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // SheetMeta supplies what a returned sheet does not say itself.
@@ -26,15 +26,15 @@ type SheetMeta struct {
 var sheetColumns = []string{"kind", "id", "decision", "suggested_change", "comment"}
 
 // FromSheet reads a returned review sheet (see share.ReviewSheet) into a
-// response. The export stamp row, if still present, supplies the impact model's
+// response. The export stamp row, if still present, supplies the outcome model's
 // ID, version, and hash. Rows the reviewer left untouched are skipped. A
 // sheet with no stamp and no override yields an empty hash, which the import
 // reports as stale.
-func FromSheet(data []byte, m SheetMeta) (*impact.ReviewResponse, error) {
-	resp := &impact.ReviewResponse{
-		Kind: impact.KindReviewResponse, SpecVersion: impact.SpecVersion,
+func FromSheet(data []byte, m SheetMeta) (*model.ReviewResponse, error) {
+	resp := &model.ReviewResponse{
+		Kind: model.KindReviewResponse, SpecVersion: model.SpecVersion,
 		ModelID: m.ModelID, Version: m.Version, ContentHash: m.ContentHash,
-		Reviewers: m.Reviewers, Method: impact.ReviewSheet, Date: m.Date, Rows: []impact.ReviewItem{},
+		Reviewers: m.Reviewers, Method: model.ReviewSheet, Date: m.Date, Rows: []model.ReviewItem{},
 	}
 	r := csv.NewReader(bytes.NewReader(data))
 	r.FieldsPerRecord = -1
@@ -112,22 +112,22 @@ func header(rec []string) (map[string]int, error) {
 
 // sheetRow reads one record; it reports false for a row the reviewer did not
 // answer.
-func sheetRow(rec []string, col map[string]int) (impact.ReviewItem, bool) {
+func sheetRow(rec []string, col map[string]int) (model.ReviewItem, bool) {
 	get := func(name string) string {
 		if i := col[name]; i < len(rec) {
 			return strings.TrimSpace(rec[i])
 		}
 		return ""
 	}
-	item := impact.ReviewItem{
+	item := model.ReviewItem{
 		ElementID:       get("id"),
-		Decision:        impact.ReviewDecision(strings.ToLower(get("decision"))),
+		Decision:        model.ReviewDecision(strings.ToLower(get("decision"))),
 		SuggestedChange: get("suggested_change"),
 		Comment:         get("comment"),
-		Origin:          impact.OriginSheet,
+		Origin:          model.OriginSheet,
 	}
 	if item.Decision == "" && item.SuggestedChange == "" && item.Comment == "" {
-		return impact.ReviewItem{}, false
+		return model.ReviewItem{}, false
 	}
 	return item, true
 }

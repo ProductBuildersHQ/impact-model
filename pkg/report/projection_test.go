@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestProjectionGoldens(t *testing.T) {
@@ -20,7 +20,7 @@ func TestProjectionGoldens(t *testing.T) {
 	golden(t, "logic-model-diagram.md", LogicModelDiagrams(whole, pathways))
 }
 
-// An impact model with no pathways projects the whole impact model once.
+// An outcome model with no pathways projects the whole outcome model once.
 func TestProjectionsOfATheoryWithNoPathways(t *testing.T) {
 	doc := fullDoc(t)
 	doc.Pathways = nil
@@ -127,7 +127,7 @@ func TestLogicModelDiagramJoinsOnlyTheStagesThatHaveContent(t *testing.T) {
 
 // clearTreePathways drops the pathway references of causes and effects, for a
 // test that removes the pathways.
-func clearTreePathways(doc *impact.Model) {
+func clearTreePathways(doc *model.Model) {
 	for i := range doc.Causes {
 		doc.Causes[i].PathwayIDs = nil
 	}

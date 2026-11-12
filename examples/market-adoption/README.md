@@ -12,7 +12,7 @@ market-systems framing.
 
 ## Files
 
-- `impact-model.yaml`, `actors.yaml` (shared registry), `observations-2026-h2.yaml`
+- `outcome-model.yaml`, `actors.yaml` (shared registry), `observations-2026-h2.yaml`
 
 ## Features shown
 
@@ -33,8 +33,8 @@ market-systems framing.
 Run from this directory:
 
 ```bash
-impact-model validate impact-model.yaml actors.yaml
-impact-model validate observations-2026-h2.yaml --model impact-model.yaml
-impact-model graph impact-model.yaml
-impact-model fmt --check impact-model.yaml actors.yaml observations-2026-h2.yaml
+outcome-model validate outcome-model.yaml actors.yaml
+outcome-model validate observations-2026-h2.yaml --model outcome-model.yaml
+outcome-model graph outcome-model.yaml
+outcome-model fmt --check outcome-model.yaml actors.yaml observations-2026-h2.yaml
 ```

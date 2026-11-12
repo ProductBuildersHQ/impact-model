@@ -1,11 +1,11 @@
 # OGSM
 
 If you plan with an OGSM (Objective, Goals, Strategies, Measures), this page
-shows where each part comes from in an impact model, and what the impact model
+shows where each part comes from in an outcome model, and what the outcome model
 adds that a one-page plan written by hand usually leaves out.
 
 ```bash
-impact-model export ogsm impact-model.yaml -O observations.yaml -o ogsm.json
+outcome-model export ogsm outcome-model.yaml -O observations.yaml -o ogsm.json
 ```
 
 The output is an OGSM document in the JSON format of
@@ -15,7 +15,7 @@ with the classic one-page table, or as slides.
 
 ## The mapping at a glance
 
-| OGSM | Comes from | In impact model terms |
+| OGSM | Comes from | In outcome model terms |
 |------|-----------|-----------------------|
 | **Objective** | `context.objective`, or the model's one impact outcome | The one thing the model sets out to achieve |
 | The objective's **due date** | `context.timeHorizon.end` | The end of the period the model covers |
@@ -29,10 +29,10 @@ with the classic one-page table, or as slides.
 Two rules hold throughout:
 
 - **Nothing is invented.** Every field in the OGSM is copied or translated from
-  something in the impact model. A field the model leaves empty stays empty, and
+  something in the outcome model. A field the model leaves empty stays empty, and
   an OGSM without a clear objective or a strategy is refused instead of written.
 - **Order is kept.** Goals, strategies, measures, and actions appear in the
-  order the impact model lists them, so the same model always gives the same
+  order the outcome model lists them, so the same model always gives the same
   OGSM.
 
 ## One pathway, end to end
@@ -141,7 +141,7 @@ An OGSM has one objective. The export takes it from `context.objective`: the
 statement, and the outcomes that say it has been reached. Name it with:
 
 ```bash
-impact-model patch impact-model.yaml - <<'EOF'
+outcome-model patch outcome-model.yaml - <<'EOF'
 [{"op":"add","path":"/context/objective","value":{
   "statement":"Member nonprofits are strong and connected enough that residents get good services and are heard",
   "outcomeIds":["oc-resident-access","oc-resident-voice"]}}]
@@ -151,7 +151,7 @@ EOF
 Without `context.objective`, a model with a single impact-level outcome has
 that outcome as its objective, its title as the statement. A model with
 several impact outcomes and no `context.objective` has no one objective, and
-lint says so (IMP-CTX-002).
+lint says so (OM-CTX-002).
 
 The objective's due date is `context.timeHorizon.end`, and the OGSM's period
 is the whole horizon.
@@ -240,14 +240,14 @@ An OGSM is a one-page plan, so the export keeps only what fits it:
 | What a pathway commits | `export vsem`, whose strategies carry resources |
 | Indicators other than the goals and each pathway's focus | `report metric-tree` |
 
-## What the impact model adds
+## What the outcome model adds
 
 An OGSM written by hand says which strategies serve which goals, but not why
-they should. Exported from an impact model:
+they should. Exported from an outcome model:
 
 - each strategy serves the goals its pathway's causal chain reaches, so a
   strategy linked to a goal it cannot move shows up as a missing link
-- each measure is a North Star or guardrail that `impact-model lint` has
+- each measure is a North Star or guardrail that `outcome-model lint` has
   checked sits at or below the organization's ceiling of accountability
 - the goals measure the outcomes the objective names, not a separate list
 - with `-O`, the goals and measures carry the latest observed values and status
@@ -259,7 +259,7 @@ several impact outcomes and no `context.objective`, or no pathway, `export
 ogsm` writes nothing and exits with status 2, naming what to add:
 
 ```
-impact-model: impact-model.yaml: the impact model cannot be drawn as an OGSM: add context.objective and a pathway
+outcome-model: outcome-model.yaml: the outcome model cannot be drawn as an OGSM: add context.objective and a pathway
 ```
 
 ## Checking the result
@@ -273,8 +273,8 @@ intermediary example meets them.
 ## Going the other way
 
 There is no import from an OGSM. An OGSM has no outcomes or causal links to
-read, so an impact model built from one would have to invent the reasoning
-that makes it an impact model. Start the impact model from the OGSM instead:
+read, so an outcome model built from one would have to invent the reasoning
+that makes it an outcome model. Start the outcome model from the OGSM instead:
 the objective suggests the impact outcomes, each goal an indicator of them,
 each strategy a pathway, each measure its North Star or a guardrail, and each
 action an intervention.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/impact-model/schema/v0/csv-mapping.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/csv-mapping.schema.json",
   "$ref": "#/$defs/CSVMapping",
   "$defs": {
     "CSVColumns": {
@@ -77,6 +77,6 @@
       ]
     }
   },
-  "title": "Impact Model CSV Mapping",
+  "title": "Outcome Model CSV Mapping",
   "description": "How the columns of a spreadsheet map onto indicator observations."
 }

@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 func newFmtCmd(e *env) *cobra.Command {
@@ -22,9 +22,9 @@ Keep notes in description and narrative fields.
 
 With --check, files are not written and the exit code is 1 if any file would
 change.`,
-		Example: `  impact-model fmt impact-model.yaml
-  impact-model fmt --check *.yaml
-  impact-model fmt --sort impact-model.yaml`,
+		Example: `  outcome-model fmt outcome-model.yaml
+  outcome-model fmt --check *.yaml
+  outcome-model fmt --sort outcome-model.yaml`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format, err := outputFormat(cmd)

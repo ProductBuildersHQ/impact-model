@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	exTheory = "../../examples/intermediary/impact-model.yaml"
+	exTheory = "../../examples/intermediary/outcome-model.yaml"
 	exObs    = "../../examples/intermediary/observations-2026-q3.yaml"
 )
 
@@ -87,7 +87,7 @@ func read(t *testing.T, path string) string {
 func workDir(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	for _, name := range []string{"impact-model.yaml", "obs.yaml"} {
+	for _, name := range []string{"outcome-model.yaml", "obs.yaml"} {
 		src := exTheory
 		if name == "obs.yaml" {
 			src = exObs
@@ -112,7 +112,7 @@ func TestEveryToolIsListed(t *testing.T) {
 			t.Errorf("tool %s lacks a description or a schema", tool.Name)
 		}
 	}
-	for _, want := range []string{"impact_schema", "impact_validate", "impact_lint", "impact_graph", "impact_status", "impact_report", "impact_export", "impact_patch", "impact_deck", "impact_judge_bundle", "impact_diff"} {
+	for _, want := range []string{"outcome_schema", "outcome_validate", "outcome_lint", "outcome_graph", "outcome_status", "outcome_report", "outcome_export", "outcome_patch", "outcome_deck", "outcome_judge_bundle", "outcome_diff"} {
 		if !got[want] {
 			t.Errorf("tool %s is missing", want)
 		}
@@ -121,15 +121,15 @@ func TestEveryToolIsListed(t *testing.T) {
 
 func TestSchemaTool(t *testing.T) {
 	cs := connect(t, workDir(t))
-	out, errText := call(t, cs, "impact_schema", nil)
+	out, errText := call(t, cs, "outcome_schema", nil)
 	if errText != "" || len(out["names"].([]any)) < 6 {
 		t.Fatalf("names: %v %q", out, errText)
 	}
-	out, errText = call(t, cs, "impact_schema", map[string]any{"name": "impact-model"})
-	if errText != "" || out["title"] != "Impact Model" {
+	out, errText = call(t, cs, "outcome_schema", map[string]any{"name": "outcome-model"})
+	if errText != "" || out["title"] != "Outcome Model" {
 		t.Fatalf("schema: %v %q", out["title"], errText)
 	}
-	if _, errText := call(t, cs, "impact_schema", map[string]any{"name": "nope"}); errText == "" {
+	if _, errText := call(t, cs, "outcome_schema", map[string]any{"name": "nope"}); errText == "" {
 		t.Error("an unknown schema was returned")
 	}
 }
@@ -137,27 +137,27 @@ func TestSchemaTool(t *testing.T) {
 func TestValidateAndLintByPathAndInline(t *testing.T) {
 	dir := workDir(t)
 	cs := connect(t, dir)
-	out, errText := call(t, cs, "impact_validate", map[string]any{"path": "impact-model.yaml"})
-	if errText != "" || out["valid"] != true || out["kind"] != "ImpactModel" {
+	out, errText := call(t, cs, "outcome_validate", map[string]any{"path": "outcome-model.yaml"})
+	if errText != "" || out["valid"] != true || out["kind"] != "OutcomeModel" {
 		t.Fatalf("validate by path: %v %q", out, errText)
 	}
 	var inline any
-	if err := json.Unmarshal([]byte(`{"kind":"ImpactModel","specVersion":"0.1","id":"x","context":{"problemStatement":"p"},"outcomes":[{"id":"oc","title":"t","level":"impact"}],"links":[{"id":"l","from":"oc","to":"ghost"}]}`), &inline); err != nil {
+	if err := json.Unmarshal([]byte(`{"kind":"OutcomeModel","specVersion":"0.1","id":"x","context":{"problemStatement":"p"},"outcomes":[{"id":"oc","title":"t","level":"impact"}],"links":[{"id":"l","from":"oc","to":"ghost"}]}`), &inline); err != nil {
 		t.Fatal(err)
 	}
-	out, errText = call(t, cs, "impact_validate", map[string]any{"document": inline})
+	out, errText = call(t, cs, "outcome_validate", map[string]any{"document": inline})
 	if errText != "" || out["valid"] != false || len(out["issues"].([]any)) == 0 {
 		t.Fatalf("an invalid inline document: %v %q", out, errText)
 	}
-	out, errText = call(t, cs, "impact_lint", map[string]any{"path": "impact-model.yaml", "profile": "draft"})
+	out, errText = call(t, cs, "outcome_lint", map[string]any{"path": "outcome-model.yaml", "profile": "draft"})
 	if errText != "" || out["status"] == nil || out["project"] != "riverbend-network" {
 		t.Fatalf("lint: %v %q", out, errText)
 	}
-	if _, errText := call(t, cs, "impact_lint", map[string]any{"path": "impact-model.yaml", "disable": []string{"IMP-NOPE-001"}}); errText == "" {
+	if _, errText := call(t, cs, "outcome_lint", map[string]any{"path": "outcome-model.yaml", "disable": []string{"OM-NOPE-001"}}); errText == "" {
 		t.Error("an unknown rule was accepted")
 	}
-	// The same impact model as a string of YAML.
-	out, errText = call(t, cs, "impact_validate", map[string]any{"document": read(t, exTheory)})
+	// The same outcome model as a string of YAML.
+	out, errText = call(t, cs, "outcome_validate", map[string]any{"document": read(t, exTheory)})
 	if errText != "" || out["valid"] != true {
 		t.Fatalf("validate YAML string: %v %q", out, errText)
 	}
@@ -167,58 +167,58 @@ func TestGraphStatusReportDeckJudgeAndDiff(t *testing.T) {
 	dir := workDir(t)
 	cs := connect(t, dir)
 
-	out, errText := call(t, cs, "impact_graph", map[string]any{"path": "impact-model.yaml", "query": "summary"})
+	out, errText := call(t, cs, "outcome_graph", map[string]any{"path": "outcome-model.yaml", "query": "summary"})
 	if errText != "" || out["result"] == nil {
 		t.Fatalf("graph summary: %v %q", out, errText)
 	}
-	out, errText = call(t, cs, "impact_graph", map[string]any{"path": "impact-model.yaml", "query": "mermaid"})
+	out, errText = call(t, cs, "outcome_graph", map[string]any{"path": "outcome-model.yaml", "query": "mermaid"})
 	if errText != "" || !strings.HasPrefix(out["content"].(string), "flowchart BT") {
 		t.Fatalf("graph mermaid: %v %q", out, errText)
 	}
-	if _, errText := call(t, cs, "impact_graph", map[string]any{"path": "impact-model.yaml", "query": "upstream"}); errText == "" {
+	if _, errText := call(t, cs, "outcome_graph", map[string]any{"path": "outcome-model.yaml", "query": "upstream"}); errText == "" {
 		t.Error("upstream with no id was accepted")
 	}
 
-	out, errText = call(t, cs, "impact_status", map[string]any{"path": "impact-model.yaml", "observationPaths": []string{"obs.yaml"}})
-	if errText != "" || out["asOf"] != "2026-09-30" || out["kind"] != "ImpactModelStatus" {
+	out, errText = call(t, cs, "outcome_status", map[string]any{"path": "outcome-model.yaml", "observationPaths": []string{"obs.yaml"}})
+	if errText != "" || out["asOf"] != "2026-09-30" || out["kind"] != "OutcomeModelStatus" {
 		t.Fatalf("status: asOf %v %q", out["asOf"], errText)
 	}
-	if _, errText := call(t, cs, "impact_status", map[string]any{"path": "impact-model.yaml"}); errText == "" {
+	if _, errText := call(t, cs, "outcome_status", map[string]any{"path": "outcome-model.yaml"}); errText == "" {
 		t.Error("status with no observations and no date was accepted")
 	}
 
 	for kind, want := range map[string]string{"exec": "executive summary", "glossary": "Glossary", "outcome-map": "Outcome map", "narrative": "programme narrative"} {
-		out, errText = call(t, cs, "impact_report", map[string]any{"path": "impact-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
+		out, errText = call(t, cs, "outcome_report", map[string]any{"path": "outcome-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
 		if errText != "" || out["format"] != "markdown" || !strings.Contains(out["content"].(string), want) {
 			t.Errorf("report %s: %q %.100v", kind, errText, out["content"])
 		}
 	}
-	out, errText = call(t, cs, "impact_report", map[string]any{"path": "impact-model.yaml", "kind": "story", "observationPaths": []string{"obs.yaml"}, "audience": "aud-funders"})
+	out, errText = call(t, cs, "outcome_report", map[string]any{"path": "outcome-model.yaml", "kind": "story", "observationPaths": []string{"obs.yaml"}, "audience": "aud-funders"})
 	if errText != "" || !strings.Contains(out["content"].(string), "story for Funders") {
 		t.Errorf("story report: %q", errText)
 	}
-	if _, errText := call(t, cs, "impact_report", map[string]any{"path": "impact-model.yaml", "kind": "mystery"}); errText == "" {
+	if _, errText := call(t, cs, "outcome_report", map[string]any{"path": "outcome-model.yaml", "kind": "mystery"}); errText == "" {
 		t.Error("an unknown report kind was accepted")
 	}
 
 	for kind, want := range map[string]string{"workshop": "marp: true", "exec": "# Where we stand"} {
-		out, errText = call(t, cs, "impact_deck", map[string]any{"path": "impact-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
+		out, errText = call(t, cs, "outcome_deck", map[string]any{"path": "outcome-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
 		if errText != "" || out["format"] != "marp" || !strings.Contains(out["content"].(string), want) {
 			t.Errorf("deck %s: %q", kind, errText)
 		}
 	}
-	if _, errText := call(t, cs, "impact_deck", map[string]any{"path": "impact-model.yaml", "kind": "story", "observationPaths": []string{"obs.yaml"}}); errText == "" {
+	if _, errText := call(t, cs, "outcome_deck", map[string]any{"path": "outcome-model.yaml", "kind": "story", "observationPaths": []string{"obs.yaml"}}); errText == "" {
 		t.Error("a story deck with no audience was accepted")
 	}
 
-	out, errText = call(t, cs, "impact_judge_bundle", map[string]any{"path": "impact-model.yaml"})
+	out, errText = call(t, cs, "outcome_judge_bundle", map[string]any{"path": "outcome-model.yaml"})
 	if errText != "" || out["kind"] != "JudgeBundle" || out["bundleHash"] == "" || out["profile"] != "core" {
 		t.Fatalf("judge bundle: %q", errText)
 	}
 
-	out, errText = call(t, cs, "impact_diff", map[string]any{"old": map[string]any{"path": "impact-model.yaml"}, "new": map[string]any{"path": "impact-model.yaml"}})
+	out, errText = call(t, cs, "outcome_diff", map[string]any{"old": map[string]any{"path": "outcome-model.yaml"}, "new": map[string]any{"path": "outcome-model.yaml"}})
 	if errText != "" || len(out["changes"].([]any)) != 0 {
-		t.Fatalf("diff of an impact model with itself: %v %q", out, errText)
+		t.Fatalf("diff of an outcome model with itself: %v %q", out, errText)
 	}
 }
 
@@ -228,45 +228,45 @@ func TestPatchToolEditsInlineAndByPath(t *testing.T) {
 	title := []map[string]any{{"op": "replace", "path": "/outcomes/@oc-st-leader-skills/title", "value": "Leaders gain coaching skills"}}
 
 	// By path, a dry run changes nothing on disk and returns the result.
-	before := read(t, filepath.Join(dir, "impact-model.yaml"))
-	out, errText := call(t, cs, "impact_patch", map[string]any{"path": "impact-model.yaml", "patch": title, "dryRun": true})
+	before := read(t, filepath.Join(dir, "outcome-model.yaml"))
+	out, errText := call(t, cs, "outcome_patch", map[string]any{"path": "outcome-model.yaml", "patch": title, "dryRun": true})
 	if errText != "" || out["applied"] != true || out["document"] == nil {
 		t.Fatalf("dry run: %v %q", out, errText)
 	}
-	if read(t, filepath.Join(dir, "impact-model.yaml")) != before {
+	if read(t, filepath.Join(dir, "outcome-model.yaml")) != before {
 		t.Fatal("a dry run wrote the file")
 	}
 
 	// By path, not a dry run, writes the canonical file.
-	out, errText = call(t, cs, "impact_patch", map[string]any{"path": "impact-model.yaml", "patch": title})
+	out, errText = call(t, cs, "outcome_patch", map[string]any{"path": "outcome-model.yaml", "patch": title})
 	if errText != "" || out["applied"] != true || out["written"] != true {
 		t.Fatalf("write: %v %q", out, errText)
 	}
-	if !strings.Contains(read(t, filepath.Join(dir, "impact-model.yaml")), "Leaders gain coaching skills") {
+	if !strings.Contains(read(t, filepath.Join(dir, "outcome-model.yaml")), "Leaders gain coaching skills") {
 		t.Error("the file was not updated")
 	}
 
 	// A patch that leaves a dangling reference is rejected and writes nothing.
 	bad := []map[string]any{{"op": "replace", "path": "/links/@ln-skills-practice/to", "value": "oc-ghost"}}
-	after := read(t, filepath.Join(dir, "impact-model.yaml"))
-	out, errText = call(t, cs, "impact_patch", map[string]any{"path": "impact-model.yaml", "patch": bad})
+	after := read(t, filepath.Join(dir, "outcome-model.yaml"))
+	out, errText = call(t, cs, "outcome_patch", map[string]any{"path": "outcome-model.yaml", "patch": bad})
 	if errText != "" || out["applied"] != false || !strings.Contains(out["reason"].(string), "structural errors") && len(out["issuesIntroduced"].([]any)) == 0 {
 		t.Fatalf("an error-introducing patch must be reported as not applied, with the new issues: %v %q", out, errText)
 	}
-	if read(t, filepath.Join(dir, "impact-model.yaml")) != after {
+	if read(t, filepath.Join(dir, "outcome-model.yaml")) != after {
 		t.Error("a rejected patch changed the file")
 	}
 
 	// Inline documents are patched in memory.
 	var inline any
-	if err := json.Unmarshal([]byte(`{"kind":"ImpactModel","specVersion":"0.1","id":"x","context":{"problemStatement":"p"},"outcomes":[{"id":"oc","title":"t","level":"impact"}]}`), &inline); err != nil {
+	if err := json.Unmarshal([]byte(`{"kind":"OutcomeModel","specVersion":"0.1","id":"x","context":{"problemStatement":"p"},"outcomes":[{"id":"oc","title":"t","level":"impact"}]}`), &inline); err != nil {
 		t.Fatal(err)
 	}
-	out, errText = call(t, cs, "impact_patch", map[string]any{"document": inline, "patch": []map[string]any{{"op": "replace", "path": "/outcomes/@oc/title", "value": "renamed"}}})
+	out, errText = call(t, cs, "outcome_patch", map[string]any{"document": inline, "patch": []map[string]any{{"op": "replace", "path": "/outcomes/@oc/title", "value": "renamed"}}})
 	if errText != "" || out["applied"] != true || !strings.Contains(string(mustJSON(t, out["document"])), "renamed") {
 		t.Fatalf("inline patch: %v %q", out, errText)
 	}
-	if _, errText := call(t, cs, "impact_patch", map[string]any{"document": inline, "patch": []map[string]any{{"op": "frobnicate", "path": "/x"}}}); errText == "" {
+	if _, errText := call(t, cs, "outcome_patch", map[string]any{"document": inline, "patch": []map[string]any{{"op": "frobnicate", "path": "/x"}}}); errText == "" {
 		t.Error("an unknown operation was accepted")
 	}
 }
@@ -300,11 +300,11 @@ func TestPathsAreConfinedToTheRoot(t *testing.T) {
 		"absolute outside":    secret,
 		"symlinked directory": "link/secret.yaml",
 		"symlinked file":      "file-link.yaml",
-		"nul byte":            "impact-model.yaml\x00.txt",
+		"nul byte":            "outcome-model.yaml\x00.txt",
 	} {
-		for _, tool := range []string{"impact_validate", "impact_lint", "impact_judge_bundle", "impact_patch"} {
+		for _, tool := range []string{"outcome_validate", "outcome_lint", "outcome_judge_bundle", "outcome_patch"} {
 			args := map[string]any{"path": path}
-			if tool == "impact_patch" {
+			if tool == "outcome_patch" {
 				args["patch"] = []map[string]any{{"op": "add", "path": "/x", "value": 1}}
 			}
 			if out, errText := call(t, cs, tool, args); errText == "" {
@@ -312,7 +312,7 @@ func TestPathsAreConfinedToTheRoot(t *testing.T) {
 			}
 		}
 	}
-	if _, errText := call(t, cs, "impact_status", map[string]any{"path": "impact-model.yaml", "observationPaths": []string{"../escape.yaml"}}); errText == "" {
+	if _, errText := call(t, cs, "outcome_status", map[string]any{"path": "outcome-model.yaml", "observationPaths": []string{"../escape.yaml"}}); errText == "" {
 		t.Error("an observation path outside the root was accepted")
 	}
 	// The file outside was never touched.
@@ -355,7 +355,7 @@ func TestRootResolve(t *testing.T) {
 func TestInlineDocumentSizeIsLimited(t *testing.T) {
 	cs := connect(t, workDir(t))
 	huge := strings.Repeat("x", 10<<20+1)
-	if _, errText := call(t, cs, "impact_validate", map[string]any{"document": huge}); errText == "" {
+	if _, errText := call(t, cs, "outcome_validate", map[string]any{"document": huge}); errText == "" {
 		t.Error("an oversized inline document was accepted")
 	}
 }
@@ -365,12 +365,12 @@ func TestInlineDocumentSizeIsLimited(t *testing.T) {
 func TestExportTool(t *testing.T) {
 	cs := connect(t, workDir(t))
 	for _, kind := range []string{"okr", "journey", "v2mom", "vsem", "mel", "ogsm", "bsc"} {
-		out, errText := call(t, cs, "impact_export", map[string]any{"path": "impact-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
+		out, errText := call(t, cs, "outcome_export", map[string]any{"path": "outcome-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
 		if errText != "" || out["kind"] != kind || out["document"] == nil {
 			t.Errorf("export %s: %q %.200v", kind, errText, out)
 		}
 	}
-	out, errText := call(t, cs, "impact_export", map[string]any{"path": "impact-model.yaml", "kind": "v2mom"})
+	out, errText := call(t, cs, "outcome_export", map[string]any{"path": "outcome-model.yaml", "kind": "v2mom"})
 	if errText != "" {
 		t.Fatalf("v2mom without observations: %s", errText)
 	}
@@ -379,10 +379,10 @@ func TestExportTool(t *testing.T) {
 		t.Errorf("v2mom document: %.200v", out["document"])
 	}
 	// The intermediary example marks no pathway for DMAIC, so DMAIC is refused.
-	if _, errText := call(t, cs, "impact_export", map[string]any{"path": "impact-model.yaml", "kind": "dmaic"}); !strings.Contains(errText, "projections: [dmaic]") {
+	if _, errText := call(t, cs, "outcome_export", map[string]any{"path": "outcome-model.yaml", "kind": "dmaic"}); !strings.Contains(errText, "projections: [dmaic]") {
 		t.Errorf("dmaic refusal: %q", errText)
 	}
-	if _, errText := call(t, cs, "impact_export", map[string]any{"path": "impact-model.yaml", "kind": "mystery"}); errText == "" {
+	if _, errText := call(t, cs, "outcome_export", map[string]any{"path": "outcome-model.yaml", "kind": "mystery"}); errText == "" {
 		t.Error("an unknown export was accepted")
 	}
 }

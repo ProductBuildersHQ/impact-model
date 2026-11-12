@@ -5,19 +5,19 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// The definition reports render from an impact model alone, with no observations,
+// The definition reports render from an outcome model alone, with no observations,
 // so a workshop can review them before any data exists. They emit portable
 // Markdown: headings, pipe tables, and plain text, nothing that GitHub or
 // Pandoc cannot render.
 
 // PathwayViews returns one View per pathway, each restricted to that
-// pathway and its route to impact, in document order. An impact model without
-// pathways yields no views; render the whole impact model view instead.
-func PathwayViews(doc *impact.Model, g *graph.Graph, st *impact.Status) ([]*View, error) {
+// pathway and its route to impact, in document order. An outcome model without
+// pathways yields no views; render the whole outcome model view instead.
+func PathwayViews(doc *model.Model, g *graph.Graph, st *model.Status) ([]*View, error) {
 	var views []*View
 	for _, p := range doc.Pathways {
 		if p.Rejected() {
@@ -60,10 +60,10 @@ func LogicModelStages(v *View) []Stage {
 			outputs = appendUnique(outputs, MDCell(o))
 		}
 	}
-	byLevel := map[impact.Level][]string{}
+	byLevel := map[model.Level][]string{}
 	for _, o := range v.Outcomes {
 		text := MDCell(o.Title) + BasisMark(o.Basis)
-		if o.Level == impact.LevelOutput {
+		if o.Level == model.LevelOutput {
 			outputs = appendUnique(outputs, text)
 			continue
 		}
@@ -73,16 +73,16 @@ func LogicModelStages(v *View) []Stage {
 		{"Inputs", inputs},
 		{"Activities", activities},
 		{"Outputs", outputs},
-		{"Short-term outcomes", byLevel[impact.LevelShortTerm]},
-		{"Medium-term outcomes", byLevel[impact.LevelMediumTerm]},
-		{"Long-term outcomes", byLevel[impact.LevelLongTerm]},
-		{"Impact", byLevel[impact.LevelImpact]},
+		{"Short-term outcomes", byLevel[model.LevelShortTerm]},
+		{"Medium-term outcomes", byLevel[model.LevelMediumTerm]},
+		{"Long-term outcomes", byLevel[model.LevelLongTerm]},
+		{"Impact", byLevel[model.LevelImpact]},
 	}
 }
 
 // PathwayTitle is the title a logic model or diagram for the view should
 // carry: the pathway's title when the view is restricted to one, otherwise
-// the impact model's.
+// the outcome model's.
 func PathwayTitle(v *View) string {
 	if v.Filter != "" && len(v.Pathways) == 1 {
 		return v.Pathways[0].Title
@@ -110,7 +110,7 @@ func LogicModel(v *View) string {
 }
 
 // LogicModels renders a logic model for each pathway view, or a single one
-// for the whole impact model when it has no pathways.
+// for the whole outcome model when it has no pathways.
 func LogicModels(whole *View, pathways []*View) string {
 	if len(pathways) == 0 {
 		return LogicModel(whole)
@@ -129,7 +129,7 @@ func MetricDefinitions(v *View) string {
 	var b strings.Builder
 	b.WriteString("## Metric definitions\n\n")
 	if len(v.Metrics) == 0 {
-		b.WriteString("This impact model defines no shared metrics.\n\n")
+		b.WriteString("This outcome model defines no shared metrics.\n\n")
 		return b.String()
 	}
 	b.WriteString("| Metric | Definition | Formula | Unit | Direction | Combines across pathways | Layer | Used by |\n")
@@ -153,23 +153,23 @@ func MetricDefinitions(v *View) string {
 
 // AggregationText explains in plain words how a metric combines.
 func AggregationText(m MetricView) string {
-	switch impact.Aggregation(m.Aggregation) {
-	case impact.AggregationSum:
+	switch model.Aggregation(m.Aggregation) {
+	case model.AggregationSum:
 		return "Sum"
-	case impact.AggregationMean:
+	case model.AggregationMean:
 		return "Mean"
-	case impact.AggregationWeightedMean:
+	case model.AggregationWeightedMean:
 		if m.WeightedBy != "" {
 			return "Mean weighted by " + MDCell(m.WeightedBy)
 		}
 		return "Weighted mean"
-	case impact.AggregationMin:
+	case model.AggregationMin:
 		return "Minimum"
-	case impact.AggregationMax:
+	case model.AggregationMax:
 		return "Maximum"
-	case impact.AggregationLatest:
+	case model.AggregationLatest:
 		return "Latest value"
-	case impact.AggregationNone:
+	case model.AggregationNone:
 		return "Cannot be added up: observed directly at each level"
 	default:
 		return "—"
@@ -181,7 +181,7 @@ func Glossary(v *View) string {
 	var b strings.Builder
 	b.WriteString("## Glossary\n\n")
 	if len(v.Glossary) == 0 {
-		b.WriteString("This impact model defines no glossary terms.\n\n")
+		b.WriteString("This outcome model defines no glossary terms.\n\n")
 		return b.String()
 	}
 	b.WriteString("| Term | Definition | Examples |\n|------|------------|----------|\n")

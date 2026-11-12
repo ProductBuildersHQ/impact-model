@@ -1,4 +1,4 @@
-// Package diff compares two versions of an impact model by element. A
+// Package diff compares two versions of an outcome model by element. A
 // change is keyed by the element's ID, so renaming a title is one changed
 // element rather than a removed line and an added one, and a rejected element
 // shows as the change that rejected it. The comparison is of meaning, not
@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Op says what happened to an element.
@@ -49,7 +49,7 @@ type Change struct {
 type Result struct {
 	OldVersion string `json:"oldVersion,omitempty"`
 	NewVersion string `json:"newVersion,omitempty"`
-	// Document lists changes to the impact model itself: its context, ceiling,
+	// Document lists changes to the outcome model itself: its context, ceiling,
 	// perspective, metadata, and other fields that are not elements.
 	Document []FieldChange `json:"document"`
 	Changes  []Change      `json:"changes"`
@@ -58,15 +58,15 @@ type Result struct {
 // Empty reports whether the two versions are the same.
 func (r *Result) Empty() bool { return len(r.Document) == 0 && len(r.Changes) == 0 }
 
-// skipped are top-level fields that are not part of the impact model's meaning: the
+// skipped are top-level fields that are not part of the outcome model's meaning: the
 // schema reference, and the revision log, which records changes rather than
 // being one.
 var skipped = map[string]bool{"$schema": true, "revisions": true}
 
-// Compare returns what changed from old to cur. Both must be valid impact models
-// of the same document ID; comparing different impact models is allowed but every
+// Compare returns what changed from old to cur. Both must be valid outcome models
+// of the same document ID; comparing different outcome models is allowed but every
 // element will differ.
-func Compare(old, cur *impact.Model) (*Result, error) {
+func Compare(old, cur *model.Model) (*Result, error) {
 	a, err := tree(old)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func Compare(old, cur *impact.Model) (*Result, error) {
 		order = append(order, k.Field)
 	}
 
-	// Everything that is not an element array is part of the impact model itself.
+	// Everything that is not an element array is part of the outcome model itself.
 	rest := func(m map[string]any) map[string]any {
 		out := map[string]any{}
 		for k, v := range m {
@@ -102,7 +102,7 @@ func Compare(old, cur *impact.Model) (*Result, error) {
 	return res, nil
 }
 
-func tree(d *impact.Model) (map[string]any, error) {
+func tree(d *model.Model) (map[string]any, error) {
 	data, err := json.Marshal(d)
 	if err != nil {
 		return nil, fmt.Errorf("diff: encode document: %w", err)
@@ -162,7 +162,7 @@ func compareElements(kind string, old, cur []map[string]any) []Change {
 
 func rejected(m map[string]any) bool {
 	p, _ := m["provenance"].(map[string]any)
-	return p["basis"] == string(impact.BasisRejected)
+	return p["basis"] == string(model.BasisRejected)
 }
 
 // titleOf finds the words that name an element.

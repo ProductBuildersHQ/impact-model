@@ -10,17 +10,17 @@ import (
 
 	sdk "github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/diff"
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/judge"
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/slides"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
-	"github.com/ProductBuildersHQ/impact-model/schema"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/diff"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/judge"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/slides"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/schema"
 )
 
 // Version is the server's reported version.
@@ -42,18 +42,18 @@ func New(root string) (*Server, error) {
 
 // MCP returns the MCP server with every tool registered.
 func (s *Server) MCP() *sdk.Server {
-	srv := sdk.NewServer(&sdk.Implementation{Name: "impact-model", Version: Version}, nil)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_schema", Description: "List the embedded JSON Schemas, or return one by name."}, s.schemaTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_validate", Description: "Validate an impact model against its schema and structurally. Returns whether it is valid and every issue found."}, s.validateTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_lint", Description: "Check the quality of an impact model with the lint rules. Returns a structured-evaluation summary report."}, s.lintTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_graph", Description: "Query the causal graph: summary, upstream, downstream, paths, cycles, levels, orphans, dead-ends, or a Mermaid diagram."}, s.graphTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_status", Description: "Compute a status snapshot of an impact model from observation sets as of a date."}, s.statusTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_report", Description: "Render a report as Markdown: a definition report, or a status report such as exec or story."}, s.reportTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_export", Description: "Export the impact model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, mel, ogsm, or bsc. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_patch", Description: "Apply an RFC 6902 JSON Patch to an impact model atomically. Elements may be addressed by id: /outcomes/@oc-skills/title. A patch that adds validation errors is rejected."}, s.patchTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_deck", Description: "Generate a slide deck as Marp Markdown: workshop, exec, learning-review, or story. Nothing is rendered to PDF."}, s.deckTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_judge_bundle", Description: "Build the bundle a judge reads to review an impact model against the rubric. Makes no model calls."}, s.judgeTool)
-	sdk.AddTool(srv, &sdk.Tool{Name: "impact_diff", Description: "Compare two versions of an impact model by element id."}, s.diffTool)
+	srv := sdk.NewServer(&sdk.Implementation{Name: "outcome-model", Version: Version}, nil)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_schema", Description: "List the embedded JSON Schemas, or return one by name."}, s.schemaTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_validate", Description: "Validate an outcome model against its schema and structurally. Returns whether it is valid and every issue found."}, s.validateTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_lint", Description: "Check the quality of an outcome model with the lint rules. Returns a structured-evaluation summary report."}, s.lintTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_graph", Description: "Query the causal graph: summary, upstream, downstream, paths, cycles, levels, orphans, dead-ends, or a Mermaid diagram."}, s.graphTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_status", Description: "Compute a status snapshot of an outcome model from observation sets as of a date."}, s.statusTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_report", Description: "Render a report as Markdown: a definition report, or a status report such as exec or story."}, s.reportTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_export", Description: "Export the outcome model for the PRISM tools as JSON: okr, journey, v2mom, vsem, dmaic, mel, ogsm, or bsc. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add."}, s.exportTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_patch", Description: "Apply an RFC 6902 JSON Patch to an outcome model atomically. Elements may be addressed by id: /outcomes/@oc-skills/title. A patch that adds validation errors is rejected."}, s.patchTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_deck", Description: "Generate a slide deck as Marp Markdown: workshop, exec, learning-review, or story. Nothing is rendered to PDF."}, s.deckTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_judge_bundle", Description: "Build the bundle a judge reads to review an outcome model against the rubric. Makes no model calls."}, s.judgeTool)
+	sdk.AddTool(srv, &sdk.Tool{Name: "outcome_diff", Description: "Compare two versions of an outcome model by element id."}, s.diffTool)
 	return srv
 }
 
@@ -62,7 +62,7 @@ func (s *Server) Run(ctx context.Context) error {
 	return s.MCP().Run(ctx, &sdk.StdioTransport{})
 }
 
-// ---- impact_schema -------------------------------------------------------------
+// ---- outcome_schema -------------------------------------------------------------
 
 type schemaIn struct {
 	Name string `json:"name,omitempty" jsonschema:"the schema to return; omit to list the names"`
@@ -83,7 +83,7 @@ func (s *Server) schemaTool(_ context.Context, _ *sdk.CallToolRequest, in schema
 	return nil, v, nil
 }
 
-// ---- impact_validate -----------------------------------------------------------
+// ---- outcome_validate -----------------------------------------------------------
 
 type validateIn struct {
 	Source
@@ -99,7 +99,7 @@ type validateOut struct {
 func (s *Server) validateTool(_ context.Context, _ *sdk.CallToolRequest, in validateIn) (*sdk.CallToolResult, validateOut, error) {
 	var (
 		data []byte
-		f    impactio.Format
+		f    modelio.Format
 		err  error
 	)
 	switch {
@@ -123,7 +123,7 @@ func (s *Server) validateTool(_ context.Context, _ *sdk.CallToolRequest, in vali
 	return nil, validateOut{Valid: rep.Valid(), Kind: string(rep.Kind), Issues: rep.Issues}, nil
 }
 
-// ---- impact_lint ---------------------------------------------------------------
+// ---- outcome_lint ---------------------------------------------------------------
 
 type lintIn struct {
 	Source
@@ -147,7 +147,7 @@ func (s *Server) lintTool(_ context.Context, _ *sdk.CallToolRequest, in lintIn) 
 	return nil, res.SummaryReport(doc.ID, doc.Metadata.Version, time.Time{}), nil
 }
 
-// ---- impact_graph --------------------------------------------------------------
+// ---- outcome_graph --------------------------------------------------------------
 
 type graphIn struct {
 	Source
@@ -179,7 +179,7 @@ func (s *Server) graphTool(_ context.Context, _ *sdk.CallToolRequest, in graphIn
 	return nil, map[string]any{"query": in.Query, "result": out}, nil
 }
 
-// ---- impact_status -------------------------------------------------------------
+// ---- outcome_status -------------------------------------------------------------
 
 type statusIn struct {
 	Source
@@ -203,14 +203,14 @@ func (s *Server) statusTool(_ context.Context, _ *sdk.CallToolRequest, in status
 	if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
 		return nil, nil, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
 	}
-	input, err := service.StatusInputFor(doc, sets, asOf, impact.DefaultStatusOptions(), nil)
+	input, err := service.StatusInputFor(doc, sets, asOf, model.DefaultStatusOptions(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
 	return nil, input.Status, nil
 }
 
-// ---- impact_report -------------------------------------------------------------
+// ---- outcome_report -------------------------------------------------------------
 
 type reportIn struct {
 	Source
@@ -245,7 +245,7 @@ func (s *Server) reportTool(_ context.Context, _ *sdk.CallToolRequest, in report
 	return nil, textOut{Format: "markdown", Content: text}, err
 }
 
-// ---- impact_export -------------------------------------------------------------
+// ---- outcome_export -------------------------------------------------------------
 
 type exportIn struct {
 	Source
@@ -266,7 +266,7 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 	if err != nil {
 		return nil, service.PRISMExport{}, err
 	}
-	var st *impact.Status
+	var st *model.Status
 	if len(sets) > 0 || in.AsOf != "" {
 		at, err := asOfDate(in.AsOf, sets)
 		if err != nil {
@@ -275,7 +275,7 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 		if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
 			return nil, service.PRISMExport{}, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
 		}
-		input, err := service.StatusInputFor(doc, sets, at, impact.DefaultStatusOptions(), nil)
+		input, err := service.StatusInputFor(doc, sets, at, model.DefaultStatusOptions(), nil)
 		if err != nil {
 			return nil, service.PRISMExport{}, err
 		}
@@ -285,9 +285,9 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 	return nil, out, err
 }
 
-// statusInput evaluates the impact model for a status report or deck. A narrative,
+// statusInput evaluates the outcome model for a status report or deck. A narrative,
 // actors, or custom report with no observations and no date has no status.
-func (s *Server) statusInput(doc *impact.Model, obs Observations, asOf, kind string) (report.StatusInput, []*impact.ObservationSet, bool, error) {
+func (s *Server) statusInput(doc *model.Model, obs Observations, asOf, kind string) (report.StatusInput, []*model.ObservationSet, bool, error) {
 	sets, err := s.loadObservations(obs)
 	if err != nil {
 		return report.StatusInput{}, nil, false, err
@@ -303,11 +303,11 @@ func (s *Server) statusInput(doc *impact.Model, obs Observations, asOf, kind str
 	if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
 		return report.StatusInput{}, nil, false, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
 	}
-	in, err := service.StatusInputFor(doc, sets, at, impact.DefaultStatusOptions(), nil)
+	in, err := service.StatusInputFor(doc, sets, at, model.DefaultStatusOptions(), nil)
 	return in, sets, true, err
 }
 
-// ---- impact_patch --------------------------------------------------------------
+// ---- outcome_patch --------------------------------------------------------------
 
 // PatchOp is one RFC 6902 operation.
 type PatchOp struct {
@@ -346,7 +346,7 @@ func (s *Server) patchTool(_ context.Context, _ *sdk.CallToolRequest, in patchIn
 	if err != nil {
 		return nil, patchOut{}, err
 	}
-	// An impact model given by path is written back unless this is a dry run.
+	// An outcome model given by path is written back unless this is a dry run.
 	if path != "" && !in.DryRun {
 		res, err := service.PatchFile(path, patch, service.PatchOptions{AllowErrors: in.AllowErrors})
 		if err != nil {
@@ -360,7 +360,7 @@ func (s *Server) patchTool(_ context.Context, _ *sdk.CallToolRequest, in patchIn
 	}
 	out := patchOut{Applied: res.Applied, Reason: res.Reason, IssuesIntroduced: nonNil(res.IssuesIntroduced), IssuesResolved: nonNil(res.IssuesResolved)}
 	if res.Applied {
-		canon, err := impactio.Canonical(res.Document, impactio.FormatJSON)
+		canon, err := modelio.Canonical(res.Document, modelio.FormatJSON)
 		if err != nil {
 			return nil, patchOut{}, err
 		}
@@ -380,7 +380,7 @@ func nonNil(i []validate.Issue) []validate.Issue {
 	return i
 }
 
-// ---- impact_deck ---------------------------------------------------------------
+// ---- outcome_deck ---------------------------------------------------------------
 
 type deckIn struct {
 	Source
@@ -427,7 +427,7 @@ func (s *Server) deckTool(_ context.Context, _ *sdk.CallToolRequest, in deckIn) 
 	return nil, textOut{Format: "marp", Content: md}, nil
 }
 
-// ---- impact_judge_bundle -------------------------------------------------------
+// ---- outcome_judge_bundle -------------------------------------------------------
 
 type judgeIn struct {
 	Source
@@ -450,7 +450,7 @@ func (s *Server) judgeTool(_ context.Context, _ *sdk.CallToolRequest, in judgeIn
 	return nil, b, nil
 }
 
-// ---- impact_diff ---------------------------------------------------------------
+// ---- outcome_diff ---------------------------------------------------------------
 
 type diffIn struct {
 	Old Source `json:"old" jsonschema:"the earlier version"`

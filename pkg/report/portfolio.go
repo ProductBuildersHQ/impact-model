@@ -5,8 +5,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Portfolio renders one row of evidence per pathway: where it stands, how
@@ -18,7 +18,7 @@ func Portfolio(in StatusInput, cost *burden.Report) string {
 	var b strings.Builder
 	b.WriteString(header(in, "portfolio"))
 	if len(in.View.Pathways) == 0 {
-		b.WriteString("This impact model has no pathways, so there is nothing to compare.\n\n")
+		b.WriteString("This outcome model has no pathways, so there is nothing to compare.\n\n")
 		return b.String()
 	}
 	costOf := map[string]burden.Group{}
@@ -81,12 +81,12 @@ func costText(g burden.Group) string {
 }
 
 // pathwayIndicators returns the active indicators that serve a pathway.
-func pathwayIndicators(doc *impact.Model, pathwayID string) []impact.Indicator {
+func pathwayIndicators(doc *model.Model, pathwayID string) []model.Indicator {
 	p, ok := doc.Pathway(pathwayID)
 	if !ok {
 		return nil
 	}
-	var out []impact.Indicator
+	var out []model.Indicator
 	for _, ind := range doc.Indicators {
 		if ind.Provenance.IsRejected() {
 			continue
@@ -98,14 +98,14 @@ func pathwayIndicators(doc *impact.Model, pathwayID string) []impact.Indicator {
 	return out
 }
 
-func freeDataShare(doc *impact.Model, pathwayID string) string {
+func freeDataShare(doc *model.Model, pathwayID string) string {
 	selected, free := 0, 0
 	for _, ind := range pathwayIndicators(doc, pathwayID) {
-		if ind.Selection == nil || ind.Selection.Status != impact.SelectionSelected {
+		if ind.Selection == nil || ind.Selection.Status != model.SelectionSelected {
 			continue
 		}
 		selected++
-		if c := ind.Collection; c != nil && (c.Mode == impact.ModePassive || c.Mode == impact.ModeDerived) {
+		if c := ind.Collection; c != nil && (c.Mode == model.ModePassive || c.Mode == model.ModeDerived) {
 			free++
 		}
 	}
@@ -115,7 +115,7 @@ func freeDataShare(doc *impact.Model, pathwayID string) string {
 	return fmt.Sprintf("%d of %d (%.0f%%)", free, selected, float64(free)/float64(selected)*100)
 }
 
-func audiencesOf(doc *impact.Model, pathwayID string) []string {
+func audiencesOf(doc *model.Model, pathwayID string) []string {
 	names := map[string]string{}
 	for _, a := range doc.Audiences {
 		names[a.ID] = a.Name
@@ -146,12 +146,12 @@ func audiencesOf(doc *impact.Model, pathwayID string) []string {
 
 // openDecisionsFor lists the open decisions that relate to the pathway, its
 // outcomes, or its interventions.
-func openDecisionsFor(doc *impact.Model, p PathwayView) []string {
+func openDecisionsFor(doc *model.Model, p PathwayView) []string {
 	related := append(slices.Clone(p.OutcomeIDs), p.InterventionIDs...)
 	related = append(related, p.ID)
 	var out []string
 	for _, d := range doc.Decisions {
-		if (d.Status == "" || d.Status == impact.DecisionOpen) && slices.ContainsFunc(d.RelatedIDs, func(id string) bool { return slices.Contains(related, id) }) {
+		if (d.Status == "" || d.Status == model.DecisionOpen) && slices.ContainsFunc(d.RelatedIDs, func(id string) bool { return slices.Contains(related, id) }) {
 			out = append(out, mdText(d.Question))
 		}
 	}

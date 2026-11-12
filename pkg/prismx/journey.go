@@ -5,8 +5,8 @@ import (
 
 	"github.com/grokify/prism-roadmap/journey"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // ToOutcomeJourneys exports each numeric indicator as an outcome journey: where
@@ -17,11 +17,11 @@ import (
 // measures, and its persona the first actor who changes. A target's
 // confidence is the confidence of the outcome's route to impact, when a
 // status is given. st may be nil.
-func ToOutcomeJourneys(doc *impact.Model, st *impact.Status) ([]journey.OutcomeJourney, error) {
+func ToOutcomeJourneys(doc *model.Model, st *model.Status) ([]journey.OutcomeJourney, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
-	latest := map[string]*impact.Observation{}
+	latest := map[string]*model.Observation{}
 	confidence := map[string]float64{}
 	if st != nil {
 		for _, s := range st.Indicators {
@@ -35,7 +35,7 @@ func ToOutcomeJourneys(doc *impact.Model, st *impact.Status) ([]journey.OutcomeJ
 	}
 	out := []journey.OutcomeJourney{}
 	for _, ind := range doc.Indicators {
-		if !measure.Counted(ind) || ind.MeasurementType == impact.MeasurementQualitative {
+		if !measure.Counted(ind) || ind.MeasurementType == model.MeasurementQualitative {
 			continue
 		}
 		var targets []journey.OutcomeTargetState
@@ -70,7 +70,7 @@ func ToOutcomeJourneys(doc *impact.Model, st *impact.Status) ([]journey.OutcomeJ
 }
 
 // currentState is the latest observation, else the baseline.
-func currentState(ind impact.Indicator, latest *impact.Observation) *journey.OutcomeState {
+func currentState(ind model.Indicator, latest *model.Observation) *journey.OutcomeState {
 	switch {
 	case latest != nil && latest.Value != nil:
 		return &journey.OutcomeState{Value: *latest.Value, Unit: ind.Unit, MeasuredAt: latest.Date, Summary: latest.Note}
@@ -80,7 +80,7 @@ func currentState(ind impact.Indicator, latest *impact.Observation) *journey.Out
 	return nil
 }
 
-func outcomeTitle(doc *impact.Model, id string) string {
+func outcomeTitle(doc *model.Model, id string) string {
 	if o, ok := doc.Outcome(id); ok {
 		return o.Title
 	}

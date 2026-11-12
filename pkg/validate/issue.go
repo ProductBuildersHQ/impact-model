@@ -1,9 +1,9 @@
-// Package validate checks impact model documents and observation sets
+// Package validate checks outcome model documents and observation sets
 // for structural problems: schema conformance, identifier uniqueness and
 // format, resolution of every reference, and enumeration validity.
 //
 // Findings are returned as Issues with stable codes and JSON-pointer paths,
-// in a deterministic order. Quality judgments (is this a good impact model?) are
+// in a deterministic order. Quality judgments (is this a good outcome model?) are
 // the lint package's job, not this one's.
 package validate
 

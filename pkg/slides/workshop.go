@@ -1,4 +1,4 @@
-// Package slides renders impact model slide decks as Marp Markdown.
+// Package slides renders outcome model slide decks as Marp Markdown.
 //
 // Decks are built from the same report.View as the Markdown reports, so a
 // number or a label never differs between a deck and a report. This package
@@ -12,9 +12,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/logicmodel"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/logicmodel"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 // Options configures deck generation.
@@ -75,11 +75,11 @@ func SlideCount(markdown string) int {
 // Workshop renders the workshop deck: the problem, the goal and what the
 // organization is accountable for, the pathway diagram, a logic model per
 // pathway, the key assumptions, the metric definitions, the glossary, how
-// much of the impact model is established versus inferred, and the open questions
+// much of the outcome model is established versus inferred, and the open questions
 // for the room. It needs no observations.
 //
-// whole is the view of the entire impact model; pathways are the per-pathway
-// views from report.PathwayViews (empty when the impact model has none).
+// whole is the view of the entire outcome model; pathways are the per-pathway
+// views from report.PathwayViews (empty when the outcome model has none).
 func Workshop(whole *report.View, pathways []*report.View, o Options) string {
 	theme := o.Theme
 	if theme == "" {
@@ -160,7 +160,7 @@ func (d *deck) goal(v *report.View) {
 	d.line("# The change we are working toward")
 	d.line("")
 	for _, o := range v.Outcomes {
-		if o.Level == impact.LevelImpact {
+		if o.Level == model.LevelImpact {
 			d.line("- **%s**%s", oneLine(o.Title), report.BasisMark(o.Basis))
 		}
 	}
@@ -230,7 +230,7 @@ func (d *deck) logicModel(v *report.View) {
 func (d *deck) assumptions(v *report.View) {
 	var key []report.AssumptionView
 	for _, a := range v.Assumptions {
-		if a.Criticality == string(impact.CriticalityHigh) || a.Criticality == string(impact.CriticalityCritical) {
+		if a.Criticality == string(model.CriticalityHigh) || a.Criticality == string(model.CriticalityCritical) {
 			key = append(key, a)
 		}
 	}
@@ -283,7 +283,7 @@ func (d *deck) glossary(v *report.View) {
 	}
 }
 
-// basis shows how much of the impact model is established, the heart of an honest
+// basis shows how much of the outcome model is established, the heart of an honest
 // draft.
 func (d *deck) basis(v *report.View) {
 	if len(v.BasisCounts) == 0 {
@@ -294,8 +294,8 @@ func (d *deck) basis(v *report.View) {
 	d.line("")
 	d.line("| Basis | Elements |")
 	d.line("|-------|----------|")
-	for _, b := range impact.AllBases() {
-		if b == impact.BasisRejected {
+	for _, b := range model.AllBases() {
+		if b == model.BasisRejected {
 			continue
 		}
 		if n := v.BasisCounts[b]; n > 0 {

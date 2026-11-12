@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // The scorecard rules apply once an outcome names a Balanced Scorecard
@@ -13,9 +13,9 @@ import (
 // strategy map that runs upward, and objectives that are owned and measured
 // by lead or lag indicators.
 func init() {
-	register("IMP-BSC-001", validate.SeverityWarning, "The strategy map runs upward: no scorecard objective leads to one in a lower perspective.", func(c *Context) []Finding {
+	register("OM-BSC-001", validate.SeverityWarning, "The strategy map runs upward: no scorecard objective leads to one in a lower perspective.", func(c *Context) []Finding {
 		var out []Finding
-		forObjectives(c.Doc, func(i int, o impact.Outcome) {
+		forObjectives(c.Doc, func(i int, o model.Outcome) {
 			for _, id := range c.Doc.ScorecardContributesTo(o.ID) {
 				t, _ := c.Doc.Outcome(id)
 				if t.ScorecardPerspective.Rank() > o.ScorecardPerspective.Rank() {
@@ -28,9 +28,9 @@ func init() {
 		return out
 	})
 
-	register("IMP-BSC-002", validate.SeverityInfo, "Every scorecard objective names the actor who answers for it.", func(c *Context) []Finding {
+	register("OM-BSC-002", validate.SeverityInfo, "Every scorecard objective names the actor who answers for it.", func(c *Context) []Finding {
 		var out []Finding
-		forObjectives(c.Doc, func(i int, o impact.Outcome) {
+		forObjectives(c.Doc, func(i int, o model.Outcome) {
 			if o.OwnerID == "" {
 				out = append(out, Finding{Path: outcomePath(i), Element: o.ID,
 					Message: "a scorecard objective with no ownerActorId; a Balanced Scorecard names who answers for each objective"})
@@ -39,9 +39,9 @@ func init() {
 		return out
 	})
 
-	register("IMP-BSC-003", validate.SeverityInfo, "Every scorecard objective has an indicator.", func(c *Context) []Finding {
+	register("OM-BSC-003", validate.SeverityInfo, "Every scorecard objective has an indicator.", func(c *Context) []Finding {
 		var out []Finding
-		forObjectives(c.Doc, func(i int, o impact.Outcome) {
+		forObjectives(c.Doc, func(i int, o model.Outcome) {
 			for _, ind := range c.Doc.Indicators {
 				if ind.Measures == o.ID && !ind.Rejected() {
 					return
@@ -53,7 +53,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-BSC-004", validate.SeverityInfo, "Every indicator of a scorecard objective says whether it is a lead or a lag measure.", func(c *Context) []Finding {
+	register("OM-BSC-004", validate.SeverityInfo, "Every indicator of a scorecard objective says whether it is a lead or a lag measure.", func(c *Context) []Finding {
 		objective := map[string]bool{}
 		for _, o := range c.Doc.ScorecardObjectives() {
 			objective[o.ID] = true
@@ -71,7 +71,7 @@ func init() {
 
 // forObjectives calls fn for each scorecard objective with its index among
 // the outcomes.
-func forObjectives(d *impact.Model, fn func(i int, o impact.Outcome)) {
+func forObjectives(d *model.Model, fn func(i int, o model.Outcome)) {
 	for i, o := range d.Outcomes {
 		if o.ScorecardPerspective != "" && !o.Rejected() {
 			fn(i, o)

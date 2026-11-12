@@ -2,11 +2,11 @@
 
 If you already run DMAIC (Define, Measure, Analyze, Improve, Control) efforts,
 this page shows where each part of a DMAIC metrics document comes from in an
-impact model, how to mark the programs that suit DMAIC, and what the impact
+outcome model, how to mark the programs that suit DMAIC, and what the outcome
 model checks before it lets you start.
 
 ```bash
-impact-model export dmaic impact-model.yaml -O observations.yaml -o dmaic.json
+outcome-model export dmaic outcome-model.yaml -O observations.yaml -o dmaic.json
 ```
 
 The output is a DMAIC metrics document in the JSON format of
@@ -20,7 +20,7 @@ taken on a steady schedule. A program whose numbers arrive weekly, such as an
 online course catalog with completion rates and a post-course survey, suits it.
 A program measured once a year does not: twenty points would take twenty years.
 
-So DMAIC is opt-in, per pathway. Mark a pathway, the impact model's program or
+So DMAIC is opt-in, per pathway. Mark a pathway, the outcome model's program or
 product, with `projections`:
 
 ```yaml
@@ -36,11 +36,11 @@ Only marked pathways are checked by the DMAIC lint rules and exported.
 ## Plan before the data exists
 
 A team often wants to know which metrics a DMAIC effort would use before it has
-measured anything. `report dmaic-plan` answers that from the impact model alone:
+measured anything. `report dmaic-plan` answers that from the outcome model alone:
 
 ```bash
-impact-model report dmaic-plan impact-model.yaml
-impact-model report dmaic-plan impact-model.yaml --pathway pw-catalog
+outcome-model report dmaic-plan outcome-model.yaml
+outcome-model report dmaic-plan outcome-model.yaml --pathway pw-catalog
 ```
 
 For each marked pathway, or the one named, it shows:
@@ -70,13 +70,13 @@ you want control limits.
 
 ## What lint checks first
 
-`impact-model lint` checks every indicator of a marked pathway:
+`outcome-model lint` checks every indicator of a marked pathway:
 
 | Rule | Checks | Why |
 |------|--------|-----|
-| `IMP-DMA-001` | It has a `frequency` and a data source (`dataSource` or `collection.system`) | Without them nothing is measured on a schedule |
-| `IMP-DMA-002` | It is measured at least 20 times a year | Control limits need 20 to 25 points; fewer a year means waiting years |
-| `IMP-DMA-003` | A survey indicator gets at least 30 responses per measurement | Below 30 a score swings with chance; an NPS needs about 100 for a margin near ±10 points |
+| `OM-DMA-001` | It has a `frequency` and a data source (`dataSource` or `collection.system`) | Without them nothing is measured on a schedule |
+| `OM-DMA-002` | It is measured at least 20 times a year | Control limits need 20 to 25 points; fewer a year means waiting years |
+| `OM-DMA-003` | A survey indicator gets at least 30 responses per measurement | Below 30 a score swings with chance; an NPS needs about 100 for a margin near ±10 points |
 
 Responses per measurement are `collection.respondentsPerYear`, times
 `collection.sampleRate` when set, divided by measurements per year. A weekly
@@ -89,7 +89,7 @@ exported, but its chart will not be ready for a long time.
 
 ## The mapping at a glance
 
-| DMAIC | Comes from | In impact model terms |
+| DMAIC | Comes from | In outcome model terms |
 |-------|-----------|-----------------------|
 | **Category** | each pathway marked `dmaic` | A program or product: a group of outcomes and the interventions that bring them about |
 | **Metric** | each indicator of the pathway with a numeric baseline and target | An indicator measures one outcome or intervention |
@@ -190,11 +190,11 @@ showing, and the limits should be recomputed from the new level.
 
 Process capability (Cp, Cpk, sigma level) is never filled. It compares the
 process with specification limits, the bounds a result must stay within, and an
-impact model records targets, not specification limits.
+outcome model records targets, not specification limits.
 
 ## Phases
 
-DMAIC tracks which phase each metric is in. The impact model does not record a
+DMAIC tracks which phase each metric is in. The outcome model does not record a
 phase, so the export derives one, as a convention:
 
 | Phase | When |
@@ -243,5 +243,5 @@ A paused intervention is exported with no status. External links come from
 target:
 
 ```
-impact-model: impact-model.yaml: the impact model cannot be drawn as DMAIC: mark a pathway with projections: [dmaic]
+outcome-model: outcome-model.yaml: the outcome model cannot be drawn as DMAIC: mark a pathway with projections: [dmaic]
 ```

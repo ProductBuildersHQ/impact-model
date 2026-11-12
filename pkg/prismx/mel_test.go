@@ -8,12 +8,12 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/mel"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestMELExportValidates(t *testing.T) {
 	doc, st := example(t)
-	for name, status := range map[string]*impact.Status{"with status": st, "without": nil} {
+	for name, status := range map[string]*model.Status{"with status": st, "without": nil} {
 		out, err := ToMEL(doc, status)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)
@@ -145,7 +145,7 @@ func TestMELMapping(t *testing.T) {
 // A rejected element and every reference to it are left out.
 func TestMELLeavesOutRejectedElements(t *testing.T) {
 	doc, _ := example(t)
-	doc.LearningQuestions[0].Provenance = &impact.Provenance{Basis: impact.BasisRejected}
+	doc.LearningQuestions[0].Provenance = &model.Provenance{Basis: model.BasisRejected}
 	rejected := doc.LearningQuestions[0].ID
 	out, err := ToMEL(doc, nil)
 	if err != nil {
@@ -180,7 +180,7 @@ func TestMELWithoutStatusHasNoCurrentValues(t *testing.T) {
 func TestMELRefusesAModelWithoutOutcomes(t *testing.T) {
 	doc, _ := example(t)
 	for i := range doc.Outcomes {
-		doc.Outcomes[i].Provenance = &impact.Provenance{Basis: impact.BasisRejected}
+		doc.Outcomes[i].Provenance = &model.Provenance{Basis: model.BasisRejected}
 	}
 	if _, err := ToMEL(doc, nil); !errors.Is(err, ErrNotMELReady) || !strings.Contains(err.Error(), "an outcome") {
 		t.Errorf("err = %v, want ErrNotMELReady naming an outcome", err)
@@ -188,9 +188,9 @@ func TestMELRefusesAModelWithoutOutcomes(t *testing.T) {
 }
 
 func TestIndicatorType(t *testing.T) {
-	for in, want := range map[impact.MeasurementType]string{
-		impact.MeasurementQuantitative: mel.TypeQuantitative, impact.MeasurementThemeCount: mel.TypeQuantitative,
-		impact.MeasurementQualitative: mel.TypeQualitative, impact.MeasurementHybrid: "", "": "",
+	for in, want := range map[model.MeasurementType]string{
+		model.MeasurementQuantitative: mel.TypeQuantitative, model.MeasurementThemeCount: mel.TypeQuantitative,
+		model.MeasurementQualitative: mel.TypeQualitative, model.MeasurementHybrid: "", "": "",
 	} {
 		if got := indicatorType(in); got != want {
 			t.Errorf("indicatorType(%q) = %q, want %q", in, got, want)

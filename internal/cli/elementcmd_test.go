@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 // patchJSON renders a patch as the JSON the patch command reads.
@@ -130,7 +130,7 @@ func TestCommandsEqualTheirPatches(t *testing.T) {
 			if mustRead(t, viaCommand) != mustRead(t, viaPatch) {
 				t.Fatalf("command and patch produced different files:\n--- command\n%s\n--- patch\n%s", mustRead(t, viaCommand), mustRead(t, viaPatch))
 			}
-			if _, err := impactio.LoadDocument(viaCommand); err != nil {
+			if _, err := modelio.LoadDocument(viaCommand); err != nil {
 				t.Fatalf("result does not load: %v", err)
 			}
 		})
@@ -176,7 +176,7 @@ func TestEveryKindCanBeAdded(t *testing.T) {
 			path := fixtureCopy(t, "full.json", "doc.json")
 			r := run(t, "", append([]string{k.Name, "add", path}, args...)...)
 			wantCode(t, r, 0)
-			doc, err := impactio.LoadDocument(path)
+			doc, err := modelio.LoadDocument(path)
 			if err != nil {
 				t.Fatalf("result does not load: %v", err)
 			}
@@ -185,7 +185,7 @@ func TestEveryKindCanBeAdded(t *testing.T) {
 			}
 			// Removing it again restores a valid document.
 			wantCode(t, run(t, "", k.Name, "rm", path, args[1], "--cascade", "-q"), 0)
-			if _, err := impactio.LoadDocument(path); err != nil {
+			if _, err := modelio.LoadDocument(path); err != nil {
 				t.Fatalf("after rm: %v", err)
 			}
 		})
@@ -268,7 +268,7 @@ func TestRmRejectsDanglingReferencesAndCascadeFixesThem(t *testing.T) {
 	}
 
 	wantCode(t, run(t, "", "outcome", "rm", path, "oc-idp-support", "--cascade"), 0)
-	doc, err := impactio.LoadDocument(path)
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -292,7 +292,7 @@ func TestRmRejectsDanglingReferencesAndCascadeFixesThem(t *testing.T) {
 }
 
 func TestElementCommandsKeepYAML(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "impact-model.yaml")
+	path := filepath.Join(t.TempDir(), "outcome-model.yaml")
 	wantCode(t, run(t, "", "init", "--id", "demo", "--out", path, "-q"), 0)
 	wantCode(t, run(t, "", "outcome", "add", path, "--id", "oc-second", "--title", "Second condition", "--level", "short_term", "-q"), 0)
 	wantCode(t, run(t, "", "link", "add", path, "--id", "ln-second", "--from", "oc-second", "--to", "oc-first", "--rationale", "Needed first.", "-q"), 0)
@@ -346,7 +346,7 @@ func TestSetCreatesMissingParents(t *testing.T) {
 	path := fixtureCopy(t, "full.json", "doc.json")
 	r := run(t, "", "outcome", "set", path, "oc-spec-stable", "--basis", "stated", "--sources", "ev-survey", "--basis-note", "Stated on the project page.", "--set", "logic.type=any")
 	wantCode(t, r, 0)
-	doc, err := impactio.LoadDocument(path)
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -357,7 +357,7 @@ func TestSetCreatesMissingParents(t *testing.T) {
 }
 
 func TestEvidenceAddDerivesTheIDFromTheTitle(t *testing.T) {
-	path := fixtureCopy(t, "minimal.json", "impact-model.json")
+	path := fixtureCopy(t, "minimal.json", "outcome-model.json")
 	for i, want := range []string{"ev-annual-report-2026", "ev-annual-report-2026-2"} {
 		r := run(t, "", "evidence", "add", path, "--title", "Annual Report, 2026!", "--url", "https://example.org/r")
 		if r.code != ExitOK {
@@ -377,14 +377,14 @@ func TestEvidenceAddDerivesTheIDFromTheTitle(t *testing.T) {
 }
 
 func TestEvidenceAddNeedsAnIDWhenTheTitleHasNoLetters(t *testing.T) {
-	path := fixtureCopy(t, "minimal.json", "impact-model.json")
+	path := fixtureCopy(t, "minimal.json", "outcome-model.json")
 	if r := run(t, "", "evidence", "add", path, "--title", "???"); r.code != ExitUsageErr {
 		t.Errorf("code %d, want %d", r.code, ExitUsageErr)
 	}
 }
 
 func TestOtherElementsStillRequireAnID(t *testing.T) {
-	path := fixtureCopy(t, "minimal.json", "impact-model.json")
+	path := fixtureCopy(t, "minimal.json", "outcome-model.json")
 	if r := run(t, "", "outcome", "add", path, "--title", "X", "--level", "impact"); r.code != ExitUsageErr {
 		t.Errorf("code %d, want %d", r.code, ExitUsageErr)
 	}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/schema"
+	"github.com/ProductBuildersHQ/outcome-model/schema"
 )
 
 func newSchemaCmd(e *env) *cobra.Command {
@@ -15,8 +15,8 @@ func newSchemaCmd(e *env) *cobra.Command {
 		Short: "List the embedded JSON Schemas or print one",
 		Long: `With no argument, lists the embedded schema names. With a name, prints that
 JSON Schema, for editors and agents.`,
-		Example: `  impact-model schema
-  impact-model schema impact-model > impact-model.schema.json`,
+		Example: `  outcome-model schema
+  outcome-model schema outcome-model > outcome-model.schema.json`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format, err := outputFormat(cmd)

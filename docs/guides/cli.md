@@ -1,6 +1,6 @@
 # CLI Reference
 
-`impact-model <command> --help` prints the full help for any command. This page
+`outcome-model <command> --help` prints the full help for any command. This page
 is the map.
 
 ## Conventions
@@ -15,7 +15,7 @@ is the map.
 - **Quiet.** `-q` / `--quiet` prints only problems.
 - **Dry run.** Commands that change a file take `--dry-run`, which prints the
   result and writes nothing.
-- **Both formats.** An impact model can be YAML or JSON, chosen by extension. Edits keep
+- **Both formats.** An outcome model can be YAML or JSON, chosen by extension. Edits keep
   the file's own format.
 
 ## Exit codes
@@ -33,7 +33,7 @@ is the map.
 
 | Command | What it does |
 |---------|--------------|
-| `init` | Write a starter impact model that already passes validation |
+| `init` | Write a starter outcome model that already passes validation |
 | `fmt` | Rewrite documents in canonical form (`--check`, `--sort`) |
 | `schema` | List the seven embedded JSON Schemas or print one |
 
@@ -48,7 +48,7 @@ is the map.
 The twenty-one element kinds are `actor`, `assumption`, `audience`, `cause`,
 `consultation`, `criterion`, `decision`, `effect`, `evidence`, `factor`, `group`,
 `indicator`, `intervention`, `link`, `metric`, `outcome`, `pathway`, `risk`,
-`target-group`, `term`, and `theme`. See [Authoring an impact model](authoring.md).
+`target-group`, `term`, and `theme`. See [Authoring an outcome model](authoring.md).
 
 ### Check
 
@@ -57,7 +57,7 @@ The twenty-one element kinds are `actor`, `assumption`, `audience`, `cause`,
 | `validate` | Schema and structure (`--model`, `--parent`, `--registry`, `--futures`) |
 | `lint` | 81 deterministic rules in three profiles (`--profile`, `--disable`, `--list`) |
 | `graph` | Summarize or query the causal graph (`--upstream`, `--downstream`, `--paths`, `--cycles`, `--orphans`, `--dead-ends`, `--levels`) |
-| `judge show`, `record`, `summary` | Prepare an impact model for a judge and combine the verdicts |
+| `judge show`, `record`, `summary` | Prepare an outcome model for a judge and combine the verdicts |
 
 ### Measure
 
@@ -80,7 +80,7 @@ The twenty-one element kinds are `actor`, `assumption`, `audience`, `cause`,
 
 | Command | What it does |
 |---------|--------------|
-| `export review-packet`, `export review-sheet` | Send an impact model out for review |
+| `export review-packet`, `export review-sheet` | Send an outcome model out for review |
 | `import review` | Turn reviewers' answers into a patch, flagged rows, and a consultation record |
 | `approve` | Record approval, with approvers, a version, and a date |
 
@@ -92,4 +92,4 @@ The twenty-one element kinds are `actor`, `assumption`, `audience`, `cause`,
 
 ## Shell completion
 
-`impact-model completion bash|zsh|fish|powershell` prints a completion script.
+`outcome-model completion bash|zsh|fish|powershell` prints a completion script.

@@ -8,12 +8,12 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/ogsm"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestOGSMExportValidates(t *testing.T) {
 	doc, st := example(t)
-	for name, status := range map[string]*impact.Status{"with status": st, "without": nil} {
+	for name, status := range map[string]*model.Status{"with status": st, "without": nil} {
 		out, err := ToOGSM(doc, status)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)
@@ -116,7 +116,7 @@ func TestOGSMMapping(t *testing.T) {
 func TestOGSMLeavesOutRejectedPathways(t *testing.T) {
 	doc, _ := example(t)
 	rejected := doc.Pathways[0].ID
-	doc.Pathways[0].Provenance = &impact.Provenance{Basis: impact.BasisRejected}
+	doc.Pathways[0].Provenance = &model.Provenance{Basis: model.BasisRejected}
 	out, err := ToOGSM(doc, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -151,7 +151,7 @@ func TestOGSMRefusesAModelWithoutAnObjectiveOrPathway(t *testing.T) {
 	doc, _ := example(t)
 	doc.Context.Objective = nil // the example has two impact outcomes
 	for i := range doc.Pathways {
-		doc.Pathways[i].Provenance = &impact.Provenance{Basis: impact.BasisRejected}
+		doc.Pathways[i].Provenance = &model.Provenance{Basis: model.BasisRejected}
 	}
 	_, err := ToOGSM(doc, nil)
 	if !errors.Is(err, ErrNotOGSMReady) {
@@ -168,10 +168,10 @@ func TestOGSMRefusesAModelWithoutAnObjectiveOrPathway(t *testing.T) {
 }
 
 func TestOGSMStatuses(t *testing.T) {
-	for in, want := range map[impact.InterventionStatus]string{
-		impact.InterventionPlanned: ogsm.ActionPlanned, impact.InterventionInProgress: ogsm.ActionInProgress,
-		impact.InterventionCompleted: ogsm.ActionCompleted, impact.InterventionCancelled: ogsm.ActionCancelled,
-		impact.InterventionPaused: "",
+	for in, want := range map[model.InterventionStatus]string{
+		model.InterventionPlanned: ogsm.ActionPlanned, model.InterventionInProgress: ogsm.ActionInProgress,
+		model.InterventionCompleted: ogsm.ActionCompleted, model.InterventionCancelled: ogsm.ActionCancelled,
+		model.InterventionPaused: "",
 	} {
 		if got := actionStatus(in); got != want {
 			t.Errorf("actionStatus(%q) = %q, want %q", in, got, want)

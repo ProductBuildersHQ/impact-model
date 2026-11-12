@@ -2,11 +2,11 @@
 
 How each concept from the
 [research brief](research/theory-of-change.md) (§8 entity model, §9.8 UNDG
-implications) maps to the Go model in `pkg/impact`. The
+implications) maps to the Go model in `pkg/model`. The
 [TRD §7](specs/initiatives/INIT-THEORYOFCHANGESPEC-001/TRD.md) is normative;
 this page is the index.
 
-The model is one impact model. The methods the research brief describes are
+The model is one outcome model. The methods the research brief describes are
 projections of it, drawn by the `report` command:
 
 | Method | Projection shows | Report kinds |
@@ -35,9 +35,9 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 
 | Concept (source) | Go type / field | Delivered by |
 |------------------|-----------------|--------------|
-| Impact model document (holds the theory of change of ActKnowledge and UNDG) | `impact.Model` (`kind: ImpactModel`) | 004 |
+| Outcome model document (holds the theory of change of ActKnowledge and UNDG) | `model.Model` (`kind: OutcomeModel`) | 004 |
 | Metadata, owners, status | `Model.Metadata` (`prism-core` `Metadata`) | 004 |
-| Whose impact model it is (perspective) | `Model.Perspective` (`actorId`, `role`, `futureRef`) | 004 |
+| Whose outcome model it is (perspective) | `Model.Perspective` (`actorId`, `role`, `futureRef`) | 004 |
 | Problem statement, target population, time horizon, narrative | `Model.Context` | 004 |
 | Purpose: why the organization exists and what it works toward (a statement, not a causal element) | `Context.Mission`, `Context.Vision` | 064 |
 | Ceiling of accountability (ActKnowledge) | `Model.Ceiling` | 004 |
@@ -142,7 +142,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Long-term outcome | The goal the initiative holds itself accountable for |
 | Outcome | A condition that must exist for the theory to work and does not yet exist, phrased as a state, not an activity |
 | Output | A direct product of an intervention, within the organization's control |
-| Core problem | The problem the impact model responds to, `context.problemStatement`; the middle of the problem tree |
+| Core problem | The problem the outcome model responds to, `context.problemStatement`; the middle of the problem tree |
 | Cause | A condition that leads to the core problem, directly or through other causes; a root of the problem tree |
 | Effect | A consequence of the core problem, directly or through other effects; a branch of the problem tree |
 | Precondition | An outcome that must hold for a higher outcome; incoming links to an outcome are its preconditions |

@@ -8,34 +8,34 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/share"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 func newLintCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "lint <model-file>",
-		Short: "Check the quality of an impact model with deterministic rules",
-		Long: `Check an impact model against the lint rules. Validation says a document is well
-formed; lint says whether the impact model is sound.
+		Short: "Check the quality of an outcome model with deterministic rules",
+		Long: `Check an outcome model against the lint rules. Validation says a document is well
+formed; lint says whether the outcome model is sound.
 
 Profiles choose how much is reported:
 
-  draft     errors and structural rules; a small valid impact model is GO
+  draft     errors and structural rules; a small valid outcome model is GO
   standard  also the warnings (the default)
   full      also the advice
 
 The result is GO unless a rule reports an error (exit code 1). With --format
-json the output is a structured-evaluation summary report. The impact model must
+json the output is a structured-evaluation summary report. The outcome model must
 validate first; a document that does not is exit code 1.
 
 Use --list to print the rules instead of running them.`,
-		Example: `  impact-model lint impact-model.yaml
-  impact-model lint impact-model.yaml --profile draft
-  impact-model lint impact-model.yaml --disable IMP-PRV-001,IMP-AUD-001 --format json
-  impact-model lint --list`,
+		Example: `  outcome-model lint outcome-model.yaml
+  outcome-model lint outcome-model.yaml --profile draft
+  outcome-model lint outcome-model.yaml --disable OM-PRV-001,OM-AUD-001 --format json
+  outcome-model lint --list`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error { return runLint(e, cmd, args) },
 	}
@@ -53,7 +53,7 @@ func runLint(e *env, cmd *cobra.Command, args []string) error {
 		return nil
 	}
 	if len(args) != 1 {
-		return usageErr("give an impact model file, or --list")
+		return usageErr("give an outcome model file, or --list")
 	}
 	format, err := outputFormat(cmd)
 	if err != nil {

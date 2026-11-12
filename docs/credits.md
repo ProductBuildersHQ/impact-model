@@ -23,10 +23,10 @@ full record: it summarizes each source and gives the citations.
 | OKRs, Objectives and Key Results (Andy Grove at Intel in the 1970s, building on Peter Drucker's management by objectives; brought to Google by John Doerr in 1999) | Objectives with the key results that say they have been met, set for a period | The OKR export |
 | V2MOM (Marc Benioff, Salesforce; Benioff and Adler, 2009) | Vision, values, methods, obstacles, and measures, in that order, as one alignment document | `context.values` and the V2MOM export |
 | VSEM, Vision, Strategy, Execution, Metrics (Cisco, which extended its Vision, Strategy, and Execution with Metrics; the form followed is documented in prism-roadmap's `goals/vsem`) | A one-page plan: a vision, the strategies that reach it and the resources each commits, the work that carries them out, and metrics each with an accountable owner | `pathway.resources`, `intervention.startDate` and `endDate`, and the VSEM export |
-| OGSM, Objective, Goals, Strategies, Measures (popularized by Procter & Gamble, with claimed roots in postwar Japan; the form followed is documented in prism-roadmap's `goals/ogsm`) | A one-page plan with one objective in words, goals in numbers that say it has been reached, strategies in words, and measures in numbers that show each strategy is working | `context.objective`, the `IMP-CTX-002` lint rule, and the OGSM export |
-| The Balanced Scorecard (Kaplan and Norton, *Harvard Business Review*, 1992; strategy maps, 2000 and 2004) | Strategic objectives in financial, customer, internal process, and learning and growth perspectives, balanced so results are not pursued at the expense of what produces them, and linked cause to effect in a strategy map | `outcome.scorecardPerspective`, `outcome.ownerActorId`, `indicator.leadLag`, the `IMP-BSC` lint rules, and the Balanced Scorecard export |
+| OGSM, Objective, Goals, Strategies, Measures (popularized by Procter & Gamble, with claimed roots in postwar Japan; the form followed is documented in prism-roadmap's `goals/ogsm`) | A one-page plan with one objective in words, goals in numbers that say it has been reached, strategies in words, and measures in numbers that show each strategy is working | `context.objective`, the `OM-CTX-002` lint rule, and the OGSM export |
+| The Balanced Scorecard (Kaplan and Norton, *Harvard Business Review*, 1992; strategy maps, 2000 and 2004) | Strategic objectives in financial, customer, internal process, and learning and growth perspectives, balanced so results are not pursued at the expense of what produces them, and linked cause to effect in a strategy map | `outcome.scorecardPerspective`, `outcome.ownerActorId`, `indicator.leadLag`, the `OM-BSC` lint rules, and the Balanced Scorecard export |
 | Monitoring, evaluation, and learning (MEL) planning, including results frameworks, performance indicator reference sheets, evaluation plans, and learning agendas (USAID, *ADS 201* and *Learning Agenda* guidance; Better Evaluation's *Rainbow Framework*) | A plan for how results will be measured, when they will be evaluated, and what the organization will learn | `evaluations`, `learningQuestions`, `reviewMeetings`, `indicator.qualityAssurance`, and the MEL export |
-| Six Sigma's DMAIC cycle (Motorola; General Electric) | Improvement efforts that define, measure, analyze, improve, and control a metric from a baseline toward a target | `pathway.projections` with `dmaic`, the DMAIC export, and the `IMP-DMA` lint rules |
+| Six Sigma's DMAIC cycle (Motorola; General Electric) | Improvement efforts that define, measure, analyze, improve, and control a metric from a baseline toward a target | `pathway.projections` with `dmaic`, the DMAIC export, and the `OM-DMA` lint rules |
 | Statistical process control (Shewhart, 1931) | Control limits from an individuals and moving-range chart, three sigma either side of the center line | Control limits in the DMAIC export |
 
 Isabel Vogel's review of how Theory of Change is used in international development
@@ -56,7 +56,7 @@ schemas are generated from the Go types with
 uses the [official Go SDK](https://github.com/modelcontextprotocol/go-sdk). The
 list of every module compiled into the binary, with its license and copyright
 notice, is in
-[THIRD_PARTY_NOTICES.md](https://github.com/ProductBuildersHQ/impact-model/blob/main/THIRD_PARTY_NOTICES.md).
+[THIRD_PARTY_NOTICES.md](https://github.com/ProductBuildersHQ/outcome-model/blob/main/THIRD_PARTY_NOTICES.md).
 
 Some commands call [Marp](https://marp.app), the
 [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli), and
@@ -75,11 +75,11 @@ template comes from [visionspec](https://github.com/ProductBuildersHQ/visionspec
 - The names of organizations and publications are used to credit their work.
   Naming a source does not mean that its authors or publishers have reviewed or
   endorse this project.
-- This project is licensed under the [MIT License](https://github.com/ProductBuildersHQ/impact-model/blob/main/LICENSE). The software it depends on keeps its own
+- This project is licensed under the [MIT License](https://github.com/ProductBuildersHQ/outcome-model/blob/main/LICENSE). The software it depends on keeps its own
   licenses, which are all permissive.
 
 If a credit is missing or wrong, please
-[open an issue](https://github.com/ProductBuildersHQ/impact-model/issues).
+[open an issue](https://github.com/ProductBuildersHQ/outcome-model/issues).
 
 ## Works cited above
 

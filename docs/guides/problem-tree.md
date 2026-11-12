@@ -3,15 +3,15 @@
 A problem tree puts the problem a program exists to solve in the middle, its
 causes below as roots, and its effects above as branches. It comes before the
 theory of change: the roots say what the program could work on, and the
-branches say what harm it should reduce. Drawn from an impact model, it is one
+branches say what harm it should reduce. Drawn from an outcome model, it is one
 more projection of the same model, and it checks the solution against the
 problem: every cause and every effect should be addressed by an outcome or set
 aside with a reason.
 
 ```bash
-impact-model report problem-tree impact-model.yaml        # Markdown, with a Mermaid diagram
-impact-model report problem-tree-d2 impact-model.yaml     # the same, with a D2 diagram
-impact-model report problem-tree-json impact-model.yaml   # the diagram document itself, as JSON
+outcome-model report problem-tree outcome-model.yaml        # Markdown, with a Mermaid diagram
+outcome-model report problem-tree-d2 outcome-model.yaml     # the same, with a D2 diagram
+outcome-model report problem-tree-json outcome-model.yaml   # the diagram document itself, as JSON
 ```
 
 ## The parts and where they live
@@ -27,7 +27,7 @@ impact-model report problem-tree-json impact-model.yaml   # the diagram document
 | What relieves an effect | an outcome's `addressesEffects` | Usually long-term and impact outcomes: the harm the program reduces |
 | Set aside | `outOfScope.reason` on a cause or effect | Real, but not something this program takes on |
 
-The impact model is JSON first: a model file is JSON or YAML, read against one
+The outcome model is JSON first: a model file is JSON or YAML, read against one
 JSON Schema generated from the Go types.
 
 ```yaml
@@ -66,11 +66,11 @@ outcomes:
 With element commands:
 
 ```bash
-impact-model cause add impact-model.yaml --id cause-fast-food \
+outcome-model cause add outcome-model.yaml --id cause-fast-food \
   --statement "Fast food is everywhere" --level underlying --parents cause-busy
-impact-model effect add impact-model.yaml --id eff-costs \
+outcome-model effect add outcome-model.yaml --id eff-costs \
   --statement "Higher health costs" --parents eff-diabetes
-impact-model outcome set impact-model.yaml oc-eat-well --relieves eff-diabetes
+outcome-model outcome set outcome-model.yaml oc-eat-well --relieves eff-diabetes
 ```
 
 ## Causes and effects form a network
@@ -85,7 +85,7 @@ parents that leads back to where it started through any branch.
 A cause's `parents` point from the deeper cause toward the problem: structural
 causes feed underlying ones, underlying causes feed immediate ones, and
 immediate causes lead to the core problem. Written the other way round, the
-tree draws upside down, so `IMP-CAU-003` reports a cause whose parent sits at a
+tree draws upside down, so `OM-CAU-003` reports a cause whose parent sits at a
 deeper level.
 
 ## One tree per program
@@ -117,7 +117,7 @@ causes:
 ```
 
 ```bash
-impact-model report problem-tree impact-model.yaml --pathway pw-training
+outcome-model report problem-tree outcome-model.yaml --pathway pw-training
 ```
 
 A pathway's tree holds only the causes and effects that name it, under its own
@@ -166,11 +166,11 @@ A dash means nothing addresses it yet, and "set aside" gives the reason.
 
 | Rule | Checks |
 |------|--------|
-| `IMP-CAU-001` | Each underlying and structural cause is addressed by an outcome or set aside |
-| `IMP-CAU-002` | Outcomes address some root cause, not only immediate ones |
-| `IMP-CAU-003` | A cause contributes only to causes at its own level or nearer the problem |
-| `IMP-EFF-001` | Each effect is relieved by an outcome or set aside |
-| `IMP-EFF-002` | Effects are relieved by long-term or impact outcomes, not only earlier ones |
+| `OM-CAU-001` | Each underlying and structural cause is addressed by an outcome or set aside |
+| `OM-CAU-002` | Outcomes address some root cause, not only immediate ones |
+| `OM-CAU-003` | A cause contributes only to causes at its own level or nearer the problem |
+| `OM-EFF-001` | Each effect is relieved by an outcome or set aside |
+| `OM-EFF-002` | Effects are relieved by long-term or impact outcomes, not only earlier ones |
 
 ## Known limitations
 

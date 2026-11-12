@@ -10,13 +10,13 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotDMAICReady is returned, wrapped, when an impact model has nothing to
+// ErrNotDMAICReady is returned, wrapped, when an outcome model has nothing to
 // draw as DMAIC: no pathway marked for it, or no indicator of such a pathway
 // with a numeric baseline and target.
-var ErrNotDMAICReady = errors.New("the impact model cannot be drawn as DMAIC")
+var ErrNotDMAICReady = errors.New("the outcome model cannot be drawn as DMAIC")
 
 // Omission is an indicator of a DMAIC pathway that the export leaves out,
 // and why. DMAIC metrics are numbers with a baseline and a target, so an
@@ -35,8 +35,8 @@ type Omission struct {
 //   - A metric's data points are its undisaggregated observations, and its
 //     current value is the latest of them, or the baseline before any. Control limits are computed from
 //     the observations, as an individuals chart, only when there are at least
-//     impact.DMAICMinPoints of them. Process capability is never filled: it
-//     needs specification limits, which an impact model does not record.
+//     model.DMAICMinPoints of them. Process capability is never filled: it
+//     needs specification limits, which an outcome model does not record.
 //   - A metric's root causes are the causes its outcome addresses, and its
 //     initiatives are the pathway's interventions aimed at that outcome.
 //   - A metric's phase is derived, as a convention: Control once the target is
@@ -46,13 +46,13 @@ type Omission struct {
 //
 // st and sets may be nil. Without them there are no data points, no control
 // limits, and every metric is in the Measure phase.
-func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) {
+func ToDMAIC(doc *model.Model, st *model.Status, sets []*model.ObservationSet) (*dmaic.DMAICDocument, []Omission, error) {
 	if doc == nil {
 		return nil, nil, fmt.Errorf("prismx: nil document")
 	}
-	var pathways []impact.Pathway
+	var pathways []model.Pathway
 	for _, p := range doc.Pathways {
-		if !p.Rejected() && slices.Contains(p.Projections, impact.ProjectionDMAIC) {
+		if !p.Rejected() && slices.Contains(p.Projections, model.ProjectionDMAIC) {
 			pathways = append(pathways, p)
 		}
 	}
@@ -60,7 +60,7 @@ func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet
 		return nil, nil, fmt.Errorf("%w: mark a pathway with projections: [dmaic]", ErrNotDMAICReady)
 	}
 
-	statuses := map[string]impact.IndicatorStatus{}
+	statuses := map[string]model.IndicatorStatus{}
 	if st != nil {
 		for _, s := range st.Indicators {
 			statuses[s.IndicatorID] = s
@@ -128,7 +128,7 @@ func ToDMAIC(doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet
 
 // metricFrom builds the metric for an indicator, or returns why it cannot be
 // one.
-func metricFrom(doc *impact.Model, p impact.Pathway, ind impact.Indicator, s impact.IndicatorStatus, points []impact.Observation, withStatus bool) (dmaic.Metric, string) {
+func metricFrom(doc *model.Model, p model.Pathway, ind model.Indicator, s model.IndicatorStatus, points []model.Observation, withStatus bool) (dmaic.Metric, string) {
 	if ind.Baseline == nil || ind.Baseline.Value == nil {
 		return dmaic.Metric{}, "it has no numeric baseline"
 	}
@@ -166,7 +166,7 @@ func metricFrom(doc *impact.Model, p impact.Pathway, ind impact.Indicator, s imp
 	case withStatus && s.Latest != nil && s.Latest.Value != nil && len(s.Latest.Disaggregation) == 0:
 		m.Current = *s.Latest.Value
 	}
-	if len(m.DataPoints) >= impact.DMAICMinPoints {
+	if len(m.DataPoints) >= model.DMAICMinPoints {
 		m.ControlLimits = individualsChart(m.DataPoints)
 	}
 
@@ -183,12 +183,12 @@ func metricFrom(doc *impact.Model, p impact.Pathway, ind impact.Indicator, s imp
 	active := false
 	for _, id := range p.InterventionIDs {
 		in, ok := doc.Intervention(id)
-		if !ok || in.Rejected() || in.Status == impact.InterventionCancelled {
+		if !ok || in.Rejected() || in.Status == model.InterventionCancelled {
 			continue
 		}
 		if in.ID == ind.Measures || slices.Contains(in.Targets, targetOutcome) {
 			m.InitiativeIDs = append(m.InitiativeIDs, in.ID)
-			active = active || in.Status == impact.InterventionInProgress
+			active = active || in.Status == model.InterventionInProgress
 		}
 	}
 	m.Phase = metricPhase(s.State, len(m.DataPoints), active)
@@ -197,11 +197,11 @@ func metricFrom(doc *impact.Model, p impact.Pathway, ind impact.Indicator, s imp
 
 // metricPhase derives a DMAIC phase from the indicator's state, as a
 // convention the DMAIC guide documents.
-func metricPhase(state impact.State, points int, improving bool) string {
+func metricPhase(state model.State, points int, improving bool) string {
 	switch {
-	case state == impact.StateAchieved:
+	case state == model.StateAchieved:
 		return dmaic.PhaseControl
-	case points < impact.DMAICMinPoints:
+	case points < model.DMAICMinPoints:
 		return dmaic.PhaseMeasure
 	case improving:
 		return dmaic.PhaseImprove
@@ -230,8 +230,8 @@ func individualsChart(points []dmaic.DataPoint) *dmaic.ControlLimits {
 // observationHistory groups the numeric, undisaggregated observations by
 // indicator, each in date order. A disaggregated observation is one slice of
 // a total, so it is not a point on the total's chart.
-func observationHistory(sets []*impact.ObservationSet) map[string][]impact.Observation {
-	out := map[string][]impact.Observation{}
+func observationHistory(sets []*model.ObservationSet) map[string][]model.Observation {
+	out := map[string][]model.Observation{}
 	for _, set := range sets {
 		for _, o := range set.Observations {
 			if o.Value != nil && len(o.Disaggregation) == 0 {
@@ -240,14 +240,14 @@ func observationHistory(sets []*impact.ObservationSet) map[string][]impact.Obser
 		}
 	}
 	for id := range out {
-		slices.SortStableFunc(out[id], func(a, b impact.Observation) int { return strings.Compare(a.Date, b.Date) })
+		slices.SortStableFunc(out[id], func(a, b model.Observation) int { return strings.Compare(a.Date, b.Date) })
 	}
 	return out
 }
 
-func finalTarget(ind impact.Indicator) (impact.Target, bool) {
+func finalTarget(ind model.Indicator) (model.Target, bool) {
 	if len(ind.Targets) == 0 {
-		return impact.Target{}, false
+		return model.Target{}, false
 	}
 	final := ind.Targets[0]
 	for _, t := range ind.Targets[1:] {
@@ -258,13 +258,13 @@ func finalTarget(ind impact.Indicator) (impact.Target, bool) {
 	return final, true
 }
 
-func trendDirection(d impact.Direction) string {
+func trendDirection(d model.Direction) string {
 	switch d {
-	case impact.DirectionIncrease:
+	case model.DirectionIncrease:
 		return dmaic.TrendHigherBetter
-	case impact.DirectionDecrease:
+	case model.DirectionDecrease:
 		return dmaic.TrendLowerBetter
-	case impact.DirectionMaintain:
+	case model.DirectionMaintain:
 		return dmaic.TrendTargetValue
 	}
 	return ""
@@ -283,7 +283,7 @@ func frequencyName(iso string) string {
 	return iso
 }
 
-func initiativeFrom(doc *impact.Model, in impact.Intervention, metricIDs []string) dmaic.Initiative {
+func initiativeFrom(doc *model.Model, in model.Intervention, metricIDs []string) dmaic.Initiative {
 	out := dmaic.Initiative{
 		ID: in.ID, Name: in.Title, Description: in.Description, Owner: actorName(doc, in.OwnerID),
 		Status: initiativeStatus(in.Status), MetricIDs: metricIDs,
@@ -329,15 +329,15 @@ func dmaicStatus(s string) string {
 
 // initiativeStatus maps an intervention's status; a paused intervention has no
 // DMAIC initiative status and is left blank.
-func initiativeStatus(s impact.InterventionStatus) string {
+func initiativeStatus(s model.InterventionStatus) string {
 	switch s {
-	case impact.InterventionPlanned:
+	case model.InterventionPlanned:
 		return "Planned"
-	case impact.InterventionInProgress:
+	case model.InterventionInProgress:
 		return "In Progress"
-	case impact.InterventionCompleted:
+	case model.InterventionCompleted:
 		return "Completed"
-	case impact.InterventionCancelled:
+	case model.InterventionCancelled:
 		return "Cancelled"
 	}
 	return ""

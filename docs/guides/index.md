@@ -1,11 +1,11 @@
 # User Guides
 
-These guides take you from a first impact model to reports, review, and an AI agent
+These guides take you from a first outcome model to reports, review, and an AI agent
 working on the same file. Each one stands alone; read them in this order if you
 are new.
 
-1. [Getting started](getting-started.md): install, create an impact model, check it.
-2. [Authoring an impact model](authoring.md): the model, and how to change it safely.
+1. [Getting started](getting-started.md): install, create an outcome model, check it.
+2. [Authoring an outcome model](authoring.md): the model, and how to change it safely.
 3. [Measuring progress](measurement.md): observations, status, and what changed.
 4. [Reports and decks](reports-and-decks.md): the artifacts for each audience.
    The [problem tree](problem-tree.md), [V2MOM](v2mom.md), [VSEM](vsem.md), [OGSM](ogsm.md), [Balanced Scorecard](bsc.md), [DMAIC](dmaic.md), and [MEL](mel.md) guides

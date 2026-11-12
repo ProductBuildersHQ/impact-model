@@ -11,10 +11,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/slides"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/slides"
 )
 
 var update = flag.Bool("update", false, "rewrite golden files")
@@ -37,13 +37,13 @@ func golden(t *testing.T, name, got string) {
 	}
 }
 
-func fullDoc(t *testing.T) *impact.Model {
+func fullDoc(t *testing.T) *model.Model {
 	t.Helper()
-	data, err := os.ReadFile("../impact/testdata/full.json")
+	data, err := os.ReadFile("../model/testdata/full.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var d impact.Model
+	var d model.Model
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&d); err != nil {
@@ -54,7 +54,7 @@ func fullDoc(t *testing.T) *impact.Model {
 
 func TestStampHashMatchesCanonicalJSON(t *testing.T) {
 	doc := fullDoc(t)
-	want, err := impactio.ContentHash(doc)
+	want, err := modelio.ContentHash(doc)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func TestStampVersionFallsBack(t *testing.T) {
 	if s, err := NewStamp(doc, ""); err != nil || s.Version != unversioned {
 		t.Errorf("no version: %+v, %v", s, err)
 	}
-	doc.Revisions = []impact.Revision{{Version: "0.1", Date: "2026-01-01", Summary: "first"}, {Version: "0.2", Date: "2026-02-01", Summary: "second"}}
+	doc.Revisions = []model.Revision{{Version: "0.1", Date: "2026-01-01", Summary: "first"}, {Version: "0.2", Date: "2026-02-01", Summary: "second"}}
 	if s, err := NewStamp(doc, ""); err != nil || s.Version != "0.2" {
 		t.Errorf("latest revision: %+v, %v", s, err)
 	}
@@ -105,7 +105,7 @@ func TestStampForms(t *testing.T) {
 	if got, want := s.CSVRow(), "# model:t1 version:0.3 hash:"+s.ContentHash+"\r\n"; got != want {
 		t.Errorf("CSVRow = %q, want %q", got, want)
 	}
-	if got := s.Line(); got != "Impact model t1 · version 0.3 · hash abababababab · as of 2026-09-30" {
+	if got := s.Line(); got != "Outcome model t1 · version 0.3 · hash abababababab · as of 2026-09-30" {
 		t.Errorf("Line = %q", got)
 	}
 	block := s.YAMLBlock(`A "quoted" title`)
@@ -120,7 +120,7 @@ func TestStampForms(t *testing.T) {
 	}
 }
 
-func definitions(t *testing.T, doc *impact.Model) string {
+func definitions(t *testing.T, doc *model.Model) string {
 	t.Helper()
 	whole, err := report.BuildView(doc, nil, nil, report.Options{})
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/mcp"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/mcp"
 )
 
 func newMCPCmd() *cobra.Command {
@@ -15,16 +15,16 @@ func newMCPCmd() *cobra.Command {
 		Use:   "mcp",
 		Short: "Serve the tools to an AI agent over MCP (stdio)",
 		Long: `Start a Model Context Protocol server on standard input and output, so an AI
-assistant can validate, lint, query, measure, report on, and edit an impact model.
+assistant can validate, lint, query, measure, report on, and edit an outcome model.
 
-Tools: impact_schema, impact_validate, impact_lint, impact_graph, impact_status, impact_report,
-impact_patch, impact_deck, impact_judge_bundle, impact_diff. A tool takes an impact model inline
+Tools: outcome_schema, outcome_validate, outcome_lint, outcome_graph, outcome_status, outcome_report,
+outcome_patch, outcome_deck, outcome_judge_bundle, outcome_diff. A tool takes an outcome model inline
 (document) or by path. A path must lie inside --root, which defaults to the
 current directory: ".." is refused, and so is a symbolic link that leaves the
-root. impact_patch rejects any patch that adds validation errors.
+root. outcome_patch rejects any patch that adds validation errors.
 
 The server makes no network calls and no model calls.`,
-		Example: `  impact-model mcp --root ./impact-models`,
+		Example: `  outcome-model mcp --root ./outcome-models`,
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			root := flagString(cmd, "root")

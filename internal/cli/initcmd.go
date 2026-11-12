@@ -8,21 +8,21 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 func newInitCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Write a starter impact model",
-		Long: `Write a small starter impact model that already passes validation, with
+		Short: "Write a starter outcome model",
+		Long: `Write a small starter outcome model that already passes validation, with
 TODO placeholders to replace. The output is YAML unless --format json is
 given or --out ends in .json.
 
 Available templates: ` + strings.Join(service.Templates(), ", ") + `.`,
-		Example: `  impact-model init --id youth-employment --name "Youth Employment" --out impact-model.yaml
-  impact-model init --format json > impact-model.json`,
+		Example: `  outcome-model init --id youth-employment --name "Youth Employment" --out outcome-model.yaml
+  outcome-model init --format json > outcome-model.json`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			out := flagString(cmd, "out")
@@ -39,7 +39,7 @@ Available templates: ` + strings.Join(service.Templates(), ", ") + `.`,
 			if err != nil {
 				return usageErr("%v", err)
 			}
-			data, err := impactio.Canonical(doc, f)
+			data, err := modelio.Canonical(doc, f)
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -54,7 +54,7 @@ Available templates: ` + strings.Join(service.Templates(), ", ") + `.`,
 			} else if err != nil && !errors.Is(err, os.ErrNotExist) {
 				return &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("stat %s: %w", out, err)}
 			}
-			if err := impactio.WriteFile(out, data); err != nil {
+			if err := modelio.WriteFile(out, data); err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
 			if !flagBool(cmd, "quiet") {
@@ -74,19 +74,19 @@ Available templates: ` + strings.Join(service.Templates(), ", ") + `.`,
 	return cmd
 }
 
-func initFormat(cmd *cobra.Command, out string) (impactio.Format, error) {
+func initFormat(cmd *cobra.Command, out string) (modelio.Format, error) {
 	switch flagString(cmd, "format") {
 	case "json":
-		return impactio.FormatJSON, nil
+		return modelio.FormatJSON, nil
 	case "yaml", "yml":
-		return impactio.FormatYAML, nil
+		return modelio.FormatYAML, nil
 	case "":
 		if out != "" {
-			if f, err := impactio.FormatFromPath(out); err == nil {
+			if f, err := modelio.FormatFromPath(out); err == nil {
 				return f, nil
 			}
 		}
-		return impactio.FormatYAML, nil
+		return modelio.FormatYAML, nil
 	default:
 		return "", usageErr("--format must be yaml or json")
 	}

@@ -10,18 +10,18 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 // dmaicExample is the intermediary example with Shared Services marked for
 // DMAIC and two years of weekly observations of its North Star, evaluated as
 // of the last one.
-func dmaicExample(t *testing.T) (*impact.Model, *impact.Status, []*impact.ObservationSet) {
+func dmaicExample(t *testing.T) (*model.Model, *model.Status, []*model.ObservationSet) {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,17 +29,17 @@ func dmaicExample(t *testing.T) (*impact.Model, *impact.Status, []*impact.Observ
 	if !ok {
 		t.Fatal("the example has no pw-shared pathway")
 	}
-	p.Projections = []impact.Projection{impact.ProjectionDMAIC}
+	p.Projections = []model.Projection{model.ProjectionDMAIC}
 
-	sets, err := impactio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
+	sets, err := modelio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
-	weekly := &impact.ObservationSet{Kind: impact.KindObservationSet, SpecVersion: impact.SpecVersion, ModelID: doc.ID}
+	weekly := &model.ObservationSet{Kind: model.KindObservationSet, SpecVersion: model.SpecVersion, ModelID: doc.ID}
 	start := time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC)
 	for i := range 24 {
 		v := 21.5 - 0.03*float64(i) + 0.2*float64(i%2)
-		weekly.Observations = append(weekly.Observations, impact.Observation{
+		weekly.Observations = append(weekly.Observations, model.Observation{
 			IndicatorID: "ind-overhead-share", Date: start.AddDate(0, 0, 7*i).Format(time.DateOnly), Value: &v,
 		})
 	}
@@ -53,7 +53,7 @@ func dmaicExample(t *testing.T) (*impact.Model, *impact.Status, []*impact.Observ
 	if err != nil {
 		t.Fatal(err)
 	}
-	st, err := measure.Evaluate(doc, g, sets, asOf, impact.DefaultStatusOptions())
+	st, err := measure.Evaluate(doc, g, sets, asOf, model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -76,8 +76,8 @@ func metricByID(t *testing.T, out *dmaic.DMAICDocument, id string) dmaic.Metric 
 func TestDMAICExportValidates(t *testing.T) {
 	doc, st, sets := dmaicExample(t)
 	for name, in := range map[string]struct {
-		st   *impact.Status
-		sets []*impact.ObservationSet
+		st   *model.Status
+		sets []*model.ObservationSet
 	}{"with observations": {st, sets}, "without": {nil, nil}} {
 		out, _, err := ToDMAIC(doc, in.st, in.sets)
 		if err != nil {
@@ -127,7 +127,7 @@ func TestDMAICMapping(t *testing.T) {
 	if ns.Baseline != *ind.Baseline.Value || ns.Unit != ind.Unit || ns.TrendDirection != dmaic.TrendLowerBetter {
 		t.Errorf("baseline, unit, or trend not carried over: %+v", ns)
 	}
-	if len(ns.DataPoints) < impact.DMAICMinPoints || ns.ControlLimits == nil {
+	if len(ns.DataPoints) < model.DMAICMinPoints || ns.ControlLimits == nil {
 		t.Fatalf("with %d observations the metric has control limits: %+v", len(ns.DataPoints), ns.ControlLimits)
 	}
 	if !slices.IsSortedFunc(ns.DataPoints, func(a, b dmaic.DataPoint) int { return a.Timestamp.Compare(b.Timestamp) }) {
@@ -194,17 +194,17 @@ func TestDMAICIndividualsChart(t *testing.T) {
 }
 
 func TestDMAICPhase(t *testing.T) {
-	enough := impact.DMAICMinPoints
+	enough := model.DMAICMinPoints
 	tests := []struct {
-		state     impact.State
+		state     model.State
 		points    int
 		improving bool
 		want      string
 	}{
-		{impact.StateAchieved, 3, false, dmaic.PhaseControl},
-		{impact.StateOnTrack, enough - 1, true, dmaic.PhaseMeasure},
-		{impact.StateOnTrack, enough, true, dmaic.PhaseImprove},
-		{impact.StateOffTrack, enough, false, dmaic.PhaseAnalyze},
+		{model.StateAchieved, 3, false, dmaic.PhaseControl},
+		{model.StateOnTrack, enough - 1, true, dmaic.PhaseMeasure},
+		{model.StateOnTrack, enough, true, dmaic.PhaseImprove},
+		{model.StateOffTrack, enough, false, dmaic.PhaseAnalyze},
 	}
 	for _, tt := range tests {
 		if got := metricPhase(tt.state, tt.points, tt.improving); got != tt.want {

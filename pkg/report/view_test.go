@@ -9,12 +9,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func fixture(t *testing.T, name string, v any) {
 	t.Helper()
-	data, err := os.ReadFile("../impact/testdata/" + name)
+	data, err := os.ReadFile("../model/testdata/" + name)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,21 +25,21 @@ func fixture(t *testing.T, name string, v any) {
 	}
 }
 
-func fullDoc(t *testing.T) *impact.Model {
+func fullDoc(t *testing.T) *model.Model {
 	t.Helper()
-	var d impact.Model
+	var d model.Model
 	fixture(t, "full.json", &d)
 	return &d
 }
 
-func fullStatus(t *testing.T) *impact.Status {
+func fullStatus(t *testing.T) *model.Status {
 	t.Helper()
-	var s impact.Status
+	var s model.Status
 	fixture(t, "status.json", &s)
 	return &s
 }
 
-func build(t *testing.T, doc *impact.Model, st *impact.Status, o Options) *View {
+func build(t *testing.T, doc *model.Model, st *model.Status, o Options) *View {
 	t.Helper()
 	v, err := BuildView(doc, nil, st, o)
 	if err != nil {
@@ -90,7 +90,7 @@ func TestViewWithoutStatus(t *testing.T) {
 		t.Fatal("empty lists must be non-nil so JSON renders []")
 	}
 	idp := outcome(t, v, "oc-idp-support")
-	if !idp.Basis.Marked || idp.Basis.Basis != impact.BasisInferred {
+	if !idp.Basis.Marked || idp.Basis.Basis != model.BasisInferred {
 		t.Errorf("inferred outcome must be marked: %+v", idp.Basis)
 	}
 	if outcome(t, v, "oc-spec-stable").Basis.Marked {
@@ -119,7 +119,7 @@ func TestViewIndicatorsAndMetrics(t *testing.T) {
 		count.Targets[1] != "5 providers (by 2027-12-31) (Covers half the market by seats)" {
 		t.Errorf("targets = %q", count.Targets)
 	}
-	if count.Claim != impact.ClaimContribution || count.MeasuresTitle != "Major identity providers support the standard" {
+	if count.Claim != model.ClaimContribution || count.MeasuresTitle != "Major identity providers support the standard" {
 		t.Errorf("claim/measures = %q / %q", count.Claim, count.MeasuresTitle)
 	}
 	if count.DataAvailability != "public" || len(count.Caveats) != 1 {
@@ -129,7 +129,7 @@ func TestViewIndicatorsAndMetrics(t *testing.T) {
 		if i.ID == "ind-idp-roadmaps" && (len(i.Levels) != 4 || i.Baseline != "exploring (as of 2026-01-01)") {
 			t.Errorf("qualitative indicator = %+v", i)
 		}
-		if i.ID == "ind-idp-total" && (i.Claim != impact.ClaimAttribution || len(i.RollupFrom) != 2) {
+		if i.ID == "ind-idp-total" && (i.Claim != model.ClaimAttribution || len(i.RollupFrom) != 2) {
 			t.Errorf("roll-up indicator = %+v", i)
 		}
 	}
@@ -181,7 +181,7 @@ func TestViewWithStatus(t *testing.T) {
 
 func TestPathwayFilter(t *testing.T) {
 	doc := fullDoc(t)
-	doc.Pathways = append(doc.Pathways, impact.Pathway{ID: "pw-platform", Title: "Platforms", OutcomeIDs: []string{"oc-platform-support"}})
+	doc.Pathways = append(doc.Pathways, model.Pathway{ID: "pw-platform", Title: "Platforms", OutcomeIDs: []string{"oc-platform-support"}})
 	v := build(t, doc, nil, Options{Pathway: "pw-platform"})
 	got := []string{}
 	for _, o := range v.Outcomes {
@@ -209,8 +209,8 @@ func TestPathwayFilter(t *testing.T) {
 
 func TestRejectedElementsAreExcludedAndListed(t *testing.T) {
 	doc := fullDoc(t)
-	doc.Outcomes[3].Provenance = &impact.Provenance{Basis: impact.BasisRejected, Note: "Reviewers said platforms are out of scope."}
-	doc.Risks[0].Provenance = &impact.Provenance{Basis: impact.BasisRejected}
+	doc.Outcomes[3].Provenance = &model.Provenance{Basis: model.BasisRejected, Note: "Reviewers said platforms are out of scope."}
+	doc.Risks[0].Provenance = &model.Provenance{Basis: model.BasisRejected}
 	v := build(t, doc, nil, Options{})
 
 	for _, o := range v.Outcomes {
@@ -226,10 +226,10 @@ func TestRejectedElementsAreExcludedAndListed(t *testing.T) {
 	if len(v.Rejected) != 2 {
 		t.Fatalf("rejected = %+v", v.Rejected)
 	}
-	if v.Rejected[0].ID != "oc-platform-support" || v.Rejected[0].Kind != impact.ElementOutcome || v.Rejected[0].Note == "" {
+	if v.Rejected[0].ID != "oc-platform-support" || v.Rejected[0].Kind != model.ElementOutcome || v.Rejected[0].Note == "" {
 		t.Fatalf("rejected[0] = %+v", v.Rejected[0])
 	}
-	if v.BasisCounts[impact.BasisRejected] != 0 {
+	if v.BasisCounts[model.BasisRejected] != 0 {
 		t.Error("rejected elements are not counted among active ones")
 	}
 	// The pathway no longer lists the rejected outcome.
@@ -241,9 +241,9 @@ func TestRejectedElementsAreExcludedAndListed(t *testing.T) {
 func TestRestrictedEvidenceIsWithheld(t *testing.T) {
 	doc := fullDoc(t)
 	doc.Evidence = append(doc.Evidence,
-		impact.Evidence{ID: "ev-secret", Title: "Interview notes", Sensitivity: impact.SensitivityRestricted, Excerpt: "do not publish", Summary: "also private", URL: "https://example.org/private/notes"},
-		impact.Evidence{ID: "ev-unset", Title: "Unclassified", Excerpt: "unset means restricted"},
-		impact.Evidence{ID: "ev-internal", Title: "Internal memo", Sensitivity: impact.SensitivityInternal, Excerpt: "fine to show"},
+		model.Evidence{ID: "ev-secret", Title: "Interview notes", Sensitivity: model.SensitivityRestricted, Excerpt: "do not publish", Summary: "also private", URL: "https://example.org/private/notes"},
+		model.Evidence{ID: "ev-unset", Title: "Unclassified", Excerpt: "unset means restricted"},
+		model.Evidence{ID: "ev-internal", Title: "Internal memo", Sensitivity: model.SensitivityInternal, Excerpt: "fine to show"},
 	)
 	v := build(t, doc, nil, Options{})
 	byID := map[string]EvidenceView{}
@@ -285,7 +285,7 @@ func TestBasisCountsAndUnmarked(t *testing.T) {
 	if total != want {
 		t.Fatalf("basis counts + unmarked = %d, want %d", total, want)
 	}
-	if v.BasisCounts[impact.BasisStated] == 0 || v.BasisCounts[impact.BasisInferred] == 0 {
+	if v.BasisCounts[model.BasisStated] == 0 || v.BasisCounts[model.BasisInferred] == 0 {
 		t.Errorf("counts = %v", v.BasisCounts)
 	}
 }
@@ -317,7 +317,7 @@ func TestViewIsDeterministicSerializableAndNonMutating(t *testing.T) {
 }
 
 func TestMinimalDocumentBuildsAView(t *testing.T) {
-	var d impact.Model
+	var d model.Model
 	fixture(t, "minimal.json", &d)
 	v := build(t, &d, nil, Options{})
 	if len(v.Outcomes) != 2 || v.Document.Title != "Minimal theory" || v.Document.Ceiling != "" {
@@ -343,10 +343,10 @@ func TestLabels(t *testing.T) {
 	if Label("long_term") != "Long term" || Label("") != "" || Label("impact") != "Impact" {
 		t.Error("Label mismatch")
 	}
-	if LevelLabel(impact.LevelOutput) != "Output" || LevelLabel(impact.LevelLongTerm) != "Long-term outcome" || LevelLabel("custom_level") != "Custom level" {
+	if LevelLabel(model.LevelOutput) != "Output" || LevelLabel(model.LevelLongTerm) != "Long-term outcome" || LevelLabel("custom_level") != "Custom level" {
 		t.Error("LevelLabel mismatch")
 	}
-	if logicText(impact.Logic{Type: impact.LogicAtLeast, K: 2}) != "at least 2" || logicText(impact.Logic{Type: impact.LogicAny}) != "any" {
+	if logicText(model.Logic{Type: model.LogicAtLeast, K: 2}) != "at least 2" || logicText(model.Logic{Type: model.LogicAny}) != "any" {
 		t.Error("logicText mismatch")
 	}
 	if valueText(nil, "", "x") != "" || withDate("", "", "by ") != "" || withDate("", "2026-01-01", "by ") != "by 2026-01-01" || withDate("5", "", "by ") != "5" {
@@ -357,7 +357,7 @@ func TestLabels(t *testing.T) {
 func TestIndicatorOfAPathwayFollowsThePathwayFilter(t *testing.T) {
 	doc := fullDoc(t)
 	doc.Indicators[5].Measures = "pw-supply"
-	doc.Pathways = append(doc.Pathways, impact.Pathway{ID: "pw-other", Title: "Other", OutcomeIDs: []string{"oc-platform-support"}})
+	doc.Pathways = append(doc.Pathways, model.Pathway{ID: "pw-other", Title: "Other", OutcomeIDs: []string{"oc-platform-support"}})
 	in := func(v *View, id string) bool {
 		for _, i := range v.Indicators {
 			if i.ID == id {

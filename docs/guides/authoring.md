@@ -1,6 +1,6 @@
-# Authoring an Impact Model
+# Authoring an Outcome Model
 
-An impact model is one document of connected elements. This guide describes the
+An outcome model is one document of connected elements. This guide describes the
 elements, how they refer to each other, and the ways to change them.
 
 ## The elements
@@ -15,11 +15,11 @@ elements, how they refer to each other, and the ways to change them.
 | **Indicator** | How an outcome, activity, or assumption is measured, with a baseline, targets, and a frequency. It can also be worked out from other indicators, such as a cost per outcome |
 | **Actor** | A person or organization who changes, delivers, or co-owns an outcome |
 | **Evidence** | A source that supports or contradicts an element, with a sensitivity |
-| **Pathway** | A named route through the impact model, such as one program's or product's contribution, with the North Star it steers by and the resources it commits |
+| **Pathway** | A named route through the outcome model, such as one program's or product's contribution, with the North Star it steers by and the resources it commits |
 | **Cause**, **effect**, **target group** | The problem tree: causes below the core problem (`context.problemStatement`), effects above it, each linked to others through `parents`, and the groups affected. Outcomes say which causes they address and which effects they relieve. A pathway can have its own tree: its `problemStatement`, and the causes and effects that name it in `pathwayIds`. See the [problem tree guide](problem-tree.md) |
 | **Audience**, **theme** | Who needs to see what reported, how often, the short list of numbers each is told, and the codebook for coding stories |
 | **Evaluation**, **learning question**, **review meeting** | The evaluation plan, the learning agenda, and when the team stops to review what it has learned. See [Evaluation and learning](#evaluation-and-learning) |
-| **Metric**, **term** | A shared metric library, and a glossary of the words the impact model uses |
+| **Metric**, **term** | A shared metric library, and a glossary of the words the outcome model uses |
 | **Risk**, **decision**, **factor**, **consultation** | What could go wrong, what is awaiting a decision, external factors, and the review trail |
 
 An outcome also records its **responsibility**: `own`, `shared`, `partner`, or
@@ -33,7 +33,7 @@ references are by ID.
 ## What a program steers by, and what each audience is told
 
 These choices sit on top of the chain from activities to impact. They are
-different things, and an impact model can make all of them.
+different things, and an outcome model can make all of them.
 
 - **Projections** on a pathway mark what else it is meant for. `projections:
   [dmaic]` marks a program measured often enough to improve with DMAIC; lint then
@@ -52,7 +52,7 @@ different things, and an impact model can make all of them.
   squads" or "15% of the budget". An intervention's `resources` say what that
   one piece of work uses, and its `startDate` and `endDate` say when it runs;
   ongoing work has a start and no end. Lint warns when the dates fall outside
-  the time horizon (IMP-INT-008).
+  the time horizon (OM-INT-008).
 - **Purpose** is `context.mission`, `context.vision`, and `context.values`:
   why the organization exists, what it works toward, and the principles that
   guide how it works, most important first. They are not part of the causal
@@ -62,48 +62,48 @@ different things, and an impact model can make all of them.
   to achieve, as a statement and the outcomes that say it has been reached.
   A model with a single impact outcome has that outcome as its objective; one
   with several should name the objective, which plans with one objective,
-  such as an OGSM, need (IMP-CTX-002; see the [OGSM guide](ogsm.md)).
+  such as an OGSM, need (OM-CTX-002; see the [OGSM guide](ogsm.md)).
 - **Scorecard perspectives** place outcomes in a Balanced Scorecard:
   `scorecardPerspective` is `mission`, `financial`, `customer`,
   `internal_process`, or `learning_growth`, and `ownerActorId` names who
   answers for the outcome. An indicator's `leadLag` says whether it moves
   before the results (`lead`) or reports one (`lag`). The causal links between
   the placed outcomes become the strategy map; lint checks that it runs upward
-  and that each objective is owned and measured (IMP-BSC-001 to 004; see the
+  and that each objective is owned and measured (OM-BSC-001 to 004; see the
   [Balanced Scorecard guide](bsc.md)).
 
 ```bash
 # A pathway's North Star, and what watches it
-impact-model pathway set impact-model.yaml pw-learning \
+outcome-model pathway set outcome-model.yaml pw-learning \
   --north-star ind-practice-maturity --guardrails ind-retention-learning
 
 # What the board is told, in order
-impact-model audience set impact-model.yaml aud-board --set 'headline=[
+outcome-model audience set outcome-model.yaml aud-board --set 'headline=[
   {"indicatorId":"ind-practice-maturity","label":"Leadership practice across members"},
   {"indicatorId":"ind-reach-network"}]'
 
 # What a pathway commits, and when an intervention runs
-impact-model pathway set impact-model.yaml pw-learning \
+outcome-model pathway set outcome-model.yaml pw-learning \
   --set 'resources=[{"name":"Program staff","allocation":"3 staff"}]'
-impact-model intervention set impact-model.yaml int-training-series \
+outcome-model intervention set outcome-model.yaml int-training-series \
   --start-date 2026-09-01 --end-date 2027-05-31
 
 # The one thing the model sets out to achieve
-impact-model patch impact-model.yaml - <<'EOF'
+outcome-model patch outcome-model.yaml - <<'EOF'
 [{"op":"add","path":"/context/objective","value":{
   "statement":"Member nonprofits are strong and connected enough that residents are served and heard",
   "outcomeIds":["oc-resident-access","oc-resident-voice"]}}]
 EOF
 
 # Why the organization exists
-impact-model patch impact-model.yaml - <<'EOF'
+outcome-model patch outcome-model.yaml - <<'EOF'
 [{"op":"add","path":"/context/mission","value":"Strengthen local nonprofits."}]
 EOF
 
 # An outcome as a scorecard objective, and a lead measure of it
-impact-model outcome set impact-model.yaml oc-im-lower-overhead \
+outcome-model outcome set outcome-model.yaml oc-im-lower-overhead \
   --scorecard-perspective customer --owner act-network
-impact-model indicator set impact-model.yaml ind-overhead-share --lead-lag lead
+outcome-model indicator set outcome-model.yaml ind-overhead-share --lead-lag lead
 ```
 
 Some of the numbers people ask for are arithmetic on others, such as the cost
@@ -111,7 +111,7 @@ per applied change. Give that indicator a `composedOf`, and its value is worked
 out from the latest value of each part when it has none of its own:
 
 ```bash
-impact-model indicator set impact-model.yaml ind-cost-per-change \
+outcome-model indicator set outcome-model.yaml ind-cost-per-change \
   --composed-op ratio --composed-of ind-cost,ind-changes-applied
 ```
 
@@ -144,27 +144,27 @@ audience's `frequency` how often it is reported to. Together they make the
 model a complete monitoring, evaluation, and learning plan, which `export mel`
 writes out (see the [MEL guide](mel.md)). Once the model has
 evaluations or learning questions, lint asks that every high or critical
-assumption not yet shown to hold is taken up by one (IMP-LRN-001), that open
-questions are reviewed (IMP-LRN-002), and that dates fall within the time
-horizon (IMP-LRN-003).
+assumption not yet shown to hold is taken up by one (OM-LRN-001), that open
+questions are reviewed (OM-LRN-002), and that dates fall within the time
+horizon (OM-LRN-003).
 
 ```bash
-impact-model question add impact-model.yaml --id lq-skills-applied \
+outcome-model question add outcome-model.yaml --id lq-skills-applied \
   --question "Do leaders who finish a cohort change how they run their organizations?" \
   --rationale "Decides whether to keep investing in cohorts" \
   --methods "Rubric ratings at six months" --due 2027-03-31 \
   --related asm-skills-applied,ln-skills-practice
-impact-model evaluation add impact-model.yaml --id eval-midterm --title "Midterm review" \
+outcome-model evaluation add outcome-model.yaml --id eval-midterm --title "Midterm review" \
   --type midterm --evaluator external --start-date 2027-04-01 --end-date 2027-06-30 \
   --questions "Are member leaders applying what they learn?" --related asm-skills-applied
-impact-model review-meeting add impact-model.yaml --id mtg-quarterly \
+outcome-model review-meeting add outcome-model.yaml --id mtg-quarterly \
   --name "Quarterly learning review" --frequency P3M --questions lq-skills-applied
-impact-model audience set impact-model.yaml aud-board --frequency P3M --owner act-network
+outcome-model audience set outcome-model.yaml aud-board --frequency P3M --owner act-network
 ```
 
 ## Provenance: stated, inferred, or confirmed
 
-Each element carries a **basis** that says why it is in the impact model:
+Each element carries a **basis** that says why it is in the outcome model:
 
 | Basis | Meaning |
 |-------|---------|
@@ -177,18 +177,18 @@ Each element carries a **basis** that says why it is in the impact model:
 Record who decided a confirmed or rejected basis with `--decided-by` as a
 **group or role**, not a personal name, and when with `--decided-at`.
 
-## Change an impact model with commands
+## Change an outcome model with commands
 
 Every element kind has `add`, `set`, and `rm`:
 
 ```bash
-impact-model outcome add impact-model.yaml --id oc-skills --title "Staff write strong applications" --level short_term
-impact-model link add impact-model.yaml --id ln-skills-adoption --from oc-skills --to oc-adoption --rationale "Skilled staff apply more often"
-impact-model outcome set impact-model.yaml oc-skills --basis confirmed --decided-by "Program board" --decided-at 2026-04-01
-impact-model outcome rm impact-model.yaml oc-skills --cascade
+outcome-model outcome add outcome-model.yaml --id oc-skills --title "Staff write strong applications" --level short_term
+outcome-model link add outcome-model.yaml --id ln-skills-adoption --from oc-skills --to oc-adoption --rationale "Skilled staff apply more often"
+outcome-model outcome set outcome-model.yaml oc-skills --basis confirmed --decided-by "Program board" --decided-at 2026-04-01
+outcome-model outcome rm outcome-model.yaml oc-skills --cascade
 ```
 
-Run `impact-model <element> add --help` to see every field as a flag.
+Run `outcome-model <element> add --help` to see every field as a flag.
 
 Each command is compiled to a JSON Patch and applied through the same validated
 path, which has these guarantees:
@@ -202,14 +202,14 @@ path, which has these guarantees:
 - **Honest removal.** Removing an element that others refer to is rejected;
   `rm --cascade` removes the references as well and tells you what it removed.
 
-## Change an impact model with a patch
+## Change an outcome model with a patch
 
 For many changes at once, or from a script or an agent, apply an
 [RFC 6902](https://www.rfc-editor.org/rfc/rfc6902) JSON Patch:
 
 ```bash
 echo '[{"op":"replace","path":"/outcomes/@oc-skills/title","value":"Staff write strong applications"}]' \
-  | impact-model patch impact-model.yaml -
+  | outcome-model patch outcome-model.yaml -
 ```
 
 Pointers can address an array element by ID: `/outcomes/@oc-skills/title`
@@ -218,26 +218,26 @@ applied to a copy, and all of the guarantees above apply.
 
 ## Keep a revision log
 
-When an impact model changes after review, record why. `impact-model diff` compares
+When an outcome model changes after review, record why. `outcome-model diff` compares
 two versions by element ID, so a retitled outcome is one changed element, and
-the same impact model in YAML and JSON has no differences:
+the same outcome model in YAML and JSON has no differences:
 
 ```bash
-impact-model diff impact-model-v1.yaml impact-model-v2.yaml
-impact-model diff impact-model-v1.yaml impact-model-v2.yaml --revision --version 0.2 --date 2026-03-01 \
+outcome-model diff outcome-model-v1.yaml outcome-model-v2.yaml
+outcome-model diff outcome-model-v1.yaml outcome-model-v2.yaml --revision --version 0.2 --date 2026-03-01 \
   > revision.patch.json
-impact-model patch impact-model-v2.yaml revision.patch.json
+outcome-model patch outcome-model-v2.yaml revision.patch.json
 ```
 
 `--revision` prints a patch that appends a draft revision listing every changed
 element ID. Review it, then apply it.
 
-## Impact models that belong together
+## Outcome models that belong together
 
-- **Parent and child.** A program's impact model can contribute to an organization's.
+- **Parent and child.** A program's outcome model can contribute to an organization's.
   `validate program.yaml --parent organization.yaml` checks that the
   `contributesTo` references resolve in the parent.
-- **Competing futures.** Impact models describing different futures of one market
+- **Competing futures.** Outcome models describing different futures of one market
   share one actor registry. `validate a.yaml b.yaml c.yaml --registry actors.yaml --futures`
   checks that they name their futures and perspectives, do not both speak for the
   same actor in the same future, and refer to each other's elements correctly.
@@ -248,12 +248,12 @@ element ID. Review it, then apply it.
 The JSON Schemas are generated from the Go types and embedded in the binary:
 
 ```bash
-impact-model schema                                   # list them
-impact-model schema impact-model > impact-model.schema.json
+outcome-model schema                                   # list them
+outcome-model schema outcome-model > outcome-model.schema.json
 ```
 
 Seven schemas are available: `theory-of-change`, `observation-set`,
-`impact-model-status`, `status-diff`, `actor-registry`, `review-response`,
+`outcome-model-status`, `status-diff`, `actor-registry`, `review-response`,
 and `csv-mapping`.
 
 ## Next

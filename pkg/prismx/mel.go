@@ -9,14 +9,14 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/mel"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-// ErrNotMELReady is returned, wrapped, when an impact model has no outcome
+// ErrNotMELReady is returned, wrapped, when an outcome model has no outcome
 // that review has not rejected, so a MEL plan would have no results.
-var ErrNotMELReady = errors.New("the impact model cannot be drawn as a MEL plan")
+var ErrNotMELReady = errors.New("the outcome model cannot be drawn as a MEL plan")
 
-// ToMEL exports the impact model as a monitoring, evaluation, and learning
+// ToMEL exports the outcome model as a monitoring, evaluation, and learning
 // plan.
 //
 //   - Results are the outcomes, at the same five levels. A result contributes
@@ -36,7 +36,7 @@ var ErrNotMELReady = errors.New("the impact model cannot be drawn as a MEL plan"
 //
 // Elements review rejected are left out, with every reference to them. st may
 // be nil; the indicators then have no current value.
-func ToMEL(doc *impact.Model, st *impact.Status) (*mel.Plan, error) {
+func ToMEL(doc *model.Model, st *model.Status) (*mel.Plan, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
@@ -178,7 +178,7 @@ func ToMEL(doc *impact.Model, st *impact.Status) (*mel.Plan, error) {
 
 // melExport carries what the MEL export has decided to keep.
 type melExport struct {
-	doc  *impact.Model
+	doc  *model.Model
 	live map[string]bool // IDs of exported elements
 }
 
@@ -220,13 +220,13 @@ func (x melExport) dependents(appliesTo []string) []string {
 	var ids []string
 	for _, id := range appliesTo {
 		switch ref, _ := x.doc.Element(id); ref.Kind {
-		case impact.ElementOutcome:
+		case model.ElementOutcome:
 			ids = append(ids, id)
-		case impact.ElementLink:
+		case model.ElementLink:
 			if l, ok := x.doc.Link(id); ok && !l.Rejected() {
 				ids = append(ids, l.To)
 			}
-		case impact.ElementIntervention:
+		case model.ElementIntervention:
 			if in, ok := x.doc.Intervention(id); ok {
 				ids = append(ids, in.Targets...)
 			}
@@ -259,7 +259,7 @@ func (x melExport) related(ids []string) []string {
 
 // reported returns the indicators an audience sees: its headline list in
 // order, then the other indicators reported to it, in file order.
-func (x melExport) reported(a impact.Audience) []string {
+func (x melExport) reported(a model.Audience) []string {
 	var ids []string
 	for _, h := range a.Headline {
 		ids = append(ids, h.IndicatorID)
@@ -272,7 +272,7 @@ func (x melExport) reported(a impact.Audience) []string {
 	return x.keep(ids)
 }
 
-func (x melExport) indicator(ind impact.Indicator, current string) mel.Indicator {
+func (x melExport) indicator(ind model.Indicator, current string) mel.Indicator {
 	m := mel.Indicator{
 		ID: ind.ID, Name: ind.Name, Measures: ind.Measures, Definition: ind.Definition,
 		Type: indicatorType(ind.MeasurementType), Unit: ind.Unit, Direction: string(ind.Direction),
@@ -306,53 +306,53 @@ func (x melExport) indicator(ind impact.Indicator, current string) mel.Indicator
 
 // indicatorType maps a measurement type; a theme count is a number, and a
 // hybrid indicator has no single MEL type, so it is left blank.
-func indicatorType(t impact.MeasurementType) string {
+func indicatorType(t model.MeasurementType) string {
 	switch t {
-	case impact.MeasurementQuantitative, impact.MeasurementThemeCount:
+	case model.MeasurementQuantitative, model.MeasurementThemeCount:
 		return mel.TypeQuantitative
-	case impact.MeasurementQualitative:
+	case model.MeasurementQualitative:
 		return mel.TypeQualitative
 	}
 	return ""
 }
 
-func activityStatus(s impact.InterventionStatus) string {
+func activityStatus(s model.InterventionStatus) string {
 	switch s {
-	case impact.InterventionPlanned:
+	case model.InterventionPlanned:
 		return mel.ActivityPlanned
-	case impact.InterventionInProgress:
+	case model.InterventionInProgress:
 		return mel.ActivityInProgress
-	case impact.InterventionPaused:
+	case model.InterventionPaused:
 		return mel.ActivityPaused
-	case impact.InterventionCompleted:
+	case model.InterventionCompleted:
 		return mel.ActivityCompleted
-	case impact.InterventionCancelled:
+	case model.InterventionCancelled:
 		return mel.ActivityCancelled
 	}
 	return ""
 }
 
-func evaluationStatus(s impact.EvaluationStatus) string {
+func evaluationStatus(s model.EvaluationStatus) string {
 	switch s {
-	case impact.EvaluationPlanned:
+	case model.EvaluationPlanned:
 		return mel.EvaluationPlanned
-	case impact.EvaluationInProgress:
+	case model.EvaluationInProgress:
 		return mel.EvaluationInProgress
-	case impact.EvaluationCompleted:
+	case model.EvaluationCompleted:
 		return mel.EvaluationCompleted
-	case impact.EvaluationCancelled:
+	case model.EvaluationCancelled:
 		return mel.EvaluationCancelled
 	}
 	return ""
 }
 
-func questionStatus(s impact.QuestionStatus) string {
+func questionStatus(s model.QuestionStatus) string {
 	switch s {
-	case impact.QuestionOpen:
+	case model.QuestionOpen:
 		return mel.QuestionOpen
-	case impact.QuestionAnswered:
+	case model.QuestionAnswered:
 		return mel.QuestionAnswered
-	case impact.QuestionRetired:
+	case model.QuestionRetired:
 		return mel.QuestionRetired
 	}
 	return ""

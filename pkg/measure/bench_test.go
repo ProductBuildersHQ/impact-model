@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/internal/testfixture"
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/internal/testfixture"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
-func pipeline(d *impact.Model, sets []*impact.ObservationSet) error {
+func pipeline(d *model.Model, sets []*model.ObservationSet) error {
 	if issues := validate.Document(d); validate.HasErrors(issues) {
 		return fmt.Errorf("invalid: %v", issues[0])
 	}
@@ -23,7 +23,7 @@ func pipeline(d *impact.Model, sets []*impact.ObservationSet) error {
 	if _, err := lint.Run(d, g, lint.Options{Profile: lint.ProfileFull}); err != nil {
 		return err
 	}
-	_, err = Evaluate(d, g, sets, time.Date(2026, 12, 31, 0, 0, 0, 0, time.UTC), impact.DefaultStatusOptions())
+	_, err = Evaluate(d, g, sets, time.Date(2026, 12, 31, 0, 0, 0, 0, time.UTC), model.DefaultStatusOptions())
 	return err
 }
 
@@ -38,7 +38,7 @@ func BenchmarkValidateLintAndStatus(b *testing.B) {
 }
 
 // The specification budgets one second for validate, lint, and status on a
-// Impact model of this size. The pipeline takes a few dozen milliseconds on a
+// Outcome model of this size. The pipeline takes a few dozen milliseconds on a
 // laptop, so a busy machine passes with room to spare and a change that
 // makes it an order of magnitude slower fails.
 func TestLargeTheoryStaysWithinTheTimeBudget(t *testing.T) {

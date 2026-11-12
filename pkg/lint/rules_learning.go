@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // takenUp reports whether a learning question or an evaluation that review
 // has not rejected names the element in its related IDs.
-func takenUp(d *impact.Model, id string) bool {
+func takenUp(d *model.Model, id string) bool {
 	for _, q := range d.LearningQuestions {
 		if !q.Rejected() && slices.Contains(q.RelatedIDs, id) {
 			return true
@@ -25,17 +25,17 @@ func takenUp(d *impact.Model, id string) bool {
 }
 
 func init() {
-	register("IMP-LRN-001", validate.SeverityWarning, "Once the impact model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one.", func(c *Context) []Finding {
+	register("OM-LRN-001", validate.SeverityWarning, "Once the outcome model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one.", func(c *Context) []Finding {
 		if len(c.Doc.LearningQuestions) == 0 && len(c.Doc.Evaluations) == 0 {
-			return nil // no evaluation plan or learning agenda yet; IMP-ASM-004 covers testing
+			return nil // no evaluation plan or learning agenda yet; OM-ASM-004 covers testing
 		}
 		var out []Finding
 		for i, a := range c.Doc.Assumptions {
-			if a.Provenance.IsRejected() || (a.Criticality != impact.CriticalityHigh && a.Criticality != impact.CriticalityCritical) {
+			if a.Provenance.IsRejected() || (a.Criticality != model.CriticalityHigh && a.Criticality != model.CriticalityCritical) {
 				continue
 			}
 			switch a.Status {
-			case "", impact.AssumptionUntested, impact.AssumptionAtRisk, impact.AssumptionInvalidated:
+			case "", model.AssumptionUntested, model.AssumptionAtRisk, model.AssumptionInvalidated:
 			default:
 				continue
 			}
@@ -47,7 +47,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-LRN-002", validate.SeverityInfo, "Every open learning question is taken up by a review meeting.", func(c *Context) []Finding {
+	register("OM-LRN-002", validate.SeverityInfo, "Every open learning question is taken up by a review meeting.", func(c *Context) []Finding {
 		reviewed := map[string]bool{}
 		for _, m := range c.Doc.ReviewMeetings {
 			for _, id := range m.QuestionIDs {
@@ -56,7 +56,7 @@ func init() {
 		}
 		var out []Finding
 		for i, q := range c.Doc.LearningQuestions {
-			if q.Rejected() || q.Status == impact.QuestionAnswered || q.Status == impact.QuestionRetired || reviewed[q.ID] {
+			if q.Rejected() || q.Status == model.QuestionAnswered || q.Status == model.QuestionRetired || reviewed[q.ID] {
 				continue
 			}
 			out = append(out, Finding{Path: at("learningQuestions", i), Element: q.ID,
@@ -65,7 +65,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-LRN-003", validate.SeverityWarning, "Evaluation dates and learning question due dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-LRN-003", validate.SeverityWarning, "Evaluation dates and learning question due dates fall within the time horizon of the outcome model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil
