@@ -1,11 +1,14 @@
-# CLAUDE.md — impact-model
+# CLAUDE.md — outcome-model
 
-Go-first impact model specification: Go structs in `pkg/impact` are the
+Go-first outcome model specification: Go structs in `pkg/model` are the
 source of truth; JSON Schemas under `schema/` are generated from them and
-embedded. The SDK, the `impact-model` CLI (Cobra), and the MCP server are
-thin layers over one service layer. The theory of change, the logic model, the
-outcome map, the logframe, the problem tree, OKRs, V2MOM, and DMAIC are
-projections of one impact model; none is part of another. "Projection" is the term
+embedded. The SDK, the `outcome-model` CLI (Cobra), and the MCP server are
+thin layers over one service layer. One outcome model serves four views:
+causality (the problem tree, the theory of change, the outcome map, the logic
+model, the logframe), strategy (OKRs, V2MOM, VSEM, OGSM, the Balanced
+Scorecard), measurement and learning (status, the metric tree, the MEL plan), and
+improvement (DMAIC). Each format is a projection of the model; none is part of
+another. "Projection" is the term
 for a method's rendering; `report.View` is the data a report is built from.
 
 ## Specs first
@@ -27,13 +30,13 @@ Read before implementing:
 - **JSON property names** are camelCase; enum values are snake_case.
 - **Library-first.** Logic lives in `pkg/...`; `cmd/` and the MCP server stay
   thin. No network I/O and no cloud SDKs in library packages.
-- **Edits** to impact models go through the patch engine (`pkg/edit`) once it
+- **Edits** to outcome models go through the patch engine (`pkg/edit`) once it
   exists; nothing else writes modified documents.
 - **Determinism.** Same inputs produce byte-identical outputs; never let map
   iteration order reach output.
 - **Reuse PRISM.** Use `prism-core` types (Person, Approver, Risk, health,
   trend, CapabilityRef) instead of redefining them.
-- **Examples are fictional.** Never commit a real organization's impact
+- **Examples are fictional.** Never commit a real organization's outcome
   model, observations, stories, or review responses to this repository.
 
 ## VisionStudio
@@ -43,12 +46,12 @@ whose home repository is `github.com/ProductBuildersHQ/outcome-model`. Claim wor
 with `visionstudio work claim <RMI-ID>` and carry the item's own ID as the
 trailer on every implementing commit: `Refs: <RMI-ID>`.
 
-- **New items** take the repository's slug: `RMI-IMPACTMODEL-<NNN>`, starting at
-  001. `visionstudio rmi create --repo github.com/ProductBuildersHQ/outcome-model`
+- **New items** take the repository's slug: `RMI-OUTCOMEMODEL-<NNN>`, starting
+  at 001. `visionstudio rmi create --repo github.com/ProductBuildersHQ/outcome-model`
   assigns the next one.
-- **Items from before the rename** keep their IDs, `RMI-THEORYOFCHANGESPEC-001`
-  to `-076`. Use them as they are; never renumber or recreate them under the new
-  slug.
+- **Items from before the renames** keep their IDs: `RMI-THEORYOFCHANGESPEC-001`
+  to `-076`, and `RMI-IMPACTMODEL-001` to `-028`. Use them as they are; never
+  renumber or recreate them under the new slug.
 
 ## Checks before committing
 

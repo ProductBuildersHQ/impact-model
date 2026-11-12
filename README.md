@@ -1,4 +1,4 @@
-# Impact Model
+# Outcome Model
 
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
@@ -17,47 +17,78 @@
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/ProductBuildersHQ/outcome-model/blob/main/LICENSE
 
-**Impact Model** is an AI-native format from
-[ProductBuildersHQ](https://github.com/ProductBuildersHQ) for describing how a
-program, product, or organization expects to bring about change. It is a
-[causal model](https://en.wikipedia.org/wiki/Causal_model): it states which
-interventions should change which outcomes, why each step should lead to the
-next, and how to measure whether it did. It is a Go-first data model with
-generated JSON Schema, plus an SDK, the `impact-model` CLI, and an MCP server.
+**Outcome Model** is an AI-native format from
+[ProductBuildersHQ](https://github.com/ProductBuildersHQ) for describing the
+outcomes a product, program, or organization works toward, and everything needed
+to plan for them, reach them, and show whether it did. It serves companies and
+nonprofits alike. One document holds four views of the same work:
 
-You describe the change once, in one impact model. The problem tree, the
+- **Causality:** why what you do should lead to the change you want. The
+  outcomes, the causal links between them with a reason for each, and the
+  assumptions and evidence behind them. This view makes the document a
+  [causal model](https://en.wikipedia.org/wiki/Causal_model).
+- **Strategy:** what you commit to. The objective, the strategies that reach it
+  and who owns each, and the measures and targets that say it has been reached.
+- **Measurement and learning:** how you will know. Indicators, observations, and
+  status over time, the evaluations planned, and the questions you most need
+  answered.
+- **Improvement:** how you make a measured process better and keep the gain.
+  Baselines and targets, root causes, and control limits.
+
+It is a Go-first data model with generated JSON Schema, plus an SDK, the
+`outcome-model` CLI, and an MCP server.
+
+You describe the work once, in one outcome model. The problem tree, the
 [theory of change](https://en.wikipedia.org/wiki/Theory_of_change), the logic
-model, the outcome map, the logframe, strategy formats such as OKRs, V2MOM, VSEM, OGSM, and the Balanced Scorecard,
-improvement formats such as DMAIC, and a monitoring, evaluation, and learning
-(MEL) plan are **projections** of it. Each draws the
+model, and the logframe; strategy formats such as OKRs, V2MOM, VSEM, OGSM, and
+the Balanced Scorecard; a monitoring, evaluation, and learning (MEL) plan; and
+improvement formats such as DMAIC are all **projections** of it. Each draws the
 same model for a different reader and leaves something out, and none of them is
 a part of another.
 
 ```mermaid
 flowchart LR
   classDef model fill:#fff4cc,stroke:#b8860b,stroke-width:2px,color:#111
-  classDef method fill:#eef7ee,stroke:#2e7d32,color:#111
+  classDef causal fill:#eef7ee,stroke:#2e7d32,color:#111
   classDef strategy fill:#e8eefc,stroke:#3f51b5,color:#111
+  classDef measure fill:#fdeee8,stroke:#bf360c,color:#111
+  classDef improve fill:#f3e8fc,stroke:#6a1b9a,color:#111
 
-  im["Impact model<br/>problem, causes, effects, outcomes, causal links,<br/>assumptions, evidence, interventions, indicators, audiences"]:::model
-  im --> pt["Problem tree"]:::method
-  im --> toc["Theory of change"]:::method
-  im --> lm["Logic model"]:::method
-  im --> om["Outcome map"]:::method
-  im --> lf["Logframe"]:::method
-  im --> okr["OKRs"]:::strategy
-  im --> v2["V2MOM"]:::strategy
-  im --> vs["VSEM"]:::strategy
-  im --> og["OGSM"]:::strategy
-  im --> bs["Balanced Scorecard"]:::strategy
-  im --> dm["DMAIC"]:::strategy
-  im --> ml["MEL plan"]:::method
+  om["Outcome model<br/>problem, causes, outcomes, causal links, assumptions,<br/>evidence, interventions, indicators, audiences"]:::model
+
+  subgraph causality["Causality"]
+    pt["Problem tree"]:::causal
+    toc["Theory of change"]:::causal
+    omap["Outcome map"]:::causal
+    lm["Logic model"]:::causal
+    lf["Logframe"]:::causal
+  end
+  subgraph strategy["Strategy"]
+    okr["OKRs"]:::strategy
+    v2["V2MOM"]:::strategy
+    vs["VSEM"]:::strategy
+    og["OGSM"]:::strategy
+    bs["Balanced Scorecard"]:::strategy
+  end
+  subgraph measurement["Measurement and learning"]
+    st["Status and metric tree"]:::measure
+    ml["MEL plan"]:::measure
+  end
+  subgraph improvement["Improvement"]
+    dm["DMAIC"]:::improve
+  end
+
+  om --> causality
+  om --> strategy
+  om --> measurement
+  om --> improvement
 ```
 
-## What is an impact model?
+## What is an outcome model?
 
-An impact model is one structured description of **how and why change is
-expected to happen**. It holds:
+An outcome model is one structured description of **the outcomes you are
+working toward**: how and why change is expected to happen, what you commit to,
+how you will measure it, and how you will improve it. It holds:
 
 - the **problem** it responds to, the **causes** that produce it, and the
   **effects** it leads to;
@@ -79,7 +110,11 @@ projection, and one model can produce many.
 
 ## Projections
 
-Each projection answers a different question for a different reader:
+Each projection answers a different question for a different reader. They are grouped here by the view they mainly draw on.
+
+### Causality
+
+Why should what we do lead to the change we want?
 
 | Projection | Answers | Get it with |
 |------------|---------|-------------|
@@ -88,14 +123,35 @@ Each projection answers a different question for a different reader:
 | **Outcome map** | What changes, who is responsible for each change, and how is it measured? The outcomes by level, each with its sphere, owner, cause, and indicators | `report outcome-map` |
 | **Logic model** | What goes in, what is done, and what comes out? Stages from inputs, activities, and outputs through short-, medium-, and long-term outcomes to impact, one per pathway | `report logic-model`, `logic-model-d2` |
 | **Logframe** | What do we promise, and how will we verify it? Narrative, indicators with targets, means of verification, and assumptions, for contracts and monitoring | `report logframe` |
-| **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
+
+### Strategy
+
+What do we commit to, and who owns it?
+
+| Projection | Answers | Get it with |
+|------------|---------|-------------|
 | **OKRs and outcome journeys** | What will a team commit to this quarter, and how does a person move through the outcomes? For the [PRISM](#part-of-the-prism-ecosystem) planning tools | `export okr`, `export journey` |
 | **V2MOM** | What do we want, what matters, how will we get it, what is in the way, and how will we know? Vision and values from the context, one method per pathway with its interventions as projects, measures from each pathway's North Star and guardrails, and obstacles from risks and open assumptions. See [the mapping](docs/guides/v2mom.md) | `export v2mom` |
 | **VSEM** | Where are we going, how, with what work, and how will we know? Vision and mission from the context, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, metrics from each pathway's North Star and guardrails, and the impact outcomes' indicators as the vision's metrics. See [the mapping](docs/guides/vsem.md) | `export vsem` |
 | **OGSM** | What one thing do we want to achieve, how will we know, what choices get us there, and are they working? The objective from the context, due at the end of the time horizon, its outcomes' indicators as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's North Star and guardrails as measures, and its interventions as actions. See [the mapping](docs/guides/ogsm.md) | `export ogsm` |
 | **Balanced Scorecard** | Is the strategy balanced across what funders, customers, processes, and capabilities need, and how does each objective drive the next? Outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives. See [the mapping](docs/guides/bsc.md) | `export bsc` |
-| **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](docs/guides/dmaic.md) | `export dmaic`, and `report dmaic-plan` to plan it before there is data |
+
+### Measurement and learning
+
+How will we know, and what must we learn?
+
+| Projection | Answers | Get it with |
+|------------|---------|-------------|
+| **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
 | **MEL plan** | How will we know it is working, when will we ask why, and what do we most need to learn? The outcomes as a results framework, interventions as activities, an indicator reference sheet per indicator, assumptions to monitor, and the evaluation plan, learning agenda, review meetings, and reporting schedule. See [the mapping](docs/guides/mel.md) | `export mel` |
+
+### Improvement
+
+How do we make a measured process better and keep the gain?
+
+| Projection | Answers | Get it with |
+|------------|---------|-------------|
+| **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](docs/guides/dmaic.md) | `export dmaic`, and `report dmaic-plan` to plan it before there is data |
 
 Each projection leaves something out. A problem tree shows the problem, what
 causes it, and what it leads to, but not the steps by which a program changes
@@ -103,26 +159,26 @@ it. A logic model shows the sequence from what
 goes in to what comes out, and rarely why each step holds. A theory of change
 shows why, and says less about what is delivered. A logframe fits the model into
 a matrix for contracts, and OKRs keep only what a team commits to for a period.
-None is derived from another. The impact model holds what they all need, so any
+None is derived from another. The outcome model holds what they all need, so any
 of them can be drawn from it. A logic model that arrives on its own can seed a
-*candidate* impact model, but it cannot supply the reasons and assumptions it
+*candidate* outcome model, but it cannot supply the reasons and assumptions it
 never held, so those stay marked as inferred until someone confirms them.
 
 ```bash
-impact-model report problem-tree impact-model.yaml      # the problem tree: causes, core problem, effects
-impact-model report pathway impact-model.yaml           # the theory of change, as pathways of change
-impact-model report outcome-map impact-model.yaml       # the outcome map
-impact-model report logic-model impact-model.yaml       # a logic model for each pathway
-impact-model report logframe impact-model.yaml          # the logframe matrix
-impact-model report definitions impact-model.yaml       # all of them, plus metrics and glossary
-impact-model export okr impact-model.yaml               # OKRs for the PRISM tools
-impact-model export journey impact-model.yaml           # outcome journeys for the PRISM tools
-impact-model export v2mom impact-model.yaml             # a V2MOM
-impact-model export vsem impact-model.yaml              # a VSEM
-impact-model export ogsm impact-model.yaml              # an OGSM
-impact-model export bsc impact-model.yaml               # a Balanced Scorecard
-impact-model export dmaic impact-model.yaml             # DMAIC improvement efforts
-impact-model export mel impact-model.yaml               # a monitoring, evaluation, and learning plan
+outcome-model report problem-tree outcome-model.yaml      # the problem tree: causes, core problem, effects
+outcome-model report pathway outcome-model.yaml           # the theory of change, as pathways of change
+outcome-model report outcome-map outcome-model.yaml       # the outcome map
+outcome-model report logic-model outcome-model.yaml       # a logic model for each pathway
+outcome-model report logframe outcome-model.yaml          # the logframe matrix
+outcome-model report definitions outcome-model.yaml       # all of them, plus metrics and glossary
+outcome-model export okr outcome-model.yaml               # OKRs for the PRISM tools
+outcome-model export journey outcome-model.yaml           # outcome journeys for the PRISM tools
+outcome-model export v2mom outcome-model.yaml             # a V2MOM
+outcome-model export vsem outcome-model.yaml              # a VSEM
+outcome-model export ogsm outcome-model.yaml              # an OGSM
+outcome-model export bsc outcome-model.yaml               # a Balanced Scorecard
+outcome-model export dmaic outcome-model.yaml             # DMAIC improvement efforts
+outcome-model export mel outcome-model.yaml               # a monitoring, evaluation, and learning plan
 ```
 
 Change the model once and every projection changes with it, so the numbers and
@@ -173,7 +229,7 @@ program's impact. The sources agree on five reasons:
 
 ## How the chain, the metrics, and what each audience sees fit together
 
-An impact model is the chain from resources to impact. Metrics hang off each step
+An outcome model is the chain from resources to impact. Metrics hang off each step
 of it, and different readers should see a different few. The first diagram is one
 program, shown as a pathway. The second shows how its metrics reach each audience.
 
@@ -278,11 +334,11 @@ Reading the second diagram:
   lead one list and not appear in another.
 - **Every box is something you can record and report today.** Mark an indicator as a
   program's North Star, with its guardrails, in the pathway's `focus`. Give each
-  audience an ordered, worded `headline` list. `impact-model report metric-tree`
+  audience an ordered, worded `headline` list. `outcome-model report metric-tree`
   shows a program's North Star and every indicator from activity to impact, and
-  `impact-model report headline` shows what each audience is told. The amber boxes
+  `outcome-model report headline` shows what each audience is told. The amber boxes
   are the choices you make: which number a program steers by, and which few each
-  audience leads with. `impact-model lint` checks them.
+  audience leads with. `outcome-model lint` checks them.
 
 ## What this project gives you
 
@@ -290,7 +346,7 @@ Reading the second diagram:
 |---------|-----|
 | **A model you can trust** | Every element records whether a source *stated* it, you *inferred* it, it is still a *hypothesis*, or reviewers *confirmed* it. Reports show how much of the model is established and how much is our reading |
 | **Edits that cannot make it worse** | One validated, atomic patch engine behind the CLI, the SDK, and the AI tools. A change that adds structural errors is rejected, and `--dry-run` shows the result first |
-| **Quality you can check** | A schema, structural validation, 81 deterministic lint rules, and a rubric for human or AI judges, so "is this a good impact model?" has an answer you can repeat |
+| **Quality you can check** | A schema, structural validation, 81 deterministic lint rules, and a rubric for human or AI judges, so "is this a good outcome model?" has an answer you can repeat |
 | **Progress you can measure** | Load a spreadsheet of numbers and see which indicators, outcomes, and pathways are on track, with assumptions that can cap a result and a confidence score for each route to impact |
 | **Artifacts for each audience** | Executive and funder reports, audience stories, slide decks, Word and PowerPoint files, CSV tables, and OKR, V2MOM, VSEM, OGSM, Balanced Scorecard, DMAIC, and MEL exports, all from one source and stamped with the version and hash |
 | **Review that comes back** | Send a packet or sheet to reviewers, import their answers as proposed changes you inspect, then record approval |
@@ -305,14 +361,14 @@ what they hope for, and then show whether it did.
 ## Quick start
 
 ```bash
-go install github.com/ProductBuildersHQ/outcome-model/cmd/impact-model@latest
+go install github.com/ProductBuildersHQ/outcome-model/cmd/outcome-model@latest
 
-impact-model init --id my-program --name "My program" --out impact-model.yaml
-impact-model validate impact-model.yaml
-impact-model lint impact-model.yaml
-impact-model report definitions impact-model.yaml --out definitions.md   # problem tree, pathways, logic models, metrics, glossary
-impact-model status impact-model.yaml -O observations.yaml                # how far it has come
-impact-model mcp --root .                                          # serve the tools to an AI agent
+outcome-model init --id my-program --name "My program" --out outcome-model.yaml
+outcome-model validate outcome-model.yaml
+outcome-model lint outcome-model.yaml
+outcome-model report definitions outcome-model.yaml --out definitions.md   # problem tree, pathways, logic models, metrics, glossary
+outcome-model status outcome-model.yaml -O observations.yaml                # how far it has come
+outcome-model mcp --root .                                          # serve the tools to an AI agent
 ```
 
 Fictional, complete examples are in [`examples/`](examples/): a membership
@@ -327,7 +383,7 @@ as a documentation site (`mkdocs serve` runs it locally):
 | To | Read |
 |----|------|
 | Install and try it | [Getting started](docs/guides/getting-started.md) |
-| Write or change an impact model | [Authoring an impact model](docs/guides/authoring.md) |
+| Write or change an outcome model | [Authoring an outcome model](docs/guides/authoring.md) |
 | Measure progress | [Measuring progress](docs/guides/measurement.md) |
 | Produce reports and decks | [Reports and decks](docs/guides/reports-and-decks.md) |
 | Draw the problem tree | [Problem tree](docs/guides/problem-tree.md) |
@@ -337,7 +393,7 @@ as a documentation site (`mkdocs serve` runs it locally):
 | Export a Balanced Scorecard, and see how it maps | [Balanced Scorecard](docs/guides/bsc.md) |
 | Export a MEL plan, and see how it maps | [MEL](docs/guides/mel.md) |
 | Run a program with DMAIC, and see how it maps | [DMAIC](docs/guides/dmaic.md) |
-| Send an impact model out for review | [Review round trip](docs/guides/review-round-trip.md) |
+| Send an outcome model out for review | [Review round trip](docs/guides/review-round-trip.md) |
 | Check quality and run a judge | [Quality and judging](docs/guides/quality-and-judging.md) |
 | Connect an AI agent | [MCP server and agent skills](docs/guides/mcp-and-skills.md) |
 | Look up a command | [CLI reference](docs/guides/cli.md) |
@@ -359,7 +415,7 @@ reports use [structured-evaluation](https://github.com/plexusone/structured-eval
 
 ## Credits
 
-The impact model and its projections build on methods developed by many people:
+The outcome model and its projections build on methods developed by many people:
 
 - **ActKnowledge and the Center for Theory of Change:** preconditions, rationales
   for each link, and the accountability ceiling.

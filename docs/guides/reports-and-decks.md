@@ -1,24 +1,24 @@
 # Reports and Decks
 
-Every report, deck, and table is built from the same view of the impact model, so a
+Every report, deck, and table is built from the same view of the outcome model, so a
 number or a label never differs between artifacts. The output is deterministic:
 the same inputs give byte-identical files.
 
 ## Definition reports
 
-These describe the impact model and need no observations, so a workshop can review
+These describe the outcome model and need no observations, so a workshop can review
 them before any data exists.
 
 ```bash
-impact-model report logic-model impact-model.yaml --pathway pw-supply
-impact-model report definitions impact-model.yaml --out definitions.md
+outcome-model report logic-model outcome-model.yaml --pathway pw-supply
+outcome-model report definitions outcome-model.yaml --out definitions.md
 ```
 
 | Kind | What it shows |
 |------|---------------|
 | `pathway` | The causal pathways, as diagrams |
 | `logic-model` | Inputs, activities, outputs, and outcomes for each pathway. `--diagram` draws it left to right (also `logic-model-diagram`) |
-| `logic-model-layered` | The logic model as columns, from inputs to impact, with a box for each item and an arrow wherever the impact model says one leads to another. Written as Mermaid |
+| `logic-model-layered` | The logic model as columns, from inputs to impact, with a box for each item and an arrow wherever the outcome model says one leads to another. Written as Mermaid |
 | `logic-model-d2` | The same layered diagram as [D2](https://d2lang.com), where a grid keeps every stage in its own column. Render it with `d2 diagram.d2 diagram.svg` |
 | `problem-tree` | The core problem with its causes below and effects above, arrows flowing upward, and tables of what addresses each. Written as Mermaid; `--pathway` draws one program's own tree. See the [problem tree guide](problem-tree.md) |
 | `problem-tree-d2` | The same problem tree as D2, where a grid keeps every row in place |
@@ -29,18 +29,18 @@ impact-model report definitions impact-model.yaml --out definitions.md
 | `metrics` | Metric definitions and how they combine across pathways |
 | `metric-selection` | Candidate indicators scored against your criteria, best first |
 | `collection-plan` | What is collected, how, how often, and the burden against the budget |
-| `glossary` | The words the impact model uses |
-| `assessment` | How much of the impact model is stated, inferred, or still a hypothesis |
+| `glossary` | The words the outcome model uses |
+| `assessment` | How much of the outcome model is stated, inferred, or still a hypothesis |
 | `definitions` | One document for a workshop: the problem trees (the whole model's, then each pathway's own), the causal pathways, logic models, outcome maps, logframes, metric definitions, and glossary |
 
 ## Status reports
 
-These need observations (`-O`) and describe how far the impact model has come.
+These need observations (`-O`) and describe how far the outcome model has come.
 
 ```bash
-impact-model report exec impact-model.yaml -O obs-q3.yaml --prev status-q2.json
-impact-model report story impact-model.yaml -O obs-q3.yaml --audience aud-funders
-impact-model report learning-review impact-model.yaml -O obs-q3.yaml --period 2026-Q3
+outcome-model report exec outcome-model.yaml -O obs-q3.yaml --prev status-q2.json
+outcome-model report story outcome-model.yaml -O obs-q3.yaml --audience aud-funders
+outcome-model report learning-review outcome-model.yaml -O obs-q3.yaml --period 2026-Q3
 ```
 
 | Kind | What it shows |
@@ -56,7 +56,7 @@ impact-model report learning-review impact-model.yaml -O obs-q3.yaml --period 20
 | `metric-tree` | Per pathway: its North Star and guardrails, then its indicators from activity to impact, as a table and a diagram (`--pathway` narrows it) |
 | `learning-review` | A period's review (`--period`): what changed, surprises, decisions |
 | `portfolio` | Pathways side by side, described without recommending |
-| `narrative` | The impact model as prose, checking the solution against the problem |
+| `narrative` | The outcome model as prose, checking the solution against the problem |
 | `actors` | Who does what, including partners |
 | `custom` | Your own Go `text/template` over the report view (`--template`) |
 
@@ -73,8 +73,8 @@ document lives.
 ## Slide decks
 
 ```bash
-impact-model deck workshop impact-model.yaml -o workshop.md
-impact-model deck exec impact-model.yaml -O obs-q3.yaml --export exec.pdf
+outcome-model deck workshop outcome-model.yaml -o workshop.md
+outcome-model deck exec outcome-model.yaml -O obs-q3.yaml --export exec.pdf
 ```
 
 | Deck | Contents |
@@ -86,14 +86,14 @@ impact-model deck exec impact-model.yaml -O obs-q3.yaml --export exec.pdf
 
 A deck is written as [Marp](https://marp.app) Markdown. With `--export file`
 (`.pdf`, `.pptx`, or `.html`) it is also rendered by `marp`, and by `mmdc` when it
-has diagrams. Each deck carries speaker notes and shows the export stamp (impact model, version, and
+has diagrams. Each deck carries speaker notes and shows the export stamp (outcome model, version, and
 hash) on its title slide.
 
 ## Word and PowerPoint
 
 ```bash
-impact-model export docx definitions impact-model.yaml --out impact-model.docx --reference-doc template.docx
-impact-model export pptx workshop impact-model.yaml --out workshop.pptx
+outcome-model export docx definitions outcome-model.yaml --out outcome-model.docx --reference-doc template.docx
+outcome-model export pptx workshop outcome-model.yaml --out workshop.pptx
 ```
 
 These convert the Markdown to a Pandoc-ready profile (diagrams as PNG, basis
@@ -104,7 +104,7 @@ written and the exit code is 3.
 ## Spreadsheets
 
 ```bash
-impact-model export csv indicators impact-model.yaml --out indicators.csv
+outcome-model export csv indicators outcome-model.yaml --out indicators.csv
 ```
 
 Tables: `indicators`, `metrics`, `glossary`, `metric-selection`, and
@@ -114,21 +114,21 @@ Tables: `indicators`, `metrics`, `glossary`, `metric-selection`, and
 ## The export stamp
 
 Every export starts with a stamp, `model:<id> version:<v> hash:<h>`, where the hash
-is of the impact model's canonical form. The same hash appears in every format, so you
+is of the outcome model's canonical form. The same hash appears in every format, so you
 can tell that a PDF, a Word file, and a spreadsheet came from the same version.
 `--no-stamp` leaves it off, and `--as-of` records the date the artifact describes.
 
 ## PRISM exports
 
 ```bash
-impact-model export okr impact-model.yaml -O obs-q3.yaml -o okr.json
-impact-model export journey impact-model.yaml -o journeys.json
-impact-model export v2mom impact-model.yaml -O obs-q3.yaml -o v2mom.json
-impact-model export vsem impact-model.yaml -O obs-q3.yaml -o vsem.json
-impact-model export ogsm impact-model.yaml -O obs-q3.yaml -o ogsm.json
-impact-model export bsc impact-model.yaml -O obs-q3.yaml -o bsc.json
-impact-model export dmaic impact-model.yaml -O obs-q3.yaml -o dmaic.json
-impact-model export mel impact-model.yaml -O obs-q3.yaml -o mel.json
+outcome-model export okr outcome-model.yaml -O obs-q3.yaml -o okr.json
+outcome-model export journey outcome-model.yaml -o journeys.json
+outcome-model export v2mom outcome-model.yaml -O obs-q3.yaml -o v2mom.json
+outcome-model export vsem outcome-model.yaml -O obs-q3.yaml -o vsem.json
+outcome-model export ogsm outcome-model.yaml -O obs-q3.yaml -o ogsm.json
+outcome-model export bsc outcome-model.yaml -O obs-q3.yaml -o bsc.json
+outcome-model export dmaic outcome-model.yaml -O obs-q3.yaml -o dmaic.json
+outcome-model export mel outcome-model.yaml -O obs-q3.yaml -o mel.json
 ```
 
 `export okr` turns each owned outcome that has measured indicators into an
@@ -146,7 +146,7 @@ for the outcomes placed in scorecard perspectives; the
 document for the pathways marked for DMAIC; the [DMAIC guide](dmaic.md) maps
 each part. `export mel` writes a monitoring, evaluation, and learning plan; the
 [MEL guide](mel.md) maps each part. All eight are JSON for the PRISM tools, and an agent gets the same
-exports from the MCP server's `impact_export` tool.
+exports from the MCP server's `outcome_export` tool.
 
 ## The layered logic model diagram
 
@@ -164,7 +164,7 @@ runs back to an earlier stage is feedback. It is left out of the diagram, where
 it would cut across the boxes between, and listed under it.
 
 Both diagrams are available, so you can compare them. The layered one is made
-by `pkg/logicmodel`, which builds a layered graph from the impact model and writes it
+by `pkg/logicmodel`, which builds a layered graph from the outcome model and writes it
 through [d2vision](https://github.com/grokify/d2vision)'s diagram spec, the same
 spec that writes the D2 and the Mermaid.
 

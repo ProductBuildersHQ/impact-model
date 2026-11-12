@@ -1,8 +1,11 @@
 // Package outcomemodel is a Go-first specification for representing,
-// measuring, and reporting on an impact: why a program expects to bring about
-// change, what it does, and what it measures. The theory of change, the logic
-// model, the outcome map, the logframe, and OKRs are projections of one outcome
-// model.
+// measuring, and reporting on the outcomes a product, program, or organization
+// works toward. One outcome model serves four views: causality (why what is
+// done should lead to the change wanted), strategy (what is committed to),
+// measurement and learning (how progress is known), and improvement (how a
+// measured process gets better). The theory of change, the logic model, OKRs,
+// the Balanced Scorecard, a MEL plan, DMAIC, and the other formats are
+// projections of one outcome model.
 //
 // Go structs are the source of truth; JSON Schemas are generated from them
 // and embedded. Tooling built on the model validates documents, analyzes

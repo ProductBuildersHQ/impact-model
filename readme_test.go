@@ -19,7 +19,7 @@ func TestReadmeAndSiteHomeShareTheirOverview(t *testing.T) {
 		homeEnd            string
 		rewriteReadmeLinks bool
 	}{
-		{"overview", "**Impact Model** is", "\n## Quick start", "\n## Start here", true},
+		{"overview", "**Outcome Model** is", "\n## Quick start", "\n## Start here", true},
 		{"PRISM ecosystem", "## Part of the PRISM ecosystem", "\n## Credits", "\n## License", false},
 	}
 	for _, s := range shared {

@@ -2,13 +2,13 @@
 
 A monitoring, evaluation, and learning (MEL) plan says how a team will know
 whether its work is producing the results it intends, and what it will do with
-what it learns. An impact model already holds most of one: the outcomes and
+what it learns. An outcome model already holds most of one: the outcomes and
 how they lead to each other, the indicators that measure them, and the
 assumptions they rest on. Add an evaluation plan, a learning agenda, and review
 meetings, and the model is the whole plan.
 
 ```bash
-impact-model export mel impact-model.yaml -O observations.yaml -o mel.json
+outcome-model export mel outcome-model.yaml -O observations.yaml -o mel.json
 ```
 
 The output is a MEL plan in the JSON format of
@@ -23,7 +23,7 @@ splan goals mel generate markdown mel.json -o mel-plan.md
 
 ## The mapping at a glance
 
-| MEL plan | Comes from | In impact model terms |
+| MEL plan | Comes from | In outcome model terms |
 |----------|-----------|-----------------------|
 | **Results framework** | `outcomes`, with `links` and `preconditionGroups` | The changes that should happen, at the same five levels, each contributing to the outcomes it leads to |
 | **Activities** | `interventions` | The work, with the outcomes it targets, its owner, status, and dates |
@@ -37,7 +37,7 @@ splan goals mel generate markdown mel.json -o mel-plan.md
 Two rules hold throughout:
 
 - **Nothing is invented.** Every field in the plan is copied or translated from
-  the impact model. A field the model leaves empty stays empty: the plan's
+  the outcome model. A field the model leaves empty stays empty: the plan's
   purpose, for one, has no source and is left for you to write.
 - **What review rejected stays out.** A rejected outcome, intervention,
   assumption, indicator, evaluation, or learning question is not exported, and
@@ -109,7 +109,7 @@ Each outcome that review has not rejected is a result, at the same level:
 contributes to the outcomes its causal links lead to, and to the target of any
 precondition group it belongs to.
 
-**Feedback links are left out.** An impact model can mark a link as an
+**Feedback links are left out.** An outcome model can mark a link as an
 intentional loop, such as stronger collaboration feeding back into peer ties.
 A results framework is a hierarchy, and a MEL plan treats a loop as an error,
 so the export keeps the forward links only. The loop stays in the model, and
@@ -169,7 +169,7 @@ A MEL plan needs at least one result. A model whose outcomes have all been
 rejected is refused with exit status 2:
 
 ```
-impact-model: impact-model.yaml: the impact model cannot be drawn as a MEL plan: add an outcome
+outcome-model: outcome-model.yaml: the outcome model cannot be drawn as a MEL plan: add an outcome
 ```
 
 ## Checking the result
@@ -178,13 +178,13 @@ The exported plan always passes prism-roadmap's default MEL validation. The
 strict options also ask that every result has an indicator, every indicator a
 full collection plan, every assumption a way to monitor it, and the plan an
 evaluation, a learning question, and a review. Those are gaps in the model, so
-`impact-model lint` points at most of them first: IMP-MEA-001 and IMP-MEA-002 for
-measurement, and IMP-LRN-001 to 003 for evaluation and learning.
+`outcome-model lint` points at most of them first: OM-MEA-001 and OM-MEA-002 for
+measurement, and OM-LRN-001 to 003 for evaluation and learning.
 
 ## Going the other way
 
 There is no import from a MEL plan. A results framework says what leads to
-what, but not why, and an impact model built from one would have to invent the
-rationale behind each link. Start the impact model from the plan instead: each
+what, but not why, and an outcome model built from one would have to invent the
+rationale behind each link. Start the outcome model from the plan instead: each
 result suggests an outcome, each activity an intervention, and each indicator,
 evaluation, and learning question carries over as it is.

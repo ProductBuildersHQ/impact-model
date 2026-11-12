@@ -1,11 +1,11 @@
 # V2MOM
 
 If you already write V2MOMs, this page shows where each part of a V2MOM comes
-from in an impact model, and what the impact model adds that a V2MOM written by
+from in an outcome model, and what the outcome model adds that a V2MOM written by
 hand usually leaves out.
 
 ```bash
-impact-model export v2mom impact-model.yaml -O observations.yaml -o v2mom.json
+outcome-model export v2mom outcome-model.yaml -O observations.yaml -o v2mom.json
 ```
 
 The output is a V2MOM document in the JSON format of
@@ -14,7 +14,7 @@ package, which validates it and can render it as slides.
 
 ## The mapping at a glance
 
-| V2MOM | Comes from | In impact model terms |
+| V2MOM | Comes from | In outcome model terms |
 |-------|-----------|-----------------------|
 | **Vision** | `context.vision` | The future the organization works toward |
 | **Values** | `context.values`, in order | The principles that guide how it works, most important first |
@@ -27,10 +27,10 @@ package, which validates it and can render it as slides.
 The sections below explain each row. Two rules hold throughout:
 
 - **Nothing is invented.** Every field in the V2MOM is copied or translated from
-  something in the impact model. A section the model cannot fill is left empty,
+  something in the outcome model. A section the model cannot fill is left empty,
   and a V2MOM that would fail validation is refused instead of written.
 - **Order is kept.** Values, methods, measures, and projects appear in the order
-  the impact model lists them, so the same model always gives the same V2MOM.
+  the outcome model lists them, so the same model always gives the same V2MOM.
 
 ## One pathway, end to end
 
@@ -97,7 +97,7 @@ context:
   vision: A county where every resident can count on a strong local nonprofit when they need one.
 ```
 
-The impact model also has `context.mission`, why the organization exists. A
+The outcome model also has `context.mission`, why the organization exists. A
 V2MOM has no mission section, so the mission is not exported.
 
 ## Values
@@ -120,7 +120,7 @@ nothing in the model causes them, and they are not measured.
 ## Methods
 
 Each **pathway** becomes one method, in the order the model lists them. A
-pathway is the impact model's unit of "how we will get there": a program,
+pathway is the outcome model's unit of "how we will get there": a program,
 product, or strategy, with its own outcomes, its own interventions, and its own
 owner. A V2MOM usually has three to seven methods, and a model usually has a
 similar number of pathways.
@@ -148,7 +148,7 @@ the ID of the method it belongs to.
 | Status | `planned` → Approved, `in_progress` → In Progress, `completed` → Completed, `cancelled` → Cancelled; `paused` is left blank |
 | External links | `initiativeRefs`, keyed by framework, such as a Jira or VisionStudio item |
 
-"Intervention" is the impact model's word because the model is causal: each
+"Intervention" is the outcome model's word because the model is causal: each
 intervention says which outcomes it should change. An *initiative* is the
 organizational effort that delivers one, and `initiativeRefs` links the two.
 
@@ -173,7 +173,7 @@ Each measure's description starts with its role, such as "North Star:".
 
 Status is On Track, At Risk, Behind, or Achieved, from the indicator's state on
 the status date. A pathway without a focus exports a method with no measures;
-`impact-model lint` points out programs and products that have no North Star.
+`outcome-model lint` points out programs and products that have no North Star.
 
 The V2MOM has no top-level measures. Every measure belongs to a method, which
 the document records as the `nested` structure.
@@ -199,7 +199,7 @@ pathways, or to nothing in particular, is listed for the whole V2MOM.
 ## What a V2MOM leaves out
 
 A V2MOM is a short plan, so the export keeps only what fits it. These parts of
-the impact model are not in the V2MOM, and other projections show them:
+the outcome model are not in the V2MOM, and other projections show them:
 
 | Left out | Where to see it |
 |----------|-----------------|
@@ -210,13 +210,13 @@ the impact model are not in the V2MOM, and other projections show them:
 | Where each element came from: stated, inferred, or confirmed | `report assessment` |
 | The mission | `context.mission` in the model |
 
-## What the impact model adds
+## What the outcome model adds
 
 A V2MOM written by hand often states its methods and measures without saying why
-the methods should lead to the vision. Exported from an impact model:
+the methods should lead to the vision. Exported from an outcome model:
 
 - each method is backed by a pathway of outcomes, each link with its reason
-- each North Star is one that `impact-model lint` has checked sits at or below
+- each North Star is one that `outcome-model lint` has checked sits at or below
   the organization's ceiling of accountability, so the V2MOM does not commit
   the organization to change it cannot answer for
 - the obstacles include the assumptions the plan rests on, not only external
@@ -226,17 +226,17 @@ the methods should lead to the vision. Exported from an impact model:
 ## When the export is refused
 
 A V2MOM needs a vision, at least one value, and at least one method. If the
-impact model has no `context.vision`, no `context.values`, or no pathway,
+outcome model has no `context.vision`, no `context.values`, or no pathway,
 `export v2mom` writes nothing and exits with status 2, naming what to add:
 
 ```
-impact-model: impact-model.yaml: the impact model cannot be drawn as a V2MOM: add context.values
+outcome-model: outcome-model.yaml: the outcome model cannot be drawn as a V2MOM: add context.values
 ```
 
 Add values with a patch:
 
 ```bash
-impact-model patch impact-model.yaml - <<'EOF'
+outcome-model patch outcome-model.yaml - <<'EOF'
 [{"op":"add","path":"/context/values","value":[
   {"name":"Members first","description":"Every program answers to what members need."}]}]
 EOF
@@ -245,7 +245,7 @@ EOF
 ## Going the other way
 
 There is no import from a V2MOM. A V2MOM has no outcomes, causal links, or
-assumptions to read, so an impact model built from one would have to invent the
-reasoning that makes it an impact model. Start the impact model from the V2MOM's
+assumptions to read, so an outcome model built from one would have to invent the
+reasoning that makes it an outcome model. Start the outcome model from the V2MOM's
 vision, values, and methods instead: each method suggests a pathway, and each
 measure an indicator.

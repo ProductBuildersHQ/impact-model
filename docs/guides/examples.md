@@ -6,7 +6,7 @@ directory. **Everything in them is fictional**: the organizations, people,
 numbers, and URLs (all under `example.org`) are invented for illustration.
 
 Each is valid, is in canonical form, and is checked by the test suite, and the two
-reference impact models lint with no errors, so you can copy one as a starting point.
+reference outcome models lint with no errors, so you can copy one as a starting point.
 
 ## Membership network
 
@@ -22,32 +22,32 @@ with causes that feed one another and the effects of the core problem, and
 target groups; audiences and a story codebook; a mission and vision, a North
 Star with a guardrail for each program area, and headline lists that lead the
 board, funders, and members with different numbers; and a spreadsheet import with
-its column mapping. The folder holds the impact model, a quarter of observations with
+its column mapping. The folder holds the outcome model, a quarter of observations with
 stories and a learning review, and a monthly CSV with its `mapping.yaml`.
 
 ```bash
-impact-model status examples/intermediary/impact-model.yaml \
+outcome-model status examples/intermediary/outcome-model.yaml \
   -O examples/intermediary/observations-2026-q3.yaml
-impact-model import observations --csv examples/intermediary/csv/monthly-q4.csv \
-  --map examples/intermediary/csv/mapping.yaml --model examples/intermediary/impact-model.yaml
+outcome-model import observations --csv examples/intermediary/csv/monthly-q4.csv \
+  --map examples/intermediary/csv/mapping.yaml --model examples/intermediary/outcome-model.yaml
 ```
 
 ## Market adoption
 
 `examples/market-adoption`: a fictional open standard driven to adoption in a
 market with two competing approaches, a proprietary single-vendor scheme and an
-extension of an older authorization framework. It shows an impact model about a market
+extension of an older authorization framework. It shows an outcome model about a market
 rather than a program: adoption outcomes, the competition modelled as outcomes in
 the `interest` sphere, and a shared actor registry. It uses the
 Adopt-Adapt-Expand-Respond market-systems framing.
 
 ## Competing futures
 
-`examples/competing-futures`: three impact models that describe different futures of
+`examples/competing-futures`: three outcome models that describe different futures of
 one market and share one registry of actors. Validate them together:
 
 ```bash
-impact-model validate examples/competing-futures/future-*.yaml \
+outcome-model validate examples/competing-futures/future-*.yaml \
   --registry examples/competing-futures/actors.yaml --futures
 ```
 
@@ -64,8 +64,8 @@ has two causes, a missing training budget that leaves staff no time, and two
 effects, untrained leadership and weaker programs.
 
 ```bash
-impact-model lint examples/course-catalog/impact-model.yaml
-impact-model export dmaic examples/course-catalog/impact-model.yaml \
+outcome-model lint examples/course-catalog/outcome-model.yaml
+outcome-model export dmaic examples/course-catalog/outcome-model.yaml \
   -O examples/course-catalog/observations-2026-h1.yaml
 ```
 

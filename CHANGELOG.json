@@ -1,6 +1,6 @@
 {
   "irVersion": "1.0",
-  "project": "impact-model",
+  "project": "outcome-model",
   "repository": "https://github.com/ProductBuildersHQ/outcome-model",
   "versioning": "semver",
   "commitConvention": "conventional",
@@ -10,30 +10,33 @@
   "unreleased": {
     "highlights": [
       {
-        "description": "A VSEM from the impact model alone: `export vsem` writes the vision, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, and metrics from each pathway's focus and the impact outcomes, each with an accountable owner"
+        "description": "The project is now the outcome model, one document with four views: causality, strategy, measurement and learning, and improvement. The module is `github.com/ProductBuildersHQ/outcome-model` and the command is `outcome-model`"
       },
       {
-        "description": "A monitoring, evaluation, and learning plan from the impact model alone: `export mel` writes the results framework, activities, indicator reference sheets, assumptions to monitor, evaluation plan, learning agenda, reviews, and reporting schedule"
+        "description": "A VSEM from the outcome model alone: `export vsem` writes the vision, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, and metrics from each pathway's focus and the impact outcomes, each with an accountable owner"
       },
       {
-        "description": "An OGSM from the impact model alone: `export ogsm` writes the objective, due at the end of the time horizon, the indicators of its outcomes as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's focus as measures, and its interventions as actions"
+        "description": "A monitoring, evaluation, and learning plan from the outcome model alone: `export mel` writes the results framework, activities, indicator reference sheets, assumptions to monitor, evaluation plan, learning agenda, reviews, and reporting schedule"
       },
       {
-        "description": "A Balanced Scorecard from the impact model: `export bsc` writes the outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives"
+        "description": "An OGSM from the outcome model alone: `export ogsm` writes the objective, due at the end of the time horizon, the indicators of its outcomes as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's focus as measures, and its interventions as actions"
+      },
+      {
+        "description": "A Balanced Scorecard from the outcome model: `export bsc` writes the outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives"
       }
     ],
     "added": [
       {
-        "description": "`export vsem` and the `vsem` kind of the MCP tool `impact_export`: a VSEM (Vision, Strategy, Execution, Metrics) in prism-roadmap's `goals/vsem` format. The vision and mission come from the context, each pathway is a strategy with its resources, its interventions are execution with kind, owner, status, and dates, and its focus indicators are the strategy's metrics; the indicators of impact-level outcomes are the vision's metrics. A model without a vision or mission, or without a pathway, is refused, naming what to add. In Go: `prismx.ToVSEM` and `prismx.ErrNotVSEMReady`"
+        "description": "`export vsem` and the `vsem` kind of the MCP tool `outcome_export`: a VSEM (Vision, Strategy, Execution, Metrics) in prism-roadmap's `goals/vsem` format. The vision and mission come from the context, each pathway is a strategy with its resources, its interventions are execution with kind, owner, status, and dates, and its focus indicators are the strategy's metrics; the indicators of impact-level outcomes are the vision's metrics. A model without a vision or mission, or without a pathway, is refused, naming what to add. In Go: `prismx.ToVSEM` and `prismx.ErrNotVSEMReady`"
       },
       {
-        "description": "`export mel` and the `mel` kind of the MCP tool `impact_export`: a MEL plan in prism-roadmap's `goals/mel` format. Outcomes become the results framework (feedback links, which are loops, left out), interventions activities, and indicators reference sheets with quality checks and caveats; assumptions carry their tests as how they are monitored; evaluations, learning questions, and review meetings carry over, a link they name written as both its ends; and audiences become the reporting schedule. A model with no outcome review has not rejected is refused. In Go: `prismx.ToMEL` and `prismx.ErrNotMELReady`"
+        "description": "`export mel` and the `mel` kind of the MCP tool `outcome_export`: a MEL plan in prism-roadmap's `goals/mel` format. Outcomes become the results framework (feedback links, which are loops, left out), interventions activities, and indicators reference sheets with quality checks and caveats; assumptions carry their tests as how they are monitored; evaluations, learning questions, and review meetings carry over, a link they name written as both its ends; and audiences become the reporting schedule. A model with no outcome review has not rejected is refused. In Go: `prismx.ToMEL` and `prismx.ErrNotMELReady`"
       },
       {
-        "description": "`export ogsm` and the `ogsm` kind of the MCP tool `impact_export`: an OGSM (Objective, Goals, Strategies, Measures) in prism-roadmap's `goals/ogsm` format. The objective is `context.objective`, or the model's one impact outcome, due at `context.timeHorizon.end`; goals are the indicators of its outcomes; each pathway is a strategy serving the goals its outcomes are or lead to, through causal links and precondition groups; its focus indicators are measures, leaving out any that is already a goal; and its interventions are actions with owners, status, and dates. A model with an ambiguous objective, or without a pathway, is refused, naming what to add. In Go: `prismx.ToOGSM` and `prismx.ErrNotOGSMReady`"
+        "description": "`export ogsm` and the `ogsm` kind of the MCP tool `outcome_export`: an OGSM (Objective, Goals, Strategies, Measures) in prism-roadmap's `goals/ogsm` format. The objective is `context.objective`, or the model's one impact outcome, due at `context.timeHorizon.end`; goals are the indicators of its outcomes; each pathway is a strategy serving the goals its outcomes are or lead to, through causal links and precondition groups; its focus indicators are measures, leaving out any that is already a goal; and its interventions are actions with owners, status, and dates. A model with an ambiguous objective, or without a pathway, is refused, naming what to add. In Go: `prismx.ToOGSM` and `prismx.ErrNotOGSMReady`"
       },
       {
-        "description": "`export bsc` and the `bsc` kind of the MCP tool `impact_export`: a Balanced Scorecard in prism-roadmap's `goals/bsc` format. The perspectives are those the outcomes use, top first, with the mission above the financial perspective; each placed outcome is an objective that contributes to the nearest objectives its outcome leads to, through causal links that are not feedback and precondition groups; pathways that hold an objective are strategic themes; indicators are lead or lag measures; and interventions are initiatives serving the objectives their targets are or lead to, with their resources as the budget. A model with no outcome in a scorecard perspective is refused. In Go: `prismx.ToBSC` and `prismx.ErrNotBSCReady`"
+        "description": "`export bsc` and the `bsc` kind of the MCP tool `outcome_export`: a Balanced Scorecard in prism-roadmap's `goals/bsc` format. The perspectives are those the outcomes use, top first, with the mission above the financial perspective; each placed outcome is an objective that contributes to the nearest objectives its outcome leads to, through causal links that are not feedback and precondition groups; pathways that hold an objective are strategic themes; indicators are lead or lag measures; and interventions are initiatives serving the objectives their targets are or lead to, with their resources as the budget. A model with no outcome in a scorecard perspective is refused. In Go: `prismx.ToBSC` and `prismx.ErrNotBSCReady`"
       },
       {
         "description": "A problem tree per pathway: `pathway.problemStatement` is a program's own core problem, and `pathwayIds` on causes and effects name the program trees they belong to, a shared cause naming several. `report problem-tree`, `problem-tree-d2`, and `problem-tree-json` take `--pathway`, and the `definitions` pack draws the whole tree and then each program's tree. Validation checks the new references (VAL-REF-001), and removing a pathway with cascade drops them"
@@ -45,36 +48,48 @@
         "description": "`--problem` on `pathway add` and `pathway set`, and `--pathways` on `cause` and `effect`"
       },
       {
-        "description": "In Go: `problemtree.BuildFor`, `ReportFor`, and `ProblemStatement`; `report.DMAICPlan`, `DMAICUse`, and `DMAICNeeds`; and `impact.TimesPerYear`, which the DMAIC lint rules now share"
+        "description": "In Go: `problemtree.BuildFor`, `ReportFor`, and `ProblemStatement`; `report.DMAICPlan`, `DMAICUse`, and `DMAICNeeds`; and `model.TimesPerYear`, which the DMAIC lint rules now share"
       },
       {
         "description": "`pathway.resources`: what a pathway commits as a whole, each a `name` with an optional `allocation` and `description`. A resource needs a name (VAL-PTH-008)"
       },
       {
-        "description": "`intervention.startDate` and `intervention.endDate`: when an intervention runs. Both are dates, the end is not before the start (VAL-DATE-002), and lint warns when either falls outside the time horizon (IMP-INT-008). `intervention add` and `intervention set` take `--start-date` and `--end-date`"
+        "description": "`intervention.startDate` and `intervention.endDate`: when an intervention runs. Both are dates, the end is not before the start (VAL-DATE-002), and lint warns when either falls outside the time horizon (OM-INT-008). `intervention add` and `intervention set` take `--start-date` and `--end-date`"
       },
       {
-        "description": "Evaluation and learning in the impact model: `evaluations` (questions, type, method, evaluator, owner, dates, status, budget, and what each addresses), `learningQuestions` (the decision each informs, methods, owner, due date, status, answer, and what each tests), and `reviewMeetings` (frequency, participants, owner, next date, and the learning questions each takes up). `indicator.qualityAssurance` records how an indicator's data is checked, and `audience.frequency` and `audience.ownerActorId` how often an audience is reported to and by whom. Validation checks them (VAL-EVL, VAL-LRN, VAL-MTG), and `evaluation`, `question`, and `review-meeting` commands add, set, and remove them"
+        "description": "Evaluation and learning in the outcome model: `evaluations` (questions, type, method, evaluator, owner, dates, status, budget, and what each addresses), `learningQuestions` (the decision each informs, methods, owner, due date, status, answer, and what each tests), and `reviewMeetings` (frequency, participants, owner, next date, and the learning questions each takes up). `indicator.qualityAssurance` records how an indicator's data is checked, and `audience.frequency` and `audience.ownerActorId` how often an audience is reported to and by whom. Validation checks them (VAL-EVL, VAL-LRN, VAL-MTG), and `evaluation`, `question`, and `review-meeting` commands add, set, and remove them"
       },
       {
-        "description": "Lint IMP-LRN-001 to 003: once the model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one, open questions are taken up by a review meeting, and dates fall within the time horizon"
+        "description": "Lint OM-LRN-001 to 003: once the model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one, open questions are taken up by a review meeting, and dates fall within the time horizon"
       },
       {
         "description": "`context.objective`: the one thing the model sets out to achieve, as a statement and the outcomes that say it has been reached. Without it, a model with a single impact outcome has that outcome as its objective. A statement is needed unless it names exactly one outcome (VAL-OBJ-001), and removing an outcome with cascade drops it from the objective. In Go: `Model.ObjectiveOutcomes` and `Model.ObjectiveStatement`"
       },
       {
-        "description": "Lint IMP-CTX-002: a model with several impact outcomes and no `context.objective` has no single objective, so a plan such as an OGSM cannot be drawn"
+        "description": "Lint OM-CTX-002: a model with several impact outcomes and no `context.objective` has no single objective, so a plan such as an OGSM cannot be drawn"
       },
       {
         "description": "Balanced Scorecard fields: `outcome.scorecardPerspective` (`mission`, `financial`, `customer`, `internal_process`, or `learning_growth`) places an outcome in a scorecard, `outcome.ownerActorId` names who answers for it, and `indicator.leadLag` marks a lead or lag measure. `Model.ScorecardObjectives`, `ScorecardContributesTo`, and `ScorecardObjectivesServed` draw the strategy map and what each intervention serves from the causal graph. The outcome and indicator commands take `--scorecard-perspective`, `--owner`, and `--lead-lag`"
       },
       {
-        "description": "Lint IMP-BSC-001 to 004: once an outcome names a scorecard perspective, the strategy map runs upward, and each objective is owned, measured, and measured by lead or lag indicators"
+        "description": "Lint OM-BSC-001 to 004: once an outcome names a scorecard perspective, the strategy map runs upward, and each objective is owned, measured, and measured by lead or lag indicators"
       }
     ],
     "changed": [
       {
-        "description": "IMP-ASM-004 accepts a learning question or evaluation that names an assumption as the way it is watched"
+        "description": "The project is now the outcome model. The module is `github.com/ProductBuildersHQ/outcome-model`, the command is `outcome-model`, and the packages are `pkg/model` and `pkg/modelio`, with the root type `model.Model`; the root package is `outcomemodel`. See ADR 0002",
+        "breaking": true
+      },
+      {
+        "description": "The document says `kind: OutcomeModel` (and `OutcomeModelStatus` for a status), the schemas are `outcome-model` and `outcome-model-status`, and a file is named `outcome-model.yaml`",
+        "breaking": true
+      },
+      {
+        "description": "Lint rule IDs start `OM-` where they started `IMP-`, such as `OM-STR-001`; the MCP tools are `outcome_*` and the agent skills `outcome-*`",
+        "breaking": true
+      },
+      {
+        "description": "OM-ASM-004 accepts a learning question or evaluation that names an assumption as the way it is watched"
       }
     ],
     "dependencies": [
@@ -84,25 +99,28 @@
     ],
     "documentation": [
       {
+        "description": "The README and the documentation site's home page present the outcome model's four views, causality, strategy, measurement and learning, and improvement, with the projections grouped by view; ADR 0002 records the rename"
+      },
+      {
         "description": "The README and the documentation home present the theory of change and the toolkit as tools for goals, strategy, and results in startups, companies, and nonprofits alike, not as program-evaluation tools"
       },
       {
         "description": "The authoring guide and concepts cover pathway resources and intervention dates, and the course-catalog and intermediary examples carry them"
       },
       {
-        "description": "A VSEM guide maps each part of a VSEM to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
+        "description": "A VSEM guide maps each part of a VSEM to the outcome model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
       },
       {
         "description": "The authoring guide and concepts cover evaluations, learning questions, and review meetings, and the intermediary example carries an evaluation plan, a learning agenda, and review meetings"
       },
       {
-        "description": "A MEL guide maps each part of a MEL plan to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
+        "description": "A MEL guide maps each part of a MEL plan to the outcome model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
       },
       {
         "description": "The authoring guide and concepts cover the objective, and the intermediary example names one"
       },
       {
-        "description": "An OGSM guide maps each part of an OGSM to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
+        "description": "An OGSM guide maps each part of an OGSM to the outcome model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
       },
       {
         "description": "The authoring guide and concepts cover scorecard perspectives, objective owners, and lead and lag measures, and the intermediary example places its outcomes in a mission-led scorecard"
@@ -111,7 +129,7 @@
         "description": "The README and the guides give the current number of lint rules, 81"
       },
       {
-        "description": "A Balanced Scorecard guide maps each part of a scorecard to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export; the credits name where OKRs, VSEM, OGSM, and the Balanced Scorecard come from"
+        "description": "A Balanced Scorecard guide maps each part of a scorecard to the outcome model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export; the credits name where OKRs, VSEM, OGSM, and the Balanced Scorecard come from"
       }
     ]
   },

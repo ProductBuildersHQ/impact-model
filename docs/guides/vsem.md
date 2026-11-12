@@ -1,11 +1,11 @@
 # VSEM
 
 If you plan with a VSEM (Vision, Strategy, Execution, Metrics), this page shows
-where each part comes from in an impact model, and what the impact model adds
+where each part comes from in an outcome model, and what the outcome model adds
 that a one-page plan written by hand usually leaves out.
 
 ```bash
-impact-model export vsem impact-model.yaml -O observations.yaml -o vsem.json
+outcome-model export vsem outcome-model.yaml -O observations.yaml -o vsem.json
 ```
 
 The output is a VSEM document in the JSON format of
@@ -14,7 +14,7 @@ package, which validates it and renders it as a Markdown document or slides.
 
 ## The mapping at a glance
 
-| VSEM | Comes from | In impact model terms |
+| VSEM | Comes from | In outcome model terms |
 |------|-----------|-----------------------|
 | **Vision** | `context.vision`, and `context.mission` | The future the organization works toward, and why it exists |
 | **Strategy** | `pathways`, one strategy each | A pathway is a program, product, or strategy: a group of outcomes and the interventions that bring them about |
@@ -27,10 +27,10 @@ package, which validates it and renders it as a Markdown document or slides.
 Two rules hold throughout:
 
 - **Nothing is invented.** Every field in the VSEM is copied or translated from
-  something in the impact model. A field the model leaves empty stays empty, and
+  something in the outcome model. A field the model leaves empty stays empty, and
   a VSEM without a vision or a strategy is refused instead of written.
 - **Order is kept.** Strategies, execution, and metrics appear in the order the
-  impact model lists them, so the same model always gives the same VSEM.
+  outcome model lists them, so the same model always gives the same VSEM.
 
 ## One pathway, end to end
 
@@ -139,7 +139,7 @@ A pathway's `resources` say what it commits as a whole, which is what a VSEM's
 strategy section asks for:
 
 ```bash
-impact-model pathway set impact-model.yaml pw-learning \
+outcome-model pathway set outcome-model.yaml pw-learning \
   --set 'resources=[{"name":"Program staff","allocation":"3 staff"}]'
 ```
 
@@ -165,12 +165,12 @@ does.
 Set an intervention's dates with:
 
 ```bash
-impact-model intervention set impact-model.yaml int-training-series \
+outcome-model intervention set outcome-model.yaml int-training-series \
   --start-date 2026-09-01 --end-date 2027-05-31
 ```
 
 Ongoing work has a start and no end. Lint warns when either date falls outside
-the model's time horizon (IMP-INT-008).
+the model's time horizon (OM-INT-008).
 
 An intervention listed in more than one pathway appears once, under the first,
 because each item in a VSEM has its own ID. An intervention in no pathway has no
@@ -212,26 +212,26 @@ A VSEM is a one-page plan, so the export keeps only what fits it:
 | Indicators other than a pathway's focus and the impact outcomes | `report metric-tree` |
 | What each audience is told | `report headline` |
 
-## What the impact model adds
+## What the outcome model adds
 
 A VSEM written by hand says where effort goes and who answers for each number,
-but not why that effort should move those numbers. Exported from an impact
+but not why that effort should move those numbers. Exported from an outcome
 model:
 
 - each strategy is backed by a pathway of outcomes, each link with its reason
-- each North Star is one that `impact-model lint` has checked sits at or below
+- each North Star is one that `outcome-model lint` has checked sits at or below
   the organization's ceiling of accountability
 - the vision's metrics are the measures of the impact the strategies serve
 - with `-O`, the metrics carry the latest observed values and status
 
 ## When the export is refused
 
-A VSEM needs a vision or mission and at least one strategy. If the impact model
+A VSEM needs a vision or mission and at least one strategy. If the outcome model
 has neither `context.vision` nor `context.mission`, or no pathway, `export
 vsem` writes nothing and exits with status 2, naming what to add:
 
 ```
-impact-model: impact-model.yaml: the impact model cannot be drawn as a VSEM: add context.vision or context.mission and a pathway
+outcome-model: outcome-model.yaml: the outcome model cannot be drawn as a VSEM: add context.vision or context.mission and a pathway
 ```
 
 ## Checking the result
@@ -244,7 +244,7 @@ and a metric. A model that sets those fields passes them too.
 ## Going the other way
 
 There is no import from a VSEM. A VSEM has no outcomes or causal links to read,
-so an impact model built from one would have to invent the reasoning that makes
-it an impact model. Start the impact model from the VSEM instead: each strategy
+so an outcome model built from one would have to invent the reasoning that makes
+it an outcome model. Start the outcome model from the VSEM instead: each strategy
 suggests a pathway, each execution item an intervention, and each metric an
 indicator.
