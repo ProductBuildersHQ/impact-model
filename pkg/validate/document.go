@@ -634,7 +634,7 @@ func (c *checker) pathways() {
 		}
 		if f := pw.Focus; f != nil {
 			c.ref(p+"/focus/northStarId", pw.ID, f.NorthStarID, model.ElementIndicator)
-			c.ref(p+"/focus/oneMetricId", pw.ID, f.OneMetricID, model.ElementIndicator)
+			c.oneMetrics(p+"/focus/oneMetrics", pw.ID, f.OneMetrics)
 			c.refs(p+"/focus/guardrailIds", pw.ID, f.GuardrailIDs, model.ElementIndicator)
 			for j, id := range f.GuardrailIDs {
 				if slices.Contains(f.GuardrailIDs[:j], id) {
@@ -643,6 +643,44 @@ func (c *checker) pathways() {
 			}
 		}
 	}
+}
+
+// oneMetrics checks a pathway's one metric that matters for each period: each
+// names an indicator and a start date, ends no earlier than it starts, and no
+// two periods overlap, so there is one focus on any day.
+func (c *checker) oneMetrics(p, element string, ms []model.OneMetric) {
+	for j, m := range ms {
+		jp := p + "/" + strconv.Itoa(j)
+		c.ref(jp+"/indicatorId", element, m.IndicatorID, model.ElementIndicator)
+		if m.From == "" {
+			c.errorf("VAL-DATE-003", jp+"/from", element, "one metric that matters %q has no start date", m.IndicatorID)
+		}
+		c.date(jp+"/from", element, m.From)
+		c.date(jp+"/to", element, m.To)
+		if validDate(m.From) && validDate(m.To) && m.To < m.From {
+			c.errorf("VAL-DATE-002", jp, element, "end %s is before start %s", m.To, m.From)
+		}
+		for k, prev := range ms[:j] {
+			if overlaps(prev, m) {
+				c.errorf("VAL-PTH-009", jp, element, "the period from %s overlaps the one metric that matters at %d, from %s; periods must not overlap", m.From, k, prev.From)
+			}
+		}
+	}
+}
+
+// overlaps reports whether two periods with valid dates share a day. An empty
+// end is open.
+func overlaps(a, b model.OneMetric) bool {
+	if !validDate(a.From) || !validDate(b.From) {
+		return false
+	}
+	end := func(m model.OneMetric) string {
+		if m.To == "" {
+			return "9999-12-31"
+		}
+		return m.To
+	}
+	return a.From <= end(b) && b.From <= end(a)
 }
 
 func (c *checker) metrics() {

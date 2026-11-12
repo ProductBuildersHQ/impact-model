@@ -35,7 +35,7 @@ func MetricTree(in StatusInput, pathwayID string) (string, error) {
 	}
 	for _, p := range pws {
 		fmt.Fprintf(&b, "## %s\n\n", mdText(p.Title))
-		writeFocus(&b, in.Doc, p, views)
+		writeFocus(&b, in.Doc, p, views, in.Status.AsOf)
 
 		byTier := map[model.Tier][]model.Indicator{}
 		for _, ind := range in.Doc.Indicators {
@@ -52,7 +52,7 @@ func MetricTree(in StatusInput, pathwayID string) (string, error) {
 		for _, t := range model.AllTiers() {
 			for _, ind := range byTier[t] {
 				v := views[ind.ID]
-				fmt.Fprintf(&b, "| %s | %s%s | %s | %s | %s |\n", t, MDCell(ind.Name), roleMark(p, ind.ID),
+				fmt.Fprintf(&b, "| %s | %s%s | %s | %s | %s |\n", t, MDCell(ind.Name), roleMark(p, ind.ID, in.Status.AsOf),
 					orDash(MDCell(v.Latest)), orDash(MDCell(strings.Join(v.Targets, "; "))), statusLabel(stateOf(v)))
 			}
 		}
@@ -69,9 +69,9 @@ func stateOf(v IndicatorView) string {
 	return v.Status.State
 }
 
-// roleMark tags the indicator that is the pathway's North Star, one metric
-// that matters, or a guardrail.
-func roleMark(p model.Pathway, indicatorID string) string {
+// roleMark tags the indicator that is the pathway's North Star, its one
+// metric that matters on the date, or a guardrail.
+func roleMark(p model.Pathway, indicatorID, asOf string) string {
 	if p.Focus == nil {
 		return ""
 	}
@@ -79,7 +79,7 @@ func roleMark(p model.Pathway, indicatorID string) string {
 	if p.Focus.NorthStarID == indicatorID {
 		roles = append(roles, "North Star")
 	}
-	if p.Focus.OneMetricID == indicatorID {
+	if om, ok := p.Focus.OneMetricAt(asOf); ok && om.IndicatorID == indicatorID {
 		roles = append(roles, "one metric")
 	}
 	if slices.Contains(p.Focus.GuardrailIDs, indicatorID) {
@@ -91,29 +91,45 @@ func roleMark(p model.Pathway, indicatorID string) string {
 	return " (" + strings.Join(roles, ", ") + ")"
 }
 
-func writeFocus(b *strings.Builder, doc *model.Model, p model.Pathway, views map[string]IndicatorView) {
+func writeFocus(b *strings.Builder, doc *model.Model, p model.Pathway, views map[string]IndicatorView, asOf string) {
 	f := p.Focus
-	if f == nil || (f.NorthStarID == "" && f.OneMetricID == "" && len(f.GuardrailIDs) == 0) {
+	if f == nil || (f.NorthStarID == "" && len(f.OneMetrics) == 0 && len(f.GuardrailIDs) == 0) {
 		b.WriteString("No North Star is chosen for this pathway.\n\n")
 		return
 	}
-	line := func(role, id string) {
+	name := func(id string) string {
+		if ind, ok := doc.Indicator(id); ok {
+			return ind.Name
+		}
+		return id
+	}
+	line := func(role, id, note string) {
 		if id == "" {
 			return
 		}
-		name, latest := id, ""
-		if ind, ok := doc.Indicator(id); ok {
-			name = ind.Name
-		}
+		latest := ""
 		if v, ok := views[id]; ok && v.Latest != "" {
 			latest = ": " + v.Latest
 		}
-		fmt.Fprintf(b, "- %s: %s%s\n", role, mdText(name), mdText(latest))
+		fmt.Fprintf(b, "- %s: %s%s%s\n", role, mdText(name(id)), mdText(latest), note)
 	}
-	line("North Star", f.NorthStarID)
-	line("One metric that matters", f.OneMetricID)
+	line("North Star", f.NorthStarID, "")
+	cur, hasCur := f.OneMetricAt(asOf)
+	if hasCur {
+		line("One metric that matters", cur.IndicatorID, oneMetricNote(cur))
+	}
 	for _, id := range f.GuardrailIDs {
-		line("Guardrail", id)
+		line("Guardrail", id, "")
+	}
+	var earlier []string
+	for _, m := range sortedOneMetrics(f.OneMetrics) {
+		if hasCur && m == cur {
+			continue
+		}
+		earlier = append(earlier, fmt.Sprintf("%s (%s)", mdText(name(m.IndicatorID)), mdText(period(m))))
+	}
+	if len(earlier) > 0 {
+		fmt.Fprintf(b, "- Other periods' one metric that matters: %s\n", strings.Join(earlier, "; "))
 	}
 	if f.Rationale != "" {
 		fmt.Fprintf(b, "\nWhy: %s\n", mdText(f.Rationale))
@@ -170,4 +186,37 @@ func mermaidSafe(id string) string {
 		}
 		return '_'
 	}, id)
+}
+
+// oneMetricNote describes a one metric that matters, as Markdown: since
+// when, at what stage, and why.
+func oneMetricNote(m model.OneMetric) string {
+	s := "since " + m.From
+	if m.To != "" {
+		s = period(m)
+	}
+	if m.Stage != "" {
+		s += ", " + m.Stage
+	}
+	s = " (" + mdText(s) + ")"
+	if m.Reason != "" {
+		s += ". " + mdText(m.Reason)
+	}
+	return s
+}
+
+// period renders a one metric's period, "2027-01-01 to 2027-03-31" or
+// "from 2027-04-01".
+func period(m model.OneMetric) string {
+	if m.To == "" {
+		return "from " + m.From
+	}
+	return m.From + " to " + m.To
+}
+
+// sortedOneMetrics returns the periods newest first.
+func sortedOneMetrics(ms []model.OneMetric) []model.OneMetric {
+	out := slices.Clone(ms)
+	slices.SortStableFunc(out, func(a, b model.OneMetric) int { return strings.Compare(b.From, a.From) })
+	return out
 }

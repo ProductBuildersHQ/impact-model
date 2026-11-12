@@ -30,8 +30,23 @@ func TestHeadlineAndFocusIssues(t *testing.T) {
 			d.Pathways[0].Focus = &model.Focus{NorthStarID: "ind-ghost"}
 		}, "VAL-REF-001", "/pathways/0/focus/northStarId"},
 		{"one metric is an outcome", func(d *model.Model) {
-			d.Pathways[0].Focus = &model.Focus{OneMetricID: d.Outcomes[0].ID}
-		}, "VAL-REF-002", "/pathways/0/focus/oneMetricId"},
+			d.Pathways[0].Focus = &model.Focus{OneMetrics: []model.OneMetric{{IndicatorID: d.Outcomes[0].ID, From: "2027-01-01"}}}
+		}, "VAL-REF-002", "/pathways/0/focus/oneMetrics/0/indicatorId"},
+		{"one metric has no start", func(d *model.Model) {
+			d.Pathways[0].Focus = &model.Focus{OneMetrics: []model.OneMetric{{IndicatorID: d.Indicators[0].ID}}}
+		}, "VAL-DATE-003", "/pathways/0/focus/oneMetrics/0/from"},
+		{"one metric starts on no date", func(d *model.Model) {
+			d.Pathways[0].Focus = &model.Focus{OneMetrics: []model.OneMetric{{IndicatorID: d.Indicators[0].ID, From: "Q1"}}}
+		}, "VAL-DATE-001", "/pathways/0/focus/oneMetrics/0/from"},
+		{"one metric ends before it starts", func(d *model.Model) {
+			d.Pathways[0].Focus = &model.Focus{OneMetrics: []model.OneMetric{{IndicatorID: d.Indicators[0].ID, From: "2027-04-01", To: "2027-03-31"}}}
+		}, "VAL-DATE-002", "/pathways/0/focus/oneMetrics/0"},
+		{"one metric periods overlap", func(d *model.Model) {
+			d.Pathways[0].Focus = &model.Focus{OneMetrics: []model.OneMetric{
+				{IndicatorID: d.Indicators[0].ID, From: "2027-01-01", To: "2027-03-31"},
+				{IndicatorID: d.Indicators[1].ID, From: "2027-03-31"},
+			}}
+		}, "VAL-PTH-009", "/pathways/0/focus/oneMetrics/1"},
 		{"guardrail is unknown", func(d *model.Model) {
 			d.Pathways[0].Focus = &model.Focus{GuardrailIDs: []string{"ind-ghost"}}
 		}, "VAL-REF-001", "/pathways/0/focus/guardrailIds/0"},
@@ -65,7 +80,11 @@ func TestHeadlineFocusMissionAndProductAreValid(t *testing.T) {
 		{IndicatorID: ids[1]},
 	}
 	doc.Pathways[0].Kind = model.PathwayProduct
-	doc.Pathways[0].Focus = &model.Focus{NorthStarID: ids[0], OneMetricID: ids[1], GuardrailIDs: []string{ids[2]}, Rationale: "Why these"}
+	doc.Pathways[0].Focus = &model.Focus{NorthStarID: ids[0], GuardrailIDs: []string{ids[2]}, Rationale: "Why these",
+		OneMetrics: []model.OneMetric{
+			{IndicatorID: ids[1], From: "2026-01-01", To: "2026-06-30", Stage: "activation"},
+			{IndicatorID: ids[0], From: "2026-07-01", Reason: "Now the North Star itself"},
+		}}
 	doc.Context.Mission = "Why we exist."
 	doc.Context.Vision = "The future we work toward."
 	if got := len(Document(doc)); got != before {

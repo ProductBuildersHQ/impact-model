@@ -112,7 +112,7 @@ func ToOGSM(doc *model.Model, st *model.Status) (*ogsm.OGSM, error) {
 			ID: p.ID, Name: p.Title, Description: p.Description, Owner: actorName(doc, p.OwnerID), GoalIDs: serves,
 		})
 		if f := p.Focus; f != nil {
-			for _, r := range focusMeasures(f) {
+			for _, r := range focusMeasures(f, asOf(st)) {
 				ind, ok := doc.Indicator(r.id)
 				if !ok || ind.Rejected() || listed[ind.ID] {
 					continue

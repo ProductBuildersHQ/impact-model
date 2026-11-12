@@ -20,11 +20,14 @@ func steeringInput() StatusInput {
 		},
 		Pathways: []model.Pathway{
 			{ID: "pw-app", Title: "App", Focus: &model.Focus{
-				NorthStarID: "ind-retention", OneMetricID: "ind-activation",
+				NorthStarID: "ind-retention", OneMetrics: []model.OneMetric{
+					{IndicatorID: "ind-quality", From: "2026-10-01", To: "2026-12-31"},
+					{IndicatorID: "ind-activation", From: "2027-01-01"},
+				},
 				GuardrailIDs: []string{"ind-support", "ind-quality"},
 			}},
 			{ID: "pw-early", Title: "Early product", Focus: &model.Focus{
-				NorthStarID: "ind-reach", OneMetricID: "ind-reach",
+				NorthStarID: "ind-reach", OneMetrics: []model.OneMetric{{IndicatorID: "ind-reach", From: "2027-01-01"}},
 			}},
 			{ID: "pw-dropped", Title: "Dropped", Focus: &model.Focus{NorthStarID: "ind-retention"},
 				Provenance: &model.Provenance{Basis: model.BasisRejected}},
@@ -61,5 +64,21 @@ func TestSteeringSectionIsLeftOutWithoutAFocus(t *testing.T) {
 	in.Doc.Pathways = in.Doc.Pathways[3:]
 	if s := steering(in); s != "" {
 		t.Errorf("a model without a focus got a section: %q", s)
+	}
+}
+
+// The one metric shown is the one whose period covers the snapshot's date.
+func TestSteeringShowsTheOneMetricOfTheSnapshotsDate(t *testing.T) {
+	in := steeringInput()
+	in.Status.AsOf = "2026-11-15"
+	var got []string
+	for _, r := range Steering(in) {
+		if r.PathwayID == "pw-app" {
+			got = append(got, r.Role+":"+r.IndicatorID)
+		}
+	}
+	want := []string{RoleNorthStar + ":ind-retention", RoleOneMetric + ":ind-quality", RoleGuardrail + ":ind-support"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("rows = %v, want %v", got, want)
 	}
 }

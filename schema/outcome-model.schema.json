@@ -1002,8 +1002,11 @@
         "northStarId": {
           "type": "string"
         },
-        "oneMetricId": {
-          "type": "string"
+        "oneMetrics": {
+          "items": {
+            "$ref": "#/$defs/OneMetric"
+          },
+          "type": "array"
         },
         "guardrailIds": {
           "items": {
@@ -1774,6 +1777,33 @@
       },
       "additionalProperties": false,
       "type": "object"
+    },
+    "OneMetric": {
+      "properties": {
+        "indicatorId": {
+          "type": "string"
+        },
+        "from": {
+          "type": "string",
+          "format": "date"
+        },
+        "to": {
+          "type": "string",
+          "format": "date"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "indicatorId",
+        "from"
+      ]
     },
     "OutOfScope": {
       "properties": {

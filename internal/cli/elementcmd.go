@@ -290,7 +290,6 @@ var elementFlags = map[string][]elementFlag{
 		ss("interventions", "interventionIds", "intervention IDs in the pathway"),
 		s("child", "childModel", "Outcome model that elaborates this pathway, as model:<doc>"),
 		s("north-star", "focus.northStarId", "indicator ID of the pathway's North Star: an outcome metric, never an output"),
-		s("one-metric", "focus.oneMetricId", "indicator ID to focus on at the pathway's current stage"),
 		ss("guardrails", "focus.guardrailIds", "indicator IDs watched so the North Star is not pursued at their cost"),
 	},
 	"decision": {

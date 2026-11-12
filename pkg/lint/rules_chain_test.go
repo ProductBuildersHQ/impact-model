@@ -162,13 +162,16 @@ func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 		// ---- the one metric that matters
 		{"OM-NSM-008", "pw-1", func(d *model.Model) {
 			addIndicator(d, "ind-om", "oc-s2") // oc-s2 is not listed by pw-1
-			focus(d, model.Focus{OneMetricID: "ind-om"})
+			focus(d, model.Focus{OneMetrics: []model.OneMetric{{IndicatorID: "ind-om", From: "2027-01-01"}}})
 		}, func(d *model.Model) { d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-s2") }},
 		{"OM-NSM-009", "pw-1", func(d *model.Model) {
 			d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-b")
 			addIndicator(d, "ind-ns", "oc-a")
 			addIndicator(d, "ind-om", "oc-b") // oc-b leads to the impact, not to oc-a
-			focus(d, model.Focus{NorthStarID: "ind-ns", OneMetricID: "ind-om"})
+			focus(d, model.Focus{NorthStarID: "ind-ns", OneMetrics: []model.OneMetric{
+				{IndicatorID: "ind-ns", From: "2026-01-01", To: "2026-12-31"},
+				{IndicatorID: "ind-om", From: "2027-01-01"}, // an earlier period is checked too
+			}})
 		}, func(d *model.Model) { indicator(d, "ind-om").Measures = "oc-s1" }},
 		// ---- framing
 		{"OM-CTX-001", "", func(d *model.Model) {},
@@ -216,7 +219,7 @@ func TestOneMetricThatLeadsToTheNorthStarOrTestsAnAssumptionIsAccepted(t *testin
 		t.Run(name, func(t *testing.T) {
 			d := chainDoc()
 			addIndicator(d, "ind-ns", "oc-a")
-			d.Pathways[0].Focus = &model.Focus{NorthStarID: "ind-ns", OneMetricID: om(d)}
+			d.Pathways[0].Focus = &model.Focus{NorthStarID: "ind-ns", OneMetrics: []model.OneMetric{{IndicatorID: om(d), From: "2027-01-01"}}}
 			if got := fires(t, d, "OM-NSM-009"); len(got) != 0 {
 				t.Errorf("OM-NSM-009 reported %v", got)
 			}

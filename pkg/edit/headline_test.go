@@ -40,8 +40,8 @@ func TestCascadeRemovesAnIndicatorFromHeadlinesAndFocus(t *testing.T) {
 	if got.Pathways[0].Focus.NorthStarID != "" {
 		t.Errorf("north star = %q after the indicator was removed", got.Pathways[0].Focus.NorthStarID)
 	}
-	if got.Pathways[0].Focus.OneMetricID != "ind-idp-roadmaps" {
-		t.Errorf("the one metric changed to %q although another indicator was removed", got.Pathways[0].Focus.OneMetricID)
+	if om := got.Pathways[0].Focus.OneMetrics; len(om) != 1 || om[0].IndicatorID != "ind-idp-roadmaps" {
+		t.Errorf("one metrics = %+v; the period that named the removed indicator should go, and the other stay", om)
 	}
 
 	// A guardrail is dropped from the list, and the others stay.
