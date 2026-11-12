@@ -15,13 +15,16 @@ func TestExportPRISM(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// The scorecard needs an outcome in a perspective, which this example
+	// does not place; the other exports ignore it.
+	doc.Outcomes[0].ScorecardPerspective = impact.ScorecardMission
 	for _, kind := range PRISMExportKinds {
 		out, err := ExportPRISM(kind, doc, nil, nil)
 		if err != nil || out.Kind != kind || out.Document == nil {
 			t.Errorf("%s: %+v %v", kind, out, err)
 		}
 	}
-	if _, err := ExportPRISM("mystery", doc, nil, nil); err == nil || !strings.Contains(err.Error(), "okr, journey, v2mom, vsem, dmaic, mel, ogsm") {
+	if _, err := ExportPRISM("mystery", doc, nil, nil); err == nil || !strings.Contains(err.Error(), "okr, journey, v2mom, vsem, dmaic, mel, ogsm, bsc") {
 		t.Errorf("unknown kind: %v", err)
 	}
 
