@@ -113,6 +113,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Evaluation plan, learning agenda, review meetings (MEL) | `Model.Evaluations[]`, `Model.LearningQuestions[]`, `Model.ReviewMeetings[]` | IMPACTMODEL-022 |
 | How an indicator's data is checked; how often an audience is reported to | `Indicator.QualityAssurance`; `Audience.Frequency`, `Audience.OwnerID` | IMPACTMODEL-022 |
 | The one objective the model sets out to achieve | `Context.Objective` (`Objective`: `Statement`, `OutcomeIDs`) | IMPACTMODEL-024 |
+| Balanced Scorecard perspectives, objective owners, and lead and lag measures | `Outcome.ScorecardPerspective`, `Outcome.OwnerID`, `Indicator.LeadLag` | IMPACTMODEL-026 |
 | Computed status, diffs between periods | `Status`, `StatusDiff` | 005 (types), 017–020 (computation) |
 
 ## Alignment and integration

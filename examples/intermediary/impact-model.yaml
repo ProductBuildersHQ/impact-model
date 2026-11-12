@@ -56,6 +56,8 @@ outcomes:
     actorIds:
       - act-residents
     responsibility: shared
+    ownerActorId: act-network
+    scorecardPerspective: mission
     deliveredBy:
       - act-network
       - act-members-small
@@ -91,6 +93,8 @@ outcomes:
     population: Residents of Riverbend County
     actorIds:
       - act-residents
+    ownerActorId: act-network
+    scorecardPerspective: mission
     addressesEffects:
       - eff-needs-unheard
     provenance:
@@ -127,6 +131,8 @@ outcomes:
     actorIds:
       - act-members-small
       - act-members-large
+    ownerActorId: act-network
+    scorecardPerspective: customer
     provenance:
       basis: confirmed
       decidedAt: "2026-02-10"
@@ -143,6 +149,8 @@ outcomes:
     population: Member nonprofits
     actorIds:
       - act-members-small
+    ownerActorId: act-network
+    scorecardPerspective: financial
     addressesEffects:
       - eff-lost-grants
     provenance:
@@ -162,6 +170,8 @@ outcomes:
       - act-county-office
       - act-regional-funder
       - act-city-council
+    ownerActorId: act-network
+    scorecardPerspective: customer
     addressesCauses:
       - cause-no-standing-voice
       - cause-isolation
@@ -180,6 +190,8 @@ outcomes:
     actorIds:
       - act-members-small
       - act-members-large
+    ownerActorId: act-network
+    scorecardPerspective: customer
     provenance:
       basis: stated
       evidenceIds:
@@ -221,6 +233,8 @@ outcomes:
     population: Members using pooled services
     actorIds:
       - act-members-small
+    ownerActorId: act-network
+    scorecardPerspective: customer
     addressesCauses:
       - cause-high-overhead
     priority:
@@ -249,6 +263,8 @@ outcomes:
     actorIds:
       - act-members-small
       - act-regional-funder
+    ownerActorId: act-network
+    scorecardPerspective: customer
     provenance:
       basis: inferred
       evidenceIds:
@@ -375,6 +391,8 @@ outcomes:
     sphere: control
     category: learning
     changeType: condition
+    ownerActorId: act-network
+    scorecardPerspective: internal_process
     provenance:
       basis: confirmed
       decidedAt: "2026-02-10"
@@ -385,6 +403,8 @@ outcomes:
     sphere: control
     category: services
     changeType: condition
+    ownerActorId: act-network
+    scorecardPerspective: internal_process
     provenance:
       basis: stated
       evidenceIds:
@@ -395,6 +415,8 @@ outcomes:
     sphere: control
     category: services
     changeType: condition
+    ownerActorId: act-network
+    scorecardPerspective: internal_process
     provenance:
       basis: inferred
       evidenceIds:
@@ -405,6 +427,8 @@ outcomes:
     sphere: control
     category: voice
     changeType: condition
+    ownerActorId: act-network
+    scorecardPerspective: internal_process
     provenance:
       basis: hypothesis
   - id: oc-certified-members
@@ -1409,6 +1433,7 @@ indicators:
     measurementType: quantitative
     unit: member organizations
     direction: increase
+    leadLag: lead
     baseline:
       value: 48
       date: "2026-01-01"
@@ -1625,6 +1650,7 @@ indicators:
     definition: Median level of participating members on the four-step leadership practice rubric, rated by a coach and the member together.
     measurementType: qualitative
     direction: increase
+    leadLag: lead
     levels:
       - Ad hoc
       - Emerging
@@ -1696,6 +1722,7 @@ indicators:
     definition: Typical level of member collaboration on a four-step scale, from members working in parallel to co-delivering services.
     measurementType: qualitative
     direction: increase
+    leadLag: lag
     levels:
       - Parallel
       - Coordinating
@@ -1738,6 +1765,7 @@ indicators:
     definition: How officials and funders treat the members' coordinated channel, rated by network staff and checked with the officials concerned.
     measurementType: qualitative
     direction: increase
+    leadLag: lag
     levels:
       - Not heard
       - Heard
@@ -1777,6 +1805,7 @@ indicators:
     measurementType: quantitative
     unit: percent
     direction: decrease
+    leadLag: lead
     baseline:
       value: 21.5
       date: "2026-01-01"
@@ -1825,6 +1854,7 @@ indicators:
     measurementType: quantitative
     unit: applications
     direction: increase
+    leadLag: lead
     baseline:
       value: 120
       date: "2026-01-01"
@@ -1866,6 +1896,7 @@ indicators:
     measurementType: quantitative
     unit: percent
     direction: increase
+    leadLag: lag
     baseline:
       value: 38
       date: "2026-01-01"
@@ -1984,6 +2015,7 @@ indicators:
     measurementType: quantitative
     unit: residents
     direction: increase
+    leadLag: lag
     baseline:
       value: 61000
       date: "2026-01-01"
@@ -2043,6 +2075,7 @@ indicators:
     measurementType: quantitative
     unit: percent
     direction: increase
+    leadLag: lag
     baseline:
       value: 31
       date: "2026-01-01"
@@ -2150,6 +2183,7 @@ indicators:
     measurementType: quantitative
     unit: deals
     direction: increase
+    leadLag: lead
     baseline:
       value: 2
       date: "2026-01-01"
@@ -2169,6 +2203,7 @@ indicators:
     measurementType: quantitative
     unit: months
     direction: increase
+    leadLag: lead
     baseline:
       value: 6
       date: "2026-01-01"
@@ -2188,6 +2223,7 @@ indicators:
     measurementType: quantitative
     unit: documents
     direction: increase
+    leadLag: lead
     baseline:
       value: 3
       date: "2026-01-01"
@@ -2208,6 +2244,7 @@ indicators:
     measurementType: quantitative
     unit: participants
     direction: increase
+    leadLag: lead
     baseline:
       value: 120
       date: "2026-01-01"

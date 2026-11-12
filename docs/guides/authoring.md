@@ -63,6 +63,13 @@ different things, and an impact model can make all of them.
   A model with a single impact outcome has that outcome as its objective; one
   with several should name the objective, which plans with one objective,
   such as an OGSM, need (IMP-CTX-002; see the [OGSM guide](ogsm.md)).
+- **Scorecard perspectives** place outcomes in a Balanced Scorecard:
+  `scorecardPerspective` is `mission`, `financial`, `customer`,
+  `internal_process`, or `learning_growth`, and `ownerActorId` names who
+  answers for the outcome. An indicator's `leadLag` says whether it moves
+  before the results (`lead`) or reports one (`lag`). The causal links between
+  the placed outcomes become the strategy map; lint checks that it runs upward
+  and that each objective is owned and measured (IMP-BSC-001 to 004).
 
 ```bash
 # A pathway's North Star, and what watches it
@@ -91,6 +98,11 @@ EOF
 impact-model patch impact-model.yaml - <<'EOF'
 [{"op":"add","path":"/context/mission","value":"Strengthen local nonprofits."}]
 EOF
+
+# An outcome as a scorecard objective, and a lead measure of it
+impact-model outcome set impact-model.yaml oc-im-lower-overhead \
+  --scorecard-perspective customer --owner act-network
+impact-model indicator set impact-model.yaml ind-overhead-share --lead-lag lead
 ```
 
 Some of the numbers people ask for are arithmetic on others, such as the cost

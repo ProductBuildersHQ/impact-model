@@ -58,6 +58,12 @@
       },
       {
         "description": "Lint IMP-CTX-002: a model with several impact outcomes and no `context.objective` has no single objective, so a plan such as an OGSM cannot be drawn"
+      },
+      {
+        "description": "Balanced Scorecard fields: `outcome.scorecardPerspective` (`mission`, `financial`, `customer`, `internal_process`, or `learning_growth`) places an outcome in a scorecard, `outcome.ownerActorId` names who answers for it, and `indicator.leadLag` marks a lead or lag measure. `Model.ScorecardObjectives`, `ScorecardContributesTo`, and `ScorecardObjectivesServed` draw the strategy map and what each intervention serves from the causal graph. The outcome and indicator commands take `--scorecard-perspective`, `--owner`, and `--lead-lag`"
+      },
+      {
+        "description": "Lint IMP-BSC-001 to 004: once an outcome names a scorecard perspective, the strategy map runs upward, and each objective is owned, measured, and measured by lead or lag indicators"
       }
     ],
     "changed": [
@@ -91,6 +97,12 @@
       },
       {
         "description": "An OGSM guide maps each part of an OGSM to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
+      },
+      {
+        "description": "The authoring guide and concepts cover scorecard perspectives, objective owners, and lead and lag measures, and the intermediary example places its outcomes in a mission-led scorecard"
+      },
+      {
+        "description": "The README and the guides give the current number of lint rules, 81"
       }
     ]
   },
