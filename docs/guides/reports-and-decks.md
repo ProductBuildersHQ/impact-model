@@ -20,6 +20,7 @@ outcome-model report definitions outcome-model.yaml --out definitions.md
 | `logic-model` | Inputs, activities, outputs, and outcomes for each pathway. `--diagram` draws it left to right (also `logic-model-diagram`) |
 | `logic-model-layered` | The logic model as columns, from inputs to impact, with a box for each item and an arrow wherever the outcome model says one leads to another. Written as Mermaid |
 | `logic-model-d2` | The same layered diagram as [D2](https://d2lang.com), where a grid keeps every stage in its own column. Render it with `d2 diagram.d2 diagram.svg` |
+| `theory-of-change-d2` | The theory of change on one page, as D2: the activities and outcomes of every pathway together, short-term through impact. Inputs and outputs are left to the logic model, and each activity is joined to the outcomes its outputs lead to |
 | `problem-tree` | The core problem with its causes below and effects above, arrows flowing upward, and tables of what addresses each. Written as Mermaid; `--pathway` draws one program's own tree. See the [problem tree guide](problem-tree.md) |
 | `problem-tree-d2` | The same problem tree as D2, where a grid keeps every row in place |
 | `problem-tree-json` | The diagram document the problem tree is drawn from: a d2vision diagram spec, as JSON, with no stamp |

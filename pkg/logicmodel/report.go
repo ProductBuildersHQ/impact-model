@@ -45,6 +45,29 @@ func Diagrams(whole *report.View, pathways []*report.View, f Format) (string, er
 	return b.String(), nil
 }
 
+// TheoryOfChangeDiagram renders the theory of change on one page: the whole
+// outcome model's activities and outcomes, every pathway together, in a fenced
+// block that names its format, then the feedback loops it leaves out.
+func TheoryOfChangeDiagram(whole *report.View, f Format) (string, error) {
+	g := Build(whole).TheoryOfChange()
+	var text string
+	switch f {
+	case FormatMermaid:
+		var err error
+		if text, err = g.Mermaid(); err != nil {
+			return "", err
+		}
+	case FormatD2:
+		text = g.D2()
+	default:
+		return "", fmt.Errorf("logicmodel: unknown diagram format %q", f)
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "## Theory of change on one page\n\n```%s\n%s```\n\n", f, text)
+	b.WriteString(feedbackNote(g))
+	return b.String(), nil
+}
+
 // feedbackNote lists the feedback loops the diagram leaves out.
 func feedbackNote(g *Graph) string {
 	if len(g.Feedback) == 0 {
