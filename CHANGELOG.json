@@ -23,6 +23,9 @@
       },
       {
         "description": "A Balanced Scorecard from the outcome model: `export bsc` writes the outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives"
+      },
+      {
+        "description": "The North Star and the one metric that matters are checked alike, and the executive report and deck open with what each program steers by"
       }
     ],
     "added": [
@@ -73,6 +76,12 @@
       },
       {
         "description": "Lint OM-BSC-001 to 004: once an outcome names a scorecard perspective, the strategy map runs upward, and each objective is owned, measured, and measured by lead or lag indicators"
+      },
+      {
+        "description": "Lint OM-NSM-008 and OM-NSM-009: a one metric that matters serves its own pathway, and one other than the North Star that measures an outcome or an intervention leads to the North Star through causal links. A measure of an assumption, such as the riskiest one, is a legitimate focus and is not checked. There are now 83 rules"
+      },
+      {
+        "description": "`report exec` and `deck exec` open with what each program steers by: its North Star and its one metric that matters, with status and progress against what was expected, and any guardrail that is off track, at risk, stale, or without data. In Go: `report.Steering`"
       }
     ],
     "changed": [
@@ -130,6 +139,9 @@
       },
       {
         "description": "A Balanced Scorecard guide maps each part of a scorecard to the outcome model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export; the credits name where OKRs, VSEM, OGSM, and the Balanced Scorecard come from"
+      },
+      {
+        "description": "The measurement guide explains metric tiers and roles: the North Star, the one metric that matters, and guardrails, how each is checked, and why the North Star sits at or below the ceiling of accountability rather than above impact"
       }
     ]
   },

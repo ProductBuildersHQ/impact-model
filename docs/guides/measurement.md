@@ -36,24 +36,54 @@ Resources are measured as activity-tier indicators with a unit such as hours or
 dollars. `outcome-model report metric-tree` lays a pathway's indicators out in
 this order.
 
-### North Star, guardrails, and headline lists
+### Roles: North Star, one metric that matters, and guardrails
 
-Three choices sit on top of the tiers, and they are different things:
+A tier says where an indicator sits. A **role** says what a team uses it for. Roles
+are set on the pathway, in its `focus`, and point at indicators the pathway already
+has, so one indicator can hold several roles:
 
-- **A North Star** is the one number a program or product steers by. Set it in the
-  pathway's `focus`, with an optional `oneMetricId` and the `guardrailIds` that watch
-  what pursuing it could harm. It should measure an outcome at or below the ceiling
-  of accountability, never an output or an activity.
+```yaml
+pathways:
+  - id: pw-onboarding
+    focus:
+      northStarId: ind-retention-90       # the lasting value delivered
+      oneMetricId: ind-first-week-recon   # where the team is focused now
+      guardrailIds: [ind-support-load]    # watched so the North Star does no harm
+      rationale: Activation is the bottleneck this quarter.
+```
+
+| Role | What it is | Changes | Checked by |
+|------|------------|---------|------------|
+| **North Star** | The one number that best captures the value a program or product delivers to the people it serves | Rarely | `OM-NSM-001` to `007`: it measures an outcome at or below the ceiling of accountability, has a baseline and a target, has a guardrail, and serves its own pathway |
+| **One metric that matters** | The number the team focuses on at its current stage, from *Lean Analytics* (Croll and Yoskovitz). Often a driver further down the chain, such as activation, or a measure of the riskiest assumption | With the stage, often each quarter | `OM-NSM-008`: it serves its own pathway. `OM-NSM-009`: when it measures an outcome or an intervention other than the North Star's, it leads to the North Star through the causal links |
+| **Guardrail** | A number watched so that pursuing the North Star does not harm something else, such as equity, quality, or staff burden | Rarely | `OM-NSM-004` and `006`: a North Star has one, and it is not the North Star itself |
+
+The roles are not further steps after impact. The North Star sits **at or below the
+ceiling of accountability**: it is the highest change the team answers for. Impact,
+above the ceiling, is tracked and reported as a contribution. Early on, the North
+Star and the one metric that matters are often the same indicator.
+
+`outcome-model report metric-tree` marks each role among the tiers. The executive
+report and deck (`report exec`, `deck exec`) open with what each program steers by:
+its North Star and its one metric that matters, with their status, and any guardrail
+that is off track, at risk, stale, or without data. The V2MOM, VSEM, and OGSM exports
+use the roles as each strategy's measures.
+
+### Headline lists and purpose
+
+Two more choices are different again:
+
 - **A headline list** is what an audience is told: a short, ordered list on the
   audience, each entry an indicator with an optional `label` and `note` worded for
   that reader. Every audience sees the same figure for an indicator; only the label
-  and note differ. A North Star may lead one list and not appear in another.
+  and note differ. A North Star is what a team steers by; it may lead one list and
+  not appear in another.
 - **Purpose** is `context.mission` and `context.vision`, plain statements. They are
   not part of the causal chain.
 
 `outcome-model report headline` shows what each audience is told, and the story
-report and deck use the same lists. `outcome-model lint` checks all of it: the
-`TOC-NSM-*`, `TOC-HLN-*`, `OM-AUD-002`, and `OM-CTX-001` rules.
+report and deck use the same lists. `outcome-model lint` checks them with the
+`OM-HLN-*`, `OM-AUD-002`, and `OM-CTX-001` rules.
 
 ### Working a metric out from others
 
