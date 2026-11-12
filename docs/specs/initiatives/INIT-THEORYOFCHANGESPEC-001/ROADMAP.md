@@ -688,7 +688,7 @@
 - [x] `RMI-OUTCOMEMODEL-004` Draw the theory of change on one page
   - Type: capability · Status: completed
   - Satisfies: PRD-FR-608, TRD-046
-  - Acceptance: a `theory-of-change-d2` report drawing every pathway's activities and outcomes in one D2 diagram, or one pathway's, inputs and outputs left out with activities joined through them; drawn bottom-up with wrapped labels so a pathway's diagram reads at 9 points on a portrait page, checked with d2vision's legibility analysis; unit tests; the reports guide lists it
+  - Acceptance: a `theory-of-change-d2` report drawing every pathway's activities and outcomes in one D2 diagram, or one pathway's, inputs and outputs left out with activities joined through them; drawn bottom-up in a band per stage, laid out with ELK so no arrow crosses a box, with boxes of one width and wrapped labels so a pathway's diagram reads at 8 points on a portrait page, checked with d2vision's legibility analysis; unit tests; the reports guide lists it
 
 - [x] `RMI-OUTCOMEMODEL-005` Export the outcome model as one document
   - Type: capability · Status: completed

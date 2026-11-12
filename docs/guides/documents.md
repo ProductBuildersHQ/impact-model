@@ -26,12 +26,16 @@ documents with [Pandoc](https://pandoc.org). If a tool that is needed is not
 installed, nothing is written and the exit code is 3.
 
 A diagram is scaled to fit the page or slide, so a wide one shrinks and its
-labels with it. The theory of change is drawn for that: a row per stage with
-the impact on top, labels wrapped to about 26 characters, and at most three
-boxes side by side. A pathway's theory of change then reads at 9 points or
-more on a portrait Word page. The whole model's diagram, with every pathway
-together, is a map; read the detail in each pathway's. To check a rendered
-diagram, run `d2vision legibility diagram.svg`.
+labels with it. The theory of change and the logic models are drawn for that:
+bottom-up, a band per stage with the impact on top, laid out with ELK so no
+arrow is drawn over a box. Every box in a diagram is one width, so the boxes
+line up in columns, and labels are wrapped to suit it; a diagram with a wide
+stage gets narrower boxes. A pathway's theory of change then reads at about 8
+points or more on a portrait Word page. A logic model, with its inputs and
+outputs, has more boxes and reads smaller, and the whole model's theory of
+change is a map; read the detail in each pathway's. To check a rendered
+diagram, run `d2vision legibility diagram.svg`, which reports label sizes and
+any arrow drawn over a box.
 
 ## Choosing sections
 
