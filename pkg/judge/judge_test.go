@@ -11,13 +11,13 @@ import (
 
 	"github.com/plexusone/structured-evaluation/rubric"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-func load(t *testing.T) *impact.Model {
+func load(t *testing.T) *model.Model {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,9 +87,9 @@ func TestBundleIsDeterministicAndHashed(t *testing.T) {
 func TestRestrictedEvidenceNeverReachesTheJudge(t *testing.T) {
 	doc := load(t)
 	doc.Evidence = append(doc.Evidence,
-		impact.Evidence{ID: "ev-secret", Title: "Board minutes", Excerpt: "SECRET-EXCERPT", Summary: "SECRET-SUMMARY", URL: "https://example.org/SECRET-URL", Sensitivity: impact.SensitivityRestricted},
-		impact.Evidence{ID: "ev-unset", Title: "Interview", Excerpt: "UNSET-EXCERPT"},
-		impact.Evidence{ID: "ev-open", Title: "Public report", Excerpt: "PUBLIC-EXCERPT", Sensitivity: impact.SensitivityPublic},
+		model.Evidence{ID: "ev-secret", Title: "Board minutes", Excerpt: "SECRET-EXCERPT", Summary: "SECRET-SUMMARY", URL: "https://example.org/SECRET-URL", Sensitivity: model.SensitivityRestricted},
+		model.Evidence{ID: "ev-unset", Title: "Interview", Excerpt: "UNSET-EXCERPT"},
+		model.Evidence{ID: "ev-open", Title: "Public report", Excerpt: "PUBLIC-EXCERPT", Sensitivity: model.SensitivityPublic},
 	)
 	b, err := Build(doc, "core")
 	if err != nil {

@@ -5,7 +5,7 @@
 // decode identically. Output is canonical: stable field order, two-space
 // indentation, and a trailing newline, so diffs stay readable and
 // formatting is idempotent.
-package impactio
+package modelio
 
 import (
 	"bytes"

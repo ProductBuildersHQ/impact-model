@@ -12,10 +12,10 @@ import (
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/diff"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/judge"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/slides"
@@ -99,7 +99,7 @@ type validateOut struct {
 func (s *Server) validateTool(_ context.Context, _ *sdk.CallToolRequest, in validateIn) (*sdk.CallToolResult, validateOut, error) {
 	var (
 		data []byte
-		f    impactio.Format
+		f    modelio.Format
 		err  error
 	)
 	switch {
@@ -203,7 +203,7 @@ func (s *Server) statusTool(_ context.Context, _ *sdk.CallToolRequest, in status
 	if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
 		return nil, nil, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
 	}
-	input, err := service.StatusInputFor(doc, sets, asOf, impact.DefaultStatusOptions(), nil)
+	input, err := service.StatusInputFor(doc, sets, asOf, model.DefaultStatusOptions(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -266,7 +266,7 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 	if err != nil {
 		return nil, service.PRISMExport{}, err
 	}
-	var st *impact.Status
+	var st *model.Status
 	if len(sets) > 0 || in.AsOf != "" {
 		at, err := asOfDate(in.AsOf, sets)
 		if err != nil {
@@ -275,7 +275,7 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 		if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
 			return nil, service.PRISMExport{}, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
 		}
-		input, err := service.StatusInputFor(doc, sets, at, impact.DefaultStatusOptions(), nil)
+		input, err := service.StatusInputFor(doc, sets, at, model.DefaultStatusOptions(), nil)
 		if err != nil {
 			return nil, service.PRISMExport{}, err
 		}
@@ -287,7 +287,7 @@ func (s *Server) exportTool(_ context.Context, _ *sdk.CallToolRequest, in export
 
 // statusInput evaluates the impact model for a status report or deck. A narrative,
 // actors, or custom report with no observations and no date has no status.
-func (s *Server) statusInput(doc *impact.Model, obs Observations, asOf, kind string) (report.StatusInput, []*impact.ObservationSet, bool, error) {
+func (s *Server) statusInput(doc *model.Model, obs Observations, asOf, kind string) (report.StatusInput, []*model.ObservationSet, bool, error) {
 	sets, err := s.loadObservations(obs)
 	if err != nil {
 		return report.StatusInput{}, nil, false, err
@@ -303,7 +303,7 @@ func (s *Server) statusInput(doc *impact.Model, obs Observations, asOf, kind str
 	if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
 		return report.StatusInput{}, nil, false, fmt.Errorf("the observations are invalid: %s: %s", issues[0].Code, issues[0].Message)
 	}
-	in, err := service.StatusInputFor(doc, sets, at, impact.DefaultStatusOptions(), nil)
+	in, err := service.StatusInputFor(doc, sets, at, model.DefaultStatusOptions(), nil)
 	return in, sets, true, err
 }
 
@@ -360,7 +360,7 @@ func (s *Server) patchTool(_ context.Context, _ *sdk.CallToolRequest, in patchIn
 	}
 	out := patchOut{Applied: res.Applied, Reason: res.Reason, IssuesIntroduced: nonNil(res.IssuesIntroduced), IssuesResolved: nonNil(res.IssuesResolved)}
 	if res.Applied {
-		canon, err := impactio.Canonical(res.Document, impactio.FormatJSON)
+		canon, err := modelio.Canonical(res.Document, modelio.FormatJSON)
 		if err != nil {
 			return nil, patchOut{}, err
 		}

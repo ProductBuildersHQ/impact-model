@@ -6,14 +6,14 @@ import (
 	"strings"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
-type indexedIndicator = indexed[impact.Indicator]
+type indexedIndicator = indexed[model.Indicator]
 
 // activeIndicators returns the indicators that were not rejected.
-func activeIndicators(d *impact.Model) []indexedIndicator {
+func activeIndicators(d *model.Model) []indexedIndicator {
 	var out []indexedIndicator
 	for i, x := range d.Indicators {
 		if !x.Provenance.IsRejected() {
@@ -23,11 +23,11 @@ func activeIndicators(d *impact.Model) []indexedIndicator {
 	return out
 }
 
-func isSelected(i impact.Indicator) bool {
-	return i.Selection != nil && i.Selection.Status == impact.SelectionSelected
+func isSelected(i model.Indicator) bool {
+	return i.Selection != nil && i.Selection.Status == model.SelectionSelected
 }
 
-func lastTarget(i impact.Indicator) string {
+func lastTarget(i model.Indicator) string {
 	last := ""
 	for _, t := range i.Targets {
 		if t.Date > last {
@@ -85,7 +85,7 @@ func init() {
 	register("IMP-MEA-003", validate.SeverityWarning, "Quantitative indicators have a unit and a direction.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
-			if t := ind.v.MeasurementType; t != impact.MeasurementQuantitative && t != "" {
+			if t := ind.v.MeasurementType; t != model.MeasurementQuantitative && t != "" {
 				continue
 			}
 			var missing []string
@@ -156,7 +156,7 @@ func init() {
 		}
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
-			if !c.Graph.BelowCeiling(o.v.ID) && o.v.EffectiveResponsibility() == impact.ResponsibilityOwn && o.v.Responsibility != "" {
+			if !c.Graph.BelowCeiling(o.v.ID) && o.v.EffectiveResponsibility() == model.ResponsibilityOwn && o.v.Responsibility != "" {
 				out = append(out, Finding{Path: at("outcomes", o.i) + "/responsibility", Element: o.v.ID,
 					Message: "this outcome is above the ceiling of accountability but is marked as owned; mark it shared or partner, or move the ceiling"})
 			}
@@ -167,7 +167,7 @@ func init() {
 	register("IMP-CLM-001", validate.SeverityWarning, "Indicators above the ceiling of accountability claim contribution, not attribution.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
-			if _, isOutcome := c.Doc.Outcome(ind.v.Measures); isOutcome && !c.Graph.BelowCeiling(ind.v.Measures) && ind.v.EffectiveClaim() == impact.ClaimAttribution {
+			if _, isOutcome := c.Doc.Outcome(ind.v.Measures); isOutcome && !c.Graph.BelowCeiling(ind.v.Measures) && ind.v.EffectiveClaim() == model.ClaimAttribution {
 				out = append(out, Finding{Path: at("indicators", ind.i) + "/claim", Element: ind.v.ID,
 					Message: "this indicator measures an outcome above the ceiling of accountability, so it can show contribution, not attribution"})
 			}
@@ -176,7 +176,7 @@ func init() {
 	})
 
 	// ---- budget ------------------------------------------------------------
-	budget := func(id string, sev validate.Severity, desc string, check func(*burden.Report, *impact.MeasurementBudget) []Finding) {
+	budget := func(id string, sev validate.Severity, desc string, check func(*burden.Report, *model.MeasurementBudget) []Finding) {
 		register(id, sev, desc, func(c *Context) []Finding {
 			if c.Doc.Budget == nil {
 				return nil
@@ -188,19 +188,19 @@ func init() {
 			return check(rep, c.Doc.Budget)
 		})
 	}
-	budget("IMP-BUD-001", validate.SeverityWarning, "Selected indicators fit the staff time budget.", func(r *burden.Report, b *impact.MeasurementBudget) []Finding {
+	budget("IMP-BUD-001", validate.SeverityWarning, "Selected indicators fit the staff time budget.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
 		if ch := r.Budget.StaffMinutesPerWeek; ch.Over {
 			return []Finding{{Path: "/measurementBudget/staffMinutesPerWeek", Message: fmt.Sprintf("selected indicators take %.4g staff minutes a week; the budget is %.4g", ch.Actual, ch.Limit)}}
 		}
 		return nil
 	})
-	budget("IMP-BUD-002", validate.SeverityWarning, "Selected indicators fit the question budget per respondent.", func(r *burden.Report, b *impact.MeasurementBudget) []Finding {
+	budget("IMP-BUD-002", validate.SeverityWarning, "Selected indicators fit the question budget per respondent.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
 		if ch := r.Budget.QuestionsPerYear; ch.Over {
 			return []Finding{{Path: "/measurementBudget/maxQuestionsPerRespondentPerYear", Message: fmt.Sprintf("selected indicators ask each respondent %.4g questions a year; the budget is %.4g", ch.Actual, ch.Limit)}}
 		}
 		return nil
 	})
-	budget("IMP-BUD-003", validate.SeverityInfo, "The number of selected indicators is within the target range.", func(r *burden.Report, b *impact.MeasurementBudget) []Finding {
+	budget("IMP-BUD-003", validate.SeverityInfo, "The number of selected indicators is within the target range.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
 		if sm := r.Budget.SelectedMetrics; sm.Declared && !sm.Within {
 			return []Finding{{Path: "/measurementBudget/targetSelectedMetrics", Message: fmt.Sprintf("%d indicators are selected; the target is %d to %d", sm.Actual, sm.Min, sm.Max)}}
 		}
@@ -218,10 +218,10 @@ func init() {
 	})
 
 	// ---- assumptions -------------------------------------------------------
-	critical := func(a impact.Assumption) bool {
-		return a.Criticality == impact.CriticalityHigh || a.Criticality == impact.CriticalityCritical
+	critical := func(a model.Assumption) bool {
+		return a.Criticality == model.CriticalityHigh || a.Criticality == model.CriticalityCritical
 	}
-	asm := func(id string, sev validate.Severity, desc, msg string, bad func(*Context, impact.Assumption) bool) {
+	asm := func(id string, sev validate.Severity, desc, msg string, bad func(*Context, model.Assumption) bool) {
 		register(id, sev, desc, func(c *Context) []Finding {
 			var out []Finding
 			for i, a := range c.Doc.Assumptions {
@@ -234,13 +234,13 @@ func init() {
 	}
 	asm("IMP-ASM-001", validate.SeverityWarning, "High and critical assumptions say how they will be tested.",
 		"a high or critical assumption needs a description of how it will be tested",
-		func(_ *Context, a impact.Assumption) bool { return critical(a) && a.Test == "" })
+		func(_ *Context, a model.Assumption) bool { return critical(a) && a.Test == "" })
 	asm("IMP-ASM-002", validate.SeverityWarning, "High and critical assumptions cite evidence.",
 		"a high or critical assumption cites no evidence",
-		func(_ *Context, a impact.Assumption) bool { return critical(a) && len(a.EvidenceIDs) == 0 })
+		func(_ *Context, a model.Assumption) bool { return critical(a) && len(a.EvidenceIDs) == 0 })
 	asm("IMP-ASM-004", validate.SeverityWarning, "Assumptions that need testing say how, and are watched or tied to a decision, a learning question, or an evaluation.",
 		"this assumption needs testing but has no test, or no monitoring indicator, related decision, learning question, or evaluation",
-		func(c *Context, a impact.Assumption) bool {
+		func(c *Context, a model.Assumption) bool {
 			if !a.NeedsTesting {
 				return false
 			}
@@ -260,7 +260,7 @@ func init() {
 			return nil // nothing is assumed yet; other rules say so
 		}
 		for _, a := range c.Doc.Assumptions {
-			if !a.Provenance.IsRejected() && (a.Type == impact.AssumptionContextual || a.Type == impact.AssumptionExternal) {
+			if !a.Provenance.IsRejected() && (a.Type == model.AssumptionContextual || a.Type == model.AssumptionExternal) {
 				return nil
 			}
 		}
@@ -271,13 +271,13 @@ func init() {
 		shared := false
 		for _, o := range activeOutcomes(c.Doc) {
 			r := o.v.EffectiveResponsibility()
-			shared = shared || r == impact.ResponsibilityShared || r == impact.ResponsibilityPartner
+			shared = shared || r == model.ResponsibilityShared || r == model.ResponsibilityPartner
 		}
 		if !shared {
 			return nil
 		}
 		for _, a := range c.Doc.Assumptions {
-			if !a.Provenance.IsRejected() && a.Type == impact.AssumptionPartnership {
+			if !a.Provenance.IsRejected() && a.Type == model.AssumptionPartnership {
 				return nil
 			}
 		}

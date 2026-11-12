@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -96,7 +96,7 @@ func Exec(in report.StatusInput, o Options) string {
 	d.line("")
 	d.line("| Level | Outcomes | Pathway status |")
 	d.line("|-------|----------|----------------|")
-	for _, lv := range impact.AllLevels() {
+	for _, lv := range model.AllLevels() {
 		counts := map[string]int{}
 		n := 0
 		for _, oc := range in.View.Outcomes {
@@ -223,7 +223,7 @@ func LearningReview(in report.LearningInput, o Options) string {
 	var moves []string
 	if in.Diff != nil {
 		for _, c := range in.Diff.Changes {
-			if c.ElementKind == impact.ElementAssumption && c.Field == "status" {
+			if c.ElementKind == model.ElementAssumption && c.Field == "status" {
 				moves = append(moves, fmt.Sprintf("`%s`: %s → %s", c.ElementID, dash(c.From), dash(c.To)))
 			}
 		}
@@ -245,7 +245,7 @@ func LearningReview(in report.LearningInput, o Options) string {
 	d.line("")
 	stale := 0
 	for _, s := range in.Status.Indicators {
-		if s.State == impact.StateStale || s.State == impact.StateNoData {
+		if s.State == model.StateStale || s.State == model.StateNoData {
 			stale++
 		}
 	}
@@ -325,7 +325,7 @@ func (d *deck) themesAndStories(in report.LearningInput) {
 }
 
 func (d *deck) recorded(in report.LearningInput) {
-	var found []impact.LearningReview
+	var found []model.LearningReview
 	for _, set := range in.Sets {
 		for _, r := range set.Reviews {
 			if in.Period == "" || r.Period == in.Period {
@@ -354,7 +354,7 @@ func (d *deck) recorded(in report.LearningInput) {
 // five headline numbers with their caveats, one or two stories they may be
 // told, and a closing ask. A story appears only with granted consent, and a
 // quote only where the story may be quoted.
-func Story(in report.StatusInput, sets []*impact.ObservationSet, audienceID string, o Options) (string, error) {
+func Story(in report.StatusInput, sets []*model.ObservationSet, audienceID string, o Options) (string, error) {
 	aud, ok := in.Doc.Audience(audienceID)
 	if !ok {
 		return "", fmt.Errorf("slides: unknown audience %q", audienceID)
@@ -373,7 +373,7 @@ func Story(in report.StatusInput, sets []*impact.ObservationSet, audienceID stri
 	d.line("%s", oneLine(aud.Needs))
 	d.notes("Say this back to them before showing a number.")
 
-	byInd := map[string]impact.IndicatorStatus{}
+	byInd := map[string]model.IndicatorStatus{}
 	for _, s := range in.Status.Indicators {
 		byInd[s.IndicatorID] = s
 	}
@@ -399,7 +399,7 @@ func Story(in report.StatusInput, sets []*impact.ObservationSet, audienceID stri
 			ind := n.Indicator
 			v := views[ind.ID]
 			note := ""
-			if ind.EffectiveClaim() == impact.ClaimContribution {
+			if ind.EffectiveClaim() == model.ClaimContribution {
 				note = " *"
 			}
 			d.line("| %s%s | %s | %s |", cell(cut(n.Label, 70)), note, cell(dashText(v.Latest)), label(string(byInd[ind.ID].State)))
@@ -417,7 +417,7 @@ func Story(in report.StatusInput, sets []*impact.ObservationSet, audienceID stri
 		d.notes("Use the numbers as given. Say 'contributed to' for anything marked.")
 	}
 
-	shown, _ := report.Disclose(sets, asOf, func(s impact.Story) bool { return containsString(s.AudienceIDs, audienceID) })
+	shown, _ := report.Disclose(sets, asOf, func(s model.Story) bool { return containsString(s.AudienceIDs, audienceID) })
 	for i, dis := range shown {
 		if i == storiesPerSlide {
 			break

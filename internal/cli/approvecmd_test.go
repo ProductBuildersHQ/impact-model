@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/approve"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 func approveArgs(theory string, extra ...string) []string {
@@ -36,7 +36,7 @@ func TestApproveForced(t *testing.T) {
 	wantCode(t, run(t, "", approveArgs(theory, "--force")...), ExitInvalid)
 	wantCode(t, run(t, "", approveArgs(theory, "--force", "--reason", "sign-off needed now", "--dry-run")...), ExitOK)
 	wantCode(t, run(t, "", approveArgs(theory, "--force", "--reason", "sign-off needed now")...), ExitOK)
-	doc, err := impactio.LoadDocument(theory)
+	doc, err := modelio.LoadDocument(theory)
 	if err != nil {
 		t.Fatal(err)
 	}

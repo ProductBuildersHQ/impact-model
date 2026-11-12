@@ -6,28 +6,28 @@ import (
 	"testing"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-func set(assessments ...impact.AssumptionAssessment) []*impact.ObservationSet {
-	return []*impact.ObservationSet{{Assessments: assessments}}
+func set(assessments ...model.AssumptionAssessment) []*model.ObservationSet {
+	return []*model.ObservationSet{{Assessments: assessments}}
 }
 
 func TestEffectiveAssumptions(t *testing.T) {
-	doc := impact.NewModel("t", "p")
-	doc.Assumptions = []impact.Assumption{
-		{ID: "a1"}, {ID: "a2", Status: impact.AssumptionHolding}, {ID: "a3", Status: impact.AssumptionHolding},
-		{ID: "a4", Provenance: &impact.Provenance{Basis: impact.BasisRejected}},
+	doc := model.NewModel("t", "p")
+	doc.Assumptions = []model.Assumption{
+		{ID: "a1"}, {ID: "a2", Status: model.AssumptionHolding}, {ID: "a3", Status: model.AssumptionHolding},
+		{ID: "a4", Provenance: &model.Provenance{Basis: model.BasisRejected}},
 	}
 	got := EffectiveAssumptions(doc, set(
-		impact.AssumptionAssessment{AssumptionID: "a2", Date: "2026-03-01", Status: impact.AssumptionAtRisk},
-		impact.AssumptionAssessment{AssumptionID: "a2", Date: "2026-06-01", Status: impact.AssumptionInvalidated},
-		impact.AssumptionAssessment{AssumptionID: "a3", Date: "2027-01-01", Status: impact.AssumptionInvalidated}, // after asOf
+		model.AssumptionAssessment{AssumptionID: "a2", Date: "2026-03-01", Status: model.AssumptionAtRisk},
+		model.AssumptionAssessment{AssumptionID: "a2", Date: "2026-06-01", Status: model.AssumptionInvalidated},
+		model.AssumptionAssessment{AssumptionID: "a3", Date: "2027-01-01", Status: model.AssumptionInvalidated},
 	), day("2026-07-01"))
-	want := []impact.AssumptionState{
-		{AssumptionID: "a1", Status: impact.AssumptionUntested, Source: impact.SourceDocument},
-		{AssumptionID: "a2", Status: impact.AssumptionInvalidated, Source: impact.SourceAssessment, AssessedAt: "2026-06-01"},
-		{AssumptionID: "a3", Status: impact.AssumptionHolding, Source: impact.SourceDocument},
+	want := []model.AssumptionState{
+		{AssumptionID: "a1", Status: model.AssumptionUntested, Source: model.SourceDocument},
+		{AssumptionID: "a2", Status: model.AssumptionInvalidated, Source: model.SourceAssessment, AssessedAt: "2026-06-01"},
+		{AssumptionID: "a3", Status: model.AssumptionHolding, Source: model.SourceDocument},
 	}
 	if !slices.Equal(got, want) {
 		t.Errorf("got  %+v\nwant %+v", got, want)
@@ -36,44 +36,44 @@ func TestEffectiveAssumptions(t *testing.T) {
 
 func near6(a, b float64) bool { return math.Abs(a-b) < 1e-6 }
 
-func twoOutcomes() *impact.Model {
-	d := impact.NewModel("t", "p")
-	d.Outcomes = []impact.Outcome{{ID: "low", Level: impact.LevelShortTerm}, {ID: "top", Level: impact.LevelImpact}}
-	d.Evidence = []impact.Evidence{
-		{ID: "ev-strong", Strength: impact.StrengthStrong, Direction: impact.EvidenceSupports},
-		{ID: "ev-weak", Strength: impact.StrengthWeak},
-		{ID: "ev-against", Strength: impact.StrengthStrong, Direction: impact.EvidenceContradicts},
+func twoOutcomes() *model.Model {
+	d := model.NewModel("t", "p")
+	d.Outcomes = []model.Outcome{{ID: "low", Level: model.LevelShortTerm}, {ID: "top", Level: model.LevelImpact}}
+	d.Evidence = []model.Evidence{
+		{ID: "ev-strong", Strength: model.StrengthStrong, Direction: model.EvidenceSupports},
+		{ID: "ev-weak", Strength: model.StrengthWeak},
+		{ID: "ev-against", Strength: model.StrengthStrong, Direction: model.EvidenceContradicts},
 	}
 	return d
 }
 
 func TestLinkConfidenceIsRuleBased(t *testing.T) {
-	w := impact.DefaultStatusOptions().Weights // 0.4 / 0.4 / 0.2
+	w := model.DefaultStatusOptions().Weights // 0.4 / 0.4 / 0.2
 	tests := []struct {
 		name    string
-		link    impact.CausalLink
-		assumed map[string]impact.AssumptionStatus
+		link    model.CausalLink
+		assumed map[string]model.AssumptionStatus
 		want    float64
-		state   impact.LinkState
+		state   model.LinkState
 	}{
-		{"nothing at all: no assumptions score 0.5", impact.CausalLink{}, nil, 0.4 * 0.5, impact.LinkStateOK},
-		{"rationale only", impact.CausalLink{Rationale: "r"}, nil, 0.4*0 + 0.4*0.5 + 0.2, impact.LinkStateOK},
-		{"strong evidence, validated, rationale", impact.CausalLink{Rationale: "r", EvidenceIDs: []string{"ev-strong"}, AssumptionIDs: []string{"a"}}, map[string]impact.AssumptionStatus{"a": impact.AssumptionValidated}, 1, impact.LinkStateOK},
-		{"best supporting evidence counts", impact.CausalLink{EvidenceIDs: []string{"ev-weak", "ev-strong"}}, nil, 0.4*1 + 0.4*0.5, impact.LinkStateOK},
-		{"contradicting evidence takes half off", impact.CausalLink{EvidenceIDs: []string{"ev-strong", "ev-against"}}, nil, 0.4*0.5 + 0.4*0.5, impact.LinkStateOK},
-		{"contradiction floors at zero", impact.CausalLink{EvidenceIDs: []string{"ev-against"}}, nil, 0.4 * 0.5, impact.LinkStateOK},
-		{"lowest assumption wins", impact.CausalLink{AssumptionIDs: []string{"a", "b"}}, map[string]impact.AssumptionStatus{"a": impact.AssumptionValidated, "b": impact.AssumptionHolding}, 0.4 * 0.8, impact.LinkStateOK},
-		{"at risk assumption", impact.CausalLink{AssumptionIDs: []string{"a"}}, map[string]impact.AssumptionStatus{"a": impact.AssumptionAtRisk}, 0.4 * 0.25, impact.LinkStateAtRisk},
-		{"invalidated assumption breaks the link", impact.CausalLink{AssumptionIDs: []string{"a", "b"}}, map[string]impact.AssumptionStatus{"a": impact.AssumptionInvalidated, "b": impact.AssumptionValidated}, 0, impact.LinkStateBroken},
+		{"nothing at all: no assumptions score 0.5", model.CausalLink{}, nil, 0.4 * 0.5, model.LinkStateOK},
+		{"rationale only", model.CausalLink{Rationale: "r"}, nil, 0.4*0 + 0.4*0.5 + 0.2, model.LinkStateOK},
+		{"strong evidence, validated, rationale", model.CausalLink{Rationale: "r", EvidenceIDs: []string{"ev-strong"}, AssumptionIDs: []string{"a"}}, map[string]model.AssumptionStatus{"a": model.AssumptionValidated}, 1, model.LinkStateOK},
+		{"best supporting evidence counts", model.CausalLink{EvidenceIDs: []string{"ev-weak", "ev-strong"}}, nil, 0.4*1 + 0.4*0.5, model.LinkStateOK},
+		{"contradicting evidence takes half off", model.CausalLink{EvidenceIDs: []string{"ev-strong", "ev-against"}}, nil, 0.4*0.5 + 0.4*0.5, model.LinkStateOK},
+		{"contradiction floors at zero", model.CausalLink{EvidenceIDs: []string{"ev-against"}}, nil, 0.4 * 0.5, model.LinkStateOK},
+		{"lowest assumption wins", model.CausalLink{AssumptionIDs: []string{"a", "b"}}, map[string]model.AssumptionStatus{"a": model.AssumptionValidated, "b": model.AssumptionHolding}, 0.4 * 0.8, model.LinkStateOK},
+		{"at risk assumption", model.CausalLink{AssumptionIDs: []string{"a"}}, map[string]model.AssumptionStatus{"a": model.AssumptionAtRisk}, 0.4 * 0.25, model.LinkStateAtRisk},
+		{"invalidated assumption breaks the link", model.CausalLink{AssumptionIDs: []string{"a", "b"}}, map[string]model.AssumptionStatus{"a": model.AssumptionInvalidated, "b": model.AssumptionValidated}, 0, model.LinkStateBroken},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := twoOutcomes()
 			tt.link.ID, tt.link.From, tt.link.To = "ln", "low", "top"
-			d.Links = []impact.CausalLink{tt.link}
-			var states []impact.AssumptionState
+			d.Links = []model.CausalLink{tt.link}
+			var states []model.AssumptionState
 			for id, s := range tt.assumed {
-				states = append(states, impact.AssumptionState{AssumptionID: id, Status: s})
+				states = append(states, model.AssumptionState{AssumptionID: id, Status: s})
 			}
 			got := LinkStatuses(d, states, w)
 			if len(got) != 1 || got[0].State != tt.state || !near6(got[0].Confidence, tt.want) {
@@ -85,33 +85,33 @@ func TestLinkConfidenceIsRuleBased(t *testing.T) {
 
 func TestAssumptionsThatNameALinkInAppliesToCount(t *testing.T) {
 	d := twoOutcomes()
-	d.Links = []impact.CausalLink{{ID: "ln", From: "low", To: "top"}}
-	d.Assumptions = []impact.Assumption{{ID: "a", AppliesTo: []string{"ln"}}}
-	got := LinkStatuses(d, []impact.AssumptionState{{AssumptionID: "a", Status: impact.AssumptionInvalidated}}, impact.DefaultStatusOptions().Weights)
-	if got[0].State != impact.LinkStateBroken {
+	d.Links = []model.CausalLink{{ID: "ln", From: "low", To: "top"}}
+	d.Assumptions = []model.Assumption{{ID: "a", AppliesTo: []string{"ln"}}}
+	got := LinkStatuses(d, []model.AssumptionState{{AssumptionID: "a", Status: model.AssumptionInvalidated}}, model.DefaultStatusOptions().Weights)
+	if got[0].State != model.LinkStateBroken {
 		t.Errorf("state = %s", got[0].State)
 	}
 }
 
 func TestWeightsAreOptions(t *testing.T) {
 	d := twoOutcomes()
-	d.Links = []impact.CausalLink{{ID: "ln", From: "low", To: "top", Rationale: "r"}}
-	got := LinkStatuses(d, nil, impact.ConfidenceWeights{Evidence: 0, Assumptions: 0, Rationale: 1})
+	d.Links = []model.CausalLink{{ID: "ln", From: "low", To: "top", Rationale: "r"}}
+	got := LinkStatuses(d, nil, model.ConfidenceWeights{Evidence: 0, Assumptions: 0, Rationale: 1})
 	if !near6(got[0].Confidence, 1) {
 		t.Errorf("confidence = %v", got[0].Confidence)
 	}
 }
 
 // chain3: a -> b -> top, with an assumption on the first link.
-func chain3() (*impact.Model, *graph.Graph) {
-	d := impact.NewModel("t", "p")
-	d.Outcomes = []impact.Outcome{{ID: "a", Title: "a", Level: impact.LevelShortTerm}, {ID: "b", Title: "b", Level: impact.LevelMediumTerm}, {ID: "top", Title: "top", Level: impact.LevelImpact}, {ID: "side", Title: "side", Level: impact.LevelShortTerm}}
-	d.Links = []impact.CausalLink{
+func chain3() (*model.Model, *graph.Graph) {
+	d := model.NewModel("t", "p")
+	d.Outcomes = []model.Outcome{{ID: "a", Title: "a", Level: model.LevelShortTerm}, {ID: "b", Title: "b", Level: model.LevelMediumTerm}, {ID: "top", Title: "top", Level: model.LevelImpact}, {ID: "side", Title: "side", Level: model.LevelShortTerm}}
+	d.Links = []model.CausalLink{
 		{ID: "ln-ab", From: "a", To: "b", Rationale: "r", AssumptionIDs: []string{"asm"}},
 		{ID: "ln-bt", From: "b", To: "top", Rationale: "r"},
 		{ID: "ln-st", From: "side", To: "top", Rationale: "r"},
 	}
-	d.Assumptions = []impact.Assumption{{ID: "asm", Statement: "s", Criticality: impact.CriticalityHigh}}
+	d.Assumptions = []model.Assumption{{ID: "asm", Statement: "s", Criticality: model.CriticalityHigh}}
 	g, err := graph.Build(d)
 	if err != nil {
 		panic(err)
@@ -121,10 +121,10 @@ func chain3() (*impact.Model, *graph.Graph) {
 
 func TestInvalidatedAssumptionFlagsEveryDownstreamOutcome(t *testing.T) {
 	d, g := chain3()
-	states := []impact.AssumptionState{{AssumptionID: "asm", Status: impact.AssumptionInvalidated}}
+	states := []model.AssumptionState{{AssumptionID: "asm", Status: model.AssumptionInvalidated}}
 	p := Propagate(d, g, states)
 	for _, id := range []string{"b", "top"} {
-		if !slices.Equal(p.Broken[id], []string{"asm"}) || p.Cap[id] != impact.StateAtRisk {
+		if !slices.Equal(p.Broken[id], []string{"asm"}) || p.Cap[id] != model.StateAtRisk {
 			t.Errorf("%s: broken %v cap %s", id, p.Broken[id], p.Cap[id])
 		}
 	}
@@ -133,21 +133,21 @@ func TestInvalidatedAssumptionFlagsEveryDownstreamOutcome(t *testing.T) {
 			t.Errorf("%s is not downstream of the broken link", id)
 		}
 	}
-	pathway := map[string]impact.State{"a": impact.StateAchieved, "b": impact.StateAchieved, "top": impact.StateAchieved, "side": impact.StateAchieved}
+	pathway := map[string]model.State{"a": model.StateAchieved, "b": model.StateAchieved, "top": model.StateAchieved, "side": model.StateAchieved}
 	p.Apply(pathway)
-	if pathway["b"] != impact.StateAtRisk || pathway["top"] != impact.StateAtRisk || pathway["a"] != impact.StateAchieved || pathway["side"] != impact.StateAchieved {
+	if pathway["b"] != model.StateAtRisk || pathway["top"] != model.StateAtRisk || pathway["a"] != model.StateAchieved || pathway["side"] != model.StateAchieved {
 		t.Errorf("after capping: %v", pathway)
 	}
 }
 
 func TestAtRiskAssumptionsCapAtRisk(t *testing.T) {
 	d, g := chain3()
-	p := Propagate(d, g, []impact.AssumptionState{{AssumptionID: "asm", Status: impact.AssumptionAtRisk}})
-	if p.Cap["top"] != impact.StateAtRisk {
+	p := Propagate(d, g, []model.AssumptionState{{AssumptionID: "asm", Status: model.AssumptionAtRisk}})
+	if p.Cap["top"] != model.StateAtRisk {
 		t.Errorf("cap = %s", p.Cap["top"])
 	}
-	for _, s := range []impact.AssumptionStatus{impact.AssumptionHolding, impact.AssumptionValidated, impact.AssumptionUntested} {
-		if p := Propagate(d, g, []impact.AssumptionState{{AssumptionID: "asm", Status: s}}); len(p.Broken) != 0 {
+	for _, s := range []model.AssumptionStatus{model.AssumptionHolding, model.AssumptionValidated, model.AssumptionUntested} {
+		if p := Propagate(d, g, []model.AssumptionState{{AssumptionID: "asm", Status: s}}); len(p.Broken) != 0 {
 			t.Errorf("%s flagged outcomes: %v", s, p.Broken)
 		}
 	}
@@ -155,14 +155,14 @@ func TestAtRiskAssumptionsCapAtRisk(t *testing.T) {
 
 func TestCriticalInvalidatedAssumptionCapsOffTrack(t *testing.T) {
 	d, g := chain3()
-	d.Assumptions[0].Criticality = impact.CriticalityCritical
-	p := Propagate(d, g, []impact.AssumptionState{{AssumptionID: "asm", Status: impact.AssumptionInvalidated}})
-	if p.Cap["b"] != impact.StateOffTrack || p.Cap["top"] != impact.StateOffTrack {
+	d.Assumptions[0].Criticality = model.CriticalityCritical
+	p := Propagate(d, g, []model.AssumptionState{{AssumptionID: "asm", Status: model.AssumptionInvalidated}})
+	if p.Cap["b"] != model.StateOffTrack || p.Cap["top"] != model.StateOffTrack {
 		t.Errorf("caps = %v", p.Cap)
 	}
 	// Critical but only at risk is still just at risk.
-	p = Propagate(d, g, []impact.AssumptionState{{AssumptionID: "asm", Status: impact.AssumptionAtRisk}})
-	if p.Cap["top"] != impact.StateAtRisk {
+	p = Propagate(d, g, []model.AssumptionState{{AssumptionID: "asm", Status: model.AssumptionAtRisk}})
+	if p.Cap["top"] != model.StateAtRisk {
 		t.Errorf("critical at-risk cap = %s", p.Cap["top"])
 	}
 }
@@ -170,14 +170,14 @@ func TestCriticalInvalidatedAssumptionCapsOffTrack(t *testing.T) {
 func TestAssumptionsOnOutcomesAndInterventionsPropagate(t *testing.T) {
 	d, _ := chain3()
 	d.Links[0].AssumptionIDs = nil
-	d.Assumptions = []impact.Assumption{{ID: "on-outcome", Statement: "s", AppliesTo: []string{"b"}}, {ID: "on-int", Statement: "s", AppliesTo: []string{"int"}}}
-	d.Interventions = []impact.Intervention{{ID: "int", Title: "i", Targets: []string{"side"}}}
+	d.Assumptions = []model.Assumption{{ID: "on-outcome", Statement: "s", AppliesTo: []string{"b"}}, {ID: "on-int", Statement: "s", AppliesTo: []string{"int"}}}
+	d.Interventions = []model.Intervention{{ID: "int", Title: "i", Targets: []string{"side"}}}
 	g, err := graph.Build(d)
 	if err != nil {
 		t.Fatal(err)
 	}
-	p := Propagate(d, g, []impact.AssumptionState{
-		{AssumptionID: "on-outcome", Status: impact.AssumptionInvalidated}, {AssumptionID: "on-int", Status: impact.AssumptionAtRisk},
+	p := Propagate(d, g, []model.AssumptionState{
+		{AssumptionID: "on-outcome", Status: model.AssumptionInvalidated}, {AssumptionID: "on-int", Status: model.AssumptionAtRisk},
 	})
 	if !slices.Equal(p.Broken["b"], []string{"on-outcome"}) || !slices.Equal(p.Broken["top"], []string{"on-int", "on-outcome"}) || !slices.Equal(p.Broken["side"], []string{"on-int"}) {
 		t.Errorf("broken = %v", p.Broken)
@@ -186,7 +186,7 @@ func TestAssumptionsOnOutcomesAndInterventionsPropagate(t *testing.T) {
 
 func TestPathAndOutcomeConfidence(t *testing.T) {
 	d, g := chain3()
-	links := []impact.LinkStatus{{LinkID: "ln-ab", Confidence: 0.5}, {LinkID: "ln-bt", Confidence: 0.8}, {LinkID: "ln-st", Confidence: 0.3}}
+	links := []model.LinkStatus{{LinkID: "ln-ab", Confidence: 0.5}, {LinkID: "ln-bt", Confidence: 0.8}, {LinkID: "ln-st", Confidence: 0.3}}
 	outcomes, impacts := Confidence(d, g, links)
 	want := map[string]float64{"top": 1, "b": 0.8, "a": 0.4, "side": 0.3}
 	for id, w := range want {
@@ -200,12 +200,12 @@ func TestPathAndOutcomeConfidence(t *testing.T) {
 	}
 
 	// Two links between the same outcomes: the stronger one counts.
-	d.Links = append(d.Links, impact.CausalLink{ID: "ln-bt2", From: "b", To: "top"})
+	d.Links = append(d.Links, model.CausalLink{ID: "ln-bt2", From: "b", To: "top"})
 	g, err := graph.Build(d)
 	if err != nil {
 		t.Fatal(err)
 	}
-	links = append(links, impact.LinkStatus{LinkID: "ln-bt2", Confidence: 0.9})
+	links = append(links, model.LinkStatus{LinkID: "ln-bt2", Confidence: 0.9})
 	outcomes, _ = Confidence(d, g, links)
 	if !near6(outcomes["b"], 0.9) {
 		t.Errorf("parallel links: %v", outcomes["b"])
@@ -213,8 +213,8 @@ func TestPathAndOutcomeConfidence(t *testing.T) {
 }
 
 func TestOutcomeWithoutAPathHasNoConfidence(t *testing.T) {
-	d := impact.NewModel("t", "p")
-	d.Outcomes = []impact.Outcome{{ID: "top", Title: "t", Level: impact.LevelImpact}, {ID: "lost", Title: "l", Level: impact.LevelShortTerm}}
+	d := model.NewModel("t", "p")
+	d.Outcomes = []model.Outcome{{ID: "top", Title: "t", Level: model.LevelImpact}, {ID: "lost", Title: "l", Level: model.LevelShortTerm}}
 	g, err := graph.Build(d)
 	if err != nil {
 		t.Fatal(err)

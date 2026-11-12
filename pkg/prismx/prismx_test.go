@@ -11,14 +11,14 @@ import (
 	"github.com/grokify/prism-roadmap/goals/okr"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-func example(t *testing.T) (*impact.Model, *impact.Status) {
+func example(t *testing.T) (*model.Model, *model.Status) {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,12 +26,12 @@ func example(t *testing.T) (*impact.Model, *impact.Status) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sets, err := impactio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
+	sets, err := modelio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 	asOf, _ := time.Parse(time.DateOnly, "2026-09-30")
-	st, err := measure.Evaluate(doc, g, sets, asOf, impact.DefaultStatusOptions())
+	st, err := measure.Evaluate(doc, g, sets, asOf, model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func example(t *testing.T) (*impact.Model, *impact.Status) {
 
 func TestOKRExportValidates(t *testing.T) {
 	doc, st := example(t)
-	for name, status := range map[string]*impact.Status{"with status": st, "without": nil} {
+	for name, status := range map[string]*model.Status{"with status": st, "without": nil} {
 		out, err := ToOKR(doc, status)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)

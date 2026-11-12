@@ -10,7 +10,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/v2mom"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // ErrNotV2MOMReady is returned, wrapped, when an impact model lacks what a
@@ -32,7 +32,7 @@ var ErrNotV2MOMReady = errors.New("the impact model cannot be drawn as a V2MOM")
 // st may be nil; the measures then have no current value, progress, or status.
 // ToV2MOM refuses a model without a vision, values, or pathways, so it never
 // writes a V2MOM that fails validation for a missing section.
-func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) {
+func ToV2MOM(doc *model.Model, st *model.Status) (*v2mom.V2MOM, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
@@ -43,7 +43,7 @@ func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) {
 	if len(doc.Context.Values) == 0 {
 		missing = append(missing, "context.values")
 	}
-	var pathways []impact.Pathway
+	var pathways []model.Pathway
 	for _, p := range doc.Pathways {
 		if !p.Rejected() {
 			pathways = append(pathways, p)
@@ -56,8 +56,8 @@ func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) {
 		return nil, fmt.Errorf("%w: add %s", ErrNotV2MOMReady, joinAnd(missing))
 	}
 
-	statuses := map[string]impact.IndicatorStatus{}
-	assessed := map[string]impact.AssumptionStatus{}
+	statuses := map[string]model.IndicatorStatus{}
+	assessed := map[string]model.AssumptionStatus{}
 	if st != nil {
 		for _, s := range st.Indicators {
 			statuses[s.IndicatorID] = s
@@ -127,7 +127,7 @@ func ToV2MOM(doc *impact.Model, st *impact.Status) (*v2mom.V2MOM, error) {
 type focusRole struct{ id, role string }
 
 // focusMeasures lists a pathway's focus indicators in order, each once.
-func focusMeasures(f *impact.Focus) []focusRole {
+func focusMeasures(f *model.Focus) []focusRole {
 	var out []focusRole
 	seen := map[string]bool{}
 	add := func(id, role string) {
@@ -144,7 +144,7 @@ func focusMeasures(f *impact.Focus) []focusRole {
 	return out
 }
 
-func measureFrom(ind impact.Indicator, role string, s impact.IndicatorStatus, withStatus bool) v2mom.Measure {
+func measureFrom(ind model.Indicator, role string, s model.IndicatorStatus, withStatus bool) v2mom.Measure {
 	m := v2mom.Measure{ID: ind.ID, Name: ind.Name, Description: role, Unit: ind.Unit}
 	if ind.Definition != "" {
 		m.Description = role + ": " + ind.Definition
@@ -184,21 +184,21 @@ func measureValue(v *float64, level string) string {
 	return level
 }
 
-func measureStatus(s impact.State) string {
+func measureStatus(s model.State) string {
 	switch s {
-	case impact.StateAchieved:
+	case model.StateAchieved:
 		return "Achieved"
-	case impact.StateOnTrack:
+	case model.StateOnTrack:
 		return "On Track"
-	case impact.StateAtRisk, impact.StateStale:
+	case model.StateAtRisk, model.StateStale:
 		return "At Risk"
-	case impact.StateOffTrack:
+	case model.StateOffTrack:
 		return "Behind"
 	}
 	return ""
 }
 
-func projectFrom(in impact.Intervention, methodID string) v2mom.Project {
+func projectFrom(in model.Intervention, methodID string) v2mom.Project {
 	return v2mom.Project{
 		ID: in.ID, Name: in.Title, Description: in.Description, MethodID: methodID, Status: projectStatus(in.Status),
 		ExternalLinks: initiativeLinks(in.InitiativeRefs),
@@ -208,7 +208,7 @@ func projectFrom(in impact.Intervention, methodID string) v2mom.Project {
 // initiativeLinks keys an intervention's initiative references by framework,
 // numbering repeats ("jira", "jira-2"); each is the URL, or the reference when
 // there is no URL. It is nil when there are none.
-func initiativeLinks(refs []impact.ExternalRef) map[string]string {
+func initiativeLinks(refs []model.ExternalRef) map[string]string {
 	var links map[string]string
 	for _, r := range refs {
 		if links == nil {
@@ -228,15 +228,15 @@ func initiativeLinks(refs []impact.ExternalRef) map[string]string {
 
 // projectStatus maps an intervention's status; a paused intervention has no
 // V2MOM project status and is left blank.
-func projectStatus(s impact.InterventionStatus) string {
+func projectStatus(s model.InterventionStatus) string {
 	switch s {
-	case impact.InterventionPlanned:
+	case model.InterventionPlanned:
 		return "Approved"
-	case impact.InterventionInProgress:
+	case model.InterventionInProgress:
 		return "In Progress"
-	case impact.InterventionCompleted:
+	case model.InterventionCompleted:
 		return "Completed"
-	case impact.InterventionCancelled:
+	case model.InterventionCancelled:
 		return "Cancelled"
 	}
 	return ""
@@ -259,7 +259,7 @@ func v2momStatus(s string) string {
 
 // pathwayScope is the set of element IDs that belong to a pathway: its
 // outcomes, its interventions, and the links between them.
-func pathwayScope(doc *impact.Model, p impact.Pathway) map[string]bool {
+func pathwayScope(doc *model.Model, p model.Pathway) map[string]bool {
 	scope := map[string]bool{}
 	for _, id := range p.OutcomeIDs {
 		scope[id] = true
@@ -287,7 +287,7 @@ func (o obstacleOf) appliesWithin(scope map[string]bool) bool {
 // obstacles lists, in file order, the risks and then the assumptions that
 // could still break the plan. assessed holds assumption statuses from the
 // status computation, which take precedence over the model's own.
-func obstacles(doc *impact.Model, assessed map[string]impact.AssumptionStatus) []obstacleOf {
+func obstacles(doc *model.Model, assessed map[string]model.AssumptionStatus) []obstacleOf {
 	var out []obstacleOf
 	for _, r := range doc.Risks {
 		if r.Rejected() {
@@ -322,12 +322,12 @@ func obstacles(doc *impact.Model, assessed map[string]impact.AssumptionStatus) [
 
 // openAssumption reports whether an assumption is an obstacle: high or
 // critical, and not yet shown to hold.
-func openAssumption(c impact.Criticality, status impact.AssumptionStatus) bool {
-	if c != impact.CriticalityHigh && c != impact.CriticalityCritical {
+func openAssumption(c model.Criticality, status model.AssumptionStatus) bool {
+	if c != model.CriticalityHigh && c != model.CriticalityCritical {
 		return false
 	}
 	switch status {
-	case impact.AssumptionUntested, impact.AssumptionAtRisk, impact.AssumptionInvalidated:
+	case model.AssumptionUntested, model.AssumptionAtRisk, model.AssumptionInvalidated:
 		return true
 	}
 	return false
@@ -335,17 +335,17 @@ func openAssumption(c impact.Criticality, status impact.AssumptionStatus) bool {
 
 // assumptionStatus is the assessed status if there is one, otherwise the
 // model's own; an assumption with neither counts as untested.
-func assumptionStatus(a impact.Assumption, assessed map[string]impact.AssumptionStatus) impact.AssumptionStatus {
+func assumptionStatus(a model.Assumption, assessed map[string]model.AssumptionStatus) model.AssumptionStatus {
 	if s, ok := assessed[a.ID]; ok && s != "" {
 		return s
 	}
 	if a.Status == "" {
-		return impact.AssumptionUntested
+		return model.AssumptionUntested
 	}
 	return a.Status
 }
 
-func actorName(doc *impact.Model, id string) string {
+func actorName(doc *model.Model, id string) string {
 	if a, ok := doc.Actor(id); ok {
 		return a.Name
 	}

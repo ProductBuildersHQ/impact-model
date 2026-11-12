@@ -1,7 +1,7 @@
 package lint
 
 import (
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -28,7 +28,7 @@ func init() {
 		}
 		for _, levels := range relieved {
 			for _, l := range levels {
-				if l == impact.LevelLongTerm || l == impact.LevelImpact {
+				if l == model.LevelLongTerm || l == model.LevelImpact {
 					return nil
 				}
 			}
@@ -39,8 +39,8 @@ func init() {
 
 // relievers maps each effect to the levels of the active outcomes that
 // relieve it.
-func relievers(d *impact.Model) map[string][]impact.Level {
-	out := map[string][]impact.Level{}
+func relievers(d *model.Model) map[string][]model.Level {
+	out := map[string][]model.Level{}
 	for _, o := range activeOutcomes(d) {
 		for _, id := range o.v.AddressesEffects {
 			out[id] = append(out[id], o.v.Level)

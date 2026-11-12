@@ -6,23 +6,23 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-func loadFixture(t *testing.T) *impact.Model {
+func loadFixture(t *testing.T) *model.Model {
 	t.Helper()
-	data, err := os.ReadFile("../impact/testdata/full.json")
+	data, err := os.ReadFile("../model/testdata/full.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var d impact.Model
+	var d model.Model
 	if err := json.Unmarshal(data, &d); err != nil {
 		t.Fatal(err)
 	}
 	return &d
 }
 
-func rejected() *impact.Provenance { return &impact.Provenance{Basis: impact.BasisRejected} }
+func rejected() *model.Provenance { return &model.Provenance{Basis: model.BasisRejected} }
 
 func nodeIDs(g *Graph) []string {
 	var ids []string
@@ -116,7 +116,7 @@ func TestRejectedInterventionAndGroupAreExcluded(t *testing.T) {
 
 func TestRejectedOutcomeLeavesTheCeiling(t *testing.T) {
 	doc := loadFixture(t)
-	doc.Ceiling = &impact.Ceiling{OutcomeIDs: []string{"oc-enterprise-require", "oc-platform-support"}}
+	doc.Ceiling = &model.Ceiling{OutcomeIDs: []string{"oc-enterprise-require", "oc-platform-support"}}
 	doc.Outcomes[3].Provenance = rejected()
 	g, err := Build(doc)
 	if err != nil {

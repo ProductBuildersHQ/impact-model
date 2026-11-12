@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 // Stamp identifies exactly which version of which impact model an artifact was
@@ -29,8 +29,8 @@ const unversioned = "unversioned"
 // NewStamp stamps doc. The version is the document's metadata version, else
 // that of its latest revision, else "unversioned". asOf is used as given; a
 // stamp never reads the clock, so the same inputs give the same artifact.
-func NewStamp(doc *impact.Model, asOf string) (Stamp, error) {
-	hash, err := impactio.ContentHash(doc)
+func NewStamp(doc *model.Model, asOf string) (Stamp, error) {
+	hash, err := modelio.ContentHash(doc)
 	if err != nil {
 		return Stamp{}, fmt.Errorf("share: hash document: %w", err)
 	}

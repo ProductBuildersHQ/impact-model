@@ -1,4 +1,4 @@
-package impactio
+package modelio
 
 import (
 	"bytes"
@@ -9,19 +9,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/schema"
 )
 
 // DetectKind reports the document kind declared by the input's "kind"
 // field.
-func DetectKind(data []byte, f Format) (impact.Kind, error) {
+func DetectKind(data []byte, f Format) (model.Kind, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return "", err
 	}
 	var head struct {
-		Kind impact.Kind `json:"kind"`
+		Kind model.Kind `json:"kind"`
 	}
 	if err := json.Unmarshal(j, &head); err != nil {
 		return "", fmt.Errorf("%w: read kind: %w", ErrInvalidDocument, err)
@@ -33,17 +33,17 @@ func DetectKind(data []byte, f Format) (impact.Kind, error) {
 }
 
 // SchemaName returns the embedded schema that validates a document kind.
-func SchemaName(k impact.Kind) (string, error) {
+func SchemaName(k model.Kind) (string, error) {
 	switch k {
-	case impact.KindImpactModel:
+	case model.KindImpactModel:
 		return schema.ImpactModel, nil
-	case impact.KindObservationSet:
+	case model.KindObservationSet:
 		return schema.ObservationSet, nil
-	case impact.KindStatus:
+	case model.KindStatus:
 		return schema.Status, nil
-	case impact.KindActorRegistry:
+	case model.KindActorRegistry:
 		return schema.ActorRegistry, nil
-	case impact.KindReviewResponse:
+	case model.KindReviewResponse:
 		return schema.ReviewResponse, nil
 	default:
 		return "", fmt.Errorf("%w: unknown kind %q", ErrInvalidDocument, string(k))
@@ -72,12 +72,12 @@ func decode[T any](j []byte, schemaName string) (*T, error) {
 // converted to JSON, validated against the embedded schema, and decoded
 // strictly. A failure wraps ErrInvalidDocument; schema failures also wrap
 // the validator's error, whose output lists JSON-pointer locations.
-func ParseDocument(data []byte, f Format) (*impact.Model, error) {
+func ParseDocument(data []byte, f Format) (*model.Model, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return nil, err
 	}
-	doc, err := decode[impact.Model](j, schema.ImpactModel)
+	doc, err := decode[model.Model](j, schema.ImpactModel)
 	if err != nil {
 		return nil, err
 	}
@@ -88,48 +88,48 @@ func ParseDocument(data []byte, f Format) (*impact.Model, error) {
 }
 
 // ParseObservationSet parses an observation set in the given format.
-func ParseObservationSet(data []byte, f Format) (*impact.ObservationSet, error) {
+func ParseObservationSet(data []byte, f Format) (*model.ObservationSet, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return nil, err
 	}
-	return decode[impact.ObservationSet](j, schema.ObservationSet)
+	return decode[model.ObservationSet](j, schema.ObservationSet)
 }
 
 // ParseReviewResponse parses a review response in the given format.
-func ParseReviewResponse(data []byte, f Format) (*impact.ReviewResponse, error) {
+func ParseReviewResponse(data []byte, f Format) (*model.ReviewResponse, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return nil, err
 	}
-	return decode[impact.ReviewResponse](j, schema.ReviewResponse)
+	return decode[model.ReviewResponse](j, schema.ReviewResponse)
 }
 
 // ParseCSVMapping parses a CSV column mapping in the given format.
-func ParseCSVMapping(data []byte, f Format) (*impact.CSVMapping, error) {
+func ParseCSVMapping(data []byte, f Format) (*model.CSVMapping, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return nil, err
 	}
-	return decode[impact.CSVMapping](j, schema.CSVMapping)
+	return decode[model.CSVMapping](j, schema.CSVMapping)
 }
 
 // ParseActorRegistry parses an actor registry in the given format.
-func ParseActorRegistry(data []byte, f Format) (*impact.ActorRegistry, error) {
+func ParseActorRegistry(data []byte, f Format) (*model.ActorRegistry, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return nil, err
 	}
-	return decode[impact.ActorRegistry](j, schema.ActorRegistry)
+	return decode[model.ActorRegistry](j, schema.ActorRegistry)
 }
 
 // ParseStatus parses a status snapshot in the given format.
-func ParseStatus(data []byte, f Format) (*impact.Status, error) {
+func ParseStatus(data []byte, f Format) (*model.Status, error) {
 	j, err := ToJSON(data, f)
 	if err != nil {
 		return nil, err
 	}
-	return decode[impact.Status](j, schema.Status)
+	return decode[model.Status](j, schema.Status)
 }
 
 func readFile(path string) ([]byte, Format, error) {
@@ -153,7 +153,7 @@ func readFile(path string) ([]byte, Format, error) {
 
 // LoadDocument reads and parses an impact model file (.json, .yaml, or
 // .yml).
-func LoadDocument(path string) (*impact.Model, error) {
+func LoadDocument(path string) (*model.Model, error) {
 	data, f, err := readFile(path)
 	if err != nil {
 		return nil, err
@@ -167,8 +167,8 @@ func LoadDocument(path string) (*impact.Model, error) {
 
 // LoadObservations reads and parses observation set files, in the order
 // given.
-func LoadObservations(paths ...string) ([]*impact.ObservationSet, error) {
-	sets := make([]*impact.ObservationSet, 0, len(paths))
+func LoadObservations(paths ...string) ([]*model.ObservationSet, error) {
+	sets := make([]*model.ObservationSet, 0, len(paths))
 	for _, p := range paths {
 		data, f, err := readFile(p)
 		if err != nil {
@@ -187,11 +187,11 @@ func LoadObservations(paths ...string) ([]*impact.ObservationSet, error) {
 // a single set. Observations, assessments, and notes are concatenated in
 // input order; the merged Period is the common period if all sets share one
 // and empty otherwise. Sets for different documents cannot be merged.
-func MergeObservations(sets ...*impact.ObservationSet) (*impact.ObservationSet, error) {
+func MergeObservations(sets ...*model.ObservationSet) (*model.ObservationSet, error) {
 	if len(sets) == 0 {
 		return nil, errors.New("merge observations: no observation sets")
 	}
-	merged := impact.NewObservationSet(sets[0].ModelID, sets[0].Period)
+	merged := model.NewObservationSet(sets[0].ModelID, sets[0].Period)
 	for i, s := range sets {
 		if s.ModelID != merged.ModelID {
 			return nil, fmt.Errorf("merge observations: set %d measures %q, expected %q", i, s.ModelID, merged.ModelID)
@@ -216,15 +216,15 @@ func Reformat(data []byte, f Format) ([]byte, error) {
 	}
 	var v any
 	switch kind {
-	case impact.KindImpactModel:
+	case model.KindImpactModel:
 		v, err = ParseDocument(data, f)
-	case impact.KindObservationSet:
+	case model.KindObservationSet:
 		v, err = ParseObservationSet(data, f)
-	case impact.KindStatus:
+	case model.KindStatus:
 		v, err = ParseStatus(data, f)
-	case impact.KindActorRegistry:
+	case model.KindActorRegistry:
 		v, err = ParseActorRegistry(data, f)
-	case impact.KindReviewResponse:
+	case model.KindReviewResponse:
 		v, err = ParseReviewResponse(data, f)
 	default:
 		return nil, fmt.Errorf("%w: unknown kind %q", ErrInvalidDocument, string(kind))

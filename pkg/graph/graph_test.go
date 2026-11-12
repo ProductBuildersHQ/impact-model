@@ -11,16 +11,16 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-func loadFull(t *testing.T) *impact.Model {
+func loadFull(t *testing.T) *model.Model {
 	t.Helper()
-	data, err := os.ReadFile("../impact/testdata/full.json")
+	data, err := os.ReadFile("../model/testdata/full.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var doc impact.Model
+	var doc model.Model
 	if err := json.Unmarshal(data, &doc); err != nil {
 		t.Fatal(err)
 	}
@@ -38,7 +38,7 @@ func buildFull(t *testing.T) *Graph {
 
 // link is a compact causal link: "from>to" with optional "~" prefix for feedback.
 type spec struct {
-	outcomes      map[string]impact.Level // id -> level, in order via order
+	outcomes      map[string]model.Level // id -> level, in order via order
 	order         []string
 	links         []string // "a>b" or "~a>b"
 	interventions map[string][]string
@@ -46,10 +46,10 @@ type spec struct {
 }
 
 func newSpec() *spec {
-	return &spec{outcomes: map[string]impact.Level{}, interventions: map[string][]string{}}
+	return &spec{outcomes: map[string]model.Level{}, interventions: map[string][]string{}}
 }
 
-func (s *spec) outcome(id string, l impact.Level) *spec {
+func (s *spec) outcome(id string, l model.Level) *spec {
 	s.outcomes[id] = l
 	s.order = append(s.order, id)
 	return s
@@ -63,19 +63,19 @@ func (s *spec) intervene(id string, targets ...string) *spec {
 	return s
 }
 
-func (s *spec) doc() *impact.Model {
-	d := impact.NewModel("synthetic", "A synthetic problem.")
+func (s *spec) doc() *model.Model {
+	d := model.NewModel("synthetic", "A synthetic problem.")
 	for _, id := range s.order {
-		d.Outcomes = append(d.Outcomes, impact.Outcome{ID: id, Title: id, Level: s.outcomes[id]})
+		d.Outcomes = append(d.Outcomes, model.Outcome{ID: id, Title: id, Level: s.outcomes[id]})
 	}
 	for i, l := range s.links {
 		fb := strings.HasPrefix(l, "~")
 		l = strings.TrimPrefix(l, "~")
 		from, to, _ := strings.Cut(l, ">")
-		d.Links = append(d.Links, impact.CausalLink{ID: fmt.Sprintf("ln-%d", i), From: from, To: to, Feedback: fb})
+		d.Links = append(d.Links, model.CausalLink{ID: fmt.Sprintf("ln-%d", i), From: from, To: to, Feedback: fb})
 	}
 	for _, id := range s.intOrder {
-		d.Interventions = append(d.Interventions, impact.Intervention{ID: id, Title: id, Targets: slices.Clone(s.interventions[id])})
+		d.Interventions = append(d.Interventions, model.Intervention{ID: id, Title: id, Targets: slices.Clone(s.interventions[id])})
 	}
 	return d
 }
@@ -107,11 +107,11 @@ func TestFullFixtureModel(t *testing.T) {
 		"oc-spec-stable", "oc-reference-impl", "int-interop", "int-reference",
 	})
 	n, ok := g.Node("int-interop")
-	if !ok || n.Kind != impact.ElementIntervention || n.Level != "" {
+	if !ok || n.Kind != model.ElementIntervention || n.Level != "" {
 		t.Fatalf("Node(int-interop) = %+v, %v", n, ok)
 	}
 	n, ok = g.Node("oc-safer-agents")
-	if !ok || n.Kind != impact.ElementOutcome || n.Level != impact.LevelImpact {
+	if !ok || n.Kind != model.ElementOutcome || n.Level != model.LevelImpact {
 		t.Fatalf("Node(oc-safer-agents) = %+v, %v", n, ok)
 	}
 	if _, ok := g.Node("nope"); ok {
@@ -142,7 +142,7 @@ func TestFullFixtureModel(t *testing.T) {
 	if g.GroupsFor("oc-enterprise-require")[0].Members[0] != "oc-idp-support" {
 		t.Fatal("GroupsFor leaked internal state")
 	}
-	eq(t, "no groups", g.GroupsFor("oc-safer-agents"), []impact.PreconditionGroup(nil))
+	eq(t, "no groups", g.GroupsFor("oc-safer-agents"), []model.PreconditionGroup(nil))
 }
 
 func TestFullFixtureQueries(t *testing.T) {
@@ -226,10 +226,10 @@ func checkTopo(t *testing.T, g *Graph, order []string) {
 
 func TestCeilingVariants(t *testing.T) {
 	// a(output) > b(short) > c(inter) > d(long) > e(impact); x(short) side branch to nothing.
-	mk := func(c *impact.Ceiling) *Graph {
-		s := newSpec().outcome("e", impact.LevelImpact).outcome("d", impact.LevelLongTerm).
-			outcome("c", impact.LevelMediumTerm).outcome("b", impact.LevelShortTerm).
-			outcome("a", impact.LevelOutput).outcome("x", impact.LevelShortTerm).
+	mk := func(c *model.Ceiling) *Graph {
+		s := newSpec().outcome("e", model.LevelImpact).outcome("d", model.LevelLongTerm).
+			outcome("c", model.LevelMediumTerm).outcome("b", model.LevelShortTerm).
+			outcome("a", model.LevelOutput).outcome("x", model.LevelShortTerm).
 			link("a>b", "b>c", "c>d", "d>e")
 		doc := s.doc()
 		doc.Ceiling = c
@@ -240,15 +240,15 @@ func TestCeilingVariants(t *testing.T) {
 		return g
 	}
 	eq(t, "nil ceiling", mk(nil).OwnedOutcomes(), []string{"e", "d", "c", "b", "a", "x"})
-	eq(t, "level", mk(&impact.Ceiling{Level: impact.LevelMediumTerm}).OwnedOutcomes(), []string{"c", "b", "a", "x"})
-	eq(t, "outcome ids", mk(&impact.Ceiling{OutcomeIDs: []string{"c"}}).OwnedOutcomes(), []string{"c", "b", "a"})
-	eq(t, "both", mk(&impact.Ceiling{Level: impact.LevelShortTerm, OutcomeIDs: []string{"c"}}).OwnedOutcomes(), []string{"c", "b", "a", "x"})
-	eq(t, "ids with nothing else", mk(&impact.Ceiling{OutcomeIDs: []string{"a"}}).OwnedOutcomes(), []string{"a"})
+	eq(t, "level", mk(&model.Ceiling{Level: model.LevelMediumTerm}).OwnedOutcomes(), []string{"c", "b", "a", "x"})
+	eq(t, "outcome ids", mk(&model.Ceiling{OutcomeIDs: []string{"c"}}).OwnedOutcomes(), []string{"c", "b", "a"})
+	eq(t, "both", mk(&model.Ceiling{Level: model.LevelShortTerm, OutcomeIDs: []string{"c"}}).OwnedOutcomes(), []string{"c", "b", "a", "x"})
+	eq(t, "ids with nothing else", mk(&model.Ceiling{OutcomeIDs: []string{"a"}}).OwnedOutcomes(), []string{"a"})
 }
 
 func TestCycleWithoutFeedback(t *testing.T) {
-	s := newSpec().outcome("i", impact.LevelImpact).outcome("a", impact.LevelShortTerm).
-		outcome("b", impact.LevelMediumTerm).outcome("c", impact.LevelLongTerm).outcome("z", impact.LevelOutput).
+	s := newSpec().outcome("i", model.LevelImpact).outcome("a", model.LevelShortTerm).
+		outcome("b", model.LevelMediumTerm).outcome("c", model.LevelLongTerm).outcome("z", model.LevelOutput).
 		link("z>a", "a>b", "b>c", "c>a", "c>i")
 	g := s.build(t)
 	eq(t, "cycles", g.Cycles(), [][]string{{"a", "b", "c"}})
@@ -275,14 +275,14 @@ func TestCycleWithoutFeedback(t *testing.T) {
 }
 
 func TestCycleOrdering(t *testing.T) {
-	s := newSpec().outcome("i", impact.LevelImpact).outcome("p", impact.LevelShortTerm).
-		outcome("q", impact.LevelShortTerm).outcome("r", impact.LevelShortTerm).outcome("s", impact.LevelShortTerm).
+	s := newSpec().outcome("i", model.LevelImpact).outcome("p", model.LevelShortTerm).
+		outcome("q", model.LevelShortTerm).outcome("r", model.LevelShortTerm).outcome("s", model.LevelShortTerm).
 		link("s>r", "r>s", "q>p", "p>q", "p>i")
 	eq(t, "cycles", s.build(t).Cycles(), [][]string{{"p", "q"}, {"r", "s"}})
 }
 
 func TestDisconnectedNode(t *testing.T) {
-	s := newSpec().outcome("i", impact.LevelImpact).outcome("a", impact.LevelShortTerm).outcome("lone", impact.LevelOutput).
+	s := newSpec().outcome("i", model.LevelImpact).outcome("a", model.LevelShortTerm).outcome("lone", model.LevelOutput).
 		link("a>i").intervene("int-x", "a")
 	g := s.build(t)
 	eq(t, "orphans", g.Orphans(), []string{"lone"})
@@ -299,13 +299,13 @@ func TestDisconnectedNode(t *testing.T) {
 }
 
 func TestNoImpactMakesEverythingDeadEnd(t *testing.T) {
-	g := newSpec().outcome("a", impact.LevelShortTerm).outcome("b", impact.LevelLongTerm).link("a>b").build(t)
+	g := newSpec().outcome("a", model.LevelShortTerm).outcome("b", model.LevelLongTerm).link("a>b").build(t)
 	eq(t, "dead ends", g.DeadEnds(), []string{"a", "b"})
 	eq(t, "levels", g.Levels(), map[string]int{})
 }
 
 func TestImplicitEdgeDedup(t *testing.T) {
-	s := newSpec().outcome("i", impact.LevelImpact).outcome("a", impact.LevelShortTerm).
+	s := newSpec().outcome("i", model.LevelImpact).outcome("a", model.LevelShortTerm).
 		link("int-x>a", "a>i").intervene("int-x", "a", "a", "i")
 	g := s.build(t)
 	edges := g.Edges()
@@ -318,17 +318,17 @@ func TestImplicitEdgeDedup(t *testing.T) {
 }
 
 func TestParallelLinksDeduplicated(t *testing.T) {
-	g := newSpec().outcome("i", impact.LevelImpact).outcome("a", impact.LevelShortTerm).link("a>i", "a>i").build(t)
+	g := newSpec().outcome("i", model.LevelImpact).outcome("a", model.LevelShortTerm).link("a>i", "a>i").build(t)
 	eq(t, "paths", g.PathsToImpact("a", 0), [][]string{{"a", "i"}})
 	eq(t, "preconditions", g.Preconditions("i"), []string{"a"})
 }
 
 func TestMaxPathsTruncation(t *testing.T) {
 	// Layered graph: s -> {m0..m3} -> i gives 4 paths.
-	s := newSpec().outcome("i", impact.LevelImpact).outcome("s", impact.LevelOutput)
+	s := newSpec().outcome("i", model.LevelImpact).outcome("s", model.LevelOutput)
 	for k := range 4 {
 		m := fmt.Sprintf("m%d", k)
-		s.outcome(m, impact.LevelMediumTerm).link("s>"+m, m+">i")
+		s.outcome(m, model.LevelMediumTerm).link("s>"+m, m+">i")
 	}
 	g := s.build(t)
 	all := g.PathsToImpact("s", 0)
@@ -342,12 +342,12 @@ func TestMaxPathsTruncation(t *testing.T) {
 
 func TestDiamondPathCounting(t *testing.T) {
 	// Chain of 5 diamonds: 2^5 = 32 paths.
-	s := newSpec().outcome("i", impact.LevelImpact)
+	s := newSpec().outcome("i", model.LevelImpact)
 	prev := "i"
 	var links []string
 	for k := range 5 {
 		a, b, top := fmt.Sprintf("a%d", k), fmt.Sprintf("b%d", k), fmt.Sprintf("t%d", k)
-		s.outcome(a, impact.LevelMediumTerm).outcome(b, impact.LevelMediumTerm).outcome(top, impact.LevelMediumTerm)
+		s.outcome(a, model.LevelMediumTerm).outcome(b, model.LevelMediumTerm).outcome(top, model.LevelMediumTerm)
 		links = append(links, a+">"+prev, b+">"+prev, top+">"+a, top+">"+b)
 		prev = top
 	}
@@ -365,7 +365,7 @@ func TestDiamondPathCounting(t *testing.T) {
 }
 
 func TestPathsDoNotContinuePastImpact(t *testing.T) {
-	g := newSpec().outcome("i1", impact.LevelImpact).outcome("i2", impact.LevelImpact).outcome("a", impact.LevelShortTerm).
+	g := newSpec().outcome("i1", model.LevelImpact).outcome("i2", model.LevelImpact).outcome("a", model.LevelShortTerm).
 		link("a>i1", "i1>i2").build(t)
 	eq(t, "paths", g.PathsToImpact("a", 0), [][]string{{"a", "i1"}})
 	eq(t, "levels", g.Levels(), map[string]int{"i1": 0, "i2": 0, "a": 1})
@@ -375,17 +375,17 @@ func TestBuildErrors(t *testing.T) {
 	if _, err := Build(nil); !errors.Is(err, ErrInvalidDocument) {
 		t.Fatalf("nil doc err = %v", err)
 	}
-	selfLoop := newSpec().outcome("a", impact.LevelShortTerm).link("a>a").doc()
+	selfLoop := newSpec().outcome("a", model.LevelShortTerm).link("a>a").doc()
 	_, err := Build(selfLoop)
 	if !errors.Is(err, ErrInvalidDocument) || !strings.Contains(err.Error(), "VAL-LINK-001") {
 		t.Fatalf("self link err = %v", err)
 	}
-	dangling := newSpec().outcome("a", impact.LevelShortTerm).link("a>ghost").doc()
+	dangling := newSpec().outcome("a", model.LevelShortTerm).link("a>ghost").doc()
 	if _, err := Build(dangling); !errors.Is(err, ErrInvalidDocument) || !strings.Contains(err.Error(), "ghost") {
 		t.Fatalf("dangling err = %v", err)
 	}
 	// Many issues: message is truncated.
-	bad := newSpec().outcome("a", impact.LevelShortTerm).link("a>g1", "a>g2", "a>g3", "a>g4", "a>g5").doc()
+	bad := newSpec().outcome("a", model.LevelShortTerm).link("a>g1", "a>g2", "a>g3", "a>g4", "a>g5").doc()
 	_, err = Build(bad)
 	if !errors.Is(err, ErrInvalidDocument) || !strings.Contains(err.Error(), "more") {
 		t.Fatalf("many err = %v", err)
@@ -408,13 +408,13 @@ func TestBuildDoesNotMutateOrAlias(t *testing.T) {
 	doc.Ceiling.OutcomeIDs = append(doc.Ceiling.OutcomeIDs, "oc-safer-agents")
 	doc.Groups[0].Members[0] = "changed"
 	doc.Links[0].To = "oc-safer-agents"
-	doc.Outcomes[0].Level = impact.LevelOutput
+	doc.Outcomes[0].Level = model.LevelOutput
 	eq(t, "owned after mutation", g.OwnedOutcomes(), want)
 	eq(t, "group after mutation", g.GroupsFor("oc-enterprise-require")[0].Members[0], wantGroup)
 	eq(t, "edge after mutation", g.Edges()[0].To, "oc-idp-support")
 }
 
-func snapshot(t *testing.T, doc *impact.Model) string {
+func snapshot(t *testing.T, doc *model.Model) string {
 	t.Helper()
 	b, err := json.Marshal(doc)
 	if err != nil {
@@ -462,10 +462,10 @@ func TestConcurrentLazyQueries(t *testing.T) {
 func TestDeepGraphNoStackIssues(t *testing.T) {
 	// A 10,000-node chain exercises Tarjan and DFS depth.
 	const n = 10000
-	s := newSpec().outcome("n0", impact.LevelImpact)
+	s := newSpec().outcome("n0", model.LevelImpact)
 	var links []string
 	for k := 1; k < n; k++ {
-		s.outcome(fmt.Sprintf("n%d", k), impact.LevelMediumTerm)
+		s.outcome(fmt.Sprintf("n%d", k), model.LevelMediumTerm)
 		links = append(links, fmt.Sprintf("n%d>n%d", k, k-1))
 	}
 	g := s.link(links...).build(t)
@@ -480,7 +480,7 @@ func TestDeepGraphNoStackIssues(t *testing.T) {
 	}
 	// Close the chain into one big cycle.
 	s.links = append(s.links, fmt.Sprintf("n0>n%d", n-1))
-	s.outcomes["n0"] = impact.LevelOutput
+	s.outcomes["n0"] = model.LevelOutput
 	if c := s.build(t).Cycles(); len(c) != 1 || len(c[0]) != n {
 		t.Fatal("big cycle not found")
 	}

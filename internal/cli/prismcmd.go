@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/prismx"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
@@ -145,8 +145,8 @@ func runPrismExport(e *env, cmd *cobra.Command, kind, path string) error {
 	if err != nil {
 		return err
 	}
-	var st *impact.Status
-	var sets []*impact.ObservationSet
+	var st *model.Status
+	var sets []*model.ObservationSet
 	if len(observationPaths(cmd)) > 0 || flagString(cmd, "as-of") != "" {
 		in, loaded, err := loadStatus(e, cmd, path)
 		if err != nil {
@@ -170,7 +170,7 @@ func runPrismExport(e *env, cmd *cobra.Command, kind, path string) error {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, buf.Bytes()); err != nil {
+		if err := modelio.WriteFile(out, buf.Bytes()); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil

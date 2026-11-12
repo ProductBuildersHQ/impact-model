@@ -5,19 +5,19 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/prismx"
 )
 
 func TestExportPRISM(t *testing.T) {
-	doc, err := impactio.LoadDocument("../../examples/course-catalog/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/course-catalog/impact-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 	// The scorecard needs an outcome in a perspective, which this example
 	// does not place; the other exports ignore it.
-	doc.Outcomes[0].ScorecardPerspective = impact.ScorecardMission
+	doc.Outcomes[0].ScorecardPerspective = model.ScorecardMission
 	for _, kind := range PRISMExportKinds {
 		out, err := ExportPRISM(kind, doc, nil, nil)
 		if err != nil || out.Kind != kind || out.Document == nil {
@@ -30,7 +30,7 @@ func TestExportPRISM(t *testing.T) {
 
 	// A refused DMAIC export carries no document but still lists what it left out.
 	noNumbers := *doc
-	noNumbers.Indicators = append([]impact.Indicator(nil), doc.Indicators...)
+	noNumbers.Indicators = append([]model.Indicator(nil), doc.Indicators...)
 	for i := range noNumbers.Indicators {
 		noNumbers.Indicators[i].Baseline = nil
 	}

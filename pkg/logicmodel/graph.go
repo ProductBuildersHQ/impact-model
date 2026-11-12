@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -175,15 +175,15 @@ func Build(v *report.View) *Graph {
 }
 
 // stageOf places an outcome by its level.
-func stageOf(l impact.Level) StageID {
+func stageOf(l model.Level) StageID {
 	switch l {
-	case impact.LevelOutput:
+	case model.LevelOutput:
 		return StageOutputs
-	case impact.LevelShortTerm:
+	case model.LevelShortTerm:
 		return StageShortTerm
-	case impact.LevelMediumTerm:
+	case model.LevelMediumTerm:
 		return StageMediumTerm
-	case impact.LevelLongTerm:
+	case model.LevelLongTerm:
 		return StageLongTerm
 	default:
 		return StageImpact

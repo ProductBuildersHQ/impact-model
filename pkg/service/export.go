@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/prismx"
 )
 
@@ -30,7 +30,7 @@ type PRISMExport struct {
 // line and the MCP server export from, so both refuse the same incomplete
 // models with the same errors (prismx.ErrNotV2MOMReady, ErrNotVSEMReady,
 // ErrNotDMAICReady, ErrNotMELReady, ErrNotOGSMReady, ErrNotBSCReady).
-func ExportPRISM(kind string, doc *impact.Model, st *impact.Status, sets []*impact.ObservationSet) (PRISMExport, error) {
+func ExportPRISM(kind string, doc *model.Model, st *model.Status, sets []*model.ObservationSet) (PRISMExport, error) {
 	out := PRISMExport{Kind: kind}
 	var err error
 	switch kind {

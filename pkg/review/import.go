@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Candidate is an element a quoted text may refer to: its ID and the
@@ -30,7 +30,7 @@ type Options struct {
 	// Candidates resolve rows that carry quoted text but no element ID.
 	Candidates []Candidate
 	// Step is the consultation step recorded; the default is "whole".
-	Step impact.ConsultationStep
+	Step model.ConsultationStep
 }
 
 // Flag is a row that needs a human decision, or a caution about a row that
@@ -62,7 +62,7 @@ type Result struct {
 	// Mapped is the number of rows that became operations.
 	Mapped int `json:"mapped"`
 	// Consultation records the review in the impact model's own terms.
-	Consultation impact.Consultation `json:"consultation"`
+	Consultation model.Consultation `json:"consultation"`
 }
 
 // NeedsHuman reports whether anything in the result requires a person to
@@ -70,7 +70,7 @@ type Result struct {
 func (r *Result) NeedsHuman() bool { return r.Stale || len(r.Flags) > 0 }
 
 // Import maps the rows of resp onto doc. doc is never modified.
-func Import(doc *impact.Model, resp *impact.ReviewResponse, o Options) (*Result, error) {
+func Import(doc *model.Model, resp *model.ReviewResponse, o Options) (*Result, error) {
 	if doc == nil || resp == nil {
 		return nil, fmt.Errorf("review: nil document or response")
 	}
@@ -127,7 +127,7 @@ func Import(doc *impact.Model, resp *impact.ReviewResponse, o Options) (*Result,
 // resolve returns the element a row is about. A row with an ID must name an
 // element that exists; a row with only quoted text must match exactly one
 // candidate statement.
-func resolve(doc *impact.Model, row impact.ReviewItem, candidates []Candidate) (id, reason string) {
+func resolve(doc *model.Model, row model.ReviewItem, candidates []Candidate) (id, reason string) {
 	if row.ElementID != "" {
 		if _, ok := doc.Element(row.ElementID); !ok {
 			return "", fmt.Sprintf("no element %q in the impact model", row.ElementID)
@@ -157,18 +157,18 @@ func resolve(doc *impact.Model, row impact.ReviewItem, candidates []Candidate) (
 func normalize(s string) string { return strings.Join(strings.Fields(s), " ") }
 
 // kindOf maps a document element kind onto the patch engine's.
-var kindOf = map[impact.ElementKind]string{
-	impact.ElementOutcome: "outcome", impact.ElementGroup: "group", impact.ElementLink: "link",
-	impact.ElementIntervention: "intervention", impact.ElementAssumption: "assumption",
-	impact.ElementIndicator: "indicator", impact.ElementActor: "actor", impact.ElementEvidence: "evidence",
-	impact.ElementExternalFactor: "factor", impact.ElementRisk: "risk", impact.ElementDecision: "decision",
-	impact.ElementPathway: "pathway", impact.ElementMetric: "metric", impact.ElementTerm: "term",
-	impact.ElementConsultation: "consultation", impact.ElementEvaluation: "evaluation",
-	impact.ElementQuestion: "question", impact.ElementReviewMeeting: "review-meeting",
+var kindOf = map[model.ElementKind]string{
+	model.ElementOutcome: "outcome", model.ElementGroup: "group", model.ElementLink: "link",
+	model.ElementIntervention: "intervention", model.ElementAssumption: "assumption",
+	model.ElementIndicator: "indicator", model.ElementActor: "actor", model.ElementEvidence: "evidence",
+	model.ElementExternalFactor: "factor", model.ElementRisk: "risk", model.ElementDecision: "decision",
+	model.ElementPathway: "pathway", model.ElementMetric: "metric", model.ElementTerm: "term",
+	model.ElementConsultation: "consultation", model.ElementEvaluation: "evaluation",
+	model.ElementQuestion: "question", model.ElementReviewMeeting: "review-meeting",
 }
 
 // propose turns one resolved row into a patch, or says why it cannot.
-func propose(doc *impact.Model, row impact.ReviewItem, resp *impact.ReviewResponse) (edit.Patch, string) {
+func propose(doc *model.Model, row model.ReviewItem, resp *model.ReviewResponse) (edit.Patch, string) {
 	ref, _ := doc.Element(row.ElementID)
 	kind, ok := edit.KindByName(kindOf[ref.Kind])
 	if !ok {
@@ -179,19 +179,19 @@ func propose(doc *impact.Model, row impact.ReviewItem, resp *impact.ReviewRespon
 		"provenance.decidedBy": strings.Join(resp.Reviewers, "; "),
 	}
 	switch row.Decision {
-	case impact.DecisionAgree:
-		decided["provenance.basis"] = string(impact.BasisConfirmed)
+	case model.DecisionAgree:
+		decided["provenance.basis"] = string(model.BasisConfirmed)
 		return setFields(doc, kind, row.ElementID, decided)
-	case impact.DecisionRemove:
-		decided["provenance.basis"] = string(impact.BasisRejected)
+	case model.DecisionRemove:
+		decided["provenance.basis"] = string(model.BasisRejected)
 		return setFields(doc, kind, row.ElementID, decided)
-	case impact.DecisionChange:
+	case model.DecisionChange:
 		fields, ok := parseChange(row.SuggestedChange)
 		if !ok {
 			return nil, "the suggested change is free text; a person must decide how to apply it"
 		}
 		return setFields(doc, kind, row.ElementID, fields)
-	case impact.DecisionUnsure:
+	case model.DecisionUnsure:
 		return nil, "the reviewer is unsure"
 	case "":
 		return nil, "a comment with no decision"
@@ -200,7 +200,7 @@ func propose(doc *impact.Model, row impact.ReviewItem, resp *impact.ReviewRespon
 	}
 }
 
-func setFields(doc *impact.Model, k edit.ElementKind, id string, fields map[string]any) (edit.Patch, string) {
+func setFields(doc *model.Model, k edit.ElementKind, id string, fields map[string]any) (edit.Patch, string) {
 	p, err := edit.SetFields(doc, k, id, fields, nil)
 	if err != nil {
 		return nil, "the proposed change cannot be built: " + err.Error()
@@ -230,15 +230,15 @@ func parseChange(s string) (map[string]any, bool) {
 
 // consultation builds the record of the review. Its ID avoids the IDs the
 // Impact model already uses.
-func consultation(doc *impact.Model, resp *impact.ReviewResponse, step impact.ConsultationStep) impact.Consultation {
+func consultation(doc *model.Model, resp *model.ReviewResponse, step model.ConsultationStep) model.Consultation {
 	if step == "" {
-		step = impact.StepWhole
+		step = model.StepWhole
 	}
-	method := impact.MethodDocumentReview
-	if resp.Method == impact.ReviewWorkshop {
-		method = impact.MethodWorkshop
+	method := model.MethodDocumentReview
+	if resp.Method == model.ReviewWorkshop {
+		method = model.MethodWorkshop
 	}
-	counts := map[impact.ReviewDecision]int{}
+	counts := map[model.ReviewDecision]int{}
 	other := 0
 	for _, r := range resp.Rows {
 		if r.Decision == "" {
@@ -248,7 +248,7 @@ func consultation(doc *impact.Model, resp *impact.ReviewResponse, step impact.Co
 		counts[r.Decision]++
 	}
 	var findings []string
-	for _, d := range impact.AllReviewDecisions() {
+	for _, d := range model.AllReviewDecisions() {
 		if counts[d] > 0 {
 			findings = append(findings, fmt.Sprintf("%s: %d", d, counts[d]))
 		}
@@ -256,7 +256,7 @@ func consultation(doc *impact.Model, resp *impact.ReviewResponse, step impact.Co
 	if other > 0 {
 		findings = append(findings, fmt.Sprintf("comment only: %d", other))
 	}
-	return impact.Consultation{
+	return model.Consultation{
 		ID:                consultationID(doc, resp.Date),
 		Date:              resp.Date,
 		Step:              step,
@@ -266,7 +266,7 @@ func consultation(doc *impact.Model, resp *impact.ReviewResponse, step impact.Co
 	}
 }
 
-func consultationID(doc *impact.Model, date string) string {
+func consultationID(doc *model.Model, date string) string {
 	used := map[string]bool{}
 	for _, c := range doc.Consultations {
 		used[c.ID] = true

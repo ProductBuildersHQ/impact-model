@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Narrative renders a programme or strategy document scaffold, following the
@@ -14,7 +14,7 @@ import (
 // deliver, who does what, how it will be monitored and evaluated, who has
 // been consulted, and key messages. It needs no observations. When a status
 // snapshot is given, outcomes show their status.
-func Narrative(v *View, doc *impact.Model, st *impact.Status) string {
+func Narrative(v *View, doc *model.Model, st *model.Status) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s: programme narrative\n\n", mdText(v.Document.Title))
 	if st != nil {
@@ -48,7 +48,7 @@ func narrativeSummary(v *View) string {
 // causalAnalysis lays the problem tree out by level, with the outcomes that
 // address each cause, so the solution can be checked against the problem at
 // every level.
-func causalAnalysis(v *View, doc *impact.Model) string {
+func causalAnalysis(v *View, doc *model.Model) string {
 	var b strings.Builder
 	b.WriteString("## Causal analysis\n\n")
 	if len(doc.Causes) == 0 {
@@ -73,7 +73,7 @@ func causalAnalysis(v *View, doc *impact.Model) string {
 			addressedBy[c] = append(addressedBy[c], mdText(titles[o.ID])+" (`"+o.ID+"`)")
 		}
 	}
-	for _, lv := range []impact.CauseLevel{impact.CauseStructural, impact.CauseUnderlying, impact.CauseImmediate} {
+	for _, lv := range []model.CauseLevel{model.CauseStructural, model.CauseUnderlying, model.CauseImmediate} {
 		var rows []string
 		for _, c := range doc.Causes {
 			if c.Level != lv {
@@ -112,14 +112,14 @@ func causalAnalysis(v *View, doc *impact.Model) string {
 
 // priorities shows the weighted scores behind which outcomes and
 // interventions were chosen, with the stated reasons.
-func priorities(doc *impact.Model) string {
+func priorities(doc *model.Model) string {
 	var b strings.Builder
 	b.WriteString("## Priorities and why\n\n")
 	any := false
 	for _, s := range []struct {
 		heading string
-		subject impact.SelectionSubject
-	}{{"Outcomes", impact.SubjectOutcome}, {"Interventions", impact.SubjectIntervention}} {
+		subject model.SelectionSubject
+	}{{"Outcomes", model.SubjectOutcome}, {"Interventions", model.SubjectIntervention}} {
 		rows := priorityRows(doc, s.subject)
 		if len(rows) == 0 {
 			continue
@@ -134,7 +134,7 @@ func priorities(doc *impact.Model) string {
 	return b.String()
 }
 
-func risksAndAssumptions(v *View, doc *impact.Model) string {
+func risksAndAssumptions(v *View, doc *model.Model) string {
 	var b strings.Builder
 	b.WriteString("## Assumptions and risks\n\n")
 	if len(v.Assumptions) == 0 {
@@ -167,7 +167,7 @@ func risksAndAssumptions(v *View, doc *impact.Model) string {
 
 // partnerDelivered lists what the organization monitors but others deliver,
 // and what nobody delivers.
-func partnerDelivered(v *View, st *impact.Status) string {
+func partnerDelivered(v *View, st *model.Status) string {
 	var b strings.Builder
 	b.WriteString("## What partners deliver\n\n")
 	b.WriteString(outsideAccountability(v, st))
@@ -177,14 +177,14 @@ func partnerDelivered(v *View, st *impact.Status) string {
 // outsideAccountability renders the outcomes that are monitored but not
 // answered for, split into those partners deliver, those nobody delivers,
 // and those above the ceiling of accountability.
-func outsideAccountability(v *View, st *impact.Status) string {
+func outsideAccountability(v *View, st *model.Status) string {
 	var partner, unaddressed, above []OutcomeView
 	for _, o := range v.Outcomes {
 		switch {
 		case o.Accountable:
-		case o.Responsibility == string(impact.ResponsibilityPartner):
+		case o.Responsibility == string(model.ResponsibilityPartner):
 			partner = append(partner, o)
-		case o.Responsibility == string(impact.ResponsibilityUnaddressed):
+		case o.Responsibility == string(model.ResponsibilityUnaddressed):
 			unaddressed = append(unaddressed, o)
 		default:
 			above = append(above, o)
@@ -233,7 +233,7 @@ func implementation(v *View) string {
 // monitoring sets out how the impact model will be watched and tested: the
 // assumptions that need testing, how often indicators are collected, and
 // the questions an evaluation should answer.
-func monitoring(v *View, doc *impact.Model) string {
+func monitoring(v *View, doc *model.Model) string {
 	var b strings.Builder
 	b.WriteString("## Monitoring and evaluation\n\n### Assumptions to test\n\n")
 	var tests []string
@@ -285,7 +285,7 @@ func linkTitle(v *View, id string) string {
 }
 
 // validationTrail lists who has been consulted and what changed as a result.
-func validationTrail(doc *impact.Model) string {
+func validationTrail(doc *model.Model) string {
 	var b strings.Builder
 	b.WriteString("## Who has been consulted\n\n")
 	if len(doc.Consultations) == 0 {
@@ -307,7 +307,7 @@ func keyMessages(v *View) string {
 	var goals []string
 	accountable, monitored := 0, 0
 	for _, o := range v.Outcomes {
-		if o.Level == impact.LevelImpact {
+		if o.Level == model.LevelImpact {
 			goals = append(goals, mdText(o.Title))
 		}
 		if o.Accountable {

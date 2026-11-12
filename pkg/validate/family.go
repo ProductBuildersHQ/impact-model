@@ -3,7 +3,7 @@ package validate
 import (
 	"fmt"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/ref"
 )
 
@@ -11,7 +11,7 @@ import (
 // name the parent, every outcome reference into the parent must resolve to
 // an outcome there, and a parent pathway that names a child must name one
 // that was supplied. Issues carry Source "child[<id>]" or "parent".
-func Family(parent *impact.Model, children ...*impact.Model) []Issue {
+func Family(parent *model.Model, children ...*model.Model) []Issue {
 	c := newChecker(parent, nil)
 	supplied := map[string]bool{}
 	for _, ch := range children {
@@ -52,7 +52,7 @@ func Family(parent *impact.Model, children ...*impact.Model) []Issue {
 	return c.issues
 }
 
-func (c *checker) child(parent, ch *impact.Model, named bool) {
+func (c *checker) child(parent, ch *model.Model, named bool) {
 	pr, err := ref.Parse(ch.Parent)
 	switch {
 	case ch.Parent == "":

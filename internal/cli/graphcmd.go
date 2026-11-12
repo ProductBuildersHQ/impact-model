@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
@@ -59,7 +59,7 @@ graph in Graphviz DOT.`,
 				return usageErr("--%s needs --from <id>", query)
 			}
 
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}

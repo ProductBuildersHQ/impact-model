@@ -6,7 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/ref"
 )
 
@@ -20,11 +20,11 @@ var futureRef = regexp.MustCompile(`^ufm:[a-z][a-z0-9]*(-[a-z0-9]+)*$`)
 // Impact model to an element of another, in the set, must resolve. The impact models are
 // each valid on their own (see Document); this checks them against one
 // another. Issues carry Source "future[<id>]".
-func Futures(docs ...*impact.Model) []Issue {
-	c := newChecker(&impact.Model{}, nil)
+func Futures(docs ...*model.Model) []Issue {
+	c := newChecker(&model.Model{}, nil)
 	type key struct{ future, actor string }
 	spoken := map[key]string{}
-	byID := map[string]*impact.Model{}
+	byID := map[string]*model.Model{}
 	for _, d := range docs {
 		byID[d.ID] = d
 	}
@@ -86,8 +86,8 @@ func registryNames(m map[string][]string) []string {
 // crossRefs checks references from d into other impact models of the set: an
 // alignment or the external references of an element that point at
 // model:<doc>#<element>.
-func crossRefs(c *checker, d *impact.Model, set map[string]*impact.Model) {
-	check := func(path, element string, ext impact.ExternalRef) {
+func crossRefs(c *checker, d *model.Model, set map[string]*model.Model) {
+	check := func(path, element string, ext model.ExternalRef) {
 		if !strings.HasPrefix(ext.Ref, ref.Prefix) {
 			return
 		}

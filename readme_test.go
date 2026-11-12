@@ -1,4 +1,4 @@
-package impactmodel
+package outcomemodel
 
 import (
 	"os"

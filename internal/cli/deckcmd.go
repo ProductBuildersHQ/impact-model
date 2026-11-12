@@ -12,8 +12,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
@@ -51,7 +51,7 @@ can still be written without --export.`,
   impact-model deck workshop impact-model.yaml --export workshop.pdf`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -120,7 +120,7 @@ func exportDeck(ctx context.Context, md, target string) error {
 		src := filepath.Join(dir, fmt.Sprintf("d%d.mmd", n))
 		svg := filepath.Join(dir, fmt.Sprintf("d%d.svg", n))
 		body := mermaidFence.FindStringSubmatch(block)[1]
-		if renderErr = impactio.WriteFile(src, []byte(body)); renderErr != nil {
+		if renderErr = modelio.WriteFile(src, []byte(body)); renderErr != nil {
 			return block
 		}
 		if renderErr = runTool(ctx, mmdc, "-i", src, "-o", svg); renderErr != nil {
@@ -132,7 +132,7 @@ func exportDeck(ctx context.Context, md, target string) error {
 		return &ExitError{Code: ExitUsageErr, Err: renderErr}
 	}
 	deckFile := filepath.Join(dir, "deck.md")
-	if err := impactio.WriteFile(deckFile, []byte(md)); err != nil {
+	if err := modelio.WriteFile(deckFile, []byte(md)); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	abs, err := filepath.Abs(target)
@@ -170,7 +170,7 @@ func deckOutputFlags(cmd *cobra.Command) {
 // --export, renders it with the external tools.
 func deliverDeck(e *env, cmd *cobra.Command, md string) error {
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(md)); err != nil {
+		if err := modelio.WriteFile(out, []byte(md)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 	} else if flagString(cmd, "export") == "" {
@@ -243,11 +243,11 @@ new themes can be marked. Only stories with granted consent are shown.`,
 			if err != nil {
 				return err
 			}
-			var prevSets []*impact.ObservationSet
+			var prevSets []*model.ObservationSet
 			if paths, err := cmd.Flags().GetStringSlice("prev-observations"); err != nil {
 				panic(fmt.Sprintf("cli: --prev-observations is not a string slice flag: %v", err))
 			} else if len(paths) > 0 {
-				if prevSets, err = impactio.LoadObservations(paths...); err != nil {
+				if prevSets, err = modelio.LoadObservations(paths...); err != nil {
 					return &ExitError{Code: ExitUsageErr, Err: err}
 				}
 			}

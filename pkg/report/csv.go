@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // CSV tables are RFC 4180: comma separated, CRLF line ends, fields quoted
@@ -19,7 +19,7 @@ var CSVTables = []string{"indicators", "metrics", "glossary", "metric-selection"
 
 // CSV renders one named table. The selection and collection tables are built
 // from the document, so doc must be set for them; the others use the view.
-func CSV(table string, v *View, doc *impact.Model) (string, error) {
+func CSV(table string, v *View, doc *model.Model) (string, error) {
 	if (table == "metric-selection" || table == "collection-plan") && doc == nil {
 		return "", fmt.Errorf("table %q needs the document", table)
 	}

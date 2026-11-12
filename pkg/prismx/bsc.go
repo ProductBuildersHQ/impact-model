@@ -7,7 +7,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/bsc"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // ErrNotBSCReady is returned, wrapped, when an impact model lacks what a
@@ -31,7 +31,7 @@ var ErrNotBSCReady = errors.New("the impact model cannot be drawn as a Balanced 
 //
 // st may be nil; measures then have no current value, progress, or status.
 // ToBSC refuses a model with no outcome in a scorecard perspective.
-func ToBSC(doc *impact.Model, st *impact.Status) (*bsc.BSC, error) {
+func ToBSC(doc *model.Model, st *model.Status) (*bsc.BSC, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
@@ -40,7 +40,7 @@ func ToBSC(doc *impact.Model, st *impact.Status) (*bsc.BSC, error) {
 		return nil, fmt.Errorf("%w: add a scorecardPerspective to an outcome", ErrNotBSCReady)
 	}
 
-	statuses := map[string]impact.IndicatorStatus{}
+	statuses := map[string]model.IndicatorStatus{}
 	if st != nil {
 		for _, s := range st.Indicators {
 			statuses[s.IndicatorID] = s
@@ -65,11 +65,11 @@ func ToBSC(doc *impact.Model, st *impact.Status) (*bsc.BSC, error) {
 		out.Metadata.Period = h.Start + " to " + h.End
 	}
 
-	used := map[impact.ScorecardPerspective]bool{}
+	used := map[model.ScorecardPerspective]bool{}
 	for _, o := range objectives {
 		used[o.ScorecardPerspective] = true
 	}
-	for _, p := range impact.AllScorecardPerspectives() {
+	for _, p := range model.AllScorecardPerspectives() {
 		if used[p] {
 			out.Perspectives = append(out.Perspectives, perspective(p))
 		}
@@ -132,12 +132,12 @@ func ToBSC(doc *impact.Model, st *impact.Status) (*bsc.BSC, error) {
 
 // perspective returns the scorecard perspective for a model perspective: one
 // of prism-roadmap's four classic perspectives, or the mission perspective.
-func perspective(p impact.ScorecardPerspective) bsc.Perspective {
-	kind := map[impact.ScorecardPerspective]string{
-		impact.ScorecardFinancial:       bsc.KindFinancial,
-		impact.ScorecardCustomer:        bsc.KindCustomer,
-		impact.ScorecardInternalProcess: bsc.KindInternalProcess,
-		impact.ScorecardLearningGrowth:  bsc.KindLearningGrowth,
+func perspective(p model.ScorecardPerspective) bsc.Perspective {
+	kind := map[model.ScorecardPerspective]string{
+		model.ScorecardFinancial:       bsc.KindFinancial,
+		model.ScorecardCustomer:        bsc.KindCustomer,
+		model.ScorecardInternalProcess: bsc.KindInternalProcess,
+		model.ScorecardLearningGrowth:  bsc.KindLearningGrowth,
 	}[p]
 	for _, d := range bsc.DefaultPerspectives() {
 		if d.Kind == kind {
@@ -150,15 +150,15 @@ func perspective(p impact.ScorecardPerspective) bsc.Perspective {
 
 // bscInitiativeStatus maps an intervention's status; a paused intervention has
 // no initiative status and is left blank.
-func bscInitiativeStatus(s impact.InterventionStatus) string {
+func bscInitiativeStatus(s model.InterventionStatus) string {
 	switch s {
-	case impact.InterventionPlanned:
+	case model.InterventionPlanned:
 		return bsc.InitiativePlanned
-	case impact.InterventionInProgress:
+	case model.InterventionInProgress:
 		return bsc.InitiativeInProgress
-	case impact.InterventionCompleted:
+	case model.InterventionCompleted:
 		return bsc.InitiativeCompleted
-	case impact.InterventionCancelled:
+	case model.InterventionCancelled:
 		return bsc.InitiativeCancelled
 	}
 	return ""

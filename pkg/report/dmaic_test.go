@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestDMAICPlanGolden(t *testing.T) {
@@ -43,23 +43,23 @@ func TestDMAICPlanWithoutMarkedPathways(t *testing.T) {
 
 func TestDMAICUseAndNeeds(t *testing.T) {
 	v := 3.0
-	doc := impact.NewModel("m", "Problem")
-	doc.Outcomes = []impact.Outcome{
-		{ID: "oc-long", Title: "Long", Level: impact.LevelLongTerm},
-		{ID: "oc-short", Title: "Short", Level: impact.LevelShortTerm},
-		{ID: "oc-relief", Title: "Relief", Level: impact.LevelMediumTerm, AddressesEffects: []string{"e-1"}},
+	doc := model.NewModel("m", "Problem")
+	doc.Outcomes = []model.Outcome{
+		{ID: "oc-long", Title: "Long", Level: model.LevelLongTerm},
+		{ID: "oc-short", Title: "Short", Level: model.LevelShortTerm},
+		{ID: "oc-relief", Title: "Relief", Level: model.LevelMediumTerm, AddressesEffects: []string{"e-1"}},
 	}
-	doc.Interventions = []impact.Intervention{{ID: "int-a", Title: "A", Targets: []string{"oc-short"}}}
-	p := &impact.Pathway{ID: "pw", Title: "P", OutcomeIDs: []string{"oc-long", "oc-short", "oc-relief"}, InterventionIDs: []string{"int-a"}}
+	doc.Interventions = []model.Intervention{{ID: "int-a", Title: "A", Targets: []string{"oc-short"}}}
+	p := &model.Pathway{ID: "pw", Title: "P", OutcomeIDs: []string{"oc-long", "oc-short", "oc-relief"}, InterventionIDs: []string{"int-a"}}
 
 	tests := []struct {
-		ind  impact.Indicator
+		ind  model.Indicator
 		want DMAICPhaseUse
 	}{
-		{impact.Indicator{Measures: "oc-long"}, DMAICPhaseUse{Define: true, Measure: true}},
-		{impact.Indicator{Measures: "oc-short", Frequency: "P1M", Disaggregation: []string{"size"}}, DMAICPhaseUse{Measure: true, Analyze: true, Improve: true, Control: true}},
-		{impact.Indicator{Measures: "oc-relief", Frequency: "P2Y"}, DMAICPhaseUse{Define: true, Measure: true}},
-		{impact.Indicator{Measures: "int-a", Frequency: "P1Y"}, DMAICPhaseUse{Measure: true, Improve: true, Control: true}},
+		{model.Indicator{Measures: "oc-long"}, DMAICPhaseUse{Define: true, Measure: true}},
+		{model.Indicator{Measures: "oc-short", Frequency: "P1M", Disaggregation: []string{"size"}}, DMAICPhaseUse{Measure: true, Analyze: true, Improve: true, Control: true}},
+		{model.Indicator{Measures: "oc-relief", Frequency: "P2Y"}, DMAICPhaseUse{Define: true, Measure: true}},
+		{model.Indicator{Measures: "int-a", Frequency: "P1Y"}, DMAICPhaseUse{Measure: true, Improve: true, Control: true}},
 	}
 	for _, tt := range tests {
 		if got := DMAICUse(doc, p, tt.ind); got != tt.want {
@@ -67,7 +67,7 @@ func TestDMAICUseAndNeeds(t *testing.T) {
 		}
 	}
 
-	ready := impact.Indicator{Baseline: &impact.Baseline{Value: &v}, Targets: []impact.Target{{Value: &v, Date: "2027-01-01"}}, Frequency: "P2W", DataSource: "CRM"}
+	ready := model.Indicator{Baseline: &model.Baseline{Value: &v}, Targets: []model.Target{{Value: &v, Date: "2027-01-01"}}, Frequency: "P2W", DataSource: "CRM"}
 	if needs := DMAICNeeds(ready); len(needs) != 0 {
 		t.Errorf("a fortnightly indicator with baseline, target, and source needs nothing, got %v", needs)
 	}
@@ -75,7 +75,7 @@ func TestDMAICUseAndNeeds(t *testing.T) {
 	if needs := DMAICNeeds(ready); len(needs) != 1 || !strings.Contains(needs[0], "control limits") {
 		t.Errorf("a quarterly indicator needs more measurements, got %v", needs)
 	}
-	if needs := DMAICNeeds(impact.Indicator{}); !slices.Equal(needs, []string{"baseline", "numeric target", "data source", "frequency"}) {
+	if needs := DMAICNeeds(model.Indicator{}); !slices.Equal(needs, []string{"baseline", "numeric target", "data source", "frequency"}) {
 		t.Errorf("an empty indicator needs everything, got %v", needs)
 	}
 }

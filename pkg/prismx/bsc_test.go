@@ -8,12 +8,12 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/bsc"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestBSCExportValidates(t *testing.T) {
 	doc, st := example(t)
-	for name, status := range map[string]*impact.Status{"with status": st, "without": nil} {
+	for name, status := range map[string]*model.Status{"with status": st, "without": nil} {
 		out, err := ToBSC(doc, status)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)
@@ -136,10 +136,10 @@ func TestBSCRefusesAModelWithoutPerspectives(t *testing.T) {
 }
 
 func TestBSCStatuses(t *testing.T) {
-	for in, want := range map[impact.InterventionStatus]string{
-		impact.InterventionPlanned: bsc.InitiativePlanned, impact.InterventionInProgress: bsc.InitiativeInProgress,
-		impact.InterventionCompleted: bsc.InitiativeCompleted, impact.InterventionCancelled: bsc.InitiativeCancelled,
-		impact.InterventionPaused: "",
+	for in, want := range map[model.InterventionStatus]string{
+		model.InterventionPlanned: bsc.InitiativePlanned, model.InterventionInProgress: bsc.InitiativeInProgress,
+		model.InterventionCompleted: bsc.InitiativeCompleted, model.InterventionCancelled: bsc.InitiativeCancelled,
+		model.InterventionPaused: "",
 	} {
 		if got := bscInitiativeStatus(in); got != want {
 			t.Errorf("bscInitiativeStatus(%q) = %q, want %q", in, got, want)
@@ -150,7 +150,7 @@ func TestBSCStatuses(t *testing.T) {
 			t.Errorf("bscStatus(%q) = %q, want %q", in, got, want)
 		}
 	}
-	if p := perspective(impact.ScorecardLearningGrowth); p.Kind != bsc.KindLearningGrowth || p.Question == "" {
+	if p := perspective(model.ScorecardLearningGrowth); p.Kind != bsc.KindLearningGrowth || p.Question == "" {
 		t.Errorf("learning and growth perspective = %+v", p)
 	}
 }

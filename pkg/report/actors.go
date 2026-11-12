@@ -5,14 +5,14 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Actors renders the division of labour: for each actor, what it delivers,
 // what it changes or co-owns, and what it runs; then the outcomes that need
 // several parties, the outcomes nobody delivers, and the outcomes partners
 // deliver that the organization monitors.
-func Actors(v *View, doc *impact.Model, st *impact.Status) string {
+func Actors(v *View, doc *model.Model, st *model.Status) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s: who does what\n\n", mdText(v.Document.Title))
 	titles := map[string]string{}
@@ -54,7 +54,7 @@ func Actors(v *View, doc *impact.Model, st *impact.Status) string {
 	b.WriteString("## Outcomes that need collaboration\n\n")
 	var collab []string
 	for _, o := range v.Outcomes {
-		if o.Responsibility == string(impact.ResponsibilityShared) || o.Responsibility == string(impact.ResponsibilityPartner) || len(o.DeliveredBy) > 1 {
+		if o.Responsibility == string(model.ResponsibilityShared) || o.Responsibility == string(model.ResponsibilityPartner) || len(o.DeliveredBy) > 1 {
 			collab = append(collab, fmt.Sprintf("%s (`%s`), %s: %s", mdText(o.Title), o.ID, strings.ToLower(o.Responsibility), orDash(strings.Join(o.DeliveredBy, ", "))))
 		}
 	}
@@ -70,7 +70,7 @@ func Actors(v *View, doc *impact.Model, st *impact.Status) string {
 
 // undelivered lists the outcomes the organization answers for that no actor
 // is named as delivering and no owned intervention targets.
-func undelivered(v *View, doc *impact.Model) []string {
+func undelivered(v *View, doc *model.Model) []string {
 	targeted := map[string]bool{}
 	for _, in := range doc.Interventions {
 		if in.Provenance.IsRejected() || in.OwnerID == "" {
@@ -82,19 +82,19 @@ func undelivered(v *View, doc *impact.Model) []string {
 	}
 	var out []string
 	for _, o := range v.Outcomes {
-		if o.Accountable && len(o.DeliveredBy) == 0 && !targeted[o.ID] && o.Level != impact.LevelImpact {
+		if o.Accountable && len(o.DeliveredBy) == 0 && !targeted[o.ID] && o.Level != model.LevelImpact {
 			out = append(out, fmt.Sprintf("%s (`%s`)", mdText(o.Title), o.ID))
 		}
 	}
 	return out
 }
 
-func partnerOnly(v *View, st *impact.Status) string {
+func partnerOnly(v *View, st *model.Status) string {
 	var b strings.Builder
 	found := false
 	b.WriteString("| Outcome | Delivered by | Measured by | Status |\n|---------|--------------|-------------|--------|\n")
 	for _, o := range v.Outcomes {
-		if o.Responsibility != string(impact.ResponsibilityPartner) {
+		if o.Responsibility != string(model.ResponsibilityPartner) {
 			continue
 		}
 		found = true

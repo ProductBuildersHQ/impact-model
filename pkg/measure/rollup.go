@@ -5,28 +5,28 @@ import (
 	"sort"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // rank orders states from worst to best for combining. Baseline only ranks
 // with not started, as the specification says.
-func rank(s impact.State) int {
+func rank(s model.State) int {
 	switch s {
-	case impact.StateOffTrack:
+	case model.StateOffTrack:
 		return 0
-	case impact.StateAtRisk:
+	case model.StateAtRisk:
 		return 1
-	case impact.StateStale:
+	case model.StateStale:
 		return 2
-	case impact.StateNoData:
+	case model.StateNoData:
 		return 3
-	case impact.StateNotStarted, impact.StateBaselineOnly:
+	case model.StateNotStarted, model.StateBaselineOnly:
 		return 4
-	case impact.StateOnTrack:
+	case model.StateOnTrack:
 		return 5
-	case impact.StateAchieved:
+	case model.StateAchieved:
 		return 6
-	case impact.StateUnmeasured:
+	case model.StateUnmeasured:
 		return -1
 	}
 	return -1
@@ -34,11 +34,11 @@ func rank(s impact.State) int {
 
 // Worse returns the worse of two states. Unmeasured has no rank and loses to
 // any measured state, so it never hides a judgment.
-func Worse(a, b impact.State) impact.State {
+func Worse(a, b model.State) model.State {
 	switch {
-	case a == impact.StateUnmeasured:
+	case a == model.StateUnmeasured:
 		return b
-	case b == impact.StateUnmeasured:
+	case b == model.StateUnmeasured:
 		return a
 	case rank(a) <= rank(b):
 		return a
@@ -49,14 +49,14 @@ func Worse(a, b impact.State) impact.State {
 
 // Counted reports whether an indicator is part of the outcome's measurement:
 // not rejected, and not a candidate or retired one that nobody collects.
-func Counted(ind impact.Indicator) bool {
+func Counted(ind model.Indicator) bool {
 	if ind.Provenance.IsRejected() {
 		return false
 	}
 	if ind.Selection == nil {
 		return true
 	}
-	return ind.Selection.Status == impact.SelectionSelected
+	return ind.Selection.Status == model.SelectionSelected
 }
 
 // OutcomeStates rolls the statuses of each outcome's own indicators up into
@@ -66,8 +66,8 @@ func Counted(ind impact.Indicator) bool {
 // the state that the mean progress and mean expected progress of the
 // indicators that have them would earn, falling back to the worst state when
 // none has. An outcome with no counted indicator is unmeasured.
-func OutcomeStates(doc *impact.Model, statuses map[string]impact.IndicatorStatus, method impact.RollupMethod, tolerance float64) map[string]impact.State {
-	byOutcome := map[string][]impact.IndicatorStatus{}
+func OutcomeStates(doc *model.Model, statuses map[string]model.IndicatorStatus, method model.RollupMethod, tolerance float64) map[string]model.State {
+	byOutcome := map[string][]model.IndicatorStatus{}
 	for _, ind := range doc.Indicators {
 		st, ok := statuses[ind.ID]
 		if !ok || !Counted(ind) {
@@ -80,18 +80,18 @@ func OutcomeStates(doc *impact.Model, statuses map[string]impact.IndicatorStatus
 			}
 		}
 	}
-	out := map[string]impact.State{}
+	out := map[string]model.State{}
 	for _, o := range doc.Outcomes {
 		out[o.ID] = rollIndicators(byOutcome[o.ID], method, tolerance)
 	}
 	return out
 }
 
-func rollIndicators(sts []impact.IndicatorStatus, method impact.RollupMethod, tolerance float64) impact.State {
+func rollIndicators(sts []model.IndicatorStatus, method model.RollupMethod, tolerance float64) model.State {
 	if len(sts) == 0 {
-		return impact.StateUnmeasured
+		return model.StateUnmeasured
 	}
-	worst := impact.StateUnmeasured
+	worst := model.StateUnmeasured
 	var sumP, sumE float64
 	n := 0
 	for _, s := range sts {
@@ -102,7 +102,7 @@ func rollIndicators(sts []impact.IndicatorStatus, method impact.RollupMethod, to
 			n++
 		}
 	}
-	if method != impact.RollupMean || n == 0 {
+	if method != model.RollupMean || n == 0 {
 		return worst
 	}
 	p, e := sumP/float64(n), sumE/float64(n)
@@ -111,13 +111,13 @@ func rollIndicators(sts []impact.IndicatorStatus, method impact.RollupMethod, to
 	}
 	switch {
 	case p >= 1:
-		return impact.StateAchieved
+		return model.StateAchieved
 	case p >= e-tolerance:
-		return impact.StateOnTrack
+		return model.StateOnTrack
 	case p >= e-2*tolerance:
-		return impact.StateAtRisk
+		return model.StateAtRisk
 	default:
-		return impact.StateOffTrack
+		return model.StateOffTrack
 	}
 }
 
@@ -136,12 +136,12 @@ func rollIndicators(sts []impact.IndicatorStatus, method impact.RollupMethod, to
 // state is no better than at risk. The pathway state is the worse of the
 // outcome's own state and the signal; an unmeasured own state defers to the
 // signal.
-func PathwayStates(doc *impact.Model, g *graph.Graph, own map[string]impact.State) (map[string]impact.State, error) {
+func PathwayStates(doc *model.Model, g *graph.Graph, own map[string]model.State) (map[string]model.State, error) {
 	order, err := g.TopologicalOrder()
 	if err != nil {
 		return nil, err
 	}
-	p := &pathwayCalc{doc: doc, own: own, done: map[string]impact.State{}}
+	p := &pathwayCalc{doc: doc, own: own, done: map[string]model.State{}}
 	p.index()
 	for _, id := range order {
 		if _, ok := doc.Outcome(id); !ok {
@@ -153,21 +153,21 @@ func PathwayStates(doc *impact.Model, g *graph.Graph, own map[string]impact.Stat
 }
 
 type pathwayCalc struct {
-	doc  *impact.Model
-	own  map[string]impact.State
-	done map[string]impact.State
+	doc  *model.Model
+	own  map[string]model.State
+	done map[string]model.State
 
-	groups   map[string]impact.PreconditionGroup
+	groups   map[string]model.PreconditionGroup
 	memberOf map[string]bool
-	byTarget map[string][]impact.PreconditionGroup
-	incoming map[string][]impact.CausalLink
+	byTarget map[string][]model.PreconditionGroup
+	incoming map[string][]model.CausalLink
 }
 
 func (p *pathwayCalc) index() {
-	p.groups = map[string]impact.PreconditionGroup{}
+	p.groups = map[string]model.PreconditionGroup{}
 	p.memberOf = map[string]bool{}
-	p.byTarget = map[string][]impact.PreconditionGroup{}
-	p.incoming = map[string][]impact.CausalLink{}
+	p.byTarget = map[string][]model.PreconditionGroup{}
+	p.incoming = map[string][]model.CausalLink{}
 	for _, g := range p.doc.Groups {
 		if g.Rejected() {
 			continue
@@ -185,10 +185,10 @@ func (p *pathwayCalc) index() {
 	}
 }
 
-func (p *pathwayCalc) outcome(id string) impact.State {
+func (p *pathwayCalc) outcome(id string) model.State {
 	own := p.own[id]
 	if own == "" {
-		own = impact.StateUnmeasured
+		own = model.StateUnmeasured
 	}
 	o, _ := p.doc.Outcome(id)
 
@@ -198,11 +198,11 @@ func (p *pathwayCalc) outcome(id string) impact.State {
 			grouped[m] = true
 		}
 	}
-	var items []impact.State
+	var items []model.State
 	var inhibited bool
 	for _, l := range p.incoming[id] {
-		if l.Polarity == impact.PolarityNegative {
-			if s := p.done[l.From]; s == impact.StateOnTrack || s == impact.StateAchieved {
+		if l.Polarity == model.PolarityNegative {
+			if s := p.done[l.From]; s == model.StateOnTrack || s == model.StateAchieved {
 				inhibited = true
 			}
 			continue
@@ -227,21 +227,21 @@ func (p *pathwayCalc) outcome(id string) impact.State {
 	if signal, ok := combine(items, o.EffectiveLogic()); ok {
 		state = Worse(own, signal)
 	}
-	if inhibited && (state == impact.StateOnTrack || state == impact.StateAchieved) {
-		state = impact.StateAtRisk
+	if inhibited && (state == model.StateOnTrack || state == model.StateAchieved) {
+		state = model.StateAtRisk
 	}
 	return state
 }
 
 // source returns the pathway state of a link's source, if it is an outcome
 // with a state of its own.
-func (p *pathwayCalc) source(id string) (impact.State, bool) {
+func (p *pathwayCalc) source(id string) (model.State, bool) {
 	s, ok := p.done[id]
-	return s, ok && s != impact.StateUnmeasured
+	return s, ok && s != model.StateUnmeasured
 }
 
-func (p *pathwayCalc) group(g impact.PreconditionGroup) (impact.State, bool) {
-	var items []impact.State
+func (p *pathwayCalc) group(g model.PreconditionGroup) (model.State, bool) {
+	var items []model.State
 	for _, m := range g.Members {
 		if inner, ok := p.groups[m]; ok {
 			if s, ok := p.group(inner); ok {
@@ -258,25 +258,25 @@ func (p *pathwayCalc) group(g impact.PreconditionGroup) (impact.State, bool) {
 
 // combine applies precondition logic to states. It reports false when there
 // is nothing to combine.
-func combine(items []impact.State, logic impact.Logic) (impact.State, bool) {
+func combine(items []model.State, logic model.Logic) (model.State, bool) {
 	if len(items) == 0 {
 		return "", false
 	}
 	sorted := slices.Clone(items)
 	sort.SliceStable(sorted, func(i, j int) bool { return rank(sorted[i]) > rank(sorted[j]) }) // best first
 	switch logic.Type {
-	case impact.LogicAny:
+	case model.LogicAny:
 		return sorted[0], true
-	case impact.LogicAtLeast:
+	case model.LogicAtLeast:
 		k := max(logic.K, 1)
 		for len(sorted) < k {
 			// Fewer preconditions have a state than the rule needs. The rest
 			// are unknown, not failed, so they count as having no data.
-			sorted = append(sorted, impact.StateNoData)
+			sorted = append(sorted, model.StateNoData)
 		}
 		sort.SliceStable(sorted, func(i, j int) bool { return rank(sorted[i]) > rank(sorted[j]) })
 		return sorted[k-1], true
-	case impact.LogicAll:
+	case model.LogicAll:
 		return sorted[len(sorted)-1], true
 	}
 	return sorted[len(sorted)-1], true

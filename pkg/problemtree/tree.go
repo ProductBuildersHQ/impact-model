@@ -14,7 +14,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Kind is what a node of the tree is.
@@ -72,7 +72,7 @@ func (t *Tree) Empty() bool { return len(t.Rows) <= 1 }
 // out, and so are references to them. A cause with no parents is one row
 // below the core problem, and any other cause is one row below its lowest
 // parent; effects mirror this upward. Within a row, nodes keep file order.
-func Build(doc *impact.Model) *Tree {
+func Build(doc *model.Model) *Tree {
 	return build(doc, doc.Context.ProblemStatement, "")
 }
 
@@ -81,7 +81,7 @@ func Build(doc *impact.Model) *Tree {
 // pathway in pathwayIds. A parent outside the pathway's tree is left out, so
 // a cause whose parents all belong to other pathways leads straight to the
 // pathway's problem. An empty pathwayID builds the tree of the whole model.
-func BuildFor(doc *impact.Model, pathwayID string) (*Tree, error) {
+func BuildFor(doc *model.Model, pathwayID string) (*Tree, error) {
 	if pathwayID == "" {
 		return Build(doc), nil
 	}
@@ -94,7 +94,7 @@ func BuildFor(doc *impact.Model, pathwayID string) (*Tree, error) {
 
 // ProblemStatement is the core problem of a pathway's tree: its own problem
 // statement, or the model's when it has none.
-func ProblemStatement(doc *impact.Model, p *impact.Pathway) string {
+func ProblemStatement(doc *model.Model, p *model.Pathway) string {
 	if strings.TrimSpace(p.ProblemStatement) != "" {
 		return p.ProblemStatement
 	}
@@ -107,14 +107,14 @@ func inTree(pathway string, pathwayIDs []string) bool {
 	return pathway == "" || slices.Contains(pathwayIDs, pathway)
 }
 
-func build(doc *impact.Model, problem, pathway string) *Tree {
-	causes := map[string]impact.Cause{}
+func build(doc *model.Model, problem, pathway string) *Tree {
+	causes := map[string]model.Cause{}
 	for _, c := range doc.Causes {
 		if !c.Rejected() && inTree(pathway, c.PathwayIDs) {
 			causes[c.ID] = c
 		}
 	}
-	effects := map[string]impact.Effect{}
+	effects := map[string]model.Effect{}
 	for _, e := range doc.Effects {
 		if !e.Rejected() && inTree(pathway, e.PathwayIDs) {
 			effects[e.ID] = e

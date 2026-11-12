@@ -5,15 +5,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-func future(id, actor, futureRef string) *impact.Model {
-	d := impact.NewModel(id, "A problem.")
+func future(id, actor, futureRef string) *model.Model {
+	d := model.NewModel(id, "A problem.")
 	d.ActorRegistry = "shared-actors"
-	d.Perspective = &impact.Perspective{ActorID: actor, Role: impact.PerspectiveProponent, FutureRef: futureRef}
-	d.Outcomes = []impact.Outcome{{ID: "oc-a", Title: "A", Level: impact.LevelImpact}}
+	d.Perspective = &model.Perspective{ActorID: actor, Role: model.PerspectiveProponent, FutureRef: futureRef}
+	d.Outcomes = []model.Outcome{{ID: "oc-a", Title: "A", Level: model.LevelImpact}}
 	return d
 }
 
@@ -35,46 +35,46 @@ func TestFuturesAcceptsThreeFuturesSharingOneRegistry(t *testing.T) {
 func TestFuturesFindsProblems(t *testing.T) {
 	tests := []struct {
 		name   string
-		docs   func() []*impact.Model
+		docs   func() []*model.Model
 		code   string
 		sev    Severity
 		source string
 	}{
-		{"no perspective", func() []*impact.Model {
+		{"no perspective", func() []*model.Model {
 			d := future("a", "x", "ufm:one")
 			d.Perspective = nil
-			return []*impact.Model{d}
+			return []*model.Model{d}
 		}, "VAL-FUT-001", SeverityWarning, "future[a]"},
-		{"no future", func() []*impact.Model { return []*impact.Model{future("a", "x", "")} }, "VAL-FUT-001", SeverityWarning, "future[a]"},
-		{"badly formed future", func() []*impact.Model { return []*impact.Model{future("a", "x", "open-wins")} }, "VAL-FUT-002", SeverityError, "future[a]"},
-		{"different registries", func() []*impact.Model {
+		{"no future", func() []*model.Model { return []*model.Model{future("a", "x", "")} }, "VAL-FUT-001", SeverityWarning, "future[a]"},
+		{"badly formed future", func() []*model.Model { return []*model.Model{future("a", "x", "open-wins")} }, "VAL-FUT-002", SeverityError, "future[a]"},
+		{"different registries", func() []*model.Model {
 			b := future("b", "y", "ufm:two")
 			b.ActorRegistry = "other-actors"
-			return []*impact.Model{future("a", "x", "ufm:one"), b}
+			return []*model.Model{future("a", "x", "ufm:one"), b}
 		}, "VAL-FUT-003", SeverityError, "futures"},
-		{"one names no registry", func() []*impact.Model {
+		{"one names no registry", func() []*model.Model {
 			b := future("b", "y", "ufm:two")
 			b.ActorRegistry = ""
-			return []*impact.Model{future("a", "x", "ufm:one"), b}
+			return []*model.Model{future("a", "x", "ufm:one"), b}
 		}, "VAL-FUT-003", SeverityWarning, "futures"},
-		{"same actor, same future", func() []*impact.Model {
-			return []*impact.Model{future("a", "x", "ufm:one"), future("b", "x", "ufm:one")}
+		{"same actor, same future", func() []*model.Model {
+			return []*model.Model{future("a", "x", "ufm:one"), future("b", "x", "ufm:one")}
 		}, "VAL-FUT-004", SeverityError, "future[b]"},
-		{"reference to a missing element", func() []*impact.Model {
+		{"reference to a missing element", func() []*model.Model {
 			a := future("a", "x", "ufm:one")
-			a.Alignments = []impact.Alignment{{ElementID: "oc-a", Target: impact.ExternalRef{Framework: impact.FrameworkCustom, Ref: "model:b#oc-ghost"}}}
-			return []*impact.Model{a, future("b", "y", "ufm:two")}
+			a.Alignments = []model.Alignment{{ElementID: "oc-a", Target: model.ExternalRef{Framework: model.FrameworkCustom, Ref: "model:b#oc-ghost"}}}
+			return []*model.Model{a, future("b", "y", "ufm:two")}
 		}, "VAL-FUT-006", SeverityError, "future[a]"},
-		{"malformed reference", func() []*impact.Model {
+		{"malformed reference", func() []*model.Model {
 			a := future("a", "x", "ufm:one")
-			a.Alignments = []impact.Alignment{{ElementID: "oc-a", Target: impact.ExternalRef{Framework: impact.FrameworkCustom, Ref: "model:Not A Slug#x"}}}
-			return []*impact.Model{a}
+			a.Alignments = []model.Alignment{{ElementID: "oc-a", Target: model.ExternalRef{Framework: model.FrameworkCustom, Ref: "model:Not A Slug#x"}}}
+			return []*model.Model{a}
 		}, "VAL-FUT-005", SeverityError, "future[a]"},
-		{"different markets", func() []*impact.Model {
+		{"different markets", func() []*model.Model {
 			a, b := future("a", "x", "ufm:one"), future("b", "y", "ufm:two")
-			a.Context.Market = &impact.ExternalRef{Framework: impact.FrameworkMarketSpec, Ref: "market:one"}
-			b.Context.Market = &impact.ExternalRef{Framework: impact.FrameworkMarketSpec, Ref: "market:two"}
-			return []*impact.Model{a, b}
+			a.Context.Market = &model.ExternalRef{Framework: model.FrameworkMarketSpec, Ref: "market:one"}
+			b.Context.Market = &model.ExternalRef{Framework: model.FrameworkMarketSpec, Ref: "market:two"}
+			return []*model.Model{a, b}
 		}, "VAL-FUT-007", SeverityWarning, "future[b]"},
 	}
 	for _, tt := range tests {
@@ -91,7 +91,7 @@ func TestFuturesFindsProblems(t *testing.T) {
 
 func TestReferencesToTheoriesOutsideTheSetAreNotChecked(t *testing.T) {
 	a := future("a", "x", "ufm:one")
-	a.Alignments = []impact.Alignment{{ElementID: "oc-a", Target: impact.ExternalRef{Framework: impact.FrameworkCustom, Ref: "model:elsewhere#oc-anything"}}}
+	a.Alignments = []model.Alignment{{ElementID: "oc-a", Target: model.ExternalRef{Framework: model.FrameworkCustom, Ref: "model:elsewhere#oc-anything"}}}
 	if issues := Futures(a); len(issues) != 0 {
 		t.Errorf("issues: %v", issues)
 	}
@@ -104,13 +104,13 @@ func TestCompetingFuturesExample(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	reg, err := impactio.ParseActorRegistry(data, impactio.FormatYAML)
+	reg, err := modelio.ParseActorRegistry(data, modelio.FormatYAML)
 	if err != nil {
 		t.Fatal(err)
 	}
-	var docs []*impact.Model
+	var docs []*model.Model
 	for _, name := range []string{"future-open", "future-bundle", "future-extension"} {
-		d, err := impactio.LoadDocument("../../examples/competing-futures/" + name + ".yaml")
+		d, err := modelio.LoadDocument("../../examples/competing-futures/" + name + ".yaml")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -140,11 +140,11 @@ func TestCompetingFuturesExample(t *testing.T) {
 	}
 }
 
-func regActor(r *impact.ActorRegistry, id string) (impact.Actor, bool) {
+func regActor(r *model.ActorRegistry, id string) (model.Actor, bool) {
 	for _, a := range r.Actors {
 		if a.ID == id {
 			return a, true
 		}
 	}
-	return impact.Actor{}, false
+	return model.Actor{}, false
 }

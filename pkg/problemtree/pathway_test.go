@@ -4,27 +4,27 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // pathwayModel has two programs that share one cause.
-func pathwayModel() *impact.Model {
-	d := model(
-		[]impact.Cause{
-			{ID: "c-shared", Statement: "Thin staffing", Level: impact.CauseImmediate, PathwayIDs: []string{"pw-food", "pw-exercise"}},
+func pathwayModel() *model.Model {
+	d := testModel(
+		[]model.Cause{
+			{ID: "c-shared", Statement: "Thin staffing", Level: model.CauseImmediate, PathwayIDs: []string{"pw-food", "pw-exercise"}},
 			// Its parent belongs only to pw-food, so in pw-exercise it leads straight to the problem.
-			{ID: "c-food", Statement: "No cooking skills", Level: impact.CauseUnderlying, Parents: []string{"c-shared"}, PathwayIDs: []string{"pw-food"}},
-			{ID: "c-gym", Statement: "No safe parks", Level: impact.CauseUnderlying, PathwayIDs: []string{"pw-exercise"}},
-			{ID: "c-model", Statement: "Low incomes", Level: impact.CauseStructural},
+			{ID: "c-food", Statement: "No cooking skills", Level: model.CauseUnderlying, Parents: []string{"c-shared"}, PathwayIDs: []string{"pw-food"}},
+			{ID: "c-gym", Statement: "No safe parks", Level: model.CauseUnderlying, PathwayIDs: []string{"pw-exercise"}},
+			{ID: "c-model", Statement: "Low incomes", Level: model.CauseStructural},
 		},
-		[]impact.Effect{
+		[]model.Effect{
 			{ID: "e-food", Statement: "Diabetes", PathwayIDs: []string{"pw-food"}},
 		})
-	d.Pathways = []impact.Pathway{
+	d.Pathways = []model.Pathway{
 		{ID: "pw-food", Title: "Food", ProblemStatement: "Families eat poorly", OutcomeIDs: []string{"oc-food"}},
 		{ID: "pw-exercise", Title: "Exercise"},
 	}
-	d.Outcomes = []impact.Outcome{
+	d.Outcomes = []model.Outcome{
 		{ID: "oc-food", Title: "Families cook at home", AddressesCauses: []string{"c-shared"}},
 		{ID: "oc-other", Title: "Staff are hired", AddressesCauses: []string{"c-shared"}},
 	}

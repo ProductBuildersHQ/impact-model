@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -13,7 +13,7 @@ type provEl struct {
 	array string
 	index int
 	id    string
-	prov  *impact.Provenance
+	prov  *model.Provenance
 	// accountable is false for an outcome the organization does not answer
 	// for; every other kind counts as accountable.
 	accountable bool
@@ -23,7 +23,7 @@ type provEl struct {
 // document order, without those that were rejected.
 func provenanceElements(c *Context) []provEl {
 	var out []provEl
-	add := func(array string, i int, id string, p *impact.Provenance, accountable bool) {
+	add := func(array string, i int, id string, p *model.Provenance, accountable bool) {
 		if !p.IsRejected() {
 			out = append(out, provEl{array, i, id, p, accountable})
 		}
@@ -65,11 +65,11 @@ func provenanceElements(c *Context) []provEl {
 	return out
 }
 
-func activePathways(d *impact.Model) []indexed[impact.Pathway] {
-	var out []indexed[impact.Pathway]
+func activePathways(d *model.Model) []indexed[model.Pathway] {
+	var out []indexed[model.Pathway]
 	for i, p := range d.Pathways {
 		if !p.Rejected() {
-			out = append(out, indexed[impact.Pathway]{i, p})
+			out = append(out, indexed[model.Pathway]{i, p})
 		}
 	}
 	return out
@@ -90,7 +90,7 @@ func init() {
 	register("IMP-ACT-001", validate.SeverityInfo, "Outcomes in the sphere of influence name the actors who must change.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
-			if o.v.Sphere == impact.SphereInfluence && len(o.v.ActorIDs) == 0 {
+			if o.v.Sphere == model.SphereInfluence && len(o.v.ActorIDs) == 0 {
 				out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: "this outcome depends on others changing, but no actor is named"})
 			}
 		}
@@ -100,7 +100,7 @@ func init() {
 	register("IMP-EVD-001", validate.SeverityInfo, "Links into impact outcomes cite evidence.", func(c *Context) []Finding {
 		var out []Finding
 		for _, l := range activeLinks(c.Doc) {
-			if lv, ok := outcomeLevel(c.Doc, l.v.To); ok && lv == impact.LevelImpact && len(l.v.EvidenceIDs) == 0 {
+			if lv, ok := outcomeLevel(c.Doc, l.v.To); ok && lv == model.LevelImpact && len(l.v.EvidenceIDs) == 0 {
 				out = append(out, Finding{Path: at("links", l.i), Element: l.v.ID, Message: "the claim that this leads to the impact cites no evidence"})
 			}
 		}
@@ -114,7 +114,7 @@ func init() {
 			leads := false
 			for _, id := range p.v.OutcomeIDs {
 				lv, _ := outcomeLevel(c.Doc, id)
-				leads = leads || lv == impact.LevelImpact || c.Graph.HasPathToImpact(id)
+				leads = leads || lv == model.LevelImpact || c.Graph.HasPathToImpact(id)
 			}
 			if !leads {
 				out = append(out, Finding{Path: at("pathways", p.i), Element: p.v.ID, Message: "no outcome in this pathway leads to an impact outcome"})
@@ -162,11 +162,11 @@ func init() {
 	register("IMP-MET-001", validate.SeverityWarning, "A common metric is measured in every pathway, or the omission is explained.", func(c *Context) []Finding {
 		var out []Finding
 		for i, m := range c.Doc.Metrics {
-			if m.Layer != impact.LayerCommon || m.Provenance.IsRejected() {
+			if m.Layer != model.LayerCommon || m.Provenance.IsRejected() {
 				continue
 			}
 			explained := false
-			var uses []impact.Indicator
+			var uses []model.Indicator
 			for _, ind := range activeIndicators(c.Doc) {
 				if ind.v.MetricID == m.ID {
 					uses = append(uses, ind.v)
@@ -177,7 +177,7 @@ func init() {
 				continue
 			}
 			for _, p := range activePathways(c.Doc) {
-				if !slices.ContainsFunc(uses, func(x impact.Indicator) bool { return c.Doc.IndicatorServes(x, p.v.ID) }) {
+				if !slices.ContainsFunc(uses, func(x model.Indicator) bool { return c.Doc.IndicatorServes(x, p.v.ID) }) {
 					out = append(out, Finding{Path: at("metrics", i), Element: m.ID, Message: fmt.Sprintf("common metric is not measured in pathway %q; add an indicator, or explain the omission in an indicator's selection rationale", p.v.ID)})
 				}
 			}
@@ -188,7 +188,7 @@ func init() {
 	register("IMP-MET-003", validate.SeverityWarning, "A weighted mean can be computed: its weight is measured wherever it is used.", func(c *Context) []Finding {
 		var out []Finding
 		for i, m := range c.Doc.Metrics {
-			if m.Aggregation != impact.AggregationWeightedMean || m.WeightMetricID == "" || m.Provenance.IsRejected() {
+			if m.Aggregation != model.AggregationWeightedMean || m.WeightMetricID == "" || m.Provenance.IsRejected() {
 				continue
 			}
 			for _, p := range activePathways(c.Doc) {
@@ -234,7 +234,7 @@ func init() {
 		addressed := addressedCauses(c.Doc)
 		var out []Finding
 		for i, cause := range c.Doc.Causes {
-			if !cause.Rejected() && cause.Level != impact.CauseImmediate && !addressed[cause.ID] && cause.OutOfScope == nil {
+			if !cause.Rejected() && cause.Level != model.CauseImmediate && !addressed[cause.ID] && cause.OutOfScope == nil {
 				out = append(out, Finding{Path: at("causes", i), Element: cause.ID, Message: "no outcome addresses this cause; address it, or set it aside with a reason"})
 			}
 		}
@@ -247,7 +247,7 @@ func init() {
 		}
 		addressed := addressedCauses(c.Doc)
 		for _, cause := range c.Doc.Causes {
-			if !cause.Rejected() && cause.Level != impact.CauseImmediate && addressed[cause.ID] {
+			if !cause.Rejected() && cause.Level != model.CauseImmediate && addressed[cause.ID] {
 				return nil
 			}
 		}
@@ -255,7 +255,7 @@ func init() {
 	})
 
 	register("IMP-CAU-003", validate.SeverityWarning, "A cause contributes only to causes at its own level or nearer the problem.", func(c *Context) []Finding {
-		depth := map[impact.CauseLevel]int{impact.CauseImmediate: 1, impact.CauseUnderlying: 2, impact.CauseStructural: 3}
+		depth := map[model.CauseLevel]int{model.CauseImmediate: 1, model.CauseUnderlying: 2, model.CauseStructural: 3}
 		var out []Finding
 		for i, cause := range c.Doc.Causes {
 			if cause.Rejected() {
@@ -278,11 +278,11 @@ func init() {
 		for _, o := range activeOutcomes(c.Doc) {
 			need := 0
 			switch o.v.Responsibility {
-			case impact.ResponsibilityPartner:
+			case model.ResponsibilityPartner:
 				need = 1
-			case impact.ResponsibilityShared:
+			case model.ResponsibilityShared:
 				need = 2
-			case impact.ResponsibilityOwn, impact.ResponsibilityUnaddressed, "":
+			case model.ResponsibilityOwn, model.ResponsibilityUnaddressed, "":
 			}
 			if len(o.v.DeliveredBy) < need {
 				out = append(out, Finding{Path: at("outcomes", o.i) + "/deliveredBy", Element: o.v.ID,
@@ -303,7 +303,7 @@ func init() {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			r := o.v.Responsibility
-			if (r == impact.ResponsibilityPartner || r == impact.ResponsibilityUnaddressed) && !measured[o.v.ID] && (o.v.Level == impact.LevelImpact || c.Graph.HasPathToImpact(o.v.ID)) {
+			if (r == model.ResponsibilityPartner || r == model.ResponsibilityUnaddressed) && !measured[o.v.ID] && (o.v.Level == model.LevelImpact || c.Graph.HasPathToImpact(o.v.ID)) {
 				out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: "this outcome is not the organization's to deliver but the impact model depends on it; monitor it with an indicator"})
 			}
 		}
@@ -313,7 +313,7 @@ func init() {
 	register("IMP-EQU-001", validate.SeverityWarning, "Outcomes for target groups are measured by those groups.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
-			var measuring []impact.Indicator
+			var measuring []model.Indicator
 			for _, ind := range activeIndicators(c.Doc) {
 				if ind.v.Measures == o.v.ID {
 					measuring = append(measuring, ind.v)
@@ -323,7 +323,7 @@ func init() {
 				continue // IMP-MEA-001 reports an unmeasured outcome
 			}
 			for _, g := range o.v.TargetGroupIDs {
-				if !slices.ContainsFunc(measuring, func(i impact.Indicator) bool { return slices.Contains(i.TargetGroupIDs, g) }) {
+				if !slices.ContainsFunc(measuring, func(i model.Indicator) bool { return slices.Contains(i.TargetGroupIDs, g) }) {
 					out = append(out, Finding{Path: at("outcomes", o.i), Element: o.v.ID, Message: fmt.Sprintf("this outcome is for target group %q but no indicator breaks its result down by that group", g)})
 				}
 			}
@@ -335,13 +335,13 @@ func init() {
 		if len(c.Doc.Consultations) == 0 && len(c.Doc.Outcomes) < 3 {
 			return nil // too small a draft to need it
 		}
-		have := map[impact.ConsultationStep]bool{}
+		have := map[model.ConsultationStep]bool{}
 		for _, k := range c.Doc.Consultations {
 			have[k.Step] = true
 		}
 		var out []Finding
-		for _, step := range []impact.ConsultationStep{impact.StepFocus, impact.StepChangeAnalysis, impact.StepAssumptionsRisks, impact.StepActors} {
-			if !have[step] && !have[impact.StepWhole] {
+		for _, step := range []model.ConsultationStep{model.StepFocus, model.StepChangeAnalysis, model.StepAssumptionsRisks, model.StepActors} {
+			if !have[step] && !have[model.StepWhole] {
 				out = append(out, Finding{Path: "/consultations", Message: fmt.Sprintf("no consultation records that the %s step was checked with stakeholders", step)})
 			}
 		}
@@ -365,7 +365,7 @@ func init() {
 	register("IMP-PRV-002", validate.SeverityWarning, "Every stated element cites a source that can be followed.", func(c *Context) []Finding {
 		var out []Finding
 		for _, e := range provenanceElements(c) {
-			if e.prov == nil || e.prov.Basis != impact.BasisStated {
+			if e.prov == nil || e.prov.Basis != model.BasisStated {
 				continue
 			}
 			followable := false
@@ -387,7 +387,7 @@ func init() {
 		}
 		var out []Finding
 		for _, e := range provenanceElements(c) {
-			if e.prov != nil && e.prov.Basis == impact.BasisHypothesis && e.accountable {
+			if e.prov != nil && e.prov.Basis == model.BasisHypothesis && e.accountable {
 				out = append(out, Finding{Path: at(e.array, e.index) + "/provenance", Element: e.id, Message: "the impact model is approved but this element is still a hypothesis; confirm it or reject it"})
 			}
 		}
@@ -405,13 +405,13 @@ func init() {
 	})
 }
 
-func isOutcomeID(d *impact.Model, id string) bool {
+func isOutcomeID(d *model.Model, id string) bool {
 	_, ok := d.Outcome(id)
 	return ok
 }
 
 // addressedCauses returns the causes some active outcome addresses.
-func addressedCauses(d *impact.Model) map[string]bool {
+func addressedCauses(d *model.Model) map[string]bool {
 	out := map[string]bool{}
 	for _, o := range activeOutcomes(d) {
 		for _, id := range o.v.AddressesCauses {

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -27,7 +27,7 @@ type Result struct {
 	Reason string
 	// Document is the patched document, set only when Applied. It never
 	// aliases the input.
-	Document *impact.Model
+	Document *model.Model
 	// Changed reports whether the patched document differs from the input.
 	Changed bool
 	// IssuesIntroduced are validation issues present after but not before.
@@ -44,7 +44,7 @@ type Result struct {
 // failing operation. A well-formed patch that is rejected — because the
 // result violates the schema, or adds structural errors without AllowErrors
 // — returns a Result with Applied false and a nil error.
-func Apply(doc *impact.Model, p Patch, opts Options) (*Result, error) {
+func Apply(doc *model.Model, p Patch, opts Options) (*Result, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("%w: nil document", ErrPatch)
 	}
@@ -72,7 +72,7 @@ func Apply(doc *impact.Model, p Patch, opts Options) (*Result, error) {
 		return nil, fmt.Errorf("encode patched document: %w", err)
 	}
 
-	if schemaIssues := validate.Schema(patched, impactio.FormatJSON); len(schemaIssues) > 0 {
+	if schemaIssues := validate.Schema(patched, modelio.FormatJSON); len(schemaIssues) > 0 {
 		introduced, resolved := validate.Delta(before, schemaIssues)
 		return &Result{
 			Reason:           "the patched document does not conform to the schema",
@@ -104,15 +104,15 @@ func Apply(doc *impact.Model, p Patch, opts Options) (*Result, error) {
 
 // issuesOf returns the schema and structural issues of an existing
 // document.
-func issuesOf(encoded []byte, doc *impact.Model) []validate.Issue {
-	issues := validate.Schema(encoded, impactio.FormatJSON)
+func issuesOf(encoded []byte, doc *model.Model) []validate.Issue {
+	issues := validate.Schema(encoded, modelio.FormatJSON)
 	return append(issues, validate.Document(doc)...)
 }
 
-func decodeDocument(data []byte) (*impact.Model, error) {
+func decodeDocument(data []byte) (*model.Model, error) {
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
-	var d impact.Model
+	var d model.Model
 	if err := dec.Decode(&d); err != nil {
 		return nil, fmt.Errorf("decode patched document: %w", err)
 	}

@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
@@ -41,9 +41,9 @@ Exit code 1 means at least one file has errors.`,
 			if err != nil {
 				return err
 			}
-			var against *impact.Model
+			var against *model.Model
 			if p := flagString(cmd, "model"); p != "" {
-				against, err = impactio.LoadDocument(p)
+				against, err = modelio.LoadDocument(p)
 				if err != nil {
 					return usageErr("--model: %v", err)
 				}

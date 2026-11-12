@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // takenUp reports whether a learning question or an evaluation that review
 // has not rejected names the element in its related IDs.
-func takenUp(d *impact.Model, id string) bool {
+func takenUp(d *model.Model, id string) bool {
 	for _, q := range d.LearningQuestions {
 		if !q.Rejected() && slices.Contains(q.RelatedIDs, id) {
 			return true
@@ -31,11 +31,11 @@ func init() {
 		}
 		var out []Finding
 		for i, a := range c.Doc.Assumptions {
-			if a.Provenance.IsRejected() || (a.Criticality != impact.CriticalityHigh && a.Criticality != impact.CriticalityCritical) {
+			if a.Provenance.IsRejected() || (a.Criticality != model.CriticalityHigh && a.Criticality != model.CriticalityCritical) {
 				continue
 			}
 			switch a.Status {
-			case "", impact.AssumptionUntested, impact.AssumptionAtRisk, impact.AssumptionInvalidated:
+			case "", model.AssumptionUntested, model.AssumptionAtRisk, model.AssumptionInvalidated:
 			default:
 				continue
 			}
@@ -56,7 +56,7 @@ func init() {
 		}
 		var out []Finding
 		for i, q := range c.Doc.LearningQuestions {
-			if q.Rejected() || q.Status == impact.QuestionAnswered || q.Status == impact.QuestionRetired || reviewed[q.ID] {
+			if q.Rejected() || q.Status == model.QuestionAnswered || q.Status == model.QuestionRetired || reviewed[q.ID] {
 				continue
 			}
 			out = append(out, Finding{Path: at("learningQuestions", i), Element: q.ID,

@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
@@ -451,7 +451,7 @@ func newAddCmd(e *env, k edit.ElementKind, flags []elementFlag) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -502,7 +502,7 @@ be changed: remove the element and add a new one.`, k.Name),
 			if err != nil {
 				panic(fmt.Sprintf("cli: flag --unset: %v", err))
 			}
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -530,7 +530,7 @@ end is gone, an indicator whose subject is gone, an intervention left with
 no targets, a precondition group left with fewer than two members.`, article(k.Name)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			doc, err := impactio.LoadDocument(args[0])
+			doc, err := modelio.LoadDocument(args[0])
 			if err != nil {
 				return &ExitError{Code: ExitUsageErr, Err: err}
 			}
@@ -628,7 +628,7 @@ func article(kind string) string {
 // evidenceID derives an unused evidence ID from a title: "ev-" and a
 // kebab-case slug, with a numeric suffix if the slug is taken. The same
 // document and title always yield the same ID.
-func evidenceID(doc *impact.Model, title string) (string, error) {
+func evidenceID(doc *model.Model, title string) (string, error) {
 	var slug strings.Builder
 	dash := true
 	for _, r := range strings.ToLower(title) {

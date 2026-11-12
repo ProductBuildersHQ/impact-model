@@ -1,4 +1,4 @@
-package impactio
+package modelio
 
 import (
 	"bytes"

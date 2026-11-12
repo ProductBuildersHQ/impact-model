@@ -5,18 +5,18 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // chainDoc is the clean base with one program pathway that owns the short-term
 // outcomes, an audience, and indicators of the kinds the rules tell apart.
-func chainDoc() *impact.Model {
+func chainDoc() *model.Model {
 	d := clean()
-	d.Pathways = []impact.Pathway{{
-		ID: "pw-1", Title: "Program", Kind: impact.PathwayProgram,
+	d.Pathways = []model.Pathway{{
+		ID: "pw-1", Title: "Program", Kind: model.PathwayProgram,
 		OutcomeIDs: []string{"oc-s1", "oc-a"}, InterventionIDs: []string{"int-1"},
 	}}
-	d.Audiences = []impact.Audience{{ID: "aud-1", Name: "Board"}}
+	d.Audiences = []model.Audience{{ID: "aud-1", Name: "Board"}}
 	return d
 }
 
@@ -26,59 +26,59 @@ func ptr[T any](v T) *T { return &v }
 // the rule falls quiet. These rules check the chain from what is done to what
 // changes, the numbers each audience is told, and the North Star.
 func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
-	headline := func(d *impact.Model, ids ...string) {
+	headline := func(d *model.Model, ids ...string) {
 		d.Audiences[0].Headline = nil
 		for _, id := range ids {
-			d.Audiences[0].Headline = append(d.Audiences[0].Headline, impact.HeadlineMetric{IndicatorID: id})
+			d.Audiences[0].Headline = append(d.Audiences[0].Headline, model.HeadlineMetric{IndicatorID: id})
 		}
 	}
-	forAudience := func(i *impact.Indicator) { i.AudienceIDs = []string{"aud-1"} }
-	focus := func(d *impact.Model, f impact.Focus) { d.Pathways[0].Focus = &f }
+	forAudience := func(i *model.Indicator) { i.AudienceIDs = []string{"aud-1"} }
+	focus := func(d *model.Model, f model.Focus) { d.Pathways[0].Focus = &f }
 
 	tests := []struct {
 		rule, element string
-		defect, fix   func(d *impact.Model)
+		defect, fix   func(d *model.Model)
 	}{
 		// ---- from activity to impact
-		{"IMP-INT-003", "int-1", func(d *impact.Model) {},
-			func(d *impact.Model) { d.Interventions[0].Outputs = []string{"Mixers held"} }},
-		{"IMP-INT-003", "int-1", func(d *impact.Model) {},
-			func(d *impact.Model) {
-				d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-out", Title: "Mixers held", Level: impact.LevelOutput})
+		{"IMP-INT-003", "int-1", func(d *model.Model) {},
+			func(d *model.Model) { d.Interventions[0].Outputs = []string{"Mixers held"} }},
+		{"IMP-INT-003", "int-1", func(d *model.Model) {},
+			func(d *model.Model) {
+				d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-out", Title: "Mixers held", Level: model.LevelOutput})
 				d.Interventions[0].Targets = append(d.Interventions[0].Targets, "oc-out")
 			}},
-		{"IMP-INT-004", "int-3", func(d *impact.Model) {
-			d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-dead", Title: "A dead end", Level: impact.LevelShortTerm})
-			d.Interventions = append(d.Interventions, impact.Intervention{ID: "int-3", Title: "Do it", Targets: []string{"oc-dead"}})
-		}, func(d *impact.Model) {
-			d.Links = append(d.Links, impact.CausalLink{ID: "ln-dead-a", From: "oc-dead", To: "oc-a", Rationale: "Because it helps.", AssumptionIDs: []string{"asm-1"}})
+		{"IMP-INT-004", "int-3", func(d *model.Model) {
+			d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-dead", Title: "A dead end", Level: model.LevelShortTerm})
+			d.Interventions = append(d.Interventions, model.Intervention{ID: "int-3", Title: "Do it", Targets: []string{"oc-dead"}})
+		}, func(d *model.Model) {
+			d.Links = append(d.Links, model.CausalLink{ID: "ln-dead-a", From: "oc-dead", To: "oc-a", Rationale: "Because it helps.", AssumptionIDs: []string{"asm-1"}})
 		}},
-		{"IMP-INT-005", "ln-s1-a", func(d *impact.Model) {
+		{"IMP-INT-005", "ln-s1-a", func(d *model.Model) {
 			for i := range d.Links {
 				if d.Links[i].ID == "ln-s1-a" {
 					d.Links[i].InterventionIDs = []string{"int-2"} // int-2 targets oc-s2, neither end of this link
 				}
 			}
-		}, func(d *impact.Model) {
+		}, func(d *model.Model) {
 			for i := range d.Links {
 				if d.Links[i].ID == "ln-s1-a" {
 					d.Links[i].InterventionIDs = []string{"int-1"}
 				}
 			}
 		}},
-		{"IMP-INT-006", "int-1", func(d *impact.Model) {},
-			func(d *impact.Model) { addIndicator(d, "ind-did", "int-1") }},
-		{"IMP-INT-007", "int-1", func(d *impact.Model) {},
-			func(d *impact.Model) { d.Interventions[0].Resources = "Two staff and a room" }},
-		{"IMP-INT-008", "int-1", func(d *impact.Model) {
-			d.Context.TimeHorizon = &impact.TimeHorizon{Start: "2026-01-01", End: "2027-12-31"}
+		{"IMP-INT-006", "int-1", func(d *model.Model) {},
+			func(d *model.Model) { addIndicator(d, "ind-did", "int-1") }},
+		{"IMP-INT-007", "int-1", func(d *model.Model) {},
+			func(d *model.Model) { d.Interventions[0].Resources = "Two staff and a room" }},
+		{"IMP-INT-008", "int-1", func(d *model.Model) {
+			d.Context.TimeHorizon = &model.TimeHorizon{Start: "2026-01-01", End: "2027-12-31"}
 			d.Interventions[0].StartDate, d.Interventions[0].EndDate = "2026-03-01", "2028-06-30"
-		}, func(d *impact.Model) { d.Interventions[0].EndDate = "2027-06-30" }},
+		}, func(d *model.Model) { d.Interventions[0].EndDate = "2027-06-30" }},
 
 		// ---- the numbers each audience is told
-		{"IMP-AUD-002", "aud-1", func(d *impact.Model) { outcome(d, "oc-impact").AudienceIDs = []string{"aud-1"} },
-			func(d *impact.Model) { addIndicator(d, "ind-n", "oc-s1", forAudience) }},
-		{"IMP-HLN-001", "aud-1", func(d *impact.Model) {
+		{"IMP-AUD-002", "aud-1", func(d *model.Model) { outcome(d, "oc-impact").AudienceIDs = []string{"aud-1"} },
+			func(d *model.Model) { addIndicator(d, "ind-n", "oc-s1", forAudience) }},
+		{"IMP-HLN-001", "aud-1", func(d *model.Model) {
 			var ids []string
 			for i := 0; i < maxHeadline+1; i++ {
 				id := fmt.Sprintf("ind-h%d", i)
@@ -86,85 +86,85 @@ func TestChainAndHeadlineRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 				ids = append(ids, id)
 			}
 			headline(d, ids...)
-		}, func(d *impact.Model) { d.Audiences[0].Headline = d.Audiences[0].Headline[:maxHeadline] }},
-		{"IMP-HLN-002", "aud-1", func(d *impact.Model) {
+		}, func(d *model.Model) { d.Audiences[0].Headline = d.Audiences[0].Headline[:maxHeadline] }},
+		{"IMP-HLN-002", "aud-1", func(d *model.Model) {
 			addIndicator(d, "ind-h", "oc-s1")
 			headline(d, "ind-h")
-		}, func(d *impact.Model) { forAudience(indicator(d, "ind-h")) }},
-		{"IMP-HLN-003", "aud-1", func(d *impact.Model) {
+		}, func(d *model.Model) { forAudience(indicator(d, "ind-h")) }},
+		{"IMP-HLN-003", "aud-1", func(d *model.Model) {
 			addIndicator(d, "ind-h", "oc-s1", forAudience)
 			headline(d, "ind-h")
-		}, func(d *impact.Model) { indicator(d, "ind-h").DataAvailability = impact.DataInternalExisting }},
-		{"IMP-HLN-004", "aud-1", func(d *impact.Model) {
+		}, func(d *model.Model) { indicator(d, "ind-h").DataAvailability = model.DataInternalExisting }},
+		{"IMP-HLN-004", "aud-1", func(d *model.Model) {
 			for i := 0; i < curateAbove+1; i++ {
 				addIndicator(d, fmt.Sprintf("ind-r%d", i), "oc-s1", forAudience)
 			}
-		}, func(d *impact.Model) { headline(d, "ind-r0", "ind-r1") }},
+		}, func(d *model.Model) { headline(d, "ind-r0", "ind-r1") }},
 
 		// ---- the North Star
-		{"IMP-NSM-001", "pw-1", func(d *impact.Model) {
-			d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-out", Title: "Mixers held", Level: impact.LevelOutput})
+		{"IMP-NSM-001", "pw-1", func(d *model.Model) {
+			d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-out", Title: "Mixers held", Level: model.LevelOutput})
 			d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-out")
 			addIndicator(d, "ind-ns", "oc-out")
-			focus(d, impact.Focus{NorthStarID: "ind-ns"})
-		}, func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns"})
+		}, func(d *model.Model) {
 			addIndicator(d, "ind-ns2", "oc-s1")
 			d.Pathways[0].Focus.NorthStarID = "ind-ns2"
 		}},
-		{"IMP-NSM-001", "pw-1", func(d *impact.Model) {
+		{"IMP-NSM-001", "pw-1", func(d *model.Model) {
 			addIndicator(d, "ind-ns", "int-1")
-			focus(d, impact.Focus{NorthStarID: "ind-ns"})
-		}, func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns"})
+		}, func(d *model.Model) {
 			addIndicator(d, "ind-ns2", "oc-s1")
 			d.Pathways[0].Focus.NorthStarID = "ind-ns2"
 		}},
-		{"IMP-NSM-002", "pw-1", func(d *impact.Model) {
-			d.Ceiling = &impact.Ceiling{Level: impact.LevelMediumTerm}
+		{"IMP-NSM-002", "pw-1", func(d *model.Model) {
+			d.Ceiling = &model.Ceiling{Level: model.LevelMediumTerm}
 			addIndicator(d, "ind-ns", "oc-impact")
 			d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-impact")
-			focus(d, impact.Focus{NorthStarID: "ind-ns"})
-		}, func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns"})
+		}, func(d *model.Model) {
 			addIndicator(d, "ind-ns2", "oc-a")
 			d.Pathways[0].Focus.NorthStarID = "ind-ns2"
 		}},
-		{"IMP-NSM-003", "pw-1", func(d *impact.Model) {
+		{"IMP-NSM-003", "pw-1", func(d *model.Model) {
 			addIndicator(d, "ind-ns", "oc-s1")
-			focus(d, impact.Focus{NorthStarID: "ind-ns"})
-		}, func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns"})
+		}, func(d *model.Model) {
 			ns := indicator(d, "ind-ns")
-			ns.Baseline = &impact.Baseline{Value: ptr(10.0), Date: "2026-01-01"}
-			ns.Targets = []impact.Target{{Value: ptr(20.0), Date: "2027-01-01"}}
+			ns.Baseline = &model.Baseline{Value: ptr(10.0), Date: "2026-01-01"}
+			ns.Targets = []model.Target{{Value: ptr(20.0), Date: "2027-01-01"}}
 		}},
-		{"IMP-NSM-004", "pw-1", func(d *impact.Model) {
+		{"IMP-NSM-004", "pw-1", func(d *model.Model) {
 			addIndicator(d, "ind-ns", "oc-s1")
-			focus(d, impact.Focus{NorthStarID: "ind-ns"})
-		}, func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns"})
+		}, func(d *model.Model) {
 			addIndicator(d, "ind-g", "oc-a")
 			d.Pathways[0].Focus.GuardrailIDs = []string{"ind-g"}
 		}},
-		{"IMP-NSM-005", "pw-1", func(d *impact.Model) {
+		{"IMP-NSM-005", "pw-1", func(d *model.Model) {
 			addIndicator(d, "ind-ns", "oc-s2") // oc-s2 is not listed by pw-1
-			focus(d, impact.Focus{NorthStarID: "ind-ns"})
-		}, func(d *impact.Model) { d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-s2") }},
-		{"IMP-NSM-006", "pw-1", func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns"})
+		}, func(d *model.Model) { d.Pathways[0].OutcomeIDs = append(d.Pathways[0].OutcomeIDs, "oc-s2") }},
+		{"IMP-NSM-006", "pw-1", func(d *model.Model) {
 			addIndicator(d, "ind-ns", "oc-s1")
-			focus(d, impact.Focus{NorthStarID: "ind-ns", GuardrailIDs: []string{"ind-ns"}})
-		}, func(d *impact.Model) {
+			focus(d, model.Focus{NorthStarID: "ind-ns", GuardrailIDs: []string{"ind-ns"}})
+		}, func(d *model.Model) {
 			addIndicator(d, "ind-g", "oc-a")
 			d.Pathways[0].Focus.GuardrailIDs = []string{"ind-g"}
 		}},
-		{"IMP-NSM-007", "pw-1", func(d *impact.Model) {},
-			func(d *impact.Model) {
+		{"IMP-NSM-007", "pw-1", func(d *model.Model) {},
+			func(d *model.Model) {
 				addIndicator(d, "ind-ns", "oc-s1")
-				focus(d, impact.Focus{NorthStarID: "ind-ns"})
+				focus(d, model.Focus{NorthStarID: "ind-ns"})
 			}},
 
 		// ---- framing
-		{"IMP-CTX-001", "", func(d *impact.Model) {},
-			func(d *impact.Model) { d.Context.Mission = "Why we exist." }},
-		{"IMP-CTX-002", "", func(d *impact.Model) {
-			d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-impact-2", Title: "A second impact", Level: impact.LevelImpact})
-		}, func(d *impact.Model) { d.Context.Objective = &impact.Objective{Statement: "One objective"} }},
+		{"IMP-CTX-001", "", func(d *model.Model) {},
+			func(d *model.Model) { d.Context.Mission = "Why we exist." }},
+		{"IMP-CTX-002", "", func(d *model.Model) {
+			d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-impact-2", Title: "A second impact", Level: model.LevelImpact})
+		}, func(d *model.Model) { d.Context.Objective = &model.Objective{Statement: "One objective"} }},
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%s/%s/%d", tt.rule, tt.element, i), func(t *testing.T) {

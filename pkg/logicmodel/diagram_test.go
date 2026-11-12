@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -72,8 +72,8 @@ func TestMermaidDrawsEveryNodeAndEdge(t *testing.T) {
 // A dot in an element's ID must not read as a step into a container.
 func TestADotInAnIDIsNotAPath(t *testing.T) {
 	v := &report.View{Outcomes: []report.OutcomeView{
-		{ID: "a.1", Title: "A", Level: impact.LevelShortTerm},
-		{ID: "b.1", Title: "B", Level: impact.LevelMediumTerm},
+		{ID: "a.1", Title: "A", Level: model.LevelShortTerm},
+		{ID: "b.1", Title: "B", Level: model.LevelMediumTerm},
 	}, Links: []report.LinkView{{From: "a.1", To: "b.1"}}}
 	d2 := Build(v).D2()
 	if !strings.Contains(d2, `short_term.a_1 -> medium_term.b_1`) {

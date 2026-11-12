@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // activeInterventions returns the interventions that were not rejected, with
 // their index in the document.
-func activeInterventions(d *impact.Model) []indexed[impact.Intervention] {
-	var out []indexed[impact.Intervention]
+func activeInterventions(d *model.Model) []indexed[model.Intervention] {
+	var out []indexed[model.Intervention]
 	for i, in := range d.Interventions {
 		if !in.Rejected() {
-			out = append(out, indexed[impact.Intervention]{i, in})
+			out = append(out, indexed[model.Intervention]{i, in})
 		}
 	}
 	return out
@@ -32,7 +32,7 @@ func init() {
 			}
 			producesOutput := false
 			for _, t := range in.v.Targets {
-				if lv, ok := outcomeLevel(c.Doc, t); ok && lv == impact.LevelOutput {
+				if lv, ok := outcomeLevel(c.Doc, t); ok && lv == model.LevelOutput {
 					producesOutput = true
 				}
 			}
@@ -53,7 +53,7 @@ func init() {
 				if !ok || o.Rejected() {
 					continue
 				}
-				leads = leads || o.Level == impact.LevelImpact || c.Graph.HasPathToImpact(t)
+				leads = leads || o.Level == model.LevelImpact || c.Graph.HasPathToImpact(t)
 			}
 			if !leads {
 				out = append(out, Finding{Path: at("interventions", in.i) + "/targets", Element: in.v.ID,

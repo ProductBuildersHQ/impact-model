@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -33,13 +33,13 @@ func golden(t *testing.T, name, got string) {
 	}
 }
 
-func fullDoc(t *testing.T) *impact.Model {
+func fullDoc(t *testing.T) *model.Model {
 	t.Helper()
-	data, err := os.ReadFile("../impact/testdata/full.json")
+	data, err := os.ReadFile("../model/testdata/full.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var d impact.Model
+	var d model.Model
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&d); err != nil {
@@ -48,7 +48,7 @@ func fullDoc(t *testing.T) *impact.Model {
 	return &d
 }
 
-func views(t *testing.T, doc *impact.Model) (*report.View, []*report.View) {
+func views(t *testing.T, doc *model.Model) (*report.View, []*report.View) {
 	t.Helper()
 	whole, err := report.BuildView(doc, nil, nil, report.Options{})
 	if err != nil {

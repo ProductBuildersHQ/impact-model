@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -23,7 +23,7 @@ func dmaicIndicators(c *Context) []dmaicIndicator {
 	var out []dmaicIndicator
 	for _, ind := range activeIndicators(c.Doc) {
 		for _, p := range activePathways(c.Doc) {
-			if slices.Contains(p.v.Projections, impact.ProjectionDMAIC) && c.Doc.IndicatorServes(ind.v, p.v.ID) {
+			if slices.Contains(p.v.Projections, model.ProjectionDMAIC) && c.Doc.IndicatorServes(ind.v, p.v.ID) {
 				out = append(out, dmaicIndicator{ind, p.v.ID})
 				break
 			}
@@ -57,13 +57,13 @@ func init() {
 	register("IMP-DMA-002", validate.SeverityWarning, "An indicator of a DMAIC pathway is measured at least 20 times a year.", func(c *Context) []Finding {
 		var out []Finding
 		for _, d := range dmaicIndicators(c) {
-			n, ok := impact.TimesPerYear(d.v.Frequency)
-			if !ok || n >= impact.DMAICMinPoints {
+			n, ok := model.TimesPerYear(d.v.Frequency)
+			if !ok || n >= model.DMAICMinPoints {
 				continue
 			}
 			out = append(out, Finding{Path: at("indicators", d.i) + "/frequency", Element: d.v.ID,
 				Message: fmt.Sprintf("it is measured %s (%s); control limits need at least %d measurements a year, so measure it every two weeks or more often, or leave pathway %q out of DMAIC",
-					timesAYear(n), d.v.Frequency, impact.DMAICMinPoints, d.pathwayID)})
+					timesAYear(n), d.v.Frequency, model.DMAICMinPoints, d.pathwayID)})
 		}
 		return out
 	})
@@ -72,7 +72,7 @@ func init() {
 		var out []Finding
 		for _, d := range dmaicIndicators(c) {
 			col := d.v.Collection
-			if col == nil || col.Mode != impact.ModeSurvey {
+			if col == nil || col.Mode != model.ModeSurvey {
 				continue
 			}
 			path := at("indicators", d.i) + "/collection"
@@ -81,7 +81,7 @@ func init() {
 					Message: "it is a survey, and how many people are asked each year is not stated, so it cannot be told whether each measurement has enough responses"})
 				continue
 			}
-			n, ok := impact.TimesPerYear(d.v.Frequency)
+			n, ok := model.TimesPerYear(d.v.Frequency)
 			if !ok {
 				continue // IMP-DMA-001 reports the missing frequency
 			}
@@ -89,10 +89,10 @@ func init() {
 			if col.SampleRate > 0 {
 				asked *= col.SampleRate
 			}
-			if per := asked / n; per < impact.DMAICMinResponsesPerPoint {
+			if per := asked / n; per < model.DMAICMinResponsesPerPoint {
 				out = append(out, Finding{Path: path, Element: d.v.ID,
 					Message: fmt.Sprintf("each measurement rests on about %s responses; below %d a survey score swings with chance (an NPS needs about 100 for ±10 points), so measure less often, pool across groups, or ask more people",
-						round(per), impact.DMAICMinResponsesPerPoint)})
+						round(per), model.DMAICMinResponsesPerPoint)})
 			}
 		}
 		return out

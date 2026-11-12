@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
@@ -34,7 +34,7 @@ func golden(t *testing.T, name, got string) {
 // The reports the CLI offers, over the intermediary example: one diagram for
 // each of its three pathways, as D2 and as Mermaid.
 func TestLayeredReportsOverTheExample(t *testing.T) {
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

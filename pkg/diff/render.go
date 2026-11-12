@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Counts returns how many elements were added, changed, and removed.
@@ -119,9 +119,9 @@ func heading(kind string) string {
 // DraftRevision returns a revision entry that records this difference: the
 // version, date, and trigger given, a summary of the counts, and the IDs
 // that changed. Nothing is applied; see RevisionPatch.
-func (r *Result) DraftRevision(version, date string, trigger impact.RevisionTrigger) impact.Revision {
+func (r *Result) DraftRevision(version, date string, trigger model.RevisionTrigger) model.Revision {
 	added, changed, removed := r.Counts()
-	return impact.Revision{
+	return model.Revision{
 		Version: version, Date: date, Trigger: trigger,
 		Summary:    fmt.Sprintf("%d element(s) added, %d changed, %d removed.", added, changed, removed),
 		ChangedIDs: r.ChangedIDs(),
@@ -131,13 +131,13 @@ func (r *Result) DraftRevision(version, date string, trigger impact.RevisionTrig
 // RevisionPatch returns the patch that appends a revision to a document
 // that has (hasRevisions) or does not have a revisions list yet, ready for
 // the patch engine.
-func RevisionPatch(rev impact.Revision, hasRevisions bool) (edit.Patch, error) {
+func RevisionPatch(rev model.Revision, hasRevisions bool) (edit.Patch, error) {
 	var op edit.Op
 	var err error
 	if hasRevisions {
 		op, err = edit.Add(edit.Pointer("revisions", "-"), rev)
 	} else {
-		op, err = edit.Add(edit.Pointer("revisions"), []impact.Revision{rev})
+		op, err = edit.Add(edit.Pointer("revisions"), []model.Revision{rev})
 	}
 	if err != nil {
 		return nil, err

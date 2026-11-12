@@ -1,4 +1,4 @@
-package impactio
+package modelio
 
 import (
 	"errors"
@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	oscfs "github.com/grokify/oscompat/fs"
 )
 
-const fixtures = "../impact/testdata/"
+const fixtures = "../model/testdata/"
 
 func readFixture(t *testing.T, path string) []byte {
 	t.Helper()
@@ -117,8 +117,8 @@ func TestCanonicalIsIdempotent(t *testing.T) {
 }
 
 func TestCanonicalYAMLQuotesAmbiguousStrings(t *testing.T) {
-	doc := impact.NewModel("doc", "true")
-	doc.Outcomes = []impact.Outcome{{ID: "oc-1", Title: "2026-01-01", Level: impact.LevelImpact, Description: "123"}}
+	doc := model.NewModel("doc", "true")
+	doc.Outcomes = []model.Outcome{{ID: "oc-1", Title: "2026-01-01", Level: model.LevelImpact, Description: "123"}}
 	out, err := Canonical(doc, FormatYAML)
 	if err != nil {
 		t.Fatal(err)
@@ -194,11 +194,11 @@ func TestSchemaErrorIncludesLocation(t *testing.T) {
 }
 
 func TestDetectKindAndSchemaName(t *testing.T) {
-	tests := map[string]impact.Kind{
-		"minimal.json":      impact.KindImpactModel,
-		"observations.json": impact.KindObservationSet,
-		"status.json":       impact.KindStatus,
-		"registry.json":     impact.KindActorRegistry,
+	tests := map[string]model.Kind{
+		"minimal.json":      model.KindImpactModel,
+		"observations.json": model.KindObservationSet,
+		"status.json":       model.KindStatus,
+		"registry.json":     model.KindActorRegistry,
 	}
 	for name, want := range tests {
 		got, err := DetectKind(readFixture(t, fixtures+name), FormatJSON)
@@ -283,11 +283,11 @@ func TestLoadDocumentAndObservations(t *testing.T) {
 }
 
 func TestMergeObservations(t *testing.T) {
-	a := impact.NewObservationSet("doc", "2026-Q3")
-	a.Observations = []impact.Observation{{IndicatorID: "ind-1", Date: "2026-09-30"}}
-	b := impact.NewObservationSet("doc", "2026-Q4")
-	b.Observations = []impact.Observation{{IndicatorID: "ind-1", Date: "2026-12-31"}}
-	b.Notes = []impact.Note{{Text: "n"}}
+	a := model.NewObservationSet("doc", "2026-Q3")
+	a.Observations = []model.Observation{{IndicatorID: "ind-1", Date: "2026-09-30"}}
+	b := model.NewObservationSet("doc", "2026-Q4")
+	b.Observations = []model.Observation{{IndicatorID: "ind-1", Date: "2026-12-31"}}
+	b.Notes = []model.Note{{Text: "n"}}
 
 	m, err := MergeObservations(a, b)
 	if err != nil {
@@ -300,7 +300,7 @@ func TestMergeObservations(t *testing.T) {
 	if err != nil || same.Period != "2026-Q3" || len(same.Observations) != 2 {
 		t.Fatalf("same-period merge: %v %+v", err, same)
 	}
-	if _, err := MergeObservations(a, impact.NewObservationSet("other", "")); err == nil {
+	if _, err := MergeObservations(a, model.NewObservationSet("other", "")); err == nil {
 		t.Fatal("merged sets for different documents")
 	}
 	if _, err := MergeObservations(); err == nil {
@@ -309,10 +309,10 @@ func TestMergeObservations(t *testing.T) {
 }
 
 func TestElementLimit(t *testing.T) {
-	doc := impact.NewModel("big", "p")
-	doc.Outcomes = make([]impact.Outcome, MaxElements+1)
+	doc := model.NewModel("big", "p")
+	doc.Outcomes = make([]model.Outcome, MaxElements+1)
 	for i := range doc.Outcomes {
-		doc.Outcomes[i] = impact.Outcome{ID: "oc-" + strings.Repeat("a", 1) + "-" + itoa(i), Title: "t", Level: impact.LevelOutput}
+		doc.Outcomes[i] = model.Outcome{ID: "oc-" + strings.Repeat("a", 1) + "-" + itoa(i), Title: "t", Level: model.LevelOutput}
 	}
 	data, err := Canonical(doc, FormatJSON)
 	if err != nil {
@@ -339,7 +339,7 @@ func itoa(i int) string {
 }
 
 func TestCanonicalUnsupportedFormat(t *testing.T) {
-	if _, err := Canonical(impact.NewModel("d", "p"), Format("toml")); !errors.Is(err, ErrUnsupportedFormat) {
+	if _, err := Canonical(model.NewModel("d", "p"), Format("toml")); !errors.Is(err, ErrUnsupportedFormat) {
 		t.Fatalf("error = %v", err)
 	}
 }

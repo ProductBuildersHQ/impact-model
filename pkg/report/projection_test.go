@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestProjectionGoldens(t *testing.T) {
@@ -127,7 +127,7 @@ func TestLogicModelDiagramJoinsOnlyTheStagesThatHaveContent(t *testing.T) {
 
 // clearTreePathways drops the pathway references of causes and effects, for a
 // test that removes the pathways.
-func clearTreePathways(doc *impact.Model) {
+func clearTreePathways(doc *model.Model) {
 	for i := range doc.Causes {
 		doc.Causes[i].PathwayIDs = nil
 	}

@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
@@ -65,12 +65,12 @@ not be applied (bad path, unknown ID, failed test, or unreadable input).`,
 
 func readPatchSource(e *env, src string) ([]byte, error) {
 	if src == "-" {
-		data, err := io.ReadAll(io.LimitReader(e.in, impactio.MaxFileBytes+1))
+		data, err := io.ReadAll(io.LimitReader(e.in, modelio.MaxFileBytes+1))
 		if err != nil {
 			return nil, fmt.Errorf("read patch from stdin: %w", err)
 		}
-		if len(data) > impactio.MaxFileBytes {
-			return nil, fmt.Errorf("%w: patch on stdin exceeds %d bytes", impactio.ErrTooLarge, impactio.MaxFileBytes)
+		if len(data) > modelio.MaxFileBytes {
+			return nil, fmt.Errorf("%w: patch on stdin exceeds %d bytes", modelio.ErrTooLarge, modelio.MaxFileBytes)
 		}
 		return data, nil
 	}

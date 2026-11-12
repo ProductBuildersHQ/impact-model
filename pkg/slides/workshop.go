@@ -12,8 +12,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/logicmodel"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -160,7 +160,7 @@ func (d *deck) goal(v *report.View) {
 	d.line("# The change we are working toward")
 	d.line("")
 	for _, o := range v.Outcomes {
-		if o.Level == impact.LevelImpact {
+		if o.Level == model.LevelImpact {
 			d.line("- **%s**%s", oneLine(o.Title), report.BasisMark(o.Basis))
 		}
 	}
@@ -230,7 +230,7 @@ func (d *deck) logicModel(v *report.View) {
 func (d *deck) assumptions(v *report.View) {
 	var key []report.AssumptionView
 	for _, a := range v.Assumptions {
-		if a.Criticality == string(impact.CriticalityHigh) || a.Criticality == string(impact.CriticalityCritical) {
+		if a.Criticality == string(model.CriticalityHigh) || a.Criticality == string(model.CriticalityCritical) {
 			key = append(key, a)
 		}
 	}
@@ -294,8 +294,8 @@ func (d *deck) basis(v *report.View) {
 	d.line("")
 	d.line("| Basis | Elements |")
 	d.line("|-------|----------|")
-	for _, b := range impact.AllBases() {
-		if b == impact.BasisRejected {
+	for _, b := range model.AllBases() {
+		if b == model.BasisRejected {
 			continue
 		}
 		if n := v.BasisCounts[b]; n > 0 {

@@ -6,16 +6,16 @@ import (
 	"time"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 // exampleInput evaluates the intermediary example at two dates and returns
 // the later snapshot with the changes since the earlier.
 func exampleInput(t *testing.T) StatusInput {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func exampleInput(t *testing.T) StatusInput {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sets, err := impactio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
+	sets, err := modelio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,11 +34,11 @@ func exampleInput(t *testing.T) StatusInput {
 		}
 		return d
 	}
-	prev, err := measure.Evaluate(doc, g, sets, at("2026-06-30"), impact.DefaultStatusOptions())
+	prev, err := measure.Evaluate(doc, g, sets, at("2026-06-30"), model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
-	cur, err := measure.Evaluate(doc, g, sets, at("2026-09-30"), impact.DefaultStatusOptions())
+	cur, err := measure.Evaluate(doc, g, sets, at("2026-09-30"), model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +99,7 @@ func TestExecWithoutADiffOrWithABrokenAssumption(t *testing.T) {
 		t.Error("changes shown with no previous snapshot")
 	}
 	for i := range in.View.Assumptions {
-		in.View.Assumptions[i].Status = string(impact.AssumptionInvalidated)
+		in.View.Assumptions[i].Status = string(model.AssumptionInvalidated)
 	}
 	exec := Exec(in)
 	if !strings.Contains(exec, "What should change now that the assumption") {

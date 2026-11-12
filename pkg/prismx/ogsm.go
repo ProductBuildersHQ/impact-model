@@ -8,7 +8,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/ogsm"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // ErrNotOGSMReady is returned, wrapped, when an impact model lacks what an
@@ -32,7 +32,7 @@ var ErrNotOGSMReady = errors.New("the impact model cannot be drawn as an OGSM")
 // one pathway is listed under the first. st may be nil; goals and measures
 // then have no current value, progress, or status. ToOGSM refuses a model
 // whose objective is ambiguous, or that has no pathway.
-func ToOGSM(doc *impact.Model, st *impact.Status) (*ogsm.OGSM, error) {
+func ToOGSM(doc *model.Model, st *model.Status) (*ogsm.OGSM, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
@@ -41,7 +41,7 @@ func ToOGSM(doc *impact.Model, st *impact.Status) (*ogsm.OGSM, error) {
 	if !ok {
 		missing = append(missing, "context.objective")
 	}
-	var pathways []impact.Pathway
+	var pathways []model.Pathway
 	for _, p := range doc.Pathways {
 		if !p.Rejected() {
 			pathways = append(pathways, p)
@@ -54,13 +54,13 @@ func ToOGSM(doc *impact.Model, st *impact.Status) (*ogsm.OGSM, error) {
 		return nil, fmt.Errorf("%w: add %s", ErrNotOGSMReady, joinAnd(missing))
 	}
 
-	statuses := map[string]impact.IndicatorStatus{}
+	statuses := map[string]model.IndicatorStatus{}
 	if st != nil {
 		for _, s := range st.Indicators {
 			statuses[s.IndicatorID] = s
 		}
 	}
-	number := func(ind impact.Indicator) ogsmNumber {
+	number := func(ind model.Indicator) ogsmNumber {
 		return ogsmNumberFrom(doc, ind, statuses[ind.ID], st != nil)
 	}
 
@@ -149,7 +149,7 @@ type ogsmNumber struct {
 	progress                                          float64
 }
 
-func ogsmNumberFrom(doc *impact.Model, ind impact.Indicator, s impact.IndicatorStatus, withStatus bool) ogsmNumber {
+func ogsmNumberFrom(doc *model.Model, ind model.Indicator, s model.IndicatorStatus, withStatus bool) ogsmNumber {
 	n := ogsmNumber{owner: actorName(doc, ind.OwnerID)}
 	if ind.Baseline != nil {
 		n.baseline = measureValue(ind.Baseline.Value, ind.Baseline.Level)
@@ -178,7 +178,7 @@ func ogsmNumberFrom(doc *impact.Model, ind impact.Indicator, s impact.IndicatorS
 
 // reachable returns the outcomes the given outcomes are or lead to, through
 // causal links that are not rejected or feedback, and precondition groups.
-func reachable(doc *impact.Model, from []string) map[string]bool {
+func reachable(doc *model.Model, from []string) map[string]bool {
 	seen := map[string]bool{}
 	queue := slices.Clone(from)
 	for len(queue) > 0 {
@@ -204,15 +204,15 @@ func reachable(doc *impact.Model, from []string) map[string]bool {
 
 // actionStatus maps an intervention's status; a paused intervention has no
 // OGSM action status and is left blank.
-func actionStatus(s impact.InterventionStatus) string {
+func actionStatus(s model.InterventionStatus) string {
 	switch s {
-	case impact.InterventionPlanned:
+	case model.InterventionPlanned:
 		return ogsm.ActionPlanned
-	case impact.InterventionInProgress:
+	case model.InterventionInProgress:
 		return ogsm.ActionInProgress
-	case impact.InterventionCompleted:
+	case model.InterventionCompleted:
 		return ogsm.ActionCompleted
-	case impact.InterventionCancelled:
+	case model.InterventionCancelled:
 		return ogsm.ActionCancelled
 	}
 	return ""

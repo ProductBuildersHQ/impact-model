@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/approve"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
@@ -51,7 +51,7 @@ func runApprove(e *env, cmd *cobra.Command, path string) error {
 	if err != nil {
 		return err
 	}
-	doc, err := impactio.LoadDocument(path)
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 const (
@@ -28,7 +28,7 @@ func TestStatusSummaryAndJSON(t *testing.T) {
 	}
 	j := run(t, "", "status", exTheory, "-O", exObs, "--format", "json", "--as-of", "2026-09-30")
 	wantCode(t, j, ExitOK)
-	if _, err := impactio.ParseStatus([]byte(j.stdout), impactio.FormatJSON); err != nil {
+	if _, err := modelio.ParseStatus([]byte(j.stdout), modelio.FormatJSON); err != nil {
 		t.Fatalf("the JSON is not a status snapshot: %v", err)
 	}
 	if again := run(t, "", "status", exTheory, "-O", exObs, "--format", "json", "--as-of", "2026-09-30"); again.stdout != j.stdout {
@@ -50,8 +50,8 @@ func TestStatusAgainstAPreviousSnapshot(t *testing.T) {
 	}
 	j := run(t, "", "status", exTheory, "-O", exObs, "--as-of", "2026-09-30", "--prev", prev, "--format", "json")
 	var both struct {
-		Status impact.Status
-		Diff   impact.StatusDiff
+		Status model.Status
+		Diff   model.StatusDiff
 	}
 	if err := json.Unmarshal([]byte(j.stdout), &both); err != nil || both.Diff.FromAsOf != "2026-06-30" || both.Status.AsOf != "2026-09-30" {
 		t.Errorf("json = %v %+v", err, both.Diff)

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 const sheet = "# model:riverbend-network version:0.2.0 hash:sha256:current\r\n" +
@@ -19,13 +19,13 @@ func TestFromSheet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if resp.ModelID != "riverbend-network" || resp.Version != "0.2.0" || resp.ContentHash != "sha256:current" || resp.Method != impact.ReviewSheet {
+	if resp.ModelID != "riverbend-network" || resp.Version != "0.2.0" || resp.ContentHash != "sha256:current" || resp.Method != model.ReviewSheet {
 		t.Fatalf("response = %+v", resp)
 	}
 	if len(resp.Rows) != 3 {
 		t.Fatalf("rows = %+v", resp.Rows)
 	}
-	if resp.Rows[0].Decision != impact.DecisionAgree || resp.Rows[0].Origin != impact.OriginSheet {
+	if resp.Rows[0].Decision != model.DecisionAgree || resp.Rows[0].Origin != model.OriginSheet {
 		t.Errorf("row 0 = %+v", resp.Rows[0])
 	}
 	if !strings.Contains(resp.Rows[1].SuggestedChange, "\ncategory: access") {

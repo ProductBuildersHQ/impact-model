@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Format is how the diagram in a report is written.
@@ -20,7 +20,7 @@ const (
 // Report renders the problem tree as Markdown: the diagram in format f, then a
 // table of the causes and one of the effects, each with what it leads to and
 // the outcomes that address it, or why it is set aside.
-func Report(doc *impact.Model, f Format) (string, error) {
+func Report(doc *model.Model, f Format) (string, error) {
 	return ReportFor(doc, "", f)
 }
 
@@ -28,7 +28,7 @@ func Report(doc *impact.Model, f Format) (string, error) {
 // whole model when pathwayID is empty. A pathway's tables list only its own
 // causes and effects. Its own outcomes are listed first as addressing them,
 // then any other outcome, labelled with the pathway it belongs to.
-func ReportFor(doc *impact.Model, pathwayID string, f Format) (string, error) {
+func ReportFor(doc *model.Model, pathwayID string, f Format) (string, error) {
 	t, err := BuildFor(doc, pathwayID)
 	if err != nil {
 		return "", err
@@ -108,7 +108,7 @@ func ReportFor(doc *impact.Model, pathwayID string, f Format) (string, error) {
 		}
 		return strings.Join(out, "; ")
 	}
-	answer := func(id string, aside *impact.OutOfScope) string {
+	answer := func(id string, aside *model.OutOfScope) string {
 		switch {
 		case aside != nil:
 			return "set aside: " + cell(aside.Reason)
@@ -142,7 +142,7 @@ func ReportFor(doc *impact.Model, pathwayID string, f Format) (string, error) {
 
 // outcomeHome names the pathways an outcome belongs to, for a label such as
 // "in Network and Evidence", or says it belongs to none.
-func outcomeHome(doc *impact.Model, outcomeID string) string {
+func outcomeHome(doc *model.Model, outcomeID string) string {
 	var titles []string
 	for _, p := range doc.Pathways {
 		if !p.Rejected() && slices.Contains(p.OutcomeIDs, outcomeID) {

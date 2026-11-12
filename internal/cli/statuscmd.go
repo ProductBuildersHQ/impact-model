@@ -9,9 +9,9 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/tabular"
@@ -52,17 +52,17 @@ func statusFlags(cmd *cobra.Command) {
 	f.StringSliceP("observations", "O", nil, "observation set files (repeatable)")
 	f.String("prev", "", "an earlier status snapshot (JSON) to compare with")
 	f.Float64("tolerance", measure.DefaultTolerance, "how far behind expected progress still counts as on track")
-	f.String("rollup", string(impact.RollupWorst), "how indicators combine into an outcome: worst or mean")
+	f.String("rollup", string(model.RollupWorst), "how indicators combine into an outcome: worst or mean")
 }
 
 // loadStatus evaluates the impact model at path against the observation files and
 // date given by the flags. It reports observation problems on e.errOut and
 // returns exit code 1 for them. The date is --as-of, else the latest date in
 // the observations.
-func loadStatus(e *env, cmd *cobra.Command, path string) (report.StatusInput, []*impact.ObservationSet, error) {
-	opts := impact.DefaultStatusOptions()
+func loadStatus(e *env, cmd *cobra.Command, path string) (report.StatusInput, []*model.ObservationSet, error) {
+	opts := model.DefaultStatusOptions()
 	opts.Tolerance, _ = cmd.Flags().GetFloat64("tolerance")
-	opts.Rollup = impact.RollupMethod(flagString(cmd, "rollup"))
+	opts.Rollup = model.RollupMethod(flagString(cmd, "rollup"))
 	if !opts.Rollup.Valid() || opts.Tolerance <= 0 || opts.Tolerance >= 1 {
 		return report.StatusInput{}, nil, usageErr("--rollup must be worst or mean, and --tolerance between 0 and 1")
 	}
@@ -74,9 +74,9 @@ func loadStatus(e *env, cmd *cobra.Command, path string) (report.StatusInput, []
 	if err != nil {
 		panic(fmt.Sprintf("cli: --observations is not a string slice flag: %v", err))
 	}
-	var sets []*impact.ObservationSet
+	var sets []*model.ObservationSet
 	if len(obsPaths) > 0 {
-		if sets, err = impactio.LoadObservations(obsPaths...); err != nil {
+		if sets, err = modelio.LoadObservations(obsPaths...); err != nil {
 			return report.StatusInput{}, nil, &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		if issues := validate.Observations(doc, sets...); validate.HasErrors(issues) {
@@ -92,7 +92,7 @@ func loadStatus(e *env, cmd *cobra.Command, path string) (report.StatusInput, []
 	if err != nil {
 		return report.StatusInput{}, nil, err
 	}
-	var prev *impact.Status
+	var prev *model.Status
 	if prevPath := flagString(cmd, "prev"); prevPath != "" {
 		if prev, err = loadSnapshot(prevPath); err != nil {
 			return report.StatusInput{}, nil, err
@@ -137,7 +137,7 @@ func runStatus(e *env, cmd *cobra.Command, path string) error {
 	return nil
 }
 
-func statusDate(cmd *cobra.Command, sets []*impact.ObservationSet) (time.Time, error) {
+func statusDate(cmd *cobra.Command, sets []*model.ObservationSet) (time.Time, error) {
 	if s := flagString(cmd, "as-of"); s != "" {
 		at, err := time.Parse(time.DateOnly, s)
 		if err != nil {
@@ -151,26 +151,26 @@ func statusDate(cmd *cobra.Command, sets []*impact.ObservationSet) (time.Time, e
 	return time.Time{}, usageErr("give --as-of: there are no observations to take a date from")
 }
 
-func loadSnapshot(prevPath string) (*impact.Status, error) {
+func loadSnapshot(prevPath string) (*model.Status, error) {
 	data, err := os.ReadFile(prevPath)
 	if err != nil {
 		return nil, &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("read previous snapshot: %w", err)}
 	}
-	prev, err := impactio.ParseStatus(data, impactio.FormatJSON)
+	prev, err := modelio.ParseStatus(data, modelio.FormatJSON)
 	if err != nil {
 		return nil, &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("%s: %w", prevPath, err)}
 	}
 	return prev, nil
 }
 
-func printStatus(e *env, path string, st *impact.Status, diff *impact.StatusDiff) {
+func printStatus(e *env, path string, st *model.Status, diff *model.StatusDiff) {
 	fmt.Fprintf(e.out, "%s as of %s\n", path, st.AsOf)
-	counts := map[impact.State]int{}
+	counts := map[model.State]int{}
 	for _, i := range st.Indicators {
 		counts[i.State]++
 	}
 	fmt.Fprintf(e.out, "indicators (%d): %s\n", len(st.Indicators), stateCounts(counts))
-	pathway := map[impact.State]int{}
+	pathway := map[model.State]int{}
 	for _, o := range st.Outcomes {
 		pathway[o.PathwayState]++
 	}
@@ -183,7 +183,7 @@ func printStatus(e *env, path string, st *impact.Status, diff *impact.StatusDiff
 		fmt.Fprintf(e.out, "impact %s: %s (confidence %s)\n", i.OutcomeID, i.PathwayState, conf)
 	}
 	for _, l := range st.Links {
-		if l.State != impact.LinkStateOK {
+		if l.State != model.LinkStateOK {
 			fmt.Fprintf(e.out, "link %s is %s\n", l.LinkID, l.State)
 		}
 	}
@@ -202,9 +202,9 @@ func absent(s string) string {
 	return s
 }
 
-func stateCounts(c map[impact.State]int) string {
+func stateCounts(c map[model.State]int) string {
 	var parts []string
-	for _, s := range impact.AllStates() {
+	for _, s := range model.AllStates() {
 		if c[s] > 0 {
 			parts = append(parts, fmt.Sprintf("%d %s", c[s], s))
 		}
@@ -261,11 +261,11 @@ func runImportObservations(e *env, cmd *cobra.Command) error {
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("read mapping: %w", err)}
 	}
-	mf, err := impactio.FormatFromPath(flagString(cmd, "map"))
+	mf, err := modelio.FormatFromPath(flagString(cmd, "map"))
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
-	m, err := impactio.ParseCSVMapping(mapData, mf)
+	m, err := modelio.ParseCSVMapping(mapData, mf)
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("%s: %w", flagString(cmd, "map"), err)}
 	}
@@ -281,18 +281,18 @@ func runImportObservations(e *env, cmd *cobra.Command) error {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 
-	format := impactio.FormatYAML
+	format := modelio.FormatYAML
 	if out := flagString(cmd, "out"); out != "" {
-		if format, err = impactio.FormatFromPath(out); err != nil {
+		if format, err = modelio.FormatFromPath(out); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 	}
-	data, err := impactio.Canonical(res.Set, format)
+	data, err := modelio.Canonical(res.Set, format)
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, data); err != nil {
+		if err := modelio.WriteFile(out, data); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 	} else if _, err := e.out.Write(data); err != nil {
@@ -308,7 +308,7 @@ func runImportObservations(e *env, cmd *cobra.Command) error {
 		if err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
-		if err := impactio.WriteFile(path, []byte(sheet)); err != nil {
+		if err := modelio.WriteFile(path, []byte(sheet)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 	}

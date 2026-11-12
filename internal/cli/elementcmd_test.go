@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 // patchJSON renders a patch as the JSON the patch command reads.
@@ -130,7 +130,7 @@ func TestCommandsEqualTheirPatches(t *testing.T) {
 			if mustRead(t, viaCommand) != mustRead(t, viaPatch) {
 				t.Fatalf("command and patch produced different files:\n--- command\n%s\n--- patch\n%s", mustRead(t, viaCommand), mustRead(t, viaPatch))
 			}
-			if _, err := impactio.LoadDocument(viaCommand); err != nil {
+			if _, err := modelio.LoadDocument(viaCommand); err != nil {
 				t.Fatalf("result does not load: %v", err)
 			}
 		})
@@ -176,7 +176,7 @@ func TestEveryKindCanBeAdded(t *testing.T) {
 			path := fixtureCopy(t, "full.json", "doc.json")
 			r := run(t, "", append([]string{k.Name, "add", path}, args...)...)
 			wantCode(t, r, 0)
-			doc, err := impactio.LoadDocument(path)
+			doc, err := modelio.LoadDocument(path)
 			if err != nil {
 				t.Fatalf("result does not load: %v", err)
 			}
@@ -185,7 +185,7 @@ func TestEveryKindCanBeAdded(t *testing.T) {
 			}
 			// Removing it again restores a valid document.
 			wantCode(t, run(t, "", k.Name, "rm", path, args[1], "--cascade", "-q"), 0)
-			if _, err := impactio.LoadDocument(path); err != nil {
+			if _, err := modelio.LoadDocument(path); err != nil {
 				t.Fatalf("after rm: %v", err)
 			}
 		})
@@ -268,7 +268,7 @@ func TestRmRejectsDanglingReferencesAndCascadeFixesThem(t *testing.T) {
 	}
 
 	wantCode(t, run(t, "", "outcome", "rm", path, "oc-idp-support", "--cascade"), 0)
-	doc, err := impactio.LoadDocument(path)
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -346,7 +346,7 @@ func TestSetCreatesMissingParents(t *testing.T) {
 	path := fixtureCopy(t, "full.json", "doc.json")
 	r := run(t, "", "outcome", "set", path, "oc-spec-stable", "--basis", "stated", "--sources", "ev-survey", "--basis-note", "Stated on the project page.", "--set", "logic.type=any")
 	wantCode(t, r, 0)
-	doc, err := impactio.LoadDocument(path)
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		t.Fatal(err)
 	}

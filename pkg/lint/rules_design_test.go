@@ -7,22 +7,22 @@ import (
 	core "github.com/grokify/prism-core"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // addIndicator appends an indicator to the document and lets the caller
 // adjust it.
-func addIndicator(d *impact.Model, id, measures string, adjust ...func(*impact.Indicator)) {
-	ind := impact.Indicator{ID: id, Measures: measures, Name: id}
+func addIndicator(d *model.Model, id, measures string, adjust ...func(*model.Indicator)) {
+	ind := model.Indicator{ID: id, Measures: measures, Name: id}
 	for _, f := range adjust {
 		f(&ind)
 	}
 	d.Indicators = append(d.Indicators, ind)
 }
 
-func selected(i *impact.Indicator) { i.Selection = &impact.Selection{Status: impact.SelectionSelected} }
+func selected(i *model.Indicator) { i.Selection = &model.Selection{Status: model.SelectionSelected} }
 
-func outcome(d *impact.Model, id string) *impact.Outcome {
+func outcome(d *model.Model, id string) *model.Outcome {
 	for i := range d.Outcomes {
 		if d.Outcomes[i].ID == id {
 			return &d.Outcomes[i]
@@ -31,7 +31,7 @@ func outcome(d *impact.Model, id string) *impact.Outcome {
 	panic("no outcome " + id)
 }
 
-func indicator(d *impact.Model, id string) *impact.Indicator {
+func indicator(d *model.Model, id string) *model.Indicator {
 	for i := range d.Indicators {
 		if d.Indicators[i].ID == id {
 			return &d.Indicators[i]
@@ -41,7 +41,7 @@ func indicator(d *impact.Model, id string) *impact.Indicator {
 }
 
 // fires returns the elements a rule reports on the document.
-func fires(t *testing.T, d *impact.Model, rule string) []string {
+func fires(t *testing.T, d *model.Model, rule string) []string {
 	t.Helper()
 	g, err := graph.Build(d)
 	if err != nil {
@@ -64,188 +64,188 @@ func fires(t *testing.T, d *impact.Model, rule string) []string {
 // and checks the rule falls silent about it. An empty element means a
 // finding about the whole document.
 func TestRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
-	horizon := func(d *impact.Model) {
-		d.Context.TimeHorizon = &impact.TimeHorizon{Start: "2026-01-01", End: "2027-12-31"}
+	horizon := func(d *model.Model) {
+		d.Context.TimeHorizon = &model.TimeHorizon{Start: "2026-01-01", End: "2027-12-31"}
 	}
-	pathway := func(d *impact.Model, outcomes ...string) {
-		d.Pathways = append(d.Pathways, impact.Pathway{ID: "pw-1", Title: "Pathway", OutcomeIDs: outcomes})
+	pathway := func(d *model.Model, outcomes ...string) {
+		d.Pathways = append(d.Pathways, model.Pathway{ID: "pw-1", Title: "Pathway", OutcomeIDs: outcomes})
 	}
 	tests := []struct {
 		rule, element string
-		defect, fix   func(d *impact.Model)
+		defect, fix   func(d *model.Model)
 	}{
-		{"IMP-MEA-001", "oc-s1", func(d *impact.Model) { d.Ceiling = &impact.Ceiling{Level: impact.LevelLongTerm} },
-			func(d *impact.Model) { addIndicator(d, "ind-1", "oc-s1") }},
-		{"IMP-MEA-001", "oc-s2", func(d *impact.Model) {
-			d.Ceiling = &impact.Ceiling{Level: impact.LevelLongTerm}
+		{"IMP-MEA-001", "oc-s1", func(d *model.Model) { d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm} },
+			func(d *model.Model) { addIndicator(d, "ind-1", "oc-s1") }},
+		{"IMP-MEA-001", "oc-s2", func(d *model.Model) {
+			d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm}
 			addIndicator(d, "ind-1", "oc-s1")
 		},
-			func(d *impact.Model) {
-				addIndicator(d, "ind-2", "oc-b", func(i *impact.Indicator) { i.ProxyFor = []string{"oc-s2"} })
+			func(d *model.Model) {
+				addIndicator(d, "ind-2", "oc-b", func(i *model.Indicator) { i.ProxyFor = []string{"oc-s2"} })
 			}},
-		{"IMP-MEA-002", "ind-x", func(d *impact.Model) { addIndicator(d, "ind-x", "oc-s1") },
-			func(d *impact.Model) {
+		{"IMP-MEA-002", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") },
+			func(d *model.Model) {
 				i := indicator(d, "ind-x")
-				i.Baseline = &impact.Baseline{Level: "low"}
-				i.Targets = []impact.Target{{Date: "2027-01-01", Level: "high"}}
+				i.Baseline = &model.Baseline{Level: "low"}
+				i.Targets = []model.Target{{Date: "2027-01-01", Level: "high"}}
 				i.DataSource, i.Frequency = "Sign-in sheets", "P3M"
 			}},
-		{"IMP-MEA-003", "ind-x", func(d *impact.Model) { addIndicator(d, "ind-x", "oc-s1") },
-			func(d *impact.Model) {
-				indicator(d, "ind-x").Unit, indicator(d, "ind-x").Direction = "people", impact.DirectionIncrease
+		{"IMP-MEA-003", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") },
+			func(d *model.Model) {
+				indicator(d, "ind-x").Unit, indicator(d, "ind-x").Direction = "people", model.DirectionIncrease
 			}},
-		{"IMP-MEA-004", "ind-x", func(d *impact.Model) {
+		{"IMP-MEA-004", "ind-x", func(d *model.Model) {
 			horizon(d)
-			addIndicator(d, "ind-x", "oc-s1", func(i *impact.Indicator) { i.Targets = []impact.Target{{Date: "2030-01-01", Level: "x"}} })
-		}, func(d *impact.Model) { indicator(d, "ind-x").Targets[0].Date = "2027-06-30" }},
-		{"IMP-MEA-005", "oc-a", func(d *impact.Model) {
-			addIndicator(d, "ind-s", "oc-s1", func(i *impact.Indicator) { i.Targets = []impact.Target{{Date: "2027-12-31", Level: "x"}} })
-			addIndicator(d, "ind-a", "oc-a", func(i *impact.Indicator) { i.Targets = []impact.Target{{Date: "2026-12-31", Level: "x"}} })
-		}, func(d *impact.Model) { indicator(d, "ind-a").Targets[0].Date = "2028-12-31" }},
-		{"IMP-ACC-001", "", func(d *impact.Model) {},
-			func(d *impact.Model) { d.Ceiling = &impact.Ceiling{Level: impact.LevelLongTerm} }},
-		{"IMP-ACC-002", "oc-impact", func(d *impact.Model) {
-			d.Ceiling = &impact.Ceiling{Level: impact.LevelLongTerm}
-			outcome(d, "oc-impact").Responsibility = impact.ResponsibilityOwn
-		}, func(d *impact.Model) { outcome(d, "oc-impact").Responsibility = impact.ResponsibilityShared }},
-		{"IMP-CLM-001", "ind-x", func(d *impact.Model) {
-			d.Ceiling = &impact.Ceiling{Level: impact.LevelLongTerm}
-			addIndicator(d, "ind-x", "oc-impact", func(i *impact.Indicator) { i.Claim = impact.ClaimAttribution })
-		}, func(d *impact.Model) { indicator(d, "ind-x").Claim = impact.ClaimContribution }},
-		{"IMP-BUD-001", "", func(d *impact.Model) {
-			d.Budget = &impact.MeasurementBudget{StaffMinutesPerWeek: 10}
-			addIndicator(d, "ind-x", "oc-s1", selected, func(i *impact.Indicator) {
-				i.Collection = &impact.Collection{Mode: impact.ModeManual, MinutesPerPeriod: 100, Period: "P1W"}
+			addIndicator(d, "ind-x", "oc-s1", func(i *model.Indicator) { i.Targets = []model.Target{{Date: "2030-01-01", Level: "x"}} })
+		}, func(d *model.Model) { indicator(d, "ind-x").Targets[0].Date = "2027-06-30" }},
+		{"IMP-MEA-005", "oc-a", func(d *model.Model) {
+			addIndicator(d, "ind-s", "oc-s1", func(i *model.Indicator) { i.Targets = []model.Target{{Date: "2027-12-31", Level: "x"}} })
+			addIndicator(d, "ind-a", "oc-a", func(i *model.Indicator) { i.Targets = []model.Target{{Date: "2026-12-31", Level: "x"}} })
+		}, func(d *model.Model) { indicator(d, "ind-a").Targets[0].Date = "2028-12-31" }},
+		{"IMP-ACC-001", "", func(d *model.Model) {},
+			func(d *model.Model) { d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm} }},
+		{"IMP-ACC-002", "oc-impact", func(d *model.Model) {
+			d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm}
+			outcome(d, "oc-impact").Responsibility = model.ResponsibilityOwn
+		}, func(d *model.Model) { outcome(d, "oc-impact").Responsibility = model.ResponsibilityShared }},
+		{"IMP-CLM-001", "ind-x", func(d *model.Model) {
+			d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm}
+			addIndicator(d, "ind-x", "oc-impact", func(i *model.Indicator) { i.Claim = model.ClaimAttribution })
+		}, func(d *model.Model) { indicator(d, "ind-x").Claim = model.ClaimContribution }},
+		{"IMP-BUD-001", "", func(d *model.Model) {
+			d.Budget = &model.MeasurementBudget{StaffMinutesPerWeek: 10}
+			addIndicator(d, "ind-x", "oc-s1", selected, func(i *model.Indicator) {
+				i.Collection = &model.Collection{Mode: model.ModeManual, MinutesPerPeriod: 100, Period: "P1W"}
 			})
-		}, func(d *impact.Model) { d.Budget.StaffMinutesPerWeek = 200 }},
-		{"IMP-BUD-002", "", func(d *impact.Model) {
-			d.Budget = &impact.MeasurementBudget{MaxQuestionsPerRespondentPerYear: 5}
-			addIndicator(d, "ind-x", "oc-s1", selected, func(i *impact.Indicator) {
-				i.Collection = &impact.Collection{Mode: impact.ModeSurvey, Period: "P1M", QuestionsPerRespondent: 4}
+		}, func(d *model.Model) { d.Budget.StaffMinutesPerWeek = 200 }},
+		{"IMP-BUD-002", "", func(d *model.Model) {
+			d.Budget = &model.MeasurementBudget{MaxQuestionsPerRespondentPerYear: 5}
+			addIndicator(d, "ind-x", "oc-s1", selected, func(i *model.Indicator) {
+				i.Collection = &model.Collection{Mode: model.ModeSurvey, Period: "P1M", QuestionsPerRespondent: 4}
 			})
-		}, func(d *impact.Model) { d.Budget.MaxQuestionsPerRespondentPerYear = 100 }},
-		{"IMP-BUD-003", "", func(d *impact.Model) {
-			d.Budget = &impact.MeasurementBudget{TargetSelectedMetrics: &impact.Range{Min: 3, Max: 5}}
+		}, func(d *model.Model) { d.Budget.MaxQuestionsPerRespondentPerYear = 100 }},
+		{"IMP-BUD-003", "", func(d *model.Model) {
+			d.Budget = &model.MeasurementBudget{TargetSelectedMetrics: &model.Range{Min: 3, Max: 5}}
 			addIndicator(d, "ind-x", "oc-s1", selected)
-		}, func(d *impact.Model) { d.Budget.TargetSelectedMetrics = &impact.Range{Min: 1, Max: 2} }},
-		{"IMP-BUD-004", "ind-x", func(d *impact.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
-			func(d *impact.Model) {
-				indicator(d, "ind-x").Collection = &impact.Collection{Mode: impact.ModePassive}
+		}, func(d *model.Model) { d.Budget.TargetSelectedMetrics = &model.Range{Min: 1, Max: 2} }},
+		{"IMP-BUD-004", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
+			func(d *model.Model) {
+				indicator(d, "ind-x").Collection = &model.Collection{Mode: model.ModePassive}
 			}},
-		{"IMP-ASM-001", "asm-c", func(d *impact.Model) {
-			d.Assumptions = append(d.Assumptions, impact.Assumption{ID: "asm-c", Statement: "S", Criticality: impact.CriticalityCritical})
-		}, func(d *impact.Model) { d.Assumptions[1].Test = "Ask partners twice a year." }},
-		{"IMP-ASM-002", "asm-c", func(d *impact.Model) {
-			d.Assumptions = append(d.Assumptions, impact.Assumption{ID: "asm-c", Statement: "S", Criticality: impact.CriticalityHigh})
-		}, func(d *impact.Model) {
-			d.Evidence = append(d.Evidence, impact.Evidence{ID: "ev-1", Title: "Study"})
+		{"IMP-ASM-001", "asm-c", func(d *model.Model) {
+			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", Criticality: model.CriticalityCritical})
+		}, func(d *model.Model) { d.Assumptions[1].Test = "Ask partners twice a year." }},
+		{"IMP-ASM-002", "asm-c", func(d *model.Model) {
+			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", Criticality: model.CriticalityHigh})
+		}, func(d *model.Model) {
+			d.Evidence = append(d.Evidence, model.Evidence{ID: "ev-1", Title: "Study"})
 			d.Assumptions[1].EvidenceIDs = []string{"ev-1"}
 		}},
-		{"IMP-ASM-003", "", func(d *impact.Model) {},
-			func(d *impact.Model) { d.Assumptions[0].Type = impact.AssumptionContextual }},
-		{"IMP-ASM-004", "asm-c", func(d *impact.Model) {
-			d.Assumptions = append(d.Assumptions, impact.Assumption{ID: "asm-c", Statement: "S", NeedsTesting: true})
-		}, func(d *impact.Model) {
+		{"IMP-ASM-003", "", func(d *model.Model) {},
+			func(d *model.Model) { d.Assumptions[0].Type = model.AssumptionContextual }},
+		{"IMP-ASM-004", "asm-c", func(d *model.Model) {
+			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", NeedsTesting: true})
+		}, func(d *model.Model) {
 			d.Assumptions[1].Test = "Pilot it."
-			d.Decisions = append(d.Decisions, impact.Decision{ID: "dec-1", Question: "Q", RelatedIDs: []string{"asm-c"}})
+			d.Decisions = append(d.Decisions, model.Decision{ID: "dec-1", Question: "Q", RelatedIDs: []string{"asm-c"}})
 		}},
-		{"IMP-ASM-005", "", func(d *impact.Model) {
-			outcome(d, "oc-s1").Responsibility = impact.ResponsibilityPartner
-		}, func(d *impact.Model) {
-			d.Assumptions = append(d.Assumptions, impact.Assumption{ID: "asm-p", Statement: "Partners show up.", Type: impact.AssumptionPartnership})
+		{"IMP-ASM-005", "", func(d *model.Model) {
+			outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner
+		}, func(d *model.Model) {
+			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-p", Statement: "Partners show up.", Type: model.AssumptionPartnership})
 		}},
-		{"IMP-RSK-001", "asm-c", func(d *impact.Model) {
-			d.Assumptions = append(d.Assumptions, impact.Assumption{ID: "asm-c", Statement: "S", Criticality: impact.CriticalityCritical})
-		}, func(d *impact.Model) {
-			d.Risks = append(d.Risks, impact.Risk{Risk: core.Risk{ID: "rsk-1", Description: "D", Mitigation: "Plan B"}, RelatedAssumptionIDs: []string{"asm-c"}})
+		{"IMP-RSK-001", "asm-c", func(d *model.Model) {
+			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", Criticality: model.CriticalityCritical})
+		}, func(d *model.Model) {
+			d.Risks = append(d.Risks, model.Risk{Risk: core.Risk{ID: "rsk-1", Description: "D", Mitigation: "Plan B"}, RelatedAssumptionIDs: []string{"asm-c"}})
 		}},
-		{"IMP-INT-002", "int-1", func(d *impact.Model) {},
-			func(d *impact.Model) {
-				d.Actors = append(d.Actors, impact.Actor{ID: "act-1", Name: "Network"})
+		{"IMP-INT-002", "int-1", func(d *model.Model) {},
+			func(d *model.Model) {
+				d.Actors = append(d.Actors, model.Actor{ID: "act-1", Name: "Network"})
 				d.Interventions[0].OwnerID = "act-1"
 			}},
-		{"IMP-ACT-001", "oc-s1", func(d *impact.Model) { outcome(d, "oc-s1").Sphere = impact.SphereInfluence },
-			func(d *impact.Model) {
-				d.Actors = append(d.Actors, impact.Actor{ID: "act-1", Name: "Partner"})
+		{"IMP-ACT-001", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Sphere = model.SphereInfluence },
+			func(d *model.Model) {
+				d.Actors = append(d.Actors, model.Actor{ID: "act-1", Name: "Partner"})
 				outcome(d, "oc-s1").ActorIDs = []string{"act-1"}
 			}},
-		{"IMP-EVD-001", "ln-a-i", func(d *impact.Model) {},
-			func(d *impact.Model) {
-				d.Evidence = append(d.Evidence, impact.Evidence{ID: "ev-1", Title: "Study"})
+		{"IMP-EVD-001", "ln-a-i", func(d *model.Model) {},
+			func(d *model.Model) {
+				d.Evidence = append(d.Evidence, model.Evidence{ID: "ev-1", Title: "Study"})
 				d.Links[0].EvidenceIDs = []string{"ev-1"}
 			}},
-		{"IMP-PTH-001", "pw-1", func(d *impact.Model) {
-			d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-iso", Title: "Isolated", Level: impact.LevelShortTerm})
+		{"IMP-PTH-001", "pw-1", func(d *model.Model) {
+			d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-iso", Title: "Isolated", Level: model.LevelShortTerm})
 			pathway(d, "oc-iso")
-		}, func(d *impact.Model) { d.Pathways[0].OutcomeIDs = []string{"oc-s1"} }},
-		{"IMP-PTH-002", "pw-1", func(d *impact.Model) { pathway(d, "oc-s1") },
-			func(d *impact.Model) { addIndicator(d, "ind-x", "oc-s1", selected) }},
-		{"IMP-PTH-003", "ind-x", func(d *impact.Model) {
+		}, func(d *model.Model) { d.Pathways[0].OutcomeIDs = []string{"oc-s1"} }},
+		{"IMP-PTH-002", "pw-1", func(d *model.Model) { pathway(d, "oc-s1") },
+			func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) }},
+		{"IMP-PTH-003", "ind-x", func(d *model.Model) {
 			pathway(d, "oc-s1")
-			d.Pathways = append(d.Pathways, impact.Pathway{ID: "pw-2", Title: "Other"})
-			addIndicator(d, "ind-x", "oc-s1", func(i *impact.Indicator) { i.PathwayIDs = []string{"pw-2"} })
-		}, func(d *impact.Model) { indicator(d, "ind-x").PathwayIDs = []string{"pw-1"} }},
-		{"IMP-MET-001", "met-1", func(d *impact.Model) {
+			d.Pathways = append(d.Pathways, model.Pathway{ID: "pw-2", Title: "Other"})
+			addIndicator(d, "ind-x", "oc-s1", func(i *model.Indicator) { i.PathwayIDs = []string{"pw-2"} })
+		}, func(d *model.Model) { indicator(d, "ind-x").PathwayIDs = []string{"pw-1"} }},
+		{"IMP-MET-001", "met-1", func(d *model.Model) {
 			pathway(d, "oc-s1")
-			d.Metrics = append(d.Metrics, impact.Metric{ID: "met-1", Name: "M", Definition: "D", Formula: "F", Layer: impact.LayerCommon})
-		}, func(d *impact.Model) {
-			addIndicator(d, "ind-x", "oc-s1", func(i *impact.Indicator) { i.MetricID, i.PathwayIDs = "met-1", []string{"pw-1"} })
+			d.Metrics = append(d.Metrics, model.Metric{ID: "met-1", Name: "M", Definition: "D", Formula: "F", Layer: model.LayerCommon})
+		}, func(d *model.Model) {
+			addIndicator(d, "ind-x", "oc-s1", func(i *model.Indicator) { i.MetricID, i.PathwayIDs = "met-1", []string{"pw-1"} })
 		}},
-		{"IMP-MET-003", "met-w", func(d *impact.Model) {
+		{"IMP-MET-003", "met-w", func(d *model.Model) {
 			pathway(d, "oc-s1")
 			d.Metrics = append(d.Metrics,
-				impact.Metric{ID: "met-wt", Name: "Weight", Definition: "D", Formula: "F"},
-				impact.Metric{ID: "met-w", Name: "W", Definition: "D", Formula: "F", Aggregation: impact.AggregationWeightedMean, WeightMetricID: "met-wt"})
-			addIndicator(d, "ind-w", "oc-s1", func(i *impact.Indicator) { i.MetricID, i.PathwayIDs = "met-w", []string{"pw-1"} })
-		}, func(d *impact.Model) {
-			addIndicator(d, "ind-wt", "oc-s2", func(i *impact.Indicator) { i.MetricID, i.PathwayIDs = "met-wt", []string{"pw-1"} })
+				model.Metric{ID: "met-wt", Name: "Weight", Definition: "D", Formula: "F"},
+				model.Metric{ID: "met-w", Name: "W", Definition: "D", Formula: "F", Aggregation: model.AggregationWeightedMean, WeightMetricID: "met-wt"})
+			addIndicator(d, "ind-w", "oc-s1", func(i *model.Indicator) { i.MetricID, i.PathwayIDs = "met-w", []string{"pw-1"} })
+		}, func(d *model.Model) {
+			addIndicator(d, "ind-wt", "oc-s2", func(i *model.Indicator) { i.MetricID, i.PathwayIDs = "met-wt", []string{"pw-1"} })
 		}},
-		{"IMP-AUD-001", "aud-1", func(d *impact.Model) {
-			d.Audiences = append(d.Audiences, impact.Audience{ID: "aud-1", Name: "Board"})
+		{"IMP-AUD-001", "aud-1", func(d *model.Model) {
+			d.Audiences = append(d.Audiences, model.Audience{ID: "aud-1", Name: "Board"})
 		},
-			func(d *impact.Model) { outcome(d, "oc-impact").AudienceIDs = []string{"aud-1"} }},
-		{"IMP-CAU-001", "cause-1", func(d *impact.Model) {
-			d.Causes = append(d.Causes, impact.Cause{ID: "cause-1", Statement: "S", Level: impact.CauseStructural})
-		}, func(d *impact.Model) { outcome(d, "oc-a").AddressesCauses = []string{"cause-1"} }},
-		{"IMP-CAU-002", "", func(d *impact.Model) {
-			d.Causes = append(d.Causes, impact.Cause{ID: "cause-i", Statement: "S", Level: impact.CauseImmediate})
+			func(d *model.Model) { outcome(d, "oc-impact").AudienceIDs = []string{"aud-1"} }},
+		{"IMP-CAU-001", "cause-1", func(d *model.Model) {
+			d.Causes = append(d.Causes, model.Cause{ID: "cause-1", Statement: "S", Level: model.CauseStructural})
+		}, func(d *model.Model) { outcome(d, "oc-a").AddressesCauses = []string{"cause-1"} }},
+		{"IMP-CAU-002", "", func(d *model.Model) {
+			d.Causes = append(d.Causes, model.Cause{ID: "cause-i", Statement: "S", Level: model.CauseImmediate})
 			outcome(d, "oc-a").AddressesCauses = []string{"cause-i"}
-		}, func(d *impact.Model) {
-			d.Causes = append(d.Causes, impact.Cause{ID: "cause-u", Statement: "S", Level: impact.CauseUnderlying})
+		}, func(d *model.Model) {
+			d.Causes = append(d.Causes, model.Cause{ID: "cause-u", Statement: "S", Level: model.CauseUnderlying})
 			outcome(d, "oc-b").AddressesCauses = []string{"cause-u"}
 		}},
-		{"IMP-RSP-001", "oc-s1", func(d *impact.Model) { outcome(d, "oc-s1").Responsibility = impact.ResponsibilityPartner },
-			func(d *impact.Model) {
-				d.Actors = append(d.Actors, impact.Actor{ID: "act-1", Name: "Partner"})
+		{"IMP-RSP-001", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner },
+			func(d *model.Model) {
+				d.Actors = append(d.Actors, model.Actor{ID: "act-1", Name: "Partner"})
 				outcome(d, "oc-s1").DeliveredBy = []string{"act-1"}
 			}},
-		{"IMP-RSP-002", "oc-s1", func(d *impact.Model) { outcome(d, "oc-s1").Responsibility = impact.ResponsibilityPartner },
-			func(d *impact.Model) { addIndicator(d, "ind-x", "oc-s1") }},
-		{"IMP-EQU-001", "oc-s1", func(d *impact.Model) {
-			d.TargetGroups = append(d.TargetGroups, impact.TargetGroup{ID: "tg-1", Name: "Small members"})
+		{"IMP-RSP-002", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner },
+			func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") }},
+		{"IMP-EQU-001", "oc-s1", func(d *model.Model) {
+			d.TargetGroups = append(d.TargetGroups, model.TargetGroup{ID: "tg-1", Name: "Small members"})
 			outcome(d, "oc-s1").TargetGroupIDs = []string{"tg-1"}
 			addIndicator(d, "ind-x", "oc-s1")
-		}, func(d *impact.Model) { indicator(d, "ind-x").TargetGroupIDs = []string{"tg-1"} }},
-		{"IMP-VAL-001", "", func(d *impact.Model) {},
-			func(d *impact.Model) {
-				d.Consultations = append(d.Consultations, impact.Consultation{ID: "con-1", Date: "2026-01-01", Step: impact.StepWhole})
+		}, func(d *model.Model) { indicator(d, "ind-x").TargetGroupIDs = []string{"tg-1"} }},
+		{"IMP-VAL-001", "", func(d *model.Model) {},
+			func(d *model.Model) {
+				d.Consultations = append(d.Consultations, model.Consultation{ID: "con-1", Date: "2026-01-01", Step: model.StepWhole})
 			}},
-		{"IMP-PRV-001", "oc-impact", func(d *impact.Model) {},
-			func(d *impact.Model) {
-				outcome(d, "oc-impact").Provenance = &impact.Provenance{Basis: impact.BasisInferred}
+		{"IMP-PRV-001", "oc-impact", func(d *model.Model) {},
+			func(d *model.Model) {
+				outcome(d, "oc-impact").Provenance = &model.Provenance{Basis: model.BasisInferred}
 			}},
-		{"IMP-PRV-002", "oc-s1", func(d *impact.Model) {
-			outcome(d, "oc-s1").Provenance = &impact.Provenance{Basis: impact.BasisStated}
-		}, func(d *impact.Model) {
-			d.Evidence = append(d.Evidence, impact.Evidence{ID: "ev-1", Title: "Report", URL: "https://example.org/report"})
+		{"IMP-PRV-002", "oc-s1", func(d *model.Model) {
+			outcome(d, "oc-s1").Provenance = &model.Provenance{Basis: model.BasisStated}
+		}, func(d *model.Model) {
+			d.Evidence = append(d.Evidence, model.Evidence{ID: "ev-1", Title: "Report", URL: "https://example.org/report"})
 			outcome(d, "oc-s1").Provenance.EvidenceIDs = []string{"ev-1"}
 		}},
-		{"IMP-PRV-003", "oc-s1", func(d *impact.Model) {
+		{"IMP-PRV-003", "oc-s1", func(d *model.Model) {
 			d.Metadata.Status = "approved"
-			outcome(d, "oc-s1").Provenance = &impact.Provenance{Basis: impact.BasisHypothesis}
-		}, func(d *impact.Model) { outcome(d, "oc-s1").Provenance.Basis = impact.BasisConfirmed }},
-		{"IMP-PRV-004", "ind-x", func(d *impact.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
-			func(d *impact.Model) { indicator(d, "ind-x").DataAvailability = impact.DataPublic }},
+			outcome(d, "oc-s1").Provenance = &model.Provenance{Basis: model.BasisHypothesis}
+		}, func(d *model.Model) { outcome(d, "oc-s1").Provenance.Basis = model.BasisConfirmed }},
+		{"IMP-PRV-004", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
+			func(d *model.Model) { indicator(d, "ind-x").DataAvailability = model.DataPublic }},
 	}
 	for _, tt := range tests {
 		t.Run(tt.rule+"/"+tt.element, func(t *testing.T) {

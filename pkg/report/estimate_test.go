@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // latestOf builds the view of one indicator observed once, with the given
 // quality and note, and returns it.
-func latestOf(t *testing.T, quality impact.DataQuality, note string) IndicatorView {
+func latestOf(t *testing.T, quality model.DataQuality, note string) IndicatorView {
 	t.Helper()
 	doc := fullDoc(t)
 	g, err := graph.Build(doc)
@@ -21,15 +21,15 @@ func latestOf(t *testing.T, quality impact.DataQuality, note string) IndicatorVi
 	}
 	id := doc.Indicators[0].ID
 	v := 12.0
-	sets := []*impact.ObservationSet{{
-		Kind: impact.KindObservationSet, SpecVersion: impact.SpecVersion, ModelID: doc.ID,
-		Observations: []impact.Observation{{IndicatorID: id, Date: "2026-06-30", Value: &v, Quality: quality, Note: note}},
+	sets := []*model.ObservationSet{{
+		Kind: model.KindObservationSet, SpecVersion: model.SpecVersion, ModelID: doc.ID,
+		Observations: []model.Observation{{IndicatorID: id, Date: "2026-06-30", Value: &v, Quality: quality, Note: note}},
 	}}
 	asOf, err := time.Parse(time.DateOnly, "2026-09-30")
 	if err != nil {
 		t.Fatal(err)
 	}
-	st, err := measure.Evaluate(doc, g, sets, asOf, impact.DefaultStatusOptions())
+	st, err := measure.Evaluate(doc, g, sets, asOf, model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,14 +46,14 @@ func latestOf(t *testing.T, quality impact.DataQuality, note string) IndicatorVi
 // An estimate reads as an estimate, and a verified or unlabeled figure does
 // not, so a rounded or partial count is not mistaken for an exact one.
 func TestAnEstimatedLatestValueIsMarkedAsAnEstimate(t *testing.T) {
-	est := latestOf(t, impact.QualityEstimated, `The source says "almost 12".`)
+	est := latestOf(t, model.QualityEstimated, `The source says "almost 12".`)
 	if !strings.Contains(est.Latest, "estimate, on 2026-06-30") {
 		t.Errorf("Latest = %q, want it marked as an estimate", est.Latest)
 	}
 	if est.LatestNote != `The source says "almost 12".` {
 		t.Errorf("LatestNote = %q", est.LatestNote)
 	}
-	for _, q := range []impact.DataQuality{impact.QualityVerified, impact.QualityReported, ""} {
+	for _, q := range []model.DataQuality{model.QualityVerified, model.QualityReported, ""} {
 		got := latestOf(t, q, "")
 		if strings.Contains(got.Latest, "estimate") || !strings.Contains(got.Latest, "(on 2026-06-30)") {
 			t.Errorf("quality %q: Latest = %q, want a plain dated value", q, got.Latest)

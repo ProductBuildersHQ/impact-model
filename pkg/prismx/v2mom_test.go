@@ -8,12 +8,12 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/v2mom"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestV2MOMExportValidates(t *testing.T) {
 	doc, st := example(t)
-	for name, status := range map[string]*impact.Status{"with status": st, "without": nil} {
+	for name, status := range map[string]*model.Status{"with status": st, "without": nil} {
 		out, err := ToV2MOM(doc, status)
 		if err != nil {
 			t.Fatalf("%s: %v", name, err)
@@ -122,7 +122,7 @@ func TestV2MOMMapping(t *testing.T) {
 	for _, o := range out.Obstacles {
 		ids[o.ID] = true
 	}
-	assessed := map[string]impact.AssumptionStatus{}
+	assessed := map[string]model.AssumptionStatus{}
 	for _, a := range st.Assumptions {
 		assessed[a.AssumptionID] = a.Status
 	}
@@ -150,13 +150,13 @@ func TestV2MOMMapping(t *testing.T) {
 func TestV2MOMRefusesWhatItCannotDraw(t *testing.T) {
 	tests := []struct {
 		name  string
-		edit  func(*impact.Model)
+		edit  func(*model.Model)
 		names []string
 	}{
-		{"no vision", func(d *impact.Model) { d.Context.Vision = "" }, []string{"context.vision"}},
-		{"no values", func(d *impact.Model) { d.Context.Values = nil }, []string{"context.values"}},
-		{"no pathways", func(d *impact.Model) { d.Pathways = nil }, []string{"a pathway"}},
-		{"nothing", func(d *impact.Model) {
+		{"no vision", func(d *model.Model) { d.Context.Vision = "" }, []string{"context.vision"}},
+		{"no values", func(d *model.Model) { d.Context.Values = nil }, []string{"context.values"}},
+		{"no pathways", func(d *model.Model) { d.Pathways = nil }, []string{"a pathway"}},
+		{"nothing", func(d *model.Model) {
 			d.Context.Vision, d.Context.Values, d.Pathways = "", nil, nil
 		}, []string{"context.vision", "context.values", "a pathway"}},
 	}

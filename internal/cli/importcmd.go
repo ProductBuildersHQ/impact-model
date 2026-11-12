@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/review"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
@@ -80,7 +80,7 @@ func runImportReview(e *env, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	step := impact.ConsultationStep(flagString(cmd, "step"))
+	step := model.ConsultationStep(flagString(cmd, "step"))
 	if step != "" && !step.Valid() {
 		return usageErr("--step %q is not a consultation step", step)
 	}
@@ -113,7 +113,7 @@ func runImportReview(e *env, cmd *cobra.Command, args []string) error {
 
 // readResponse reads the response from the JSON/YAML file argument or from a
 // returned sheet. Exactly one source is allowed.
-func readResponse(cmd *cobra.Command, doc *impact.Model, rest []string) (*impact.ReviewResponse, error) {
+func readResponse(cmd *cobra.Command, doc *model.Model, rest []string) (*model.ReviewResponse, error) {
 	sheet := flagString(cmd, "from-csv")
 	switch {
 	case sheet == "" && len(rest) == 0:
@@ -145,16 +145,16 @@ func readResponse(cmd *cobra.Command, doc *impact.Model, rest []string) (*impact
 	return resp, nil
 }
 
-func loadResponse(path string) (*impact.ReviewResponse, error) {
+func loadResponse(path string) (*model.ReviewResponse, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("read response: %w", err)}
 	}
-	f, err := impactio.FormatFromPath(path)
+	f, err := modelio.FormatFromPath(path)
 	if err != nil {
 		return nil, &ExitError{Code: ExitUsageErr, Err: err}
 	}
-	resp, err := impactio.ParseReviewResponse(data, f)
+	resp, err := modelio.ParseReviewResponse(data, f)
 	if err != nil {
 		return nil, &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("%s: %w", path, err)}
 	}
@@ -166,7 +166,7 @@ func writeJSONFile(path string, v any) error {
 	if err := writeJSON(&buf, v); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
-	if err := impactio.WriteFile(path, buf.Bytes()); err != nil {
+	if err := modelio.WriteFile(path, buf.Bytes()); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	return nil

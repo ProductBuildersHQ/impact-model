@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
@@ -32,7 +32,7 @@ func golden(t *testing.T, name, got string) {
 
 // The three reports the CLI offers, over the eating-health illustration.
 func TestProblemTreeReports(t *testing.T) {
-	doc, err := impactio.LoadDocument("testdata/eating.json")
+	doc, err := modelio.LoadDocument("testdata/eating.json")
 	if err != nil {
 		t.Fatal(err)
 	}

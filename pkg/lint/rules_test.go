@@ -5,38 +5,38 @@ import (
 	"testing"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // clean returns a small impact model that breaks none of the structure or logic
 // rules: one impact reached by two medium-term outcomes, each reached from a
 // short-term outcome that an intervention brings about.
-func clean() *impact.Model {
-	d := impact.NewModel("lint-base", "People cannot reach services.")
-	all := &impact.Logic{Type: impact.LogicAll}
-	d.Outcomes = []impact.Outcome{
-		{ID: "oc-impact", Title: "Services are reachable", Level: impact.LevelImpact, Logic: all},
-		{ID: "oc-a", Title: "Providers share rides", Level: impact.LevelMediumTerm},
-		{ID: "oc-b", Title: "Providers share schedules", Level: impact.LevelMediumTerm},
-		{ID: "oc-s1", Title: "Providers know each other", Level: impact.LevelShortTerm},
-		{ID: "oc-s2", Title: "Providers meet monthly", Level: impact.LevelShortTerm},
+func clean() *model.Model {
+	d := model.NewModel("lint-base", "People cannot reach services.")
+	all := &model.Logic{Type: model.LogicAll}
+	d.Outcomes = []model.Outcome{
+		{ID: "oc-impact", Title: "Services are reachable", Level: model.LevelImpact, Logic: all},
+		{ID: "oc-a", Title: "Providers share rides", Level: model.LevelMediumTerm},
+		{ID: "oc-b", Title: "Providers share schedules", Level: model.LevelMediumTerm},
+		{ID: "oc-s1", Title: "Providers know each other", Level: model.LevelShortTerm},
+		{ID: "oc-s2", Title: "Providers meet monthly", Level: model.LevelShortTerm},
 	}
-	link := func(id, from, to string) impact.CausalLink {
-		return impact.CausalLink{ID: id, From: from, To: to, Rationale: "Because it helps.", AssumptionIDs: []string{"asm-1"}}
+	link := func(id, from, to string) model.CausalLink {
+		return model.CausalLink{ID: id, From: from, To: to, Rationale: "Because it helps.", AssumptionIDs: []string{"asm-1"}}
 	}
-	d.Links = []impact.CausalLink{
+	d.Links = []model.CausalLink{
 		link("ln-a-i", "oc-a", "oc-impact"), link("ln-b-i", "oc-b", "oc-impact"),
 		link("ln-s1-a", "oc-s1", "oc-a"), link("ln-s2-b", "oc-s2", "oc-b"),
 	}
-	d.Assumptions = []impact.Assumption{{ID: "asm-1", Statement: "Providers want to cooperate.", AppliesTo: []string{"ln-a-i"}}}
-	d.Interventions = []impact.Intervention{
+	d.Assumptions = []model.Assumption{{ID: "asm-1", Statement: "Providers want to cooperate.", AppliesTo: []string{"ln-a-i"}}}
+	d.Interventions = []model.Intervention{
 		{ID: "int-1", Title: "Host mixers", Targets: []string{"oc-s1"}},
 		{ID: "int-2", Title: "Host meetings", Targets: []string{"oc-s2"}},
 	}
 	return d
 }
 
-func runRule(t *testing.T, doc *impact.Model, id string) []Finding {
+func runRule(t *testing.T, doc *model.Model, id string) []Finding {
 	t.Helper()
 	g, err := graph.Build(doc)
 	if err != nil {
@@ -77,28 +77,28 @@ func TestStructureAndLogicRulesFindSeededDefects(t *testing.T) {
 	tests := []struct {
 		rule    string
 		element string
-		seed    func(d *impact.Model)
+		seed    func(d *model.Model)
 	}{
-		{"IMP-STR-001", "", func(d *impact.Model) { d.Outcomes[0].Level = impact.LevelLongTerm }},
-		{"IMP-STR-002", "oc-impact", func(d *impact.Model) {
-			d.Links = append(d.Links, impact.CausalLink{ID: "ln-i-a", From: "oc-impact", To: "oc-a", Rationale: "r", AssumptionIDs: []string{"asm-1"}})
+		{"IMP-STR-001", "", func(d *model.Model) { d.Outcomes[0].Level = model.LevelLongTerm }},
+		{"IMP-STR-002", "oc-impact", func(d *model.Model) {
+			d.Links = append(d.Links, model.CausalLink{ID: "ln-i-a", From: "oc-impact", To: "oc-a", Rationale: "r", AssumptionIDs: []string{"asm-1"}})
 		}},
-		{"IMP-STR-003", "oc-lost", func(d *impact.Model) {
-			d.Outcomes = append(d.Outcomes, impact.Outcome{ID: "oc-lost", Title: "Strays", Level: impact.LevelShortTerm})
+		{"IMP-STR-003", "oc-lost", func(d *model.Model) {
+			d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-lost", Title: "Strays", Level: model.LevelShortTerm})
 			d.Interventions[0].Targets = append(d.Interventions[0].Targets, "oc-lost")
 		}},
-		{"IMP-STR-004", "oc-s2", func(d *impact.Model) { d.Interventions[1].Targets = []string{"oc-s1"} }},
-		{"IMP-STR-005", "oc-impact", func(d *impact.Model) { d.Outcomes[0].Logic = &impact.Logic{Type: impact.LogicAtLeast, K: 3} }},
-		{"IMP-STR-006", "ln-down", func(d *impact.Model) {
-			d.Links = append(d.Links, impact.CausalLink{ID: "ln-down", From: "oc-a", To: "oc-s1", Rationale: "r"})
+		{"IMP-STR-004", "oc-s2", func(d *model.Model) { d.Interventions[1].Targets = []string{"oc-s1"} }},
+		{"IMP-STR-005", "oc-impact", func(d *model.Model) { d.Outcomes[0].Logic = &model.Logic{Type: model.LogicAtLeast, K: 3} }},
+		{"IMP-STR-006", "ln-down", func(d *model.Model) {
+			d.Links = append(d.Links, model.CausalLink{ID: "ln-down", From: "oc-a", To: "oc-s1", Rationale: "r"})
 		}},
-		{"IMP-STR-007", "grp-y", func(d *impact.Model) {
-			d.Groups = []impact.PreconditionGroup{{ID: "grp-y", Target: "oc-impact", Members: []string{"oc-a", "oc-s1"}, Logic: impact.Logic{Type: impact.LogicAll}}}
+		{"IMP-STR-007", "grp-y", func(d *model.Model) {
+			d.Groups = []model.PreconditionGroup{{ID: "grp-y", Target: "oc-impact", Members: []string{"oc-a", "oc-s1"}, Logic: model.Logic{Type: model.LogicAll}}}
 		}},
-		{"IMP-LOG-001", "ln-a-i", func(d *impact.Model) { d.Links[0].Rationale = "" }},
-		{"IMP-LOG-002", "ln-s1-a", func(d *impact.Model) { d.Links[2].AssumptionIDs = nil }},
-		{"IMP-LOG-003", "oc-impact", func(d *impact.Model) { d.Links = slices.Delete(d.Links, 1, 2) }},
-		{"IMP-LOG-004", "oc-impact", func(d *impact.Model) { d.Outcomes[0].Logic = nil }},
+		{"IMP-LOG-001", "ln-a-i", func(d *model.Model) { d.Links[0].Rationale = "" }},
+		{"IMP-LOG-002", "ln-s1-a", func(d *model.Model) { d.Links[2].AssumptionIDs = nil }},
+		{"IMP-LOG-003", "oc-impact", func(d *model.Model) { d.Links = slices.Delete(d.Links, 1, 2) }},
+		{"IMP-LOG-004", "oc-impact", func(d *model.Model) { d.Outcomes[0].Logic = nil }},
 	}
 	for _, tt := range tests {
 		t.Run(tt.rule+"/"+tt.element, func(t *testing.T) {
@@ -117,9 +117,9 @@ func TestStructureAndLogicRulesFindSeededDefects(t *testing.T) {
 
 func TestRejectedElementsAreIgnored(t *testing.T) {
 	doc := clean()
-	rejected := &impact.Provenance{Basis: impact.BasisRejected}
-	doc.Links = append(doc.Links, impact.CausalLink{ID: "ln-dropped", From: "oc-s1", To: "oc-impact", Provenance: rejected})
-	doc.Outcomes = append(doc.Outcomes, impact.Outcome{ID: "oc-dropped", Title: "Dropped", Level: impact.LevelShortTerm, Provenance: rejected})
+	rejected := &model.Provenance{Basis: model.BasisRejected}
+	doc.Links = append(doc.Links, model.CausalLink{ID: "ln-dropped", From: "oc-s1", To: "oc-impact", Provenance: rejected})
+	doc.Outcomes = append(doc.Outcomes, model.Outcome{ID: "oc-dropped", Title: "Dropped", Level: model.LevelShortTerm, Provenance: rejected})
 	for _, rule := range []string{"IMP-LOG-001", "IMP-STR-003", "IMP-STR-004"} {
 		if f := runRule(t, doc, rule); len(f) != 0 {
 			t.Errorf("%s reported on a rejected element: %+v", rule, f)
@@ -129,7 +129,7 @@ func TestRejectedElementsAreIgnored(t *testing.T) {
 
 func TestFeedbackLinksMayRunDownwardAndLoop(t *testing.T) {
 	doc := clean()
-	doc.Links = append(doc.Links, impact.CausalLink{ID: "ln-loop", From: "oc-impact", To: "oc-a", Feedback: true})
+	doc.Links = append(doc.Links, model.CausalLink{ID: "ln-loop", From: "oc-impact", To: "oc-a", Feedback: true})
 	for _, rule := range []string{"IMP-STR-002", "IMP-STR-006"} {
 		if f := runRule(t, doc, rule); len(f) != 0 {
 			t.Errorf("%s reported on a feedback link: %+v", rule, f)
@@ -141,7 +141,7 @@ func TestInterventionsDoNotCountAsPreconditions(t *testing.T) {
 	doc := clean()
 	// oc-s1 now has two targeting interventions but still no causal links
 	// into it; IMP-LOG-004 is about links only.
-	doc.Interventions = append(doc.Interventions, impact.Intervention{ID: "int-3", Title: "More", Targets: []string{"oc-s1"}})
+	doc.Interventions = append(doc.Interventions, model.Intervention{ID: "int-3", Title: "More", Targets: []string{"oc-s1"}})
 	if f := runRule(t, doc, "IMP-LOG-004"); len(f) != 0 {
 		t.Errorf("interventions were counted as incoming links: %+v", f)
 	}
@@ -149,7 +149,7 @@ func TestInterventionsDoNotCountAsPreconditions(t *testing.T) {
 
 func TestNoImpactDoesNotAlsoReportEveryDeadEnd(t *testing.T) {
 	doc := clean()
-	doc.Outcomes[0].Level = impact.LevelLongTerm
+	doc.Outcomes[0].Level = model.LevelLongTerm
 	if f := runRule(t, doc, "IMP-STR-003"); len(f) != 0 {
 		t.Errorf("IMP-STR-003 repeated the missing-impact problem: %+v", f)
 	}

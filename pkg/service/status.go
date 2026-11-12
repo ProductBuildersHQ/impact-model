@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -13,7 +13,7 @@ import (
 // returns what the status reports and decks are made from. prev, if given,
 // is an earlier snapshot of the same impact model; the input then carries what
 // changed since.
-func StatusInputFor(doc *impact.Model, sets []*impact.ObservationSet, asOf time.Time, opts impact.StatusOptions, prev *impact.Status) (report.StatusInput, error) {
+func StatusInputFor(doc *model.Model, sets []*model.ObservationSet, asOf time.Time, opts model.StatusOptions, prev *model.Status) (report.StatusInput, error) {
 	g, err := BuildGraph(doc)
 	if err != nil {
 		return report.StatusInput{}, err

@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Observations checks observation sets against the impact model they measure.
@@ -13,7 +13,7 @@ import (
 // silently), values must fit the indicator's measurement type, and dates
 // must be valid. Issues carry Source "observations[i]" when more than one
 // set is given.
-func Observations(doc *impact.Model, sets ...*impact.ObservationSet) []Issue {
+func Observations(doc *model.Model, sets ...*model.ObservationSet) []Issue {
 	c := newChecker(doc, nil)
 	for _, e := range doc.Elements() {
 		if _, dup := c.kinds[e.ID]; !dup && e.ID != "" {
@@ -30,9 +30,9 @@ func Observations(doc *impact.Model, sets ...*impact.ObservationSet) []Issue {
 	return c.issues
 }
 
-func (c *checker) observationSet(set *impact.ObservationSet) {
-	if set.Kind != impact.KindObservationSet {
-		c.errorf("VAL-OBS-001", "/kind", "", "kind is %q; expected %q", string(set.Kind), string(impact.KindObservationSet))
+func (c *checker) observationSet(set *model.ObservationSet) {
+	if set.Kind != model.KindObservationSet {
+		c.errorf("VAL-OBS-001", "/kind", "", "kind is %q; expected %q", string(set.Kind), string(model.KindObservationSet))
 	}
 	if set.ModelID != c.doc.ID {
 		c.errorf("VAL-OBS-002", "/modelId", "", "observation set measures %q, not %q", set.ModelID, c.doc.ID)
@@ -43,7 +43,7 @@ func (c *checker) observationSet(set *impact.ObservationSet) {
 	}
 	for i, a := range set.Assessments {
 		p := "/assumptionAssessments/" + strconv.Itoa(i)
-		c.ref(p+"/assumptionId", a.AssumptionID, a.AssumptionID, impact.ElementAssumption)
+		c.ref(p+"/assumptionId", a.AssumptionID, a.AssumptionID, model.ElementAssumption)
 		if a.AssumptionID == "" {
 			c.errorf("VAL-OBS-003", p+"/assumptionId", "", "assessment has no assumptionId")
 		}
@@ -55,7 +55,7 @@ func (c *checker) observationSet(set *impact.ObservationSet) {
 			c.errorf("VAL-OBS-004", p+"/status", a.AssumptionID, "assessment has no status")
 		}
 		enum(c, p+"/status", a.AssumptionID, a.Status)
-		c.refs(p+"/evidenceIds", a.AssumptionID, a.EvidenceIDs, impact.ElementEvidence)
+		c.refs(p+"/evidenceIds", a.AssumptionID, a.EvidenceIDs, model.ElementEvidence)
 	}
 	c.stories(set)
 	for i, r := range set.Reviews {
@@ -80,7 +80,7 @@ func (c *checker) observationSet(set *impact.ObservationSet) {
 	}
 }
 
-func (c *checker) observation(p string, o impact.Observation) {
+func (c *checker) observation(p string, o model.Observation) {
 	if o.IndicatorID == "" {
 		c.errorf("VAL-OBS-005", p+"/indicatorId", "", "observation has no indicatorId")
 		return
@@ -90,14 +90,14 @@ func (c *checker) observation(p string, o impact.Observation) {
 	}
 	c.date(p+"/date", o.IndicatorID, o.Date)
 	enum(c, p+"/quality", o.IndicatorID, o.Quality)
-	c.refs(p+"/evidenceIds", o.IndicatorID, o.EvidenceIDs, impact.ElementEvidence)
+	c.refs(p+"/evidenceIds", o.IndicatorID, o.EvidenceIDs, model.ElementEvidence)
 
 	kind, known := c.kinds[o.IndicatorID]
 	if !known {
 		c.errorf("VAL-REF-001", p+"/indicatorId", "", "observation refers to unknown indicator %q", o.IndicatorID)
 		return
 	}
-	if kind != impact.ElementIndicator {
+	if kind != model.ElementIndicator {
 		c.errorf("VAL-REF-002", p+"/indicatorId", "", "references %q, which is a %s; expected indicator", o.IndicatorID, kind)
 		return
 	}
@@ -107,14 +107,14 @@ func (c *checker) observation(p string, o impact.Observation) {
 		c.errorf("VAL-OBS-006", p, o.IndicatorID, "observation has neither value nor level")
 	}
 	switch ind.MeasurementType {
-	case impact.MeasurementQualitative:
+	case model.MeasurementQualitative:
 		if hasValue {
 			c.add("VAL-OBS-007", SeverityWarning, p+"/value", o.IndicatorID, "qualitative indicator observed with a numeric value; use level")
 		}
 		if !hasLevel && hasValue {
 			c.errorf("VAL-OBS-006", p+"/level", o.IndicatorID, "qualitative indicator needs a level")
 		}
-	case impact.MeasurementQuantitative, "":
+	case model.MeasurementQuantitative, "":
 		if hasLevel && !hasValue {
 			c.errorf("VAL-OBS-006", p+"/value", o.IndicatorID, "quantitative indicator needs a numeric value")
 		}
@@ -127,7 +127,7 @@ func (c *checker) observation(p string, o impact.Observation) {
 // stories checks stories against the impact model's codebook and audiences, and
 // holds them to the consent rules: every story states its consent, and a
 // quote without granted consent is reported so it is never shown by accident.
-func (c *checker) stories(set *impact.ObservationSet) {
+func (c *checker) stories(set *model.ObservationSet) {
 	seen := map[string]bool{}
 	for i, s := range set.Stories {
 		p := "/stories/" + strconv.Itoa(i)
@@ -146,12 +146,12 @@ func (c *checker) stories(set *impact.ObservationSet) {
 		}
 		enum(c, p+"/consent", s.ID, s.Consent)
 		enum(c, p+"/sensitivity", s.ID, s.Sensitivity)
-		if s.Quote != "" && s.Consent != impact.ConsentGranted {
+		if s.Quote != "" && s.Consent != model.ConsentGranted {
 			c.add("VAL-STORY-003", SeverityWarning, p+"/quote", s.ID, "the quote will not be shown: consent is not granted")
 		}
-		c.refs(p+"/themeIds", s.ID, s.ThemeIDs, impact.ElementTheme)
-		c.refs(p+"/outcomeIds", s.ID, s.OutcomeIDs, impact.ElementOutcome)
-		c.refs(p+"/audienceIds", s.ID, s.AudienceIDs, impact.ElementAudience)
+		c.refs(p+"/themeIds", s.ID, s.ThemeIDs, model.ElementTheme)
+		c.refs(p+"/outcomeIds", s.ID, s.OutcomeIDs, model.ElementOutcome)
+		c.refs(p+"/audienceIds", s.ID, s.AudienceIDs, model.ElementAudience)
 		c.actor(p+"/actorId", s.ID, s.ActorID)
 	}
 }

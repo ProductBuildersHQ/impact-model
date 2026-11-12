@@ -1,4 +1,4 @@
-// Package impactmodel is a Go-first specification for representing,
+// Package outcomemodel is a Go-first specification for representing,
 // measuring, and reporting on an impact: why a program expects to bring about
 // change, what it does, and what it measures. The theory of change, the logic
 // model, the outcome map, the logframe, and OKRs are projections of one impact
@@ -12,9 +12,9 @@
 //
 // Key packages:
 //   - pkg/ref: typed references to impact models and their elements
-//   - pkg/impact: the impact model
-//   - schema: JSON Schemas generated from pkg/impact, embedded for runtime use
+//   - pkg/model: the impact model
+//   - schema: JSON Schemas generated from pkg/model, embedded for runtime use
 //
 // See docs/specs/initiatives/INIT-THEORYOFCHANGESPEC-001 for the PRD, TRD,
 // plan, and roadmap, and docs/research for the methodology background.
-package impactmodel
+package outcomemodel

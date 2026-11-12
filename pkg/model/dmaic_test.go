@@ -1,4 +1,4 @@
-package impact
+package model
 
 import (
 	"fmt"

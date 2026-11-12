@@ -44,7 +44,7 @@ func TestFixturesValidate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.file, func(t *testing.T) {
-			data, err := os.ReadFile("../pkg/impact/testdata/" + tt.file)
+			data, err := os.ReadFile("../pkg/model/testdata/" + tt.file)
 			if err != nil {
 				t.Fatalf("read: %v", err)
 			}

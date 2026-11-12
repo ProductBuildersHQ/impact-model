@@ -11,8 +11,8 @@ import (
 	"github.com/plexusone/structured-evaluation/summary"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -49,9 +49,9 @@ func registry(t *testing.T, rules ...Rule) *Registry {
 	return r
 }
 
-func load(t *testing.T, path string) (*impact.Model, *graph.Graph) {
+func load(t *testing.T, path string) (*model.Model, *graph.Graph) {
 	t.Helper()
-	doc, err := impactio.LoadDocument(path)
+	doc, err := modelio.LoadDocument(path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -105,7 +105,7 @@ func TestProfilesSelectRules(t *testing.T) {
 		ProfileStandard: {"IMP-ASM-001", "IMP-INT-001", "IMP-STR-004"},
 		ProfileFull:     {"IMP-ASM-001", "IMP-ASM-003", "IMP-INT-001", "IMP-STR-004"},
 	}
-	doc := &impact.Model{}
+	doc := &model.Model{}
 	for p, ids := range want {
 		res, err := Run(doc, nil, Options{Profile: p, Registry: reg})
 		if err != nil {
@@ -127,7 +127,7 @@ func TestRunStampsRuleAndSortsFindings(t *testing.T) {
 		fake{id: "IMP-MEA-001", severity: validate.SeverityWarning, messages: []string{"b", "a"}},
 		fake{id: "IMP-ASM-001", severity: validate.SeverityWarning, messages: []string{"z"}},
 	)
-	res, err := Run(&impact.Model{}, nil, Options{Registry: reg})
+	res, err := Run(&model.Model{}, nil, Options{Registry: reg})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,17 +146,17 @@ func TestRunStampsRuleAndSortsFindings(t *testing.T) {
 func TestDisableAndUnknowns(t *testing.T) {
 	calls := 0
 	reg := registry(t, fake{id: "IMP-ASM-001", severity: validate.SeverityWarning, messages: []string{"w"}, calls: &calls})
-	res, err := Run(&impact.Model{}, nil, Options{Registry: reg, Disable: []string{"IMP-ASM-001"}})
+	res, err := Run(&model.Model{}, nil, Options{Registry: reg, Disable: []string{"IMP-ASM-001"}})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if calls != 0 || len(res.Findings) != 0 || !slices.Equal(res.Disabled, []string{"IMP-ASM-001"}) || len(res.Ran) != 0 {
 		t.Errorf("a disabled rule ran: calls=%d result=%+v", calls, res)
 	}
-	if _, err := Run(&impact.Model{}, nil, Options{Registry: reg, Disable: []string{"IMP-NOPE-001"}}); !errors.Is(err, ErrUnknownRule) {
+	if _, err := Run(&model.Model{}, nil, Options{Registry: reg, Disable: []string{"IMP-NOPE-001"}}); !errors.Is(err, ErrUnknownRule) {
 		t.Errorf("unknown rule error = %v", err)
 	}
-	if _, err := Run(&impact.Model{}, nil, Options{Registry: reg, Profile: "strict"}); !errors.Is(err, ErrUnknownProfile) {
+	if _, err := Run(&model.Model{}, nil, Options{Registry: reg, Profile: "strict"}); !errors.Is(err, ErrUnknownProfile) {
 		t.Errorf("unknown profile error = %v", err)
 	}
 }
@@ -169,7 +169,7 @@ func TestSummaryReportShape(t *testing.T) {
 		fake{id: "IMP-MEA-001", severity: validate.SeverityError, messages: []string{"unmeasured"}},
 		fake{id: "IMP-INT-002", severity: validate.SeverityWarning},
 	)
-	res, err := Run(&impact.Model{}, nil, Options{Profile: ProfileFull, Registry: reg, Disable: []string{"IMP-INT-002"}})
+	res, err := Run(&model.Model{}, nil, Options{Profile: ProfileFull, Registry: reg, Disable: []string{"IMP-INT-002"}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -229,7 +229,7 @@ func TestSummaryReportShape(t *testing.T) {
 }
 
 func TestMinimalDocumentIsGoUnderDraft(t *testing.T) {
-	doc, g := load(t, "../impact/testdata/minimal.json")
+	doc, g := load(t, "../model/testdata/minimal.json")
 	res, err := Run(doc, g, Options{Profile: ProfileDraft})
 	if err != nil {
 		t.Fatal(err)

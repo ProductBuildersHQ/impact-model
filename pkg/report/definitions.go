@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // The definition reports render from an impact model alone, with no observations,
@@ -17,7 +17,7 @@ import (
 // PathwayViews returns one View per pathway, each restricted to that
 // pathway and its route to impact, in document order. An impact model without
 // pathways yields no views; render the whole impact model view instead.
-func PathwayViews(doc *impact.Model, g *graph.Graph, st *impact.Status) ([]*View, error) {
+func PathwayViews(doc *model.Model, g *graph.Graph, st *model.Status) ([]*View, error) {
 	var views []*View
 	for _, p := range doc.Pathways {
 		if p.Rejected() {
@@ -60,10 +60,10 @@ func LogicModelStages(v *View) []Stage {
 			outputs = appendUnique(outputs, MDCell(o))
 		}
 	}
-	byLevel := map[impact.Level][]string{}
+	byLevel := map[model.Level][]string{}
 	for _, o := range v.Outcomes {
 		text := MDCell(o.Title) + BasisMark(o.Basis)
-		if o.Level == impact.LevelOutput {
+		if o.Level == model.LevelOutput {
 			outputs = appendUnique(outputs, text)
 			continue
 		}
@@ -73,10 +73,10 @@ func LogicModelStages(v *View) []Stage {
 		{"Inputs", inputs},
 		{"Activities", activities},
 		{"Outputs", outputs},
-		{"Short-term outcomes", byLevel[impact.LevelShortTerm]},
-		{"Medium-term outcomes", byLevel[impact.LevelMediumTerm]},
-		{"Long-term outcomes", byLevel[impact.LevelLongTerm]},
-		{"Impact", byLevel[impact.LevelImpact]},
+		{"Short-term outcomes", byLevel[model.LevelShortTerm]},
+		{"Medium-term outcomes", byLevel[model.LevelMediumTerm]},
+		{"Long-term outcomes", byLevel[model.LevelLongTerm]},
+		{"Impact", byLevel[model.LevelImpact]},
 	}
 }
 
@@ -153,23 +153,23 @@ func MetricDefinitions(v *View) string {
 
 // AggregationText explains in plain words how a metric combines.
 func AggregationText(m MetricView) string {
-	switch impact.Aggregation(m.Aggregation) {
-	case impact.AggregationSum:
+	switch model.Aggregation(m.Aggregation) {
+	case model.AggregationSum:
 		return "Sum"
-	case impact.AggregationMean:
+	case model.AggregationMean:
 		return "Mean"
-	case impact.AggregationWeightedMean:
+	case model.AggregationWeightedMean:
 		if m.WeightedBy != "" {
 			return "Mean weighted by " + MDCell(m.WeightedBy)
 		}
 		return "Weighted mean"
-	case impact.AggregationMin:
+	case model.AggregationMin:
 		return "Minimum"
-	case impact.AggregationMax:
+	case model.AggregationMax:
 		return "Maximum"
-	case impact.AggregationLatest:
+	case model.AggregationLatest:
 		return "Latest value"
-	case impact.AggregationNone:
+	case model.AggregationNone:
 		return "Cannot be added up: observed directly at each level"
 	default:
 		return "—"

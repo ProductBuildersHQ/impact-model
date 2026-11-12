@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // answeredSheet exports the review sheet of a copy of the full fixture and
@@ -63,7 +63,7 @@ func TestImportReviewFromSheet(t *testing.T) {
 	if err := json.Unmarshal(data, &patch); err != nil || len(patch) == 0 {
 		t.Fatalf("patch %q: %v", data, err)
 	}
-	var c impact.Consultation
+	var c model.Consultation
 	data, err = os.ReadFile(consultOut)
 	if err != nil {
 		t.Fatal(err)

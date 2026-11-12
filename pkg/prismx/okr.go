@@ -14,8 +14,8 @@ import (
 	"github.com/grokify/prism-roadmap/goals/okr"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // ToOKR exports the outcomes an organization answers for (owned or shared,
@@ -29,7 +29,7 @@ import (
 // An OKR document holds a handful of objectives. This exports every
 // qualifying outcome and leaves choosing among them to the caller; the
 // result's own validation warns when there are more than the usual five.
-func ToOKR(doc *impact.Model, st *impact.Status) (*okr.OKRDocument, error) {
+func ToOKR(doc *model.Model, st *model.Status) (*okr.OKRDocument, error) {
 	if doc == nil {
 		return nil, fmt.Errorf("prismx: nil document")
 	}
@@ -37,7 +37,7 @@ func ToOKR(doc *impact.Model, st *impact.Status) (*okr.OKRDocument, error) {
 	if err != nil {
 		return nil, err
 	}
-	statuses := map[string]impact.IndicatorStatus{}
+	statuses := map[string]model.IndicatorStatus{}
 	if st != nil {
 		for _, s := range st.Indicators {
 			statuses[s.IndicatorID] = s
@@ -110,7 +110,7 @@ func capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
-func ownerName(doc *impact.Model, o impact.Outcome) string {
+func ownerName(doc *model.Model, o model.Outcome) string {
 	if len(o.DeliveredBy) > 0 {
 		if a, ok := doc.Actor(o.DeliveredBy[0]); ok {
 			return a.Name
@@ -119,7 +119,7 @@ func ownerName(doc *impact.Model, o impact.Outcome) string {
 	return ""
 }
 
-func keyResult(ind impact.Indicator, s impact.IndicatorStatus, withStatus bool) okr.KeyResult {
+func keyResult(ind model.Indicator, s model.IndicatorStatus, withStatus bool) okr.KeyResult {
 	kr := okr.KeyResult{ID: ind.ID, Title: ind.Name, Description: ind.Definition, Metric: ind.Name, Unit: ind.Unit}
 	if ind.Baseline != nil {
 		kr.Baseline = valueText(ind.Baseline.Value, ind.Baseline.Level, ind.Unit)
@@ -159,17 +159,17 @@ func valueText(v *float64, level, unit string) string {
 	}
 }
 
-func krStatus(s impact.State) string {
+func krStatus(s model.State) string {
 	switch s {
-	case impact.StateAchieved:
+	case model.StateAchieved:
 		return "Achieved"
-	case impact.StateOnTrack:
+	case model.StateOnTrack:
 		return "On Track"
-	case impact.StateAtRisk, impact.StateStale:
+	case model.StateAtRisk, model.StateStale:
 		return "At Risk"
-	case impact.StateOffTrack:
+	case model.StateOffTrack:
 		return "Behind"
-	case impact.StateNotStarted, impact.StateNoData, impact.StateBaselineOnly, impact.StateUnmeasured:
+	case model.StateNotStarted, model.StateNoData, model.StateBaselineOnly, model.StateUnmeasured:
 		return ""
 	}
 	return ""

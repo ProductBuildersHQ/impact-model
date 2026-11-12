@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestMetricTreeReport(t *testing.T) {
@@ -35,7 +35,7 @@ func TestMetricTreeShowsFocusAndRoles(t *testing.T) {
 	if gr == "" {
 		t.Fatalf("pathway %s serves fewer than two indicators", pw.ID)
 	}
-	pw.Focus = &impact.Focus{NorthStarID: ns, GuardrailIDs: []string{gr}, Rationale: "WHY THIS ONE"}
+	pw.Focus = &model.Focus{NorthStarID: ns, GuardrailIDs: []string{gr}, Rationale: "WHY THIS ONE"}
 
 	out, err := MetricTree(in, pw.ID)
 	if err != nil {

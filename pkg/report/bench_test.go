@@ -6,18 +6,18 @@ import (
 
 	"github.com/ProductBuildersHQ/outcome-model/internal/testfixture"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // execPipeline builds the graph, evaluates the status, builds the view, and
 // renders the executive report.
-func execPipeline(d *impact.Model, sets []*impact.ObservationSet) (string, error) {
+func execPipeline(d *model.Model, sets []*model.ObservationSet) (string, error) {
 	g, err := graph.Build(d)
 	if err != nil {
 		return "", err
 	}
-	st, err := measure.Evaluate(d, g, sets, time.Date(2026, 12, 31, 0, 0, 0, 0, time.UTC), impact.DefaultStatusOptions())
+	st, err := measure.Evaluate(d, g, sets, time.Date(2026, 12, 31, 0, 0, 0, 0, time.UTC), model.DefaultStatusOptions())
 	if err != nil {
 		return "", err
 	}

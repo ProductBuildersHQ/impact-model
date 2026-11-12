@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/diff"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
 func newDiffCmd(e *env) *cobra.Command {
@@ -37,14 +37,14 @@ apply it with 'impact-model patch'.`,
 	f.Bool("revision", false, "print a patch that adds a draft revision for the change")
 	f.String("version", "", "version label for the draft revision (default: the newer impact model's version)")
 	f.String("date", "", "date of the draft revision, YYYY-MM-DD (required with --revision)")
-	f.String("trigger", string(impact.TriggerLearning), "what prompted the change: "+triggerNames())
+	f.String("trigger", string(model.TriggerLearning), "what prompted the change: "+triggerNames())
 	f.StringP("out", "o", "", "write to this file instead of standard output")
 	return cmd
 }
 
 func triggerNames() string {
 	out := ""
-	for i, t := range impact.AllRevisionTriggers() {
+	for i, t := range model.AllRevisionTriggers() {
 		if i > 0 {
 			out += ", "
 		}
@@ -87,7 +87,7 @@ func runDiff(e *env, cmd *cobra.Command, oldPath, newPath string) error {
 		text = res.Markdown()
 	}
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(text)); err != nil {
+		if err := modelio.WriteFile(out, []byte(text)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil
@@ -96,7 +96,7 @@ func runDiff(e *env, cmd *cobra.Command, oldPath, newPath string) error {
 	return nil
 }
 
-func revisionPatchText(cmd *cobra.Command, res *diff.Result, cur *impact.Model) (string, error) {
+func revisionPatchText(cmd *cobra.Command, res *diff.Result, cur *model.Model) (string, error) {
 	date := flagString(cmd, "date")
 	if _, err := time.Parse(time.DateOnly, date); err != nil {
 		return "", usageErr("--revision needs --date as YYYY-MM-DD")
@@ -108,7 +108,7 @@ func revisionPatchText(cmd *cobra.Command, res *diff.Result, cur *impact.Model) 
 	if version == "" {
 		return "", usageErr("--revision needs --version: the newer impact model declares none")
 	}
-	trigger := impact.RevisionTrigger(flagString(cmd, "trigger"))
+	trigger := model.RevisionTrigger(flagString(cmd, "trigger"))
 	if !trigger.Valid() {
 		return "", usageErr("--trigger %q is not one of %s", trigger, triggerNames())
 	}

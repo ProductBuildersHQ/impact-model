@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
-func model(causes []impact.Cause, effects []impact.Effect) *impact.Model {
-	d := impact.NewModel("tree", "Poor eating health")
+func testModel(causes []model.Cause, effects []model.Effect) *model.Model {
+	d := model.NewModel("tree", "Poor eating health")
 	d.Causes, d.Effects = causes, effects
 	return d
 }
@@ -27,14 +27,14 @@ func rowOf(t *testing.T, tr *Tree, id string) int {
 }
 
 func TestLayering(t *testing.T) {
-	tr := Build(model(
-		[]impact.Cause{
-			{ID: "c-direct", Statement: "Too busy", Level: impact.CauseImmediate},
-			{ID: "c-deep", Statement: "Fast food", Level: impact.CauseUnderlying, Parents: []string{"c-direct"}},
+	tr := Build(testModel(
+		[]model.Cause{
+			{ID: "c-direct", Statement: "Too busy", Level: model.CauseImmediate},
+			{ID: "c-deep", Statement: "Fast food", Level: model.CauseUnderlying, Parents: []string{"c-direct"}},
 			// Two parents at different depths: it sits below the lower one.
-			{ID: "c-both", Statement: "Long commutes", Level: impact.CauseStructural, Parents: []string{"c-direct", "c-deep"}},
+			{ID: "c-both", Statement: "Long commutes", Level: model.CauseStructural, Parents: []string{"c-direct", "c-deep"}},
 		},
-		[]impact.Effect{
+		[]model.Effect{
 			{ID: "e-direct", Statement: "Diabetes"},
 			{ID: "e-far", Statement: "Health costs", Parents: []string{"e-direct"}},
 			{ID: "e-both", Statement: "Lost work", Parents: []string{"e-direct", "e-far"}},
@@ -61,15 +61,15 @@ func TestLayering(t *testing.T) {
 }
 
 func TestRejectedSetAsideAndLoops(t *testing.T) {
-	rejected := &impact.Provenance{Basis: impact.BasisRejected}
-	tr := Build(model(
-		[]impact.Cause{
-			{ID: "c-kept", Statement: "Stress", Level: impact.CauseImmediate, Parents: []string{"c-gone"}},
-			{ID: "c-gone", Statement: "Rejected", Level: impact.CauseImmediate, Provenance: rejected},
-			{ID: "c-aside", Statement: "Poverty", Level: impact.CauseStructural, OutOfScope: &impact.OutOfScope{Reason: "Beyond us."}},
+	rejected := &model.Provenance{Basis: model.BasisRejected}
+	tr := Build(testModel(
+		[]model.Cause{
+			{ID: "c-kept", Statement: "Stress", Level: model.CauseImmediate, Parents: []string{"c-gone"}},
+			{ID: "c-gone", Statement: "Rejected", Level: model.CauseImmediate, Provenance: rejected},
+			{ID: "c-aside", Statement: "Poverty", Level: model.CauseStructural, OutOfScope: &model.OutOfScope{Reason: "Beyond us."}},
 			// A loop, which validation reports, is cut rather than followed forever.
-			{ID: "c-a", Statement: "A", Level: impact.CauseImmediate, Parents: []string{"c-b"}},
-			{ID: "c-b", Statement: "B", Level: impact.CauseImmediate, Parents: []string{"c-a"}},
+			{ID: "c-a", Statement: "A", Level: model.CauseImmediate, Parents: []string{"c-b"}},
+			{ID: "c-b", Statement: "B", Level: model.CauseImmediate, Parents: []string{"c-a"}},
 		}, nil))
 	for _, r := range tr.Rows {
 		for _, n := range r.Nodes {
@@ -93,8 +93,8 @@ func TestRejectedSetAsideAndLoops(t *testing.T) {
 }
 
 func TestSpecIsJSONAndDeterministic(t *testing.T) {
-	d := model([]impact.Cause{{ID: "c-1", Statement: "Stress", Level: impact.CauseImmediate}},
-		[]impact.Effect{{ID: "e-1", Statement: "Diabetes"}})
+	d := testModel([]model.Cause{{ID: "c-1", Statement: "Stress", Level: model.CauseImmediate}},
+		[]model.Effect{{ID: "e-1", Statement: "Diabetes"}})
 	first, err := Build(d).JSON()
 	if err != nil {
 		t.Fatal(err)

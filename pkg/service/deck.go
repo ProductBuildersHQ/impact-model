@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/logicmodel"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/problemtree"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/slides"
@@ -17,7 +17,7 @@ import (
 // stamp, if not empty, is shown on the title slide.
 // It needs no observations. Invalid documents are rejected by the graph
 // build, as for every other read-only command.
-func WorkshopDeck(doc *impact.Model, theme, stamp string) (string, error) {
+func WorkshopDeck(doc *model.Model, theme, stamp string) (string, error) {
 	g, err := BuildGraph(doc)
 	if err != nil {
 		return "", err
@@ -36,7 +36,7 @@ func WorkshopDeck(doc *impact.Model, theme, stamp string) (string, error) {
 // DefinitionReport renders a definition report (see report.DefinitionKinds)
 // as Markdown. pathway restricts the report to one pathway; it is empty for
 // the whole impact model. Definition reports need no observations.
-func DefinitionReport(doc *impact.Model, kind, pathway string) (string, error) {
+func DefinitionReport(doc *model.Model, kind, pathway string) (string, error) {
 	if !slices.Contains(report.DefinitionKinds, kind) {
 		return "", fmt.Errorf("unknown definition report %q (want one of %s)", kind, strings.Join(report.DefinitionKinds, ", "))
 	}
@@ -101,7 +101,7 @@ func DefinitionReport(doc *impact.Model, kind, pathway string) (string, error) {
 }
 
 // ExportCSV renders one CSV table (see report.CSVTables) from a document.
-func ExportCSV(doc *impact.Model, table string) (string, error) {
+func ExportCSV(doc *model.Model, table string) (string, error) {
 	g, err := BuildGraph(doc)
 	if err != nil {
 		return "", err

@@ -1,4 +1,4 @@
-// Package schema embeds the JSON Schemas generated from pkg/impact and
+// Package schema embeds the JSON Schemas generated from pkg/model and
 // validates documents against them.
 //
 // Never edit the *.schema.json files by hand; regenerate them with:

@@ -18,7 +18,7 @@ import (
 	"github.com/plexusone/structured-evaluation/summary"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -68,7 +68,7 @@ type Finding struct {
 
 // Context is what a rule sees. Rules must not modify it.
 type Context struct {
-	Doc   *impact.Model
+	Doc   *model.Model
 	Graph *graph.Graph
 	// AsOf is the date time-based rules measure from (YYYY-MM-DD); empty
 	// when none was given, in which case those rules do not report.
@@ -212,7 +212,7 @@ func (r *Result) Go() bool { return r.Count(validate.SeverityError) == 0 }
 
 // Run checks doc with the rules of the profile. g is the document's graph.
 // The result is the same for the same inputs.
-func Run(doc *impact.Model, g *graph.Graph, o Options) (*Result, error) {
+func Run(doc *model.Model, g *graph.Graph, o Options) (*Result, error) {
 	if o.Profile == "" {
 		o.Profile = ProfileStandard
 	}

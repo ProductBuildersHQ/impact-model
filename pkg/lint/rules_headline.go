@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
@@ -73,7 +73,7 @@ func init() {
 		for i, a := range c.Doc.Audiences {
 			for j, h := range a.Headline {
 				ind, ok := c.Doc.Indicator(h.IndicatorID)
-				if ok && (ind.DataAvailability == "" || ind.DataAvailability == impact.DataUnknown) {
+				if ok && (ind.DataAvailability == "" || ind.DataAvailability == model.DataUnknown) {
 					out = append(out, Finding{Path: at("audiences", i) + "/headline/" + strconv.Itoa(j), Element: a.ID,
 						Message: fmt.Sprintf("it is not known whether the data for %q exists, and an audience cannot be told a number that cannot be produced", h.IndicatorID)})
 				}
@@ -100,7 +100,7 @@ func init() {
 	})
 
 	// ---- the North Star and what keeps it honest --------------------------
-	northStars := func(c *Context, fn func(p indexed[impact.Pathway], ns impact.Indicator) []Finding) []Finding {
+	northStars := func(c *Context, fn func(p indexed[model.Pathway], ns model.Indicator) []Finding) []Finding {
 		var out []Finding
 		for _, p := range activePathways(c.Doc) {
 			if p.v.Focus == nil || p.v.Focus.NorthStarID == "" {
@@ -114,17 +114,17 @@ func init() {
 		}
 		return out
 	}
-	nsPath := func(p indexed[impact.Pathway]) string { return at("pathways", p.i) + "/focus/northStarId" }
+	nsPath := func(p indexed[model.Pathway]) string { return at("pathways", p.i) + "/focus/northStarId" }
 
 	register("IMP-NSM-001", validate.SeverityWarning, "A North Star measures an outcome, never an output or an activity.", func(c *Context) []Finding {
-		return northStars(c, func(p indexed[impact.Pathway], ns impact.Indicator) []Finding {
+		return northStars(c, func(p indexed[model.Pathway], ns model.Indicator) []Finding {
 			var what string
 			switch c.Doc.IndicatorTier(ns) {
-			case impact.TierOutcome, impact.TierImpact:
+			case model.TierOutcome, model.TierImpact:
 				return nil
-			case impact.TierOutput:
+			case model.TierOutput:
 				what = "an output, which counts what was delivered and not the value to the people served"
-			case impact.TierActivity:
+			case model.TierActivity:
 				what = "an activity, which counts what was done and not what changed"
 			default:
 				what = "something that is not an outcome"
@@ -135,9 +135,9 @@ func init() {
 	})
 
 	register("IMP-NSM-002", validate.SeverityWarning, "A North Star sits at or below the ceiling of accountability.", func(c *Context) []Finding {
-		return northStars(c, func(p indexed[impact.Pathway], ns impact.Indicator) []Finding {
+		return northStars(c, func(p indexed[model.Pathway], ns model.Indicator) []Finding {
 			switch c.Doc.IndicatorTier(ns) {
-			case impact.TierOutcome, impact.TierImpact:
+			case model.TierOutcome, model.TierImpact:
 				if !c.Graph.BelowCeiling(ns.Measures) {
 					return []Finding{{Path: nsPath(p), Element: p.v.ID,
 						Message: fmt.Sprintf("the North Star %q measures %q, which is above the ceiling of accountability; steer by something the pathway answers for", ns.ID, ns.Measures)}}
@@ -148,7 +148,7 @@ func init() {
 	})
 
 	register("IMP-NSM-003", validate.SeverityWarning, "A North Star has a baseline and a target.", func(c *Context) []Finding {
-		return northStars(c, func(p indexed[impact.Pathway], ns impact.Indicator) []Finding {
+		return northStars(c, func(p indexed[model.Pathway], ns model.Indicator) []Finding {
 			var missing []string
 			if ns.Baseline == nil {
 				missing = append(missing, "baseline")
@@ -165,7 +165,7 @@ func init() {
 	})
 
 	register("IMP-NSM-004", validate.SeverityWarning, "A pathway with a North Star has a guardrail.", func(c *Context) []Finding {
-		return northStars(c, func(p indexed[impact.Pathway], ns impact.Indicator) []Finding {
+		return northStars(c, func(p indexed[model.Pathway], ns model.Indicator) []Finding {
 			if len(p.v.Focus.GuardrailIDs) > 0 {
 				return nil
 			}
@@ -175,7 +175,7 @@ func init() {
 	})
 
 	register("IMP-NSM-005", validate.SeverityWarning, "A North Star is an indicator of its own pathway.", func(c *Context) []Finding {
-		return northStars(c, func(p indexed[impact.Pathway], ns impact.Indicator) []Finding {
+		return northStars(c, func(p indexed[model.Pathway], ns model.Indicator) []Finding {
 			if c.Doc.IndicatorServes(ns, p.v.ID) {
 				return nil
 			}
@@ -185,7 +185,7 @@ func init() {
 	})
 
 	register("IMP-NSM-006", validate.SeverityWarning, "A guardrail is not the North Star.", func(c *Context) []Finding {
-		return northStars(c, func(p indexed[impact.Pathway], ns impact.Indicator) []Finding {
+		return northStars(c, func(p indexed[model.Pathway], ns model.Indicator) []Finding {
 			if !slices.Contains(p.v.Focus.GuardrailIDs, ns.ID) {
 				return nil
 			}
@@ -197,7 +197,7 @@ func init() {
 	register("IMP-NSM-007", validate.SeverityInfo, "A program or product has a North Star.", func(c *Context) []Finding {
 		var out []Finding
 		for _, p := range activePathways(c.Doc) {
-			if p.v.Kind != impact.PathwayProgram && p.v.Kind != impact.PathwayProduct {
+			if p.v.Kind != model.PathwayProgram && p.v.Kind != model.PathwayProduct {
 				continue
 			}
 			if p.v.Focus == nil || p.v.Focus.NorthStarID == "" {

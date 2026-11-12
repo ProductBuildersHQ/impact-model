@@ -6,15 +6,15 @@ import (
 	"time"
 
 	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
-func statusInput(t *testing.T) (report.StatusInput, []*impact.ObservationSet) {
+func statusInput(t *testing.T) (report.StatusInput, []*model.ObservationSet) {
 	t.Helper()
-	doc, err := impactio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,7 +22,7 @@ func statusInput(t *testing.T) (report.StatusInput, []*impact.ObservationSet) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sets, err := impactio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
+	sets, err := modelio.LoadObservations("../../examples/intermediary/observations-2026-q3.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,11 +33,11 @@ func statusInput(t *testing.T) (report.StatusInput, []*impact.ObservationSet) {
 		}
 		return d
 	}
-	prev, err := measure.Evaluate(doc, g, sets, at("2026-06-30"), impact.DefaultStatusOptions())
+	prev, err := measure.Evaluate(doc, g, sets, at("2026-06-30"), model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
-	cur, err := measure.Evaluate(doc, g, sets, at("2026-09-30"), impact.DefaultStatusOptions())
+	cur, err := measure.Evaluate(doc, g, sets, at("2026-09-30"), model.DefaultStatusOptions())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,11 +96,11 @@ func TestExecDeckContent(t *testing.T) {
 
 func TestStoryDeckHonoursConsent(t *testing.T) {
 	in, _ := statusInput(t)
-	story := func(id, consent, sensitivity, quote string) impact.Story {
-		return impact.Story{ID: id, Date: "2026-03-01", Title: "Title " + id, Summary: "Summary " + id, Quote: quote,
-			AudienceIDs: []string{"aud-funders"}, Consent: impact.Consent(consent), Sensitivity: impact.Sensitivity(sensitivity)}
+	story := func(id, consent, sensitivity, quote string) model.Story {
+		return model.Story{ID: id, Date: "2026-03-01", Title: "Title " + id, Summary: "Summary " + id, Quote: quote,
+			AudienceIDs: []string{"aud-funders"}, Consent: model.Consent(consent), Sensitivity: model.Sensitivity(sensitivity)}
 	}
-	sets := []*impact.ObservationSet{{Stories: []impact.Story{
+	sets := []*model.ObservationSet{{Stories: []model.Story{
 		story("ok", "granted", "public", "QUOTE-OK"), story("restricted", "granted", "restricted", "QUOTE-RESTRICTED"),
 		story("refused", "not_granted", "public", "QUOTE-REFUSED"), story("unknown", "unknown", "public", "QUOTE-UNKNOWN"),
 	}}}
@@ -123,8 +123,8 @@ func TestStoryDeckHonoursConsent(t *testing.T) {
 
 func TestLearningReviewDeckGatesStoriesAndMergesTheRecord(t *testing.T) {
 	in, sets := statusInput(t)
-	sets = append(sets, &impact.ObservationSet{Stories: []impact.Story{
-		{ID: "x", Date: "2026-03-01", Title: "Hidden", Summary: "HIDDEN-SUMMARY", Quote: "HIDDEN-QUOTE", Consent: impact.ConsentUnknown, Sensitivity: impact.SensitivityPublic},
+	sets = append(sets, &model.ObservationSet{Stories: []model.Story{
+		{ID: "x", Date: "2026-03-01", Title: "Hidden", Summary: "HIDDEN-SUMMARY", Quote: "HIDDEN-QUOTE", Consent: model.ConsentUnknown, Sensitivity: model.SensitivityPublic},
 	}})
 	md := LearningReview(report.LearningInput{StatusInput: in, Sets: sets, Period: "2026-Q3"}, Options{})
 	if strings.Contains(md, "HIDDEN") {
@@ -147,7 +147,7 @@ func TestDecksAreDeterministic(t *testing.T) {
 // the deck tells the first few indicators reported to the audience.
 func TestStoryDeckUsesTheHeadlineList(t *testing.T) {
 	in, sets := statusInput(t)
-	var aud *impact.Audience
+	var aud *model.Audience
 	for i := range in.Doc.Audiences {
 		if in.Doc.Audiences[i].ID == "aud-funders" {
 			aud = &in.Doc.Audiences[i]
@@ -156,7 +156,7 @@ func TestStoryDeckUsesTheHeadlineList(t *testing.T) {
 	if aud == nil || len(in.Doc.Indicators) == 0 {
 		t.Fatal("example has no aud-funders or no indicators")
 	}
-	aud.Headline = []impact.HeadlineMetric{{IndicatorID: in.Doc.Indicators[len(in.Doc.Indicators)-1].ID, Label: "DECK HEADLINE LABEL"}}
+	aud.Headline = []model.HeadlineMetric{{IndicatorID: in.Doc.Indicators[len(in.Doc.Indicators)-1].ID, Label: "DECK HEADLINE LABEL"}}
 	md, err := Story(in, sets, "aud-funders", Options{})
 	if err != nil {
 		t.Fatal(err)

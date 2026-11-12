@@ -12,7 +12,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Calendar. Collection periods are converted with a fixed 52-week year, a
@@ -110,7 +110,7 @@ type Report struct {
 	// order, then indicators with no pathway under an empty key. An
 	// indicator serving several pathways counts in each.
 	ByPathway []Group `json:"byPathway"`
-	// ByMode lists collection modes in the order of impact.AllCollectionModes,
+	// ByMode lists collection modes in the order of model.AllCollectionModes,
 	// then indicators with no collection under an empty key.
 	ByMode []Group `json:"byMode"`
 	// Uncosted lists selected indicators with no collection data, which the
@@ -122,12 +122,12 @@ type Report struct {
 
 // Compute totals the selected indicators of doc. Retired and candidate
 // indicators, and indicators with no selection record, are not counted.
-func Compute(doc *impact.Model) (*Report, error) {
+func Compute(doc *model.Model) (*Report, error) {
 	r := &Report{Lines: []Line{}, ByPathway: []Group{}, ByMode: []Group{}, Uncosted: []string{}}
 	byPathway := map[string]*Totals{}
 	byMode := map[string]*Totals{}
 	for _, ind := range doc.Indicators {
-		if ind.Selection == nil || ind.Selection.Status != impact.SelectionSelected || ind.Provenance.IsRejected() {
+		if ind.Selection == nil || ind.Selection.Status != model.SelectionSelected || ind.Provenance.IsRejected() {
 			continue
 		}
 		cost, err := costOf(ind)
@@ -157,7 +157,7 @@ func Compute(doc *impact.Model) (*Report, error) {
 	}
 	r.ByPathway = groups(byPathway, pathwayOrder)
 	var modeOrder []string
-	for _, m := range impact.AllCollectionModes() {
+	for _, m := range model.AllCollectionModes() {
 		modeOrder = append(modeOrder, string(m))
 	}
 	r.ByMode = groups(byMode, modeOrder)
@@ -165,7 +165,7 @@ func Compute(doc *impact.Model) (*Report, error) {
 	return r, nil
 }
 
-func costOf(ind impact.Indicator) (Totals, error) {
+func costOf(ind model.Indicator) (Totals, error) {
 	c := ind.Collection
 	if c == nil || c.Period == "" {
 		return Totals{}, nil
@@ -227,7 +227,7 @@ func groups(m map[string]*Totals, order []string) []Group {
 	return out
 }
 
-func compare(b *impact.MeasurementBudget, r *Report) *Budget {
+func compare(b *model.MeasurementBudget, r *Report) *Budget {
 	if b == nil {
 		return nil
 	}

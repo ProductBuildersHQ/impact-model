@@ -1,5 +1,5 @@
 // Command generate-schema writes the JSON Schemas generated from the Go
-// types in pkg/impact. It is the only producer of schema/*.schema.json.
+// types in pkg/model. It is the only producer of schema/*.schema.json.
 //
 // Usage:
 //

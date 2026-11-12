@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/review"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
@@ -12,7 +12,7 @@ import (
 // modified. Quoted text is matched against the statements the review packet
 // showed, and the response's hash against the current document's. step is
 // the consultation step to record; empty means the whole impact model.
-func ImportReview(doc *impact.Model, resp *impact.ReviewResponse, step impact.ConsultationStep) (*review.Result, error) {
+func ImportReview(doc *model.Model, resp *model.ReviewResponse, step model.ConsultationStep) (*review.Result, error) {
 	g, err := BuildGraph(doc)
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func ImportReview(doc *impact.Model, resp *impact.ReviewResponse, step impact.Co
 	for i, r := range rows {
 		candidates[i] = review.Candidate{ID: r.ID, Statement: r.Statement}
 	}
-	hash, err := impactio.ContentHash(doc)
+	hash, err := modelio.ContentHash(doc)
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,7 @@ package measure
 import (
 	"fmt"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 // Diff lists what changed between two status snapshots of the same impact model:
@@ -13,39 +13,39 @@ import (
 // each in the order of the later snapshot and then elements that only the
 // earlier one had. An element that appears or disappears is a change in its
 // presence.
-func Diff(prev, cur *impact.Status) *impact.StatusDiff {
-	d := &impact.StatusDiff{ModelID: cur.ModelID, FromAsOf: prev.AsOf, ToAsOf: cur.AsOf, Changes: []impact.StatusChange{}}
-	add := func(id string, kind impact.ElementKind, field, from, to string) {
+func Diff(prev, cur *model.Status) *model.StatusDiff {
+	d := &model.StatusDiff{ModelID: cur.ModelID, FromAsOf: prev.AsOf, ToAsOf: cur.AsOf, Changes: []model.StatusChange{}}
+	add := func(id string, kind model.ElementKind, field, from, to string) {
 		if from != to {
-			d.Changes = append(d.Changes, impact.StatusChange{ElementID: id, ElementKind: kind, Field: field, From: from, To: to})
+			d.Changes = append(d.Changes, model.StatusChange{ElementID: id, ElementKind: kind, Field: field, From: from, To: to})
 		}
 	}
 
-	diffKind(d, impact.ElementIndicator, ids(cur.Indicators, func(s impact.IndicatorStatus) string { return s.IndicatorID }),
-		ids(prev.Indicators, func(s impact.IndicatorStatus) string { return s.IndicatorID }),
+	diffKind(d, model.ElementIndicator, ids(cur.Indicators, func(s model.IndicatorStatus) string { return s.IndicatorID }),
+		ids(prev.Indicators, func(s model.IndicatorStatus) string { return s.IndicatorID }),
 		func(id string) {
-			a, b := findBy(prev.Indicators, id, func(s impact.IndicatorStatus) string { return s.IndicatorID }), findBy(cur.Indicators, id, func(s impact.IndicatorStatus) string { return s.IndicatorID })
-			add(id, impact.ElementIndicator, "state", string(a.State), string(b.State))
+			a, b := findBy(prev.Indicators, id, func(s model.IndicatorStatus) string { return s.IndicatorID }), findBy(cur.Indicators, id, func(s model.IndicatorStatus) string { return s.IndicatorID })
+			add(id, model.ElementIndicator, "state", string(a.State), string(b.State))
 		})
-	diffKind(d, impact.ElementOutcome, ids(cur.Outcomes, func(s impact.OutcomeStatus) string { return s.OutcomeID }),
-		ids(prev.Outcomes, func(s impact.OutcomeStatus) string { return s.OutcomeID }),
+	diffKind(d, model.ElementOutcome, ids(cur.Outcomes, func(s model.OutcomeStatus) string { return s.OutcomeID }),
+		ids(prev.Outcomes, func(s model.OutcomeStatus) string { return s.OutcomeID }),
 		func(id string) {
-			a, b := findBy(prev.Outcomes, id, func(s impact.OutcomeStatus) string { return s.OutcomeID }), findBy(cur.Outcomes, id, func(s impact.OutcomeStatus) string { return s.OutcomeID })
-			add(id, impact.ElementOutcome, "state", string(a.State), string(b.State))
-			add(id, impact.ElementOutcome, "pathwayState", string(a.PathwayState), string(b.PathwayState))
-			add(id, impact.ElementOutcome, "confidence", confidence(a.Confidence), confidence(b.Confidence))
+			a, b := findBy(prev.Outcomes, id, func(s model.OutcomeStatus) string { return s.OutcomeID }), findBy(cur.Outcomes, id, func(s model.OutcomeStatus) string { return s.OutcomeID })
+			add(id, model.ElementOutcome, "state", string(a.State), string(b.State))
+			add(id, model.ElementOutcome, "pathwayState", string(a.PathwayState), string(b.PathwayState))
+			add(id, model.ElementOutcome, "confidence", confidence(a.Confidence), confidence(b.Confidence))
 		})
-	diffKind(d, impact.ElementLink, ids(cur.Links, func(s impact.LinkStatus) string { return s.LinkID }),
-		ids(prev.Links, func(s impact.LinkStatus) string { return s.LinkID }),
+	diffKind(d, model.ElementLink, ids(cur.Links, func(s model.LinkStatus) string { return s.LinkID }),
+		ids(prev.Links, func(s model.LinkStatus) string { return s.LinkID }),
 		func(id string) {
-			a, b := findBy(prev.Links, id, func(s impact.LinkStatus) string { return s.LinkID }), findBy(cur.Links, id, func(s impact.LinkStatus) string { return s.LinkID })
-			add(id, impact.ElementLink, "state", string(a.State), string(b.State))
+			a, b := findBy(prev.Links, id, func(s model.LinkStatus) string { return s.LinkID }), findBy(cur.Links, id, func(s model.LinkStatus) string { return s.LinkID })
+			add(id, model.ElementLink, "state", string(a.State), string(b.State))
 		})
-	diffKind(d, impact.ElementAssumption, ids(cur.Assumptions, func(s impact.AssumptionState) string { return s.AssumptionID }),
-		ids(prev.Assumptions, func(s impact.AssumptionState) string { return s.AssumptionID }),
+	diffKind(d, model.ElementAssumption, ids(cur.Assumptions, func(s model.AssumptionState) string { return s.AssumptionID }),
+		ids(prev.Assumptions, func(s model.AssumptionState) string { return s.AssumptionID }),
 		func(id string) {
-			a, b := findBy(prev.Assumptions, id, func(s impact.AssumptionState) string { return s.AssumptionID }), findBy(cur.Assumptions, id, func(s impact.AssumptionState) string { return s.AssumptionID })
-			add(id, impact.ElementAssumption, "status", string(a.Status), string(b.Status))
+			a, b := findBy(prev.Assumptions, id, func(s model.AssumptionState) string { return s.AssumptionID }), findBy(cur.Assumptions, id, func(s model.AssumptionState) string { return s.AssumptionID })
+			add(id, model.ElementAssumption, "status", string(a.Status), string(b.Status))
 		})
 	return d
 }
@@ -53,7 +53,7 @@ func Diff(prev, cur *impact.Status) *impact.StatusDiff {
 // diffKind walks the later snapshot's elements, then those only the earlier
 // one had, recording presence changes and calling compare for elements in
 // both.
-func diffKind(d *impact.StatusDiff, kind impact.ElementKind, cur, prev []string, compare func(id string)) {
+func diffKind(d *model.StatusDiff, kind model.ElementKind, cur, prev []string, compare func(id string)) {
 	inPrev := map[string]bool{}
 	for _, id := range prev {
 		inPrev[id] = true
@@ -64,12 +64,12 @@ func diffKind(d *impact.StatusDiff, kind impact.ElementKind, cur, prev []string,
 		if inPrev[id] {
 			compare(id)
 		} else {
-			d.Changes = append(d.Changes, impact.StatusChange{ElementID: id, ElementKind: kind, Field: "presence", To: "added"})
+			d.Changes = append(d.Changes, model.StatusChange{ElementID: id, ElementKind: kind, Field: "presence", To: "added"})
 		}
 	}
 	for _, id := range prev {
 		if !inCur[id] {
-			d.Changes = append(d.Changes, impact.StatusChange{ElementID: id, ElementKind: kind, Field: "presence", From: "present", To: "removed"})
+			d.Changes = append(d.Changes, model.StatusChange{ElementID: id, ElementKind: kind, Field: "presence", From: "present", To: "removed"})
 		}
 	}
 }

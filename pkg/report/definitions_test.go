@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 )
 
 func TestDefinitionReportsGolden(t *testing.T) {
@@ -62,7 +62,7 @@ func TestLogicModelsFallBackToTheWholeTheory(t *testing.T) {
 }
 
 func TestEmptyStagesShowADash(t *testing.T) {
-	var d impact.Model
+	var d model.Model
 	fixture(t, "minimal.json", &d)
 	out := LogicModel(build(t, &d, nil, Options{}))
 	if !strings.Contains(out, "| Inputs | — |") || !strings.Contains(out, "| Activities | — |") {
@@ -90,7 +90,7 @@ func TestMetricDefinitions(t *testing.T) {
 	}
 
 	doc := fullDoc(t)
-	doc.Metrics[0].Aggregation = impact.AggregationNone
+	doc.Metrics[0].Aggregation = model.AggregationNone
 	doc.Indicators[5].RollupFrom = nil // the roll-up needs an aggregating metric
 	out = MetricDefinitions(build(t, doc, nil, Options{}))
 	if !strings.Contains(out, "Cannot be added up: observed directly at each level") {
@@ -107,9 +107,9 @@ func TestMetricDefinitions(t *testing.T) {
 }
 
 func TestAggregationText(t *testing.T) {
-	for agg, want := range map[impact.Aggregation]string{
-		impact.AggregationSum: "Sum", impact.AggregationMean: "Mean", impact.AggregationMin: "Minimum",
-		impact.AggregationMax: "Maximum", impact.AggregationLatest: "Latest value", "": "—",
+	for agg, want := range map[model.Aggregation]string{
+		model.AggregationSum: "Sum", model.AggregationMean: "Mean", model.AggregationMin: "Minimum",
+		model.AggregationMax: "Maximum", model.AggregationLatest: "Latest value", "": "—",
 	} {
 		if got := AggregationText(MetricView{Aggregation: string(agg)}); got != want {
 			t.Errorf("AggregationText(%q) = %q, want %q", agg, got, want)

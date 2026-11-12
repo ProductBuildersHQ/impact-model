@@ -11,8 +11,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
@@ -131,7 +131,7 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 		return err
 	}
 	src := filepath.Join(dir, "export.md")
-	if err := impactio.WriteFile(src, []byte(md)); err != nil {
+	if err := modelio.WriteFile(src, []byte(md)); err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	abs, err := filepath.Abs(out)
@@ -150,7 +150,7 @@ func withPandoc(cmd *cobra.Command, format string, build func(share.Profile) (st
 }
 
 // reviewView builds the whole impact model view the review exports render.
-func reviewView(path string) (*impact.Model, *report.View, error) {
+func reviewView(path string) (*model.Model, *report.View, error) {
 	doc, err := loadForRender(path)
 	if err != nil {
 		return nil, nil, err
@@ -257,7 +257,7 @@ export stamp; --no-stamp leaves it off.`,
 // writeText writes text to --out or standard output.
 func writeText(e *env, cmd *cobra.Command, text string) error {
 	if out := flagString(cmd, "out"); out != "" {
-		if err := impactio.WriteFile(out, []byte(text)); err != nil {
+		if err := modelio.WriteFile(out, []byte(text)); err != nil {
 			return &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		return nil
@@ -283,7 +283,7 @@ func diagramRenderer(ctx context.Context, dir string) func(string) (string, erro
 		n++
 		in := filepath.Join(dir, fmt.Sprintf("d%d.mmd", n))
 		png := filepath.Join(dir, fmt.Sprintf("d%d.png", n))
-		if err := impactio.WriteFile(in, []byte(source)); err != nil {
+		if err := modelio.WriteFile(in, []byte(source)); err != nil {
 			return "", &ExitError{Code: ExitUsageErr, Err: err}
 		}
 		if err := runTool(ctx, mmdc, "-i", in, "-o", png, "-s", "2"); err != nil {

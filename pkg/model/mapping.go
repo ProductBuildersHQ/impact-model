@@ -1,4 +1,4 @@
-package impact
+package model
 
 // CSVMapping tells the importer how the columns of a spreadsheet map onto
 // observations. It is read from YAML or JSON.

@@ -8,7 +8,7 @@
 //
 // The structs here are the source of truth for the generated JSON Schemas.
 // JSON property names are camelCase; enumeration values are snake_case.
-package impact
+package model
 
 import core "github.com/grokify/prism-core"
 

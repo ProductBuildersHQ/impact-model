@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-const fixtures = "../../pkg/impact/testdata/"
+const fixtures = "../../pkg/model/testdata/"
 
 type result struct {
 	code        int
@@ -246,13 +246,13 @@ func TestInit(t *testing.T) {
 	if !strings.HasPrefix(r.stdout, "kind: ImpactModel\n") {
 		t.Fatalf("default output should be YAML: %q", r.stdout)
 	}
-	if _, err := impactio.ParseDocument([]byte(r.stdout), impactio.FormatYAML); err != nil {
+	if _, err := modelio.ParseDocument([]byte(r.stdout), modelio.FormatYAML); err != nil {
 		t.Fatalf("init output does not parse: %v", err)
 	}
 
 	r = run(t, "", "init", "--format", "json")
 	wantCode(t, r, 0)
-	if _, err := impactio.ParseDocument([]byte(r.stdout), impactio.FormatJSON); err != nil {
+	if _, err := modelio.ParseDocument([]byte(r.stdout), modelio.FormatJSON); err != nil {
 		t.Fatalf("init JSON does not parse: %v", err)
 	}
 
