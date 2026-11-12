@@ -187,7 +187,7 @@ func TestGraph(t *testing.T) {
 
 	r = run(t, "", "graph", doc, "--format", "dot")
 	wantCode(t, r, 0)
-	if !strings.HasPrefix(r.stdout, "digraph outcome-model {") || !strings.Contains(r.stdout, "[style=dashed]") {
+	if !strings.HasPrefix(r.stdout, `digraph "outcome-model" {`) || !strings.Contains(r.stdout, "[style=dashed]") {
 		t.Fatalf("dot = %q", r.stdout)
 	}
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -187,7 +188,7 @@ func TestDOT(t *testing.T) {
 	}
 	dot := DOT(g)
 	for _, want := range []string{
-		"digraph outcome-model {",
+		`digraph "outcome-model" {`,
 		`"oc-safer-agents" [shape=box, label="oc-safer-agents\n(impact)"];`,
 		`"int-interop" [shape=ellipse`,
 		`"oc-enterprise-require" -> "oc-platform-support" [style=dashed];`,
@@ -199,6 +200,24 @@ func TestDOT(t *testing.T) {
 	}
 	if DOT(g) != dot {
 		t.Error("DOT is not deterministic")
+	}
+}
+
+// TestDOTParsesWithGraphviz checks the output is valid DOT by handing it to
+// Graphviz, which rejects an unquoted graph name such as outcome-model.
+func TestDOTParsesWithGraphviz(t *testing.T) {
+	tool, err := exec.LookPath("dot")
+	if err != nil {
+		t.Skip("graphviz is not installed")
+	}
+	g, err := BuildGraph(fullDoc(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command(tool, "-Tsvg")
+	cmd.Stdin = strings.NewReader(DOT(g))
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("dot rejected the output: %v\n%s", err, out)
 	}
 }
 
