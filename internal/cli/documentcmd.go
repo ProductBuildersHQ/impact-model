@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -269,6 +270,11 @@ func exportDocumentDOCX(cmd *cobra.Command, d *document.Document, d2 string) err
 }
 
 // renderD2 renders each diagram to SVG with the d2 tool, keyed by diagram ID.
+// diagramPad is the margin d2 draws around a diagram, in pixels. Its default
+// of 100 counts toward the diagram's size and so shrinks its labels on a page
+// or slide, which have margins of their own.
+const diagramPad = 20
+
 func renderD2(ctx context.Context, d2 string, diagrams []*document.Diagram) (map[string][]byte, error) {
 	out := map[string][]byte{}
 	if len(diagrams) == 0 {
@@ -289,7 +295,7 @@ func renderD2(ctx context.Context, d2 string, diagrams []*document.Diagram) (map
 		if err := modelio.WriteFile(src, []byte(g.D2)); err != nil {
 			return nil, &ExitError{Code: ExitUsageErr, Err: err}
 		}
-		if err := runTool(ctx, d2, src, svg); err != nil {
+		if err := runTool(ctx, d2, "--pad", strconv.Itoa(diagramPad), src, svg); err != nil {
 			return nil, &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("diagram %s: %w", g.ID, err)}
 		}
 		data, err := os.ReadFile(svg)
