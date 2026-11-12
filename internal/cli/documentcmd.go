@@ -14,6 +14,7 @@ import (
 
 	"github.com/ProductBuildersHQ/outcome-model/internal/zipfix"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/document"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/logicmodel"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/model"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
@@ -275,6 +276,17 @@ func exportDocumentDOCX(cmd *cobra.Command, d *document.Document, d2 string) err
 // or slide, which have margins of their own.
 const diagramPad = 20
 
+// elkArgs tighten ELK's spacing for the theory of change and logic model, which
+// name ELK as their layout engine. The defaults leave room that a page does
+// not have: closer layers and less padding inside each stage's band keep the
+// labels larger once the diagram is fitted to a page.
+var elkArgs = []string{
+	"--layout", "elk",
+	"--elk-nodeNodeBetweenLayers", "30",
+	"--elk-edgeNodeBetweenLayers", "15",
+	"--elk-padding", "[top=45,left=15,bottom=15,right=15]",
+}
+
 func renderD2(ctx context.Context, d2 string, diagrams []*document.Diagram) (map[string][]byte, error) {
 	out := map[string][]byte{}
 	if len(diagrams) == 0 {
@@ -295,7 +307,11 @@ func renderD2(ctx context.Context, d2 string, diagrams []*document.Diagram) (map
 		if err := modelio.WriteFile(src, []byte(g.D2)); err != nil {
 			return nil, &ExitError{Code: ExitUsageErr, Err: err}
 		}
-		if err := runTool(ctx, d2, "--pad", strconv.Itoa(diagramPad), src, svg); err != nil {
+		args := []string{"--pad", strconv.Itoa(diagramPad)}
+		if strings.Contains(g.D2, "layout-engine: "+logicmodel.LayoutEngine) {
+			args = append(args, elkArgs...)
+		}
+		if err := runTool(ctx, d2, append(args, src, svg)...); err != nil {
 			return nil, &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("diagram %s: %w", g.ID, err)}
 		}
 		data, err := os.ReadFile(svg)
