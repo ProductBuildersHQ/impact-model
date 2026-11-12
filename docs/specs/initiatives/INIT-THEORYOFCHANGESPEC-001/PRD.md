@@ -668,6 +668,11 @@ named version, so that both teams work from the same agreed theory.
   suggestions), writes a `ReviewResponse`, and runs `outcome-model import review`. The
   skill MUST also document a manual fallback (download/upload by hand, CSV
   review sheet).
+- **PRD-FR-608** An outcome model MUST export as one document for people to
+  read: a caller chooses the projections and their order (or a named profile,
+  such as theory of change, logic models, VSEM, and MEL for a nonprofit), and
+  receives Markdown, a Word document, or a single-file HTML presentation, with
+  the diagrams rendered. The theory of change MUST be drawable on one page.
 
 ### 4.7 Editing (PRD-FR-7xx)
 

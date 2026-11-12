@@ -99,6 +99,9 @@ no persistence, no statistical inference).
 | TRD-042 | `skills/toc-share-google` per §6.11, with manual fallback | PRD-FR-607 | Skill smoke test with recorded tool outputs |
 | TRD-044 | `problemtree.BuildFor` and `ReportFor` MUST draw one pathway's tree: `pathway.problemStatement` (or `context.problemStatement` when empty) as the core problem, and only the causes and effects whose `pathwayIds` name the pathway; a parent outside the pathway's tree is cut, so the node leads straight to the core problem. The pathway's own outcomes are listed first as addressing a node, then any other outcome labelled with its pathway. The `problem-tree*` reports take `--pathway`; the `definitions` pack draws the whole tree then each pathway tree that is not empty | PRD-FR-515 | Unit tests on shared causes, cut parents, the fallback statement, and labels; definitions golden |
 | TRD-045 | The `dmaic-plan` definition report MUST list, for each pathway marked `dmaic` (or the one pathway named), the core problem and its tree's causes deepest first (Define), the live interventions (Improve), and each indicator serving the pathway with its phase use per `report.DMAICUse` and its gaps per `report.DMAICNeeds`; with no marked pathway it says how to mark one. Cadence uses `model.TimesPerYear`, shared with the OM-DMA lint rules | PRD-FR-516 | Golden on the full fixture; unit tests on phase use and needs |
+| TRD-046 | The `theory-of-change-d2` definition report MUST draw the whole model on one page as D2: the activities and the outcomes from short term to impact, every pathway together. Inputs and outputs are left to the logic model, and an activity is joined to the outcomes its outputs lead to | PRD-FR-608 | Unit tests on the graph (no removed node, no edge twice, joins through outputs); D2 compiles |
+| TRD-047 | `document.Build` MUST assemble the sections asked for, in that order, each section's headings starting one level below its own, with D2 blocks split out as diagrams with stable IDs; the strategy sections MUST come from prism-roadmap's Markdown renderers through `pkg/prismx`; a section the model cannot be drawn as is an error, or is listed as skipped when asked. Markdown, Word (through Pandoc), and HTML presentation outputs MUST be deterministic | PRD-FR-608 | Golden Markdown on the intermediary example; order, nesting, diagram ID, skip, and determinism tests; CLI tests with and without d2; MCP tool test |
+| TRD-048 | The HTML presentation MUST be one file: React from cdnjs, the slides as JSON data, one heading per slide, one diagram per slide, long text and tables carried onto further slides with the table header repeated, and a `?print` view meeting the deck-pdf/v1 contract (`.deck-page`, `data-deck-page`, `window.__deckReady`). Raw HTML in the Markdown stays escaped, except a table cell's line break | PRD-FR-608 | Deck tests on slide kinds, escaping, and determinism; print view checked in a headless browser |
 | TRD-043 | `pkg/problemtree` MUST build the problem tree as layered nodes and edges, export it as a d2vision diagram spec (JSON), and render D2 and Mermaid from that spec; the `problem-tree`, `problem-tree-d2`, and `problem-tree-json` reports per §6.6 | PRD-FR-514 | Golden diagram tests on the examples; layering and cycle tests |
 
 ## 3. System Invariants
@@ -902,6 +905,30 @@ that is not rejected has a scorecard perspective. An intervention that serves
 no objective is left out. A paused intervention has no initiative status.
 Frequencies are written in words as for VSEM.
 
+### 6.20 Documents and presentations (`pkg/document`)
+
+`export document` assembles one document for people to read. The library
+builds a format-neutral `document.Document`: a title, a stamp, and sections in
+the order asked for, each a list of parts that are Markdown (headings from
+level 3) or D2 diagrams with stable IDs (`<section>-<n>`). Writers turn it into
+Markdown (diagrams as D2 blocks or image references), and an HTML presentation;
+the CLI renders diagrams with the external `d2` tool and converts Markdown to
+Word with Pandoc. The library runs no external tools and does no I/O.
+
+| Section | Source |
+|---------|--------|
+| `theory-of-change` | `logicmodel.TheoryOfChangeDiagram` (TRD-046), then the narrative report without its title |
+| `problem-trees` | `problemtree.ReportFor` in D2, for each ID from `report.ProblemTreeIDs` |
+| `logic-models` | Per pathway: the layered D2 diagram, then the logic model table |
+| `outcome-map`, `logframe`, `metrics`, `glossary` | The definition reports of the same names |
+| `vsem`, `ogsm`, `mel`, `dmaic` | `prismx.VSEMMarkdown`, `OGSMMarkdown`, `MELMarkdown`, `DMAICMarkdown` with `Embed`: prism-roadmap's Markdown renderers with `OmitHeader` and `HeadingOffset` |
+
+Profiles name common section lists: `nonprofit` (the default), `strategy`,
+`evaluation`, `improvement`, and `full`. The D2 engine is not linked into the
+binary, since it is MPL-2.0 and the module's dependencies are otherwise
+permissive; the `d2` tool is optional, as `mmdc`, `marp`, and `pandoc` are, and
+`--diagrams d2` writes Markdown without it.
+
 ## 7. Data Design
 
 ### 7.1 Document model (`pkg/model`)
@@ -1142,6 +1169,8 @@ without `--allow-errors`.
 | `@marp-team/marp-cli` (optional external) | latest at use | Deck export to PDF / PPTX / HTML | Low — Markdown deck works without it |
 | `@mermaid-js/mermaid-cli` `mmdc` (optional external) | latest at use | Diagram → SVG for decks, PNG for the `pandoc` profile | Low — Mermaid source works without it |
 | `pandoc` (optional external) | 3.x at use | Markdown → DOCX / PPTX for sharing | Low — Markdown export works without it |
+| `d2` (optional external) | 0.7+ at use | D2 diagrams → SVG for `export document` | Low — Markdown with D2 source works without it |
+| `github.com/yuin/goldmark` | v1.8.7 | Markdown → HTML for the presentation | Medium |
 | Google Drive tooling (external, used only by the `toc-share-google` skill) | gogoogle CLI with `driveutil` (from `INIT-GOGOOGLE-001`) and mcp-google comments/suggestions tools (from `INIT-MCPGOOGLE-001`) | Upload with conversion; read comments, suggestions, Sheets | Low — manual upload and CSV review sheet are the fallback |
 
 JSON Patch is implemented in-house in `pkg/edit` (RFC 6902 plus ID
@@ -1245,3 +1274,4 @@ No open question blocks implementation.
 | 0.14 | 2026-11-12 | John Wang | `export bsc` and `ToBSC` per the Balanced Scorecard mapping (§6.19, TRD-014) |
 | 0.15 | 2026-11-12 | John Wang | Lint OM-NSM-001 to 009 listed, with OM-NSM-008 and 009 for the one metric that matters; the executive report and deck open with what each program steers by (`report.Steering`) |
 | 0.16 | 2026-11-12 | John Wang | `focus.oneMetrics`: the one metric that matters for each period, replacing `focus.oneMetricId`; `Focus.OneMetricAt`, `edit.FocusOn`, and `pathway focus`; VAL-PTH-009 |
+| 0.17 | 2026-11-12 | John Wang | The one-page theory of change (TRD-046), `export document` with sections and profiles (§6.20, TRD-047), and the HTML presentation (TRD-048) |
