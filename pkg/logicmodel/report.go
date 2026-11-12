@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/grokify/d2vision/generate"
+
 	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
@@ -45,26 +47,47 @@ func Diagrams(whole *report.View, pathways []*report.View, f Format) (string, er
 	return b.String(), nil
 }
 
-// TheoryOfChangeDiagram renders the theory of change on one page: the whole
-// outcome model's activities and outcomes, every pathway together, in a fenced
-// block that names its format, then the feedback loops it leaves out.
-func TheoryOfChangeDiagram(whole *report.View, f Format) (string, error) {
-	g := Build(whole).TheoryOfChange()
+// TheoryOfChangeDiagram renders the theory of change of a view: for the whole
+// outcome model, every pathway's activities and outcomes together on one page;
+// for a pathway's view, that pathway's. It is drawn bottom-up (see
+// Graph.TheorySpec) in a fenced block that names its format, under a heading,
+// then the feedback loops it leaves out.
+func TheoryOfChangeDiagram(v *report.View, f Format) (string, error) {
+	g := Build(v).TheoryOfChange()
+	spec := g.TheorySpec()
 	var text string
 	switch f {
 	case FormatMermaid:
 		var err error
-		if text, err = g.Mermaid(); err != nil {
+		if text, err = generate.NewGenerator().Mermaid(spec); err != nil {
 			return "", err
 		}
 	case FormatD2:
-		text = g.D2()
+		text = generate.NewGenerator().Generate(spec)
 	default:
 		return "", fmt.Errorf("logicmodel: unknown diagram format %q", f)
 	}
+	heading := "Theory of change on one page"
+	if v.Filter != "" {
+		heading = "Theory of change: " + strings.Join(strings.Fields(g.Title), " ")
+	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "## Theory of change on one page\n\n```%s\n%s```\n\n", f, text)
+	fmt.Fprintf(&b, "## %s\n\n```%s\n%s```\n\n", heading, f, text)
 	b.WriteString(feedbackNote(g))
+	return b.String(), nil
+}
+
+// TheoryOfChangeDiagrams renders the whole outcome model's theory of change on
+// one page, then each pathway's, which are small enough to read on a page.
+func TheoryOfChangeDiagrams(whole *report.View, pathways []*report.View, f Format) (string, error) {
+	var b strings.Builder
+	for _, v := range append([]*report.View{whole}, pathways...) {
+		text, err := TheoryOfChangeDiagram(v, f)
+		if err != nil {
+			return "", err
+		}
+		b.WriteString(text)
+	}
 	return b.String(), nil
 }
 
