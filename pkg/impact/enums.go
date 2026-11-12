@@ -968,3 +968,52 @@ func AllCauseLevels() []CauseLevel {
 
 // Valid reports whether v is a known CauseLevel.
 func (v CauseLevel) Valid() bool { return slices.Contains(AllCauseLevels(), v) }
+
+// ScorecardPerspective is the Balanced Scorecard perspective an outcome sits
+// in when the model is drawn as a scorecard. The perspectives are listed top
+// first.
+type ScorecardPerspective string
+
+const (
+	// ScorecardMission outcomes are the change the organization exists for;
+	// public and nonprofit scorecards put them on top.
+	ScorecardMission ScorecardPerspective = "mission"
+	// ScorecardFinancial outcomes are how the organization succeeds for those
+	// who fund it.
+	ScorecardFinancial ScorecardPerspective = "financial"
+	// ScorecardCustomer outcomes are what the people it serves experience.
+	ScorecardCustomer ScorecardPerspective = "customer"
+	// ScorecardInternalProcess outcomes are the processes it must excel at.
+	ScorecardInternalProcess ScorecardPerspective = "internal_process"
+	// ScorecardLearningGrowth outcomes are the people, systems, and culture it
+	// must build.
+	ScorecardLearningGrowth ScorecardPerspective = "learning_growth"
+)
+
+// AllScorecardPerspectives returns all scorecard perspectives, top first.
+func AllScorecardPerspectives() []ScorecardPerspective {
+	return []ScorecardPerspective{ScorecardMission, ScorecardFinancial, ScorecardCustomer, ScorecardInternalProcess, ScorecardLearningGrowth}
+}
+
+// Valid reports whether v is a known ScorecardPerspective.
+func (v ScorecardPerspective) Valid() bool { return slices.Contains(AllScorecardPerspectives(), v) }
+
+// Rank is the perspective's position, top first, or -1 for an unknown one.
+func (v ScorecardPerspective) Rank() int { return slices.Index(AllScorecardPerspectives(), v) }
+
+// LeadLag says whether an indicator moves before the result it drives or
+// reports the result after the fact.
+type LeadLag string
+
+const (
+	// LeadIndicator is a performance driver: it moves before the results do.
+	LeadIndicator LeadLag = "lead"
+	// LagIndicator is an outcome measure: it reports a result after the fact.
+	LagIndicator LeadLag = "lag"
+)
+
+// AllLeadLags returns both values.
+func AllLeadLags() []LeadLag { return []LeadLag{LeadIndicator, LagIndicator} }
+
+// Valid reports whether v is a known LeadLag.
+func (v LeadLag) Valid() bool { return slices.Contains(AllLeadLags(), v) }

@@ -110,6 +110,8 @@
         "note": "Inferred from provider roadmap statements."
       },
       "responsibility": "shared",
+      "ownerActorId": "act-proponent",
+      "scorecardPerspective": "customer",
       "deliveredBy": [
         "act-proponent",
         "act-idp"
@@ -357,6 +359,7 @@
       "measurementType": "quantitative",
       "unit": "providers",
       "direction": "increase",
+      "leadLag": "lag",
       "baseline": {
         "value": 0,
         "date": "2026-01-01",
