@@ -10,6 +10,88 @@
   "unreleased": {},
   "releases": [
     {
+      "version": "v0.7.0",
+      "date": "2026-11-12",
+      "highlights": [
+        {
+          "description": "One document from the outcome model: `export document` writes the sections you choose, in order, as Markdown, Word, or a single-file HTML presentation, with every diagram drawn"
+        },
+        {
+          "description": "Every document opens with the organization's background: who it is, its vision, mission, and values, its programs, and how the document serves the mission and vision, from the new `context.background` and the rest of the model"
+        },
+        {
+          "description": "The theory of change and logic model diagrams are drawn to be read on a page: bottom-up, a band per stage, boxes of one width, and arrows routed around boxes with ELK"
+        },
+        {
+          "description": "Word and PowerPoint exports give the same bytes for the same model and date"
+        }
+      ],
+      "added": [
+        {
+          "description": "`export document`: Markdown (diagrams as SVG files, or D2 source with `--diagrams d2`), Word through Pandoc (`--reference-doc`), or an HTML presentation, chosen by the `--out` extension; profiles `nonprofit` (the default), `strategy`, `evaluation`, `improvement`, and `full`, or `--sections` in any order; `--skip-unavailable` leaves out a section the model cannot be drawn as and lists it"
+        },
+        {
+          "description": "The `document` package and `service.Document` build a format-neutral document: sections with headings one level below their own, and D2 diagrams with stable IDs"
+        },
+        {
+          "description": "The HTML presentation: one file with React from cdnjs, a slide per heading and per diagram, long text and tables carried onto further slides, keyboard navigation and slide addresses, and a `?print` view for PDF; a diagram whose labels would be too small once fitted scrolls at a readable width"
+        },
+        {
+          "description": "The `outcome_document` MCP tool returns a document as Markdown with D2 diagrams and the sections it skipped"
+        },
+        {
+          "description": "The `background` section, first in every profile, and `context.background`, plain paragraphs that introduce the organization; without it the perspective actor's description is used"
+        },
+        {
+          "description": "`theory-of-change-d2`: the theory of change on one page, for the whole model or one pathway with `--pathway`, joining each activity to the outcomes its outputs lead to; `logicmodel.TheoryOfChangeDiagram` and `TheoryOfChangeDiagrams`"
+        },
+        {
+          "description": "`prismx.VSEMMarkdown`, `OGSMMarkdown`, `MELMarkdown`, and `DMAICMarkdown` write a projection as Markdown to embed in a larger document, through prism-roadmap's renderers"
+        },
+        {
+          "description": "`report.ProblemTreeIDs` is exported"
+        }
+      ],
+      "changed": [
+        {
+          "description": "`logic-model-d2` and the theory of change are drawn bottom-up, a band per stage with the impact on top, with ELK named as the layout engine so arrows go around boxes; every box is one width, so boxes line up, and labels are wrapped to suit it. `logic-model-layered` (Mermaid) stays left to right, with wrapped labels and stage bands"
+        },
+        {
+          "description": "The document export draws diagrams with a 20-pixel margin, and diagrams that name ELK with tighter ELK spacing, so labels stay larger once fitted to a page"
+        },
+        {
+          "description": "`export docx`, `export pptx`, and Word documents are reproducible: Pandoc runs with `SOURCE_DATE_EPOCH` from `--as-of`, zip entry times are fixed, and images are referred to by name"
+        }
+      ],
+      "fixed": [
+        {
+          "description": "`graph --format dot` quotes the graph name, which Graphviz refused unquoted"
+        }
+      ],
+      "dependencies": [
+        {
+          "description": "Bumped `github.com/grokify/d2vision` from v0.5.0 to v0.6.0, for its legibility package, wrapped labels, fixed box widths, and layout engine setting"
+        },
+        {
+          "description": "Added `github.com/yuin/goldmark` v1.8.7 to write the presentation's Markdown as HTML; the third-party notices list it"
+        }
+      ],
+      "documentation": [
+        {
+          "description": "A documents and presentations guide: formats, profiles, sections, the background, how diagrams are drawn to be read, and the presentation"
+        },
+        {
+          "description": "The reports guide lists `theory-of-change-d2` and describes the bottom-up `logic-model-d2`; the CLI and MCP guides list `export document` and `outcome_document`; the concepts page names `context.background`"
+        },
+        {
+          "description": "The PRD, TRD, and roadmap specify documents and presentations: PRD-FR-608 and 609, TRD-046 to 049, section 6.20, and Phase 31"
+        },
+        {
+          "description": "Release notes for v0.7.0"
+        }
+      ]
+    },
+    {
       "version": "v0.6.0",
       "date": "2026-11-12",
       "highlights": [

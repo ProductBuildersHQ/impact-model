@@ -412,7 +412,7 @@ as a documentation site (`mkdocs serve` runs it locally):
 | Check quality and run a judge | [Quality and judging](docs/guides/quality-and-judging.md) |
 | Connect an AI agent | [MCP server and agent skills](docs/guides/mcp-and-skills.md) |
 | Look up a command | [CLI reference](docs/guides/cli.md) |
-| See what changed, and how to upgrade | [Release notes](docs/releases/v0.6.0.md) and the [changelog](CHANGELOG.md) |
+| See what changed, and how to upgrade | [Release notes](docs/releases/v0.7.0.md) and the [changelog](CHANGELOG.md) |
 
 Background: the [research brief](docs/research/theory-of-change.md), the
 [concepts-to-types map](docs/concepts.md), and the specifications
