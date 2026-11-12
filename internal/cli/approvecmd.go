@@ -30,7 +30,7 @@ Approval is refused, with exit code 1 and nothing written, when:
     there is no approver.
 
 Approver names are people: use a name or role you are happy to publish.`,
-		Example: `  impact-model approve impact-model.yaml --version 1.0.0 --date 2026-04-01 \
+		Example: `  outcome-model approve outcome-model.yaml --version 1.0.0 --date 2026-04-01 \
     --approver "Board chair:chair" --approver "Executive director:director"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error { return runApprove(e, cmd, args[0]) },

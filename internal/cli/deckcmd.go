@@ -46,9 +46,9 @@ With --export <file>, the deck is also rendered by the external tools marp
 (PDF, PPTX, or HTML by file extension) and mmdc (diagrams). If a needed tool
 is not installed, nothing is rendered and the exit code is 3; the Markdown
 can still be written without --export.`,
-		Example: `  impact-model deck workshop impact-model.yaml > workshop.md
-  impact-model deck workshop impact-model.yaml -o workshop.md
-  impact-model deck workshop impact-model.yaml --export workshop.pdf`,
+		Example: `  outcome-model deck workshop outcome-model.yaml > workshop.md
+  outcome-model deck workshop outcome-model.yaml -o workshop.md
+  outcome-model deck workshop outcome-model.yaml --export workshop.pdf`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			doc, err := modelio.LoadDocument(args[0])
@@ -100,13 +100,13 @@ func exportDeck(ctx context.Context, md, target string) error {
 			return toolMissing("mmdc")
 		}
 	}
-	dir, err := os.MkdirTemp("", "impact-model-deck-")
+	dir, err := os.MkdirTemp("", "outcome-model-deck-")
 	if err != nil {
 		return &ExitError{Code: ExitUsageErr, Err: err}
 	}
 	defer func() {
 		if err := os.RemoveAll(dir); err != nil {
-			fmt.Fprintf(os.Stderr, "impact-model: remove %s: %v\n", dir, err)
+			fmt.Fprintf(os.Stderr, "outcome-model: remove %s: %v\n", dir, err)
 		}
 	}()
 
@@ -206,7 +206,7 @@ numbers. The date is --as-of, or the latest date in the observations.
 
 Markdown goes to standard output or --out. With --export <file>, marp and
 mmdc render a PDF, PPTX, or HTML file; if a tool is missing the exit code is 3.`,
-		Example: `  impact-model deck exec impact-model.yaml -O obs-q3.yaml --prev status-q2.json --export exec.pdf`,
+		Example: `  outcome-model deck exec outcome-model.yaml -O obs-q3.yaml --prev status-q2.json --export exec.pdf`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			in, _, err := loadStatus(e, cmd, args[0])
@@ -236,7 +236,7 @@ for discussion, and any decisions already recorded for the period.
 --period names the period whose recorded review is merged (for example
 2026-Q3). --prev-observations names the earlier period's observation files, so
 new themes can be marked. Only stories with granted consent are shown.`,
-		Example: `  impact-model deck learning-review impact-model.yaml -O obs-q3.yaml --prev status-q2.json --period 2026-Q3`,
+		Example: `  outcome-model deck learning-review outcome-model.yaml -O obs-q3.yaml --prev status-q2.json --period 2026-Q3`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			in, sets, err := loadStatus(e, cmd, args[0])
@@ -274,7 +274,7 @@ func newStoryDeckCmd(e *env) *cobra.Command {
 numbers with their caveats, one or two stories they may be told, and a closing
 ask to fill in. A story appears only with granted consent, and its quote only
 where the story may be quoted.`,
-		Example: `  impact-model deck story impact-model.yaml -O obs-q3.yaml --audience aud-funders --export funders.pdf`,
+		Example: `  outcome-model deck story outcome-model.yaml -O obs-q3.yaml --audience aud-funders --export funders.pdf`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			in, sets, err := loadStatus(e, cmd, args[0])

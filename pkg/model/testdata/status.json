@@ -1,5 +1,5 @@
 {
-  "kind": "ImpactModelStatus",
+  "kind": "OutcomeModelStatus",
   "specVersion": "0.1",
   "modelId": "open-agent-auth",
   "asOf": "2026-12-31",

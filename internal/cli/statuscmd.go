@@ -35,8 +35,8 @@ JSON. --out writes the snapshot as JSON to a file whatever the format. With
 --prev, the changes since an earlier snapshot are listed too.
 
 Exit code 1 means the impact model or the observations are invalid.`,
-		Example: `  impact-model status impact-model.yaml -O obs-q3.yaml --as-of 2026-09-30 --out status-q3.json
-  impact-model status impact-model.yaml -O obs-q3.yaml -O obs-q4.yaml --prev status-q3.json`,
+		Example: `  outcome-model status outcome-model.yaml -O obs-q3.yaml --as-of 2026-09-30 --out status-q3.json
+  outcome-model status outcome-model.yaml -O obs-q3.yaml -O obs-q4.yaml --prev status-q3.json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error { return runStatus(e, cmd, args[0]) },
 	}
@@ -234,7 +234,7 @@ again.
 The observation set goes to --out (YAML or JSON by extension) or to standard
 output as YAML. Exit code 0 means every row was imported; 1 means some rows
 were unmatched (the rest are still written); 2 means an error.`,
-		Example: `  impact-model import observations --csv q3.csv --map mapping.yaml --model impact-model.yaml --out obs-q3.yaml --unmatched q3-unmatched.csv`,
+		Example: `  outcome-model import observations --csv q3.csv --map mapping.yaml --model outcome-model.yaml --out obs-q3.yaml --unmatched q3-unmatched.csv`,
 		Args:    cobra.NoArgs,
 		RunE:    func(cmd *cobra.Command, _ []string) error { return runImportObservations(e, cmd) },
 	}

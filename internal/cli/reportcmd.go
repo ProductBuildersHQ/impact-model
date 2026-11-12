@@ -119,13 +119,13 @@ exec, results, assumptions, interventions, evidence-gaps, full, story
 (--audience), headline (--audience narrows it), metric-tree (--pathway narrows it), learning-review (--period), portfolio, narrative, actors, and
 custom (--template, a Go text/template over the report view). narrative,
 actors, and custom also work with no observations.`,
-		Example: `  impact-model report definitions impact-model.yaml --out definitions.md
-  impact-model report logic-model impact-model.yaml --pathway pw-supply
-  impact-model report exec impact-model.yaml -O obs-q3.yaml --prev status-q2.json
-  impact-model report story impact-model.yaml -O obs-q3.yaml --audience aud-funders
-  impact-model report headline impact-model.yaml -O obs-q3.yaml
-  impact-model report metric-tree impact-model.yaml -O obs-q3.yaml --pathway pw-supply
-  impact-model report custom impact-model.yaml --template board.tmpl`,
+		Example: `  outcome-model report definitions outcome-model.yaml --out definitions.md
+  outcome-model report logic-model outcome-model.yaml --pathway pw-supply
+  outcome-model report exec outcome-model.yaml -O obs-q3.yaml --prev status-q2.json
+  outcome-model report story outcome-model.yaml -O obs-q3.yaml --audience aud-funders
+  outcome-model report headline outcome-model.yaml -O obs-q3.yaml
+  outcome-model report metric-tree outcome-model.yaml -O obs-q3.yaml --pathway pw-supply
+  outcome-model report custom outcome-model.yaml --template board.tmpl`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if service.IsStatusReport(args[0]) {
@@ -260,7 +260,7 @@ func newExportCmd(e *env) *cobra.Command {
 		Long: `Export a table for spreadsheets. Tables: ` + strings.Join(report.CSVTables, ", ") + `.
 Multi-valued cells are joined with "; ". The first row is a comment carrying the
 export stamp ("# model:<id> version:<v> hash:<h>"); --no-stamp leaves it off.`,
-		Example: `  impact-model export csv indicators impact-model.yaml --out indicators.csv`,
+		Example: `  outcome-model export csv indicators outcome-model.yaml --out indicators.csv`,
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return render(e, cmd, args[1], true, func(doc *model.Model) (string, error) {

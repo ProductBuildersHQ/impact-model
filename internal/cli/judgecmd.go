@@ -53,7 +53,7 @@ func newJudgeShowCmd(e *env) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "show <model-file>",
 		Short:   "Print the judge bundle",
-		Example: "  impact-model judge show impact-model.yaml --profile development --out bundle.json",
+		Example: "  outcome-model judge show outcome-model.yaml --profile development --out bundle.json",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			b, err := judgeBundle(cmd, args[0])
@@ -83,7 +83,7 @@ func newJudgeRecordCmd(e *env) *cobra.Command {
 The verdict is rejected, with exit code 1, if it judged a different version of
 the impact model, is not a valid evaluation report, scores a category the rubric does
 not have, or leaves a required category unscored.`,
-		Example: "  impact-model judge record impact-model.yaml verdict.json --judge model-a",
+		Example: "  outcome-model judge record outcome-model.yaml verdict.json --judge model-a",
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			b, err := judgeBundle(cmd, args[0])
@@ -127,7 +127,7 @@ partial). The impact model passes when every required category passes, no blocki
 category fails, and the findings stay within the rubric's limits.
 
 Exit code 1 means the impact model does not pass.`,
-		Example: "  impact-model judge summary impact-model.yaml --aggregation majority",
+		Example: "  outcome-model judge summary outcome-model.yaml --aggregation majority",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format, err := outputFormat(cmd)

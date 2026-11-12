@@ -45,7 +45,7 @@ func fullDoc(t *testing.T) *model.Model {
 
 func TestValidateBytes(t *testing.T) {
 	r := ValidateBytes("full.json", fixture(t, "full.json"), modelio.FormatJSON, nil)
-	if !r.Valid() || r.Kind != model.KindImpactModel || len(r.Issues) != 0 || r.Issues == nil {
+	if !r.Valid() || r.Kind != model.KindOutcomeModel || len(r.Issues) != 0 || r.Issues == nil {
 		t.Fatalf("valid document report = %+v", r)
 	}
 
@@ -55,8 +55,8 @@ func TestValidateBytes(t *testing.T) {
 		t.Fatalf("dangling report = %+v", r)
 	}
 
-	r = ValidateBytes("x", []byte(`{"kind":"ImpactModel"}`), modelio.FormatJSON, nil)
-	if r.Valid() || r.Kind != model.KindImpactModel {
+	r = ValidateBytes("x", []byte(`{"kind":"OutcomeModel"}`), modelio.FormatJSON, nil)
+	if r.Valid() || r.Kind != model.KindOutcomeModel {
 		t.Fatalf("schema-invalid report = %+v", r)
 	}
 	r = ValidateBytes("x", []byte(`{`), modelio.FormatJSON, nil)
@@ -187,7 +187,7 @@ func TestDOT(t *testing.T) {
 	}
 	dot := DOT(g)
 	for _, want := range []string{
-		"digraph impact-model {",
+		"digraph outcome-model {",
 		`"oc-safer-agents" [shape=box, label="oc-safer-agents\n(impact)"];`,
 		`"int-interop" [shape=ellipse`,
 		`"oc-enterprise-require" -> "oc-platform-support" [style=dashed];`,
@@ -219,7 +219,7 @@ func TestInitDocument(t *testing.T) {
 		t.Fatalf("starter does not parse back: %v\n%s", err, out)
 	}
 	def, err := InitDocument(InitOptions{Template: "minimal"})
-	if err != nil || def.ID != "my-impact-model" || !strings.HasPrefix(def.Context.ProblemStatement, "TODO") {
+	if err != nil || def.ID != "my-outcome-model" || !strings.HasPrefix(def.Context.ProblemStatement, "TODO") {
 		t.Fatalf("defaults = %+v, %v", def, err)
 	}
 	if _, err := InitDocument(InitOptions{Template: "nope"}); !errors.Is(err, ErrUnknownTemplate) {
@@ -297,7 +297,7 @@ func TestFormatFile(t *testing.T) {
 	}
 
 	bad := filepath.Join(t.TempDir(), "bad.json")
-	if err := os.WriteFile(bad, []byte(`{"kind":"ImpactModel"}`), 0o600); err != nil {
+	if err := os.WriteFile(bad, []byte(`{"kind":"OutcomeModel"}`), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := FormatFile(bad, false, false); err == nil || !strings.Contains(err.Error(), "bad.json") {

@@ -28,7 +28,7 @@ func bundleOf(t *testing.T, theory string, extra ...string) *judge.Bundle {
 func writeVerdict(t *testing.T, dir string, b *judge.Bundle, judgeID string, def rubric.ScoreValue, hash string) string {
 	t.Helper()
 	v := &judge.Verdict{BundleHash: hash}
-	v.Metadata = rubric.ReportMetadata{Document: "impact-model.json", GeneratedAt: time.Date(2026, 3, 1, 0, 0, 0, 0, time.UTC), ReviewerID: judgeID}
+	v.Metadata = rubric.ReportMetadata{Document: "outcome-model.json", GeneratedAt: time.Date(2026, 3, 1, 0, 0, 0, 0, time.UTC), ReviewerID: judgeID}
 	v.ReviewType = "toc"
 	v.Judge = &rubric.JudgeMetadata{JudgeID: judgeID}
 	v.Findings = []rubric.Finding{}
@@ -48,7 +48,7 @@ func writeVerdict(t *testing.T, dir string, b *judge.Bundle, judgeID string, def
 }
 
 func TestJudgeShowRecordSummary(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	dir := filepath.Dir(theory)
 	b := bundleOf(t, theory)
 	if b.Profile != "core" || b.BundleHash == "" {
@@ -96,7 +96,7 @@ func TestJudgeShowRecordSummary(t *testing.T) {
 }
 
 func TestJudgeUsageErrors(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	b := bundleOf(t, theory)
 	good := writeVerdict(t, filepath.Dir(theory), b, "m", rubric.ScorePass, b.BundleHash)
 	for name, args := range map[string][]string{

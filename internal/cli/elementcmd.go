@@ -337,7 +337,7 @@ func newKindCmd(e *env, k edit.ElementKind) *cobra.Command {
 		Long: fmt.Sprintf(`Add, change, or remove %s.
 
 Each command is compiled to a JSON Patch and applied through the same
-validated path as "impact-model patch": it is atomic, and nothing is
+validated path as "outcome-model patch": it is atomic, and nothing is
 written if the result would have more structural errors than before.`, article(k.Name)),
 	}
 	parent.AddCommand(newAddCmd(e, k, flags), newSetCmd(e, k, flags), newRmCmd(e, k))
@@ -443,7 +443,7 @@ func newAddCmd(e *env, k edit.ElementKind, flags []elementFlag) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add <model-file> --id <id> ...",
 		Short: fmt.Sprintf("Add %s", article(k.Name)),
-		Example: fmt.Sprintf(`  impact-model %s add impact-model.yaml --id %s-new %s`,
+		Example: fmt.Sprintf(`  outcome-model %s add outcome-model.yaml --id %s-new %s`,
 			k.Name, shortPrefix(k.Name), exampleFlags(flags)),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -472,7 +472,7 @@ func newAddCmd(e *env, k edit.ElementKind, flags []elementFlag) *cobra.Command {
 	}
 	if k.Name == "evidence" {
 		cmd.Use = "add <model-file> --title <title> ..."
-		cmd.Example = "  impact-model evidence add impact-model.yaml --title \"Annual report\" --url https://example.org/report --accessed 2026-01-15"
+		cmd.Example = "  outcome-model evidence add outcome-model.yaml --title \"Annual report\" --url https://example.org/report --accessed 2026-01-15"
 		cmd.Flags().String("id", "", "the new element's ID, a lowercase kebab-case slug (default: derived from the title)")
 	} else {
 		cmd.Flags().String("id", "", "the new element's ID, a lowercase kebab-case slug (required)")

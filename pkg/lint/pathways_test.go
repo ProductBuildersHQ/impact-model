@@ -20,12 +20,12 @@ func TestCommonMetricNeedsNoExplicitPathwayList(t *testing.T) {
 	d.Metrics = append(d.Metrics, model.Metric{ID: "met-1", Name: "M", Definition: "D", Formula: "F", Layer: model.LayerCommon})
 	addIndicator(d, "ind-1", "oc-s1", func(i *model.Indicator) { i.MetricID = "met-1" })
 
-	if !slices.Contains(fires(t, d, "IMP-MET-001"), "met-1") {
-		t.Fatalf("the common metric is measured in only one of two pathways, but IMP-MET-001 reported %v", fires(t, d, "IMP-MET-001"))
+	if !slices.Contains(fires(t, d, "OM-MET-001"), "met-1") {
+		t.Fatalf("the common metric is measured in only one of two pathways, but OM-MET-001 reported %v", fires(t, d, "OM-MET-001"))
 	}
 	addIndicator(d, "ind-2", "oc-s2", func(i *model.Indicator) { i.MetricID = "met-1" })
-	if got := fires(t, d, "IMP-MET-001"); slices.Contains(got, "met-1") {
-		t.Errorf("both pathways measure the metric through the outcomes they list, but IMP-MET-001 reported %v", got)
+	if got := fires(t, d, "OM-MET-001"); slices.Contains(got, "met-1") {
+		t.Errorf("both pathways measure the metric through the outcomes they list, but OM-MET-001 reported %v", got)
 	}
 }
 
@@ -38,11 +38,11 @@ func TestWeightedMeanWeightIsFoundThroughTheMeasuredOutcome(t *testing.T) {
 		model.Metric{ID: "met-wt", Name: "Weight", Definition: "D", Formula: "F"},
 		model.Metric{ID: "met-w", Name: "W", Definition: "D", Formula: "F", Aggregation: model.AggregationWeightedMean, WeightMetricID: "met-wt"})
 	addIndicator(d, "ind-w", "oc-s1", func(i *model.Indicator) { i.MetricID = "met-w" })
-	if !slices.Contains(fires(t, d, "IMP-MET-003"), "met-w") {
-		t.Fatal("the pathway uses the weighted mean without its weight, but IMP-MET-003 was silent")
+	if !slices.Contains(fires(t, d, "OM-MET-003"), "met-w") {
+		t.Fatal("the pathway uses the weighted mean without its weight, but OM-MET-003 was silent")
 	}
 	addIndicator(d, "ind-wt", "oc-s2", func(i *model.Indicator) { i.MetricID = "met-wt" })
-	if slices.Contains(fires(t, d, "IMP-MET-003"), "met-w") {
-		t.Error("the weight is measured through an outcome the pathway lists, but IMP-MET-003 still reported it")
+	if slices.Contains(fires(t, d, "OM-MET-003"), "met-w") {
+		t.Error("the weight is measured through an outcome the pathway lists, but OM-MET-003 still reported it")
 	}
 }

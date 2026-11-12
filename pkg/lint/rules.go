@@ -93,7 +93,7 @@ func outcomeLevel(d *model.Model, id string) (model.Level, bool) {
 // ---- structure -------------------------------------------------------------
 
 func init() {
-	register("IMP-STR-001", validate.SeverityError, "The impact model has at least one impact outcome.", func(c *Context) []Finding {
+	register("OM-STR-001", validate.SeverityError, "The impact model has at least one impact outcome.", func(c *Context) []Finding {
 		for _, o := range activeOutcomes(c.Doc) {
 			if o.v.Level == model.LevelImpact {
 				return nil
@@ -102,7 +102,7 @@ func init() {
 		return []Finding{{Path: "/outcomes", Message: "no outcome has level impact; say what the change is ultimately for"}}
 	})
 
-	register("IMP-STR-002", validate.SeverityError, "Causal links contain no cycle, unless marked as feedback.", func(c *Context) []Finding {
+	register("OM-STR-002", validate.SeverityError, "Causal links contain no cycle, unless marked as feedback.", func(c *Context) []Finding {
 		var out []Finding
 		for _, cyc := range c.Graph.Cycles() {
 			out = append(out, Finding{Element: cyc[0], Message: fmt.Sprintf("these elements cause each other in a loop: %v; mark the link that closes the loop as feedback, or remove it", cyc)})
@@ -110,9 +110,9 @@ func init() {
 		return out
 	})
 
-	register("IMP-STR-003", validate.SeverityError, "Every outcome below impact leads to an impact outcome.", func(c *Context) []Finding {
+	register("OM-STR-003", validate.SeverityError, "Every outcome below impact leads to an impact outcome.", func(c *Context) []Finding {
 		if !hasImpact(c.Doc) {
-			return nil // IMP-STR-001 reports the missing impact
+			return nil // OM-STR-001 reports the missing impact
 		}
 		dead := map[string]bool{}
 		for _, id := range c.Graph.DeadEnds() {
@@ -127,7 +127,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-STR-004", validate.SeverityWarning, "Every outcome has a precondition or an intervention that targets it.", func(c *Context) []Finding {
+	register("OM-STR-004", validate.SeverityWarning, "Every outcome has a precondition or an intervention that targets it.", func(c *Context) []Finding {
 		orphan := map[string]bool{}
 		for _, id := range c.Graph.Orphans() {
 			orphan[id] = true
@@ -141,7 +141,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-STR-005", validate.SeverityWarning, "An at_least rule on an outcome asks for between one and all of its preconditions.", func(c *Context) []Finding {
+	register("OM-STR-005", validate.SeverityWarning, "An at_least rule on an outcome asks for between one and all of its preconditions.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			if o.v.Logic == nil || o.v.Logic.Type != model.LogicAtLeast {
@@ -155,7 +155,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-STR-006", validate.SeverityWarning, "Links run from lower levels to higher ones, unless they are feedback.", func(c *Context) []Finding {
+	register("OM-STR-006", validate.SeverityWarning, "Links run from lower levels to higher ones, unless they are feedback.", func(c *Context) []Finding {
 		var out []Finding
 		for _, l := range activeLinks(c.Doc) {
 			from, ok1 := outcomeLevel(c.Doc, l.v.From)
@@ -169,7 +169,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-STR-007", validate.SeverityWarning, "Precondition groups are complete: each member leads into the group's target, and groups do not contain each other in a loop.", checkGroups)
+	register("OM-STR-007", validate.SeverityWarning, "Precondition groups are complete: each member leads into the group's target, and groups do not contain each other in a loop.", checkGroups)
 }
 
 func hasImpact(d *model.Model) bool {
@@ -284,14 +284,14 @@ func init() {
 			return out
 		})
 	}
-	linkRule("IMP-LOG-001", "Every link into a medium-term, long-term, or impact outcome says why it holds.",
+	linkRule("OM-LOG-001", "Every link into a medium-term, long-term, or impact outcome says why it holds.",
 		"this link has no rationale; say why the first outcome makes the second more likely",
 		func(l model.CausalLink) bool { return l.Rationale != "" })
-	linkRule("IMP-LOG-002", "Every link into a medium-term, long-term, or impact outcome names an assumption.",
+	linkRule("OM-LOG-002", "Every link into a medium-term, long-term, or impact outcome names an assumption.",
 		"this link has no assumption; say what must be true for it to hold",
 		func(l model.CausalLink) bool { return len(l.AssumptionIDs) > 0 })
 
-	register("IMP-LOG-003", validate.SeverityInfo, "Impact outcomes have at least two preconditions.", func(c *Context) []Finding {
+	register("OM-LOG-003", validate.SeverityInfo, "Impact outcomes have at least two preconditions.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			if o.v.Level == model.LevelImpact && len(incomingSources(c.Doc, o.v.ID)) < 2 {
@@ -301,7 +301,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-LOG-004", validate.SeverityInfo, "Outcomes with several incoming links say whether all, any, or some are needed.", func(c *Context) []Finding {
+	register("OM-LOG-004", validate.SeverityInfo, "Outcomes with several incoming links say whether all, any, or some are needed.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			if len(incomingSources(c.Doc, o.v.ID)) < 2 || o.v.Logic != nil || len(c.Graph.GroupsFor(o.v.ID)) > 0 {

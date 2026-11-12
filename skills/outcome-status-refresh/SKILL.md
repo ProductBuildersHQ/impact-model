@@ -1,5 +1,5 @@
 ---
-name: impact-status-refresh
+name: outcome-status-refresh
 description: Bring a Theory of Change up to date with a new period's numbers from a spreadsheet, and report where it stands and what changed. Use when asked to load monthly or quarterly data, refresh status, or produce an executive summary from a spreadsheet.
 ---
 
@@ -12,7 +12,7 @@ anyone editing JSON, and without a single row disappearing unseen.
 
 ## Inputs
 
-- The theory, `impact-model.yaml`.
+- The theory, `outcome-model.yaml`.
 - The period's spreadsheet, `period.csv`.
 - A column mapping, `mapping.yaml`, which says which columns hold the
   indicator, the date, and the value (see `examples/intermediary/csv/`).
@@ -21,7 +21,7 @@ anyone editing JSON, and without a single row disappearing unseen.
 ## Rules
 
 - Judgment is limited to reading the spreadsheet's headings and helping to
-  write the mapping. Every number comes from a `impact-model` command.
+  write the mapping. Every number comes from a `outcome-model` command.
 - Never type a value into an observation file by hand.
 - Every unmatched row must be shown to the user with its reason. Do not
   guess an indicator for a row that does not match; ask.
@@ -32,8 +32,8 @@ anyone editing JSON, and without a single row disappearing unseen.
 1. Import the sheet. Exit code 1 means some rows did not match:
 
    ```bash
-   impact-model import observations --csv period.csv --map mapping.yaml \
-     --model impact-model.yaml --out observations.yaml --unmatched unmatched.csv
+   outcome-model import observations --csv period.csv --map mapping.yaml \
+     --model outcome-model.yaml --out observations.yaml --unmatched unmatched.csv
    ```
 
    Show the user `unmatched.csv`. Fix the sheet or the mapping, and import again.
@@ -41,19 +41,19 @@ anyone editing JSON, and without a single row disappearing unseen.
 2. Check the observations against the theory:
 
    ```bash
-   impact-model validate observations.yaml --model impact-model.yaml
+   outcome-model validate observations.yaml --model outcome-model.yaml
    ```
 
 3. Compute the status, and compare it with the last period:
 
    ```bash
-   impact-model status impact-model.yaml -O observations.yaml --prev status-prev.json --out status.json
+   outcome-model status outcome-model.yaml -O observations.yaml --prev status-prev.json --out status.json
    ```
 
 4. Render the executive report:
 
    ```bash
-   impact-model report exec impact-model.yaml -O observations.yaml --prev status-prev.json --out exec.md
+   outcome-model report exec outcome-model.yaml -O observations.yaml --prev status-prev.json --out exec.md
    ```
 
 ## Checks to report

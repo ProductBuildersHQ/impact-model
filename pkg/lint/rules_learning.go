@@ -25,9 +25,9 @@ func takenUp(d *model.Model, id string) bool {
 }
 
 func init() {
-	register("IMP-LRN-001", validate.SeverityWarning, "Once the impact model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one.", func(c *Context) []Finding {
+	register("OM-LRN-001", validate.SeverityWarning, "Once the impact model plans evaluations or learning questions, every high or critical assumption not yet shown to hold is taken up by one.", func(c *Context) []Finding {
 		if len(c.Doc.LearningQuestions) == 0 && len(c.Doc.Evaluations) == 0 {
-			return nil // no evaluation plan or learning agenda yet; IMP-ASM-004 covers testing
+			return nil // no evaluation plan or learning agenda yet; OM-ASM-004 covers testing
 		}
 		var out []Finding
 		for i, a := range c.Doc.Assumptions {
@@ -47,7 +47,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-LRN-002", validate.SeverityInfo, "Every open learning question is taken up by a review meeting.", func(c *Context) []Finding {
+	register("OM-LRN-002", validate.SeverityInfo, "Every open learning question is taken up by a review meeting.", func(c *Context) []Finding {
 		reviewed := map[string]bool{}
 		for _, m := range c.Doc.ReviewMeetings {
 			for _, id := range m.QuestionIDs {
@@ -65,7 +65,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-LRN-003", validate.SeverityWarning, "Evaluation dates and learning question due dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-LRN-003", validate.SeverityWarning, "Evaluation dates and learning question due dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil

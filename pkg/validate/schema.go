@@ -75,7 +75,7 @@ func Source(data []byte, f modelio.Format, opts ...Option) (*model.Model, []Issu
 		return nil, issues
 	}
 	kind, err := modelio.DetectKind(data, f)
-	if err != nil || kind != model.KindImpactModel {
+	if err != nil || kind != model.KindOutcomeModel {
 		return nil, nil
 	}
 	doc, err := modelio.ParseDocument(data, f)

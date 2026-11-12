@@ -11,7 +11,7 @@ post-course Net Promoter Score as the guardrail.
 
 ## Files
 
-- `impact-model.yaml`: the impact model
+- `outcome-model.yaml`: the impact model
 - `observations-2026-h1.yaml`: 24 weeks of observations for the weekly indicators
 
 ## Features shown
@@ -30,7 +30,7 @@ post-course Net Promoter Score as the guardrail.
 ## Try it
 
 ```bash
-impact-model lint impact-model.yaml
-impact-model export dmaic impact-model.yaml -O observations-2026-h1.yaml -o dmaic.json
-impact-model export v2mom impact-model.yaml -O observations-2026-h1.yaml -o v2mom.json
+outcome-model lint outcome-model.yaml
+outcome-model export dmaic outcome-model.yaml -O observations-2026-h1.yaml -o dmaic.json
+outcome-model export v2mom outcome-model.yaml -O observations-2026-h1.yaml -o v2mom.json
 ```

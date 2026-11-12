@@ -162,7 +162,7 @@ func TestParseDocumentErrors(t *testing.T) {
 		"bad yaml":       {"kind: [", FormatYAML, ErrInvalidDocument},
 		"two yaml docs":  {"a: 1\n---\nb: 2\n", FormatYAML, ErrInvalidDocument},
 		"non-string key": {"1: a\n", FormatYAML, ErrInvalidDocument},
-		"schema failure": {`{"kind":"ImpactModel"}`, FormatJSON, ErrInvalidDocument},
+		"schema failure": {`{"kind":"OutcomeModel"}`, FormatJSON, ErrInvalidDocument},
 		"unknown field":  {strings.Replace(string(readFixtureNoT("minimal.json")), `"id": "minimal",`, `"id": "minimal", "bogus": true,`, 1), FormatJSON, ErrInvalidDocument},
 		"bad format":     {`{}`, Format("toml"), ErrUnsupportedFormat},
 		"too large":      {strings.Repeat(" ", MaxFileBytes+1), FormatJSON, ErrTooLarge},
@@ -195,7 +195,7 @@ func TestSchemaErrorIncludesLocation(t *testing.T) {
 
 func TestDetectKindAndSchemaName(t *testing.T) {
 	tests := map[string]model.Kind{
-		"minimal.json":      model.KindImpactModel,
+		"minimal.json":      model.KindOutcomeModel,
 		"observations.json": model.KindObservationSet,
 		"status.json":       model.KindStatus,
 		"registry.json":     model.KindActorRegistry,
@@ -262,7 +262,7 @@ func TestLoadDocumentAndObservations(t *testing.T) {
 		t.Fatalf("unsupported extension error = %v", err)
 	}
 	bad := filepath.Join(dir, "bad.json")
-	if err := WriteFile(bad, []byte(`{"kind":"ImpactModel"}`)); err != nil {
+	if err := WriteFile(bad, []byte(`{"kind":"OutcomeModel"}`)); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := LoadDocument(bad); err == nil || !strings.Contains(err.Error(), "bad.json") {

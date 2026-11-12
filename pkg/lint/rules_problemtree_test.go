@@ -27,12 +27,12 @@ func TestProblemTreeRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 		rule, element string
 		defect, fix   func(d *model.Model)
 	}{
-		{"IMP-EFF-001", "eff-1", func(d *model.Model) {}, func(d *model.Model) { relieve(d, "oc-impact") }},
-		{"IMP-EFF-001", "eff-1", func(d *model.Model) {},
+		{"OM-EFF-001", "eff-1", func(d *model.Model) {}, func(d *model.Model) { relieve(d, "oc-impact") }},
+		{"OM-EFF-001", "eff-1", func(d *model.Model) {},
 			func(d *model.Model) { d.Effects[0].OutOfScope = &model.OutOfScope{Reason: "Others handle it."} }},
-		{"IMP-EFF-002", "", func(d *model.Model) { relieve(d, "oc-s1") }, func(d *model.Model) { relieve(d, "oc-impact") }},
+		{"OM-EFF-002", "", func(d *model.Model) { relieve(d, "oc-s1") }, func(d *model.Model) { relieve(d, "oc-impact") }},
 		// An immediate cause listing a structural one as its parent is backwards.
-		{"IMP-CAU-003", "cause-near", func(d *model.Model) {
+		{"OM-CAU-003", "cause-near", func(d *model.Model) {
 			d.Causes = []model.Cause{
 				{ID: "cause-deep", Statement: "No public transport", Level: model.CauseStructural},
 				{ID: "cause-near", Statement: "People miss buses", Level: model.CauseImmediate, Parents: []string{"cause-deep"}},
@@ -64,12 +64,12 @@ func TestProblemTreeRulesSkipRejectedAndAbsent(t *testing.T) {
 	d.Effects[0].Provenance = &model.Provenance{Basis: model.BasisRejected}
 	d.Causes = []model.Cause{{ID: "cause-1", Statement: "No buses", Level: model.CauseStructural,
 		Provenance: &model.Provenance{Basis: model.BasisRejected}}}
-	for _, rule := range []string{"IMP-EFF-001", "IMP-EFF-002", "IMP-CAU-001"} {
+	for _, rule := range []string{"OM-EFF-001", "OM-EFF-002", "OM-CAU-001"} {
 		if got := fires(t, d, rule); len(got) != 0 {
 			t.Errorf("%s reported %v for rejected elements", rule, got)
 		}
 	}
-	if got := fires(t, clean(), "IMP-EFF-002"); len(got) != 0 {
-		t.Errorf("IMP-EFF-002 reported %v on a model with no effects", got)
+	if got := fires(t, clean(), "OM-EFF-002"); len(got) != 0 {
+		t.Errorf("OM-EFF-002 reported %v on a model with no effects", got)
 	}
 }

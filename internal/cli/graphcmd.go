@@ -36,11 +36,11 @@ causal links. Feedback links are excluded from every structural query.
 
 With no query flag, prints a summary. With --format dot, prints the whole
 graph in Graphviz DOT.`,
-		Example: `  impact-model graph impact-model.yaml
-  impact-model graph impact-model.yaml --upstream --from oc-enterprise-require
-  impact-model graph impact-model.yaml --paths --from oc-spec-stable
-  impact-model graph impact-model.yaml --cycles --format json
-  impact-model graph impact-model.yaml --format dot | dot -Tsvg > graph.svg`,
+		Example: `  outcome-model graph outcome-model.yaml
+  outcome-model graph outcome-model.yaml --upstream --from oc-enterprise-require
+  outcome-model graph outcome-model.yaml --paths --from oc-spec-stable
+  outcome-model graph outcome-model.yaml --cycles --format json
+  outcome-model graph outcome-model.yaml --format dot | dot -Tsvg > graph.svg`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format := flagString(cmd, "format")

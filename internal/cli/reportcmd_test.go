@@ -14,7 +14,7 @@ import (
 )
 
 func TestReportKinds(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	for _, kind := range report.DefinitionKinds {
 		r := run(t, "", "report", kind, path)
 		if r.code != ExitOK || r.stdout == "" {
@@ -24,7 +24,7 @@ func TestReportKinds(t *testing.T) {
 }
 
 func TestReportDefinitionsHasEveryPart(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	r := run(t, "", "report", "definitions", path)
 	for _, want := range []string{"## Causal pathways", "## Logic model:", "## Metric definitions", "## Glossary"} {
 		if !strings.Contains(r.stdout, want) {
@@ -34,7 +34,7 @@ func TestReportDefinitionsHasEveryPart(t *testing.T) {
 }
 
 func TestReportPathwayRestrictsLogicModel(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	r := run(t, "", "report", "logic-model", path, "--pathway", "pw-supply")
 	if r.code != ExitOK || strings.Count(r.stdout, "## Logic model:") != 1 {
 		t.Errorf("code %d, output:\n%s%s", r.code, r.stdout, r.err)
@@ -42,7 +42,7 @@ func TestReportPathwayRestrictsLogicModel(t *testing.T) {
 }
 
 func TestReportUnknownKindAndPathway(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	if r := run(t, "", "report", "nope", path); r.code != ExitUsageErr || !strings.Contains(r.err, "glossary") {
 		t.Errorf("unknown kind: code %d, stderr %s", r.code, r.err)
 	}
@@ -52,7 +52,7 @@ func TestReportUnknownKindAndPathway(t *testing.T) {
 }
 
 func TestExportCSVToFile(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	out := path + ".csv"
 	r := run(t, "", "export", "csv", "metrics", path, "--out", out, "--no-stamp")
 	if r.code != ExitOK || r.stdout != "" {
@@ -71,7 +71,7 @@ func TestExportCSVToFile(t *testing.T) {
 }
 
 func TestExportsCarryTheStamp(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	md := run(t, "", "report", "glossary", path, "--as-of", "2026-09-30")
 	for _, want := range []string{"---\ntitle: ", "version: ", `date: "2026-09-30"`, "content-hash: "} {
 		if !strings.Contains(md.stdout, want) {
@@ -93,7 +93,7 @@ func TestExportsCarryTheStamp(t *testing.T) {
 }
 
 func TestStampHashMatchesAcrossFormats(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	md := run(t, "", "report", "glossary", path).stdout
 	csv := run(t, "", "export", "csv", "glossary", path).stdout
 	hash := md[strings.Index(md, "content-hash: \"")+len("content-hash: \""):]
@@ -104,7 +104,7 @@ func TestStampHashMatchesAcrossFormats(t *testing.T) {
 }
 
 func TestExportDocRejectsMismatchedKinds(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	dir := filepath.Dir(path)
 	for _, args := range [][]string{
 		{"export", "docx", "workshop", path, "--out", filepath.Join(dir, "a.docx")},
@@ -119,7 +119,7 @@ func TestExportDocRejectsMismatchedKinds(t *testing.T) {
 }
 
 func TestExportDocNeedsPandoc(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	t.Setenv("PATH", t.TempDir())
 	r := run(t, "", "export", "docx", "glossary", path, "--out", filepath.Join(filepath.Dir(path), "a.docx"))
 	if r.code != ExitToolMissing || !strings.Contains(r.err, "pandoc") {
@@ -134,7 +134,7 @@ func TestExportDocNeedsMmdcForDiagrams(t *testing.T) {
 	if _, err := exec.LookPath("mmdc"); err == nil {
 		t.Skip("mmdc is installed; this test needs it absent")
 	}
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	out := filepath.Join(filepath.Dir(path), "a.docx")
 	r := run(t, "", "export", "docx", "pathway", path, "--out", out)
 	if r.code != ExitToolMissing || !strings.Contains(r.err, "mmdc") {
@@ -149,7 +149,7 @@ func TestExportDocxEndToEnd(t *testing.T) {
 	if _, err := exec.LookPath("pandoc"); err != nil {
 		t.Skip("pandoc is not installed")
 	}
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	out := filepath.Join(filepath.Dir(path), "glossary.docx")
 	r := run(t, "", "export", "docx", "glossary", path, "--out", out, "--as-of", "2026-09-30")
 	if r.code != ExitOK {
@@ -190,7 +190,7 @@ func TestExportDocxEndToEnd(t *testing.T) {
 }
 
 func TestReviewSheetIsStampedAndEmptyResponses(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	r := run(t, "", "export", "review-sheet", path)
 	if r.code != ExitOK {
 		t.Fatalf("code %d, stderr %s", r.code, r.err)
@@ -206,7 +206,7 @@ func TestReviewSheetIsStampedAndEmptyResponses(t *testing.T) {
 }
 
 func TestReviewPacketMarkdownToFile(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	out := path + ".md"
 	if r := run(t, "", "export", "review-packet", path, "--out", out); r.code != ExitOK {
 		t.Fatalf("code %d, stderr %s", r.code, r.err)
@@ -223,7 +223,7 @@ func TestReviewPacketMarkdownToFile(t *testing.T) {
 }
 
 func TestReviewPacketFormatChecks(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	if r := run(t, "", "export", "review-packet", path, "--format", "pdf"); r.code != ExitUsageErr {
 		t.Errorf("bad format: code %d", r.code)
 	}
@@ -241,7 +241,7 @@ func TestReviewPacketDocx(t *testing.T) {
 	if _, err := exec.LookPath("pandoc"); err != nil {
 		t.Skip("pandoc is not installed")
 	}
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	out := filepath.Join(filepath.Dir(path), "packet.docx")
 	if r := run(t, "", "export", "review-packet", path, "--format", "docx", "--out", out); r.code != ExitOK {
 		t.Fatalf("code %d, stderr %s", r.code, r.err)
@@ -256,7 +256,7 @@ func TestReviewPacketDocx(t *testing.T) {
 }
 
 func TestSelectionAndCollectionReportsAndTables(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	for _, kind := range []string{"metric-selection", "collection-plan"} {
 		r := run(t, "", "report", kind, path)
 		wantCode(t, r, ExitOK)
@@ -275,7 +275,7 @@ func TestSelectionAndCollectionReportsAndTables(t *testing.T) {
 }
 
 func TestProjectionReports(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	for kind, want := range map[string]string{
 		"outcome-map": "## Outcome map:", "logframe": "## Logframe:",
 	} {

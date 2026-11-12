@@ -77,7 +77,7 @@ func activePathways(d *model.Model) []indexed[model.Pathway] {
 
 func init() {
 	// ---- interventions, actors, evidence ----------------------------------
-	register("IMP-INT-002", validate.SeverityWarning, "Every intervention has an owner.", func(c *Context) []Finding {
+	register("OM-INT-002", validate.SeverityWarning, "Every intervention has an owner.", func(c *Context) []Finding {
 		var out []Finding
 		for i, in := range c.Doc.Interventions {
 			if !in.Provenance.IsRejected() && in.OwnerID == "" {
@@ -87,7 +87,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-ACT-001", validate.SeverityInfo, "Outcomes in the sphere of influence name the actors who must change.", func(c *Context) []Finding {
+	register("OM-ACT-001", validate.SeverityInfo, "Outcomes in the sphere of influence name the actors who must change.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			if o.v.Sphere == model.SphereInfluence && len(o.v.ActorIDs) == 0 {
@@ -97,7 +97,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-EVD-001", validate.SeverityInfo, "Links into impact outcomes cite evidence.", func(c *Context) []Finding {
+	register("OM-EVD-001", validate.SeverityInfo, "Links into impact outcomes cite evidence.", func(c *Context) []Finding {
 		var out []Finding
 		for _, l := range activeLinks(c.Doc) {
 			if lv, ok := outcomeLevel(c.Doc, l.v.To); ok && lv == model.LevelImpact && len(l.v.EvidenceIDs) == 0 {
@@ -108,7 +108,7 @@ func init() {
 	})
 
 	// ---- pathways and metrics ---------------------------------------------
-	register("IMP-PTH-001", validate.SeverityWarning, "Every pathway contains an outcome that leads to impact.", func(c *Context) []Finding {
+	register("OM-PTH-001", validate.SeverityWarning, "Every pathway contains an outcome that leads to impact.", func(c *Context) []Finding {
 		var out []Finding
 		for _, p := range activePathways(c.Doc) {
 			leads := false
@@ -123,7 +123,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-PTH-002", validate.SeverityInfo, "Every pathway has a selected indicator.", func(c *Context) []Finding {
+	register("OM-PTH-002", validate.SeverityInfo, "Every pathway has a selected indicator.", func(c *Context) []Finding {
 		var out []Finding
 		for _, p := range activePathways(c.Doc) {
 			found := false
@@ -137,7 +137,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-PTH-003", validate.SeverityInfo, "A pathway's outcomes agree with the pathways its indicators name.", func(c *Context) []Finding {
+	register("OM-PTH-003", validate.SeverityInfo, "A pathway's outcomes agree with the pathways its indicators name.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
 			if len(ind.v.PathwayIDs) == 0 {
@@ -159,7 +159,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-MET-001", validate.SeverityWarning, "A common metric is measured in every pathway, or the omission is explained.", func(c *Context) []Finding {
+	register("OM-MET-001", validate.SeverityWarning, "A common metric is measured in every pathway, or the omission is explained.", func(c *Context) []Finding {
 		var out []Finding
 		for i, m := range c.Doc.Metrics {
 			if m.Layer != model.LayerCommon || m.Provenance.IsRejected() {
@@ -185,7 +185,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-MET-003", validate.SeverityWarning, "A weighted mean can be computed: its weight is measured wherever it is used.", func(c *Context) []Finding {
+	register("OM-MET-003", validate.SeverityWarning, "A weighted mean can be computed: its weight is measured wherever it is used.", func(c *Context) []Finding {
 		var out []Finding
 		for i, m := range c.Doc.Metrics {
 			if m.Aggregation != model.AggregationWeightedMean || m.WeightMetricID == "" || m.Provenance.IsRejected() {
@@ -207,7 +207,7 @@ func init() {
 	})
 
 	// ---- audiences, causes, responsibility, equity --------------------------
-	register("IMP-AUD-001", validate.SeverityInfo, "Every audience is the target of something reported.", func(c *Context) []Finding {
+	register("OM-AUD-001", validate.SeverityInfo, "Every audience is the target of something reported.", func(c *Context) []Finding {
 		targeted := map[string]bool{}
 		for _, ind := range activeIndicators(c.Doc) {
 			if isSelected(ind.v) {
@@ -230,7 +230,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-CAU-001", validate.SeverityWarning, "Each deeper cause is addressed by an outcome or set aside with a reason.", func(c *Context) []Finding {
+	register("OM-CAU-001", validate.SeverityWarning, "Each deeper cause is addressed by an outcome or set aside with a reason.", func(c *Context) []Finding {
 		addressed := addressedCauses(c.Doc)
 		var out []Finding
 		for i, cause := range c.Doc.Causes {
@@ -241,7 +241,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-CAU-002", validate.SeverityInfo, "Outcomes address root causes, not only immediate ones.", func(c *Context) []Finding {
+	register("OM-CAU-002", validate.SeverityInfo, "Outcomes address root causes, not only immediate ones.", func(c *Context) []Finding {
 		if len(c.Doc.Causes) == 0 {
 			return nil
 		}
@@ -254,7 +254,7 @@ func init() {
 		return []Finding{{Path: "/causes", Message: "causes are declared but no outcome addresses an underlying or structural one"}}
 	})
 
-	register("IMP-CAU-003", validate.SeverityWarning, "A cause contributes only to causes at its own level or nearer the problem.", func(c *Context) []Finding {
+	register("OM-CAU-003", validate.SeverityWarning, "A cause contributes only to causes at its own level or nearer the problem.", func(c *Context) []Finding {
 		depth := map[model.CauseLevel]int{model.CauseImmediate: 1, model.CauseUnderlying: 2, model.CauseStructural: 3}
 		var out []Finding
 		for i, cause := range c.Doc.Causes {
@@ -273,7 +273,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-RSP-001", validate.SeverityWarning, "Shared and partner outcomes name who delivers them.", func(c *Context) []Finding {
+	register("OM-RSP-001", validate.SeverityWarning, "Shared and partner outcomes name who delivers them.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			need := 0
@@ -292,7 +292,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-RSP-002", validate.SeverityInfo, "Partner and unaddressed outcomes on the way to impact are still measured.", func(c *Context) []Finding {
+	register("OM-RSP-002", validate.SeverityInfo, "Partner and unaddressed outcomes on the way to impact are still measured.", func(c *Context) []Finding {
 		measured := map[string]bool{}
 		for _, ind := range activeIndicators(c.Doc) {
 			measured[ind.v.Measures] = true
@@ -310,7 +310,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-EQU-001", validate.SeverityWarning, "Outcomes for target groups are measured by those groups.", func(c *Context) []Finding {
+	register("OM-EQU-001", validate.SeverityWarning, "Outcomes for target groups are measured by those groups.", func(c *Context) []Finding {
 		var out []Finding
 		for _, o := range activeOutcomes(c.Doc) {
 			var measuring []model.Indicator
@@ -320,7 +320,7 @@ func init() {
 				}
 			}
 			if len(measuring) == 0 {
-				continue // IMP-MEA-001 reports an unmeasured outcome
+				continue // OM-MEA-001 reports an unmeasured outcome
 			}
 			for _, g := range o.v.TargetGroupIDs {
 				if !slices.ContainsFunc(measuring, func(i model.Indicator) bool { return slices.Contains(i.TargetGroupIDs, g) }) {
@@ -331,7 +331,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-VAL-001", validate.SeverityInfo, "The main steps of the impact model have been checked with the people it concerns.", func(c *Context) []Finding {
+	register("OM-VAL-001", validate.SeverityInfo, "The main steps of the impact model have been checked with the people it concerns.", func(c *Context) []Finding {
 		if len(c.Doc.Consultations) == 0 && len(c.Doc.Outcomes) < 3 {
 			return nil // too small a draft to need it
 		}
@@ -349,7 +349,7 @@ func init() {
 	})
 
 	// ---- provenance ---------------------------------------------------------
-	rule := funcRule{id: "IMP-PRV-001", severity: validate.SeverityWarning, from: ProfileFull,
+	rule := funcRule{id: "OM-PRV-001", severity: validate.SeverityWarning, from: ProfileFull,
 		desc: "Every element says where it comes from.",
 		check: func(c *Context) []Finding {
 			var out []Finding
@@ -362,7 +362,7 @@ func init() {
 		}}
 	Register(rule)
 
-	register("IMP-PRV-002", validate.SeverityWarning, "Every stated element cites a source that can be followed.", func(c *Context) []Finding {
+	register("OM-PRV-002", validate.SeverityWarning, "Every stated element cites a source that can be followed.", func(c *Context) []Finding {
 		var out []Finding
 		for _, e := range provenanceElements(c) {
 			if e.prov == nil || e.prov.Basis != model.BasisStated {
@@ -381,7 +381,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-PRV-003", validate.SeverityWarning, "An approved impact model has no hypotheses among what the organization answers for.", func(c *Context) []Finding {
+	register("OM-PRV-003", validate.SeverityWarning, "An approved impact model has no hypotheses among what the organization answers for.", func(c *Context) []Finding {
 		if c.Doc.Metadata.Status != "approved" {
 			return nil
 		}
@@ -394,7 +394,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-PRV-004", validate.SeverityInfo, "Selected indicators say whether their data is available.", func(c *Context) []Finding {
+	register("OM-PRV-004", validate.SeverityInfo, "Selected indicators say whether their data is available.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
 			if isSelected(ind.v) && ind.v.DataAvailability == "" {

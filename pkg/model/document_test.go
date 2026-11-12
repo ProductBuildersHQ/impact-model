@@ -255,7 +255,7 @@ func TestSensitivityRenderable(t *testing.T) {
 
 func TestNewDocument(t *testing.T) {
 	d := NewModel("doc", "problem")
-	if d.Kind != KindImpactModel || d.SpecVersion != SpecVersion || d.Context.ProblemStatement != "problem" {
+	if d.Kind != KindOutcomeModel || d.SpecVersion != SpecVersion || d.Context.ProblemStatement != "problem" {
 		t.Fatalf("unexpected document %+v", d)
 	}
 }

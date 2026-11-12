@@ -292,7 +292,7 @@ func TestRmRejectsDanglingReferencesAndCascadeFixesThem(t *testing.T) {
 }
 
 func TestElementCommandsKeepYAML(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "impact-model.yaml")
+	path := filepath.Join(t.TempDir(), "outcome-model.yaml")
 	wantCode(t, run(t, "", "init", "--id", "demo", "--out", path, "-q"), 0)
 	wantCode(t, run(t, "", "outcome", "add", path, "--id", "oc-second", "--title", "Second condition", "--level", "short_term", "-q"), 0)
 	wantCode(t, run(t, "", "link", "add", path, "--id", "ln-second", "--from", "oc-second", "--to", "oc-first", "--rationale", "Needed first.", "-q"), 0)
@@ -357,7 +357,7 @@ func TestSetCreatesMissingParents(t *testing.T) {
 }
 
 func TestEvidenceAddDerivesTheIDFromTheTitle(t *testing.T) {
-	path := fixtureCopy(t, "minimal.json", "impact-model.json")
+	path := fixtureCopy(t, "minimal.json", "outcome-model.json")
 	for i, want := range []string{"ev-annual-report-2026", "ev-annual-report-2026-2"} {
 		r := run(t, "", "evidence", "add", path, "--title", "Annual Report, 2026!", "--url", "https://example.org/r")
 		if r.code != ExitOK {
@@ -377,14 +377,14 @@ func TestEvidenceAddDerivesTheIDFromTheTitle(t *testing.T) {
 }
 
 func TestEvidenceAddNeedsAnIDWhenTheTitleHasNoLetters(t *testing.T) {
-	path := fixtureCopy(t, "minimal.json", "impact-model.json")
+	path := fixtureCopy(t, "minimal.json", "outcome-model.json")
 	if r := run(t, "", "evidence", "add", path, "--title", "???"); r.code != ExitUsageErr {
 		t.Errorf("code %d, want %d", r.code, ExitUsageErr)
 	}
 }
 
 func TestOtherElementsStillRequireAnID(t *testing.T) {
-	path := fixtureCopy(t, "minimal.json", "impact-model.json")
+	path := fixtureCopy(t, "minimal.json", "outcome-model.json")
 	if r := run(t, "", "outcome", "add", path, "--title", "X", "--level", "impact"); r.code != ExitUsageErr {
 		t.Errorf("code %d, want %d", r.code, ExitUsageErr)
 	}

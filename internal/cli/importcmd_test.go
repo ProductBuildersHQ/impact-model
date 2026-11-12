@@ -33,7 +33,7 @@ func answeredSheet(t *testing.T, theory string, answers map[string]string) strin
 }
 
 func TestImportReviewFromSheet(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	before, err := os.ReadFile(theory)
 	if err != nil {
 		t.Fatal(err)
@@ -77,7 +77,7 @@ func TestImportReviewFromSheet(t *testing.T) {
 }
 
 func TestImportReviewFlagsRowsAndStaleness(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	sheet := answeredSheet(t, theory, map[string]string{"oc-spec-stable": ",,,Why this?"})
 	r := run(t, "", "import", "review", theory, "--from-csv", sheet, "--reviewer", "program staff", "--date", "2026-03-01")
 	wantCode(t, r, ExitInvalid)
@@ -101,7 +101,7 @@ func TestImportReviewFlagsRowsAndStaleness(t *testing.T) {
 }
 
 func TestImportReviewFromJSON(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	resp := run(t, "", "export", "review-sheet", theory)
 	wantCode(t, resp, ExitOK)
 	hash := strings.TrimSpace(strings.SplitN(strings.SplitN(resp.stdout, "hash:", 2)[1], "\r\n", 2)[0])
@@ -116,7 +116,7 @@ func TestImportReviewFromJSON(t *testing.T) {
 }
 
 func TestImportReviewUsageErrors(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	for name, args := range map[string][]string{
 		"no source":           {"import", "review", theory},
 		"csv without who":     {"import", "review", theory, "--from-csv", theory},

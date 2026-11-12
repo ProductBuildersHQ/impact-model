@@ -1,5 +1,5 @@
 ---
-name: impact-learning-review
+name: outcome-learning-review
 description: Prepare and record a learning review for a period of a Theory of Change: what changed, the surprises, assumptions that moved, and questions to discuss. Use when asked to prepare a learning review, a quarterly reflection, or discussion questions from the data.
 ---
 
@@ -12,14 +12,14 @@ already read. The tools find the surprises; the people decide what they mean.
 
 ## Inputs
 
-- `impact-model.yaml` and the period's `observations.yaml`.
+- `outcome-model.yaml` and the period's `observations.yaml`.
 - The previous status snapshot, `status-prev.json`.
 - A period label, such as `2026-Q3`.
 
 ## Rules
 
 - Judgment is limited to wording discussion questions and recording what the
-  group decides. Every number comes from a `impact-model` command.
+  group decides. Every number comes from a `outcome-model` command.
 - Do not decide for the group. Draft questions and record the answers it
   gives, in its words.
 - Show only stories with granted consent. The report already withholds the
@@ -32,15 +32,15 @@ already read. The tools find the surprises; the people decide what they mean.
 1. Compute the status and the changes since last period:
 
    ```bash
-   impact-model status impact-model.yaml -O observations.yaml --prev status-prev.json
+   outcome-model status outcome-model.yaml -O observations.yaml --prev status-prev.json
    ```
 
 2. Render the review material:
 
    ```bash
-   impact-model report learning-review impact-model.yaml -O observations.yaml \
+   outcome-model report learning-review outcome-model.yaml -O observations.yaml \
      --prev status-prev.json --period 2026-Q3 --out review.md
-   impact-model deck learning-review impact-model.yaml -O observations.yaml \
+   outcome-model deck learning-review outcome-model.yaml -O observations.yaml \
      --prev status-prev.json --period 2026-Q3 --out review-deck.md
    ```
 
@@ -51,7 +51,7 @@ already read. The tools find the surprises; the people decide what they mean.
    a `learningReviews` entry for the period in `observations.yaml`, then check it:
 
    ```bash
-   impact-model validate observations.yaml --model impact-model.yaml
+   outcome-model validate observations.yaml --model outcome-model.yaml
    ```
 
 ## Checks to report

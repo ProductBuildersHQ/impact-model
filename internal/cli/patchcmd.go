@@ -32,8 +32,8 @@ stderr.
 Exit codes: 0 applied (or nothing to change); 1 rejected; 2 the patch could
 not be applied (bad path, unknown ID, failed test, or unreadable input).`,
 		Example: `  echo '[{"op":"replace","path":"/outcomes/@oc-skills/title","value":"Staff write strong applications"}]' \
-    | impact-model patch impact-model.yaml -
-  impact-model patch impact-model.yaml changes.json --dry-run`,
+    | outcome-model patch outcome-model.yaml -
+  outcome-model patch outcome-model.yaml changes.json --dry-run`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format, err := outputFormat(cmd)

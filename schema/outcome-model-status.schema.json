@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/impact-model-status.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/outcome-model-status.schema.json",
   "$ref": "#/$defs/Status",
   "$defs": {
     "AssumptionState": {
@@ -284,7 +284,7 @@
         "kind": {
           "type": "string",
           "enum": [
-            "ImpactModelStatus"
+            "OutcomeModelStatus"
           ]
         },
         "specVersion": {

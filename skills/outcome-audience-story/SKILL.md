@@ -1,5 +1,5 @@
 ---
-name: impact-audience-story
+name: outcome-audience-story
 description: Draft a short story or update for one audience (funders, board, members) from a Theory of Change's numbers and consented stories. Use when asked to write an annual report section, a funder update, or a board summary from the data.
 ---
 
@@ -12,7 +12,7 @@ and stories the people in them agreed to share.
 
 ## Inputs
 
-- `impact-model.yaml` and the period's `observations.yaml`.
+- `outcome-model.yaml` and the period's `observations.yaml`.
 - The audience, by ID (see `audiences` in the theory).
 
 ## Rules
@@ -33,7 +33,7 @@ and stories the people in them agreed to share.
 1. Produce the scaffold:
 
    ```bash
-   impact-model report story impact-model.yaml -O observations.yaml --audience <id> --out scaffold.md
+   outcome-model report story outcome-model.yaml -O observations.yaml --audience <id> --out scaffold.md
    ```
 
 2. Write the draft from the scaffold only (see `templates/story-draft.md` for
@@ -46,7 +46,7 @@ and stories the people in them agreed to share.
 4. For slides, generate the deck from the same data:
 
    ```bash
-   impact-model deck story impact-model.yaml -O observations.yaml --audience <id> --out story-deck.md
+   outcome-model deck story outcome-model.yaml -O observations.yaml --audience <id> --out story-deck.md
    ```
 
 ## Checks to report

@@ -1,5 +1,5 @@
 ---
-name: impact-author
+name: outcome-author
 description: Create or revise a Theory of Change with validated edits. Use when asked to add, change, or remove outcomes, links, assumptions, indicators, actors, or other elements of a Theory of Change, or to check and tidy one.
 ---
 
@@ -13,10 +13,10 @@ edit is checked before it is written, and every edit is small enough to read.
 ## Rules
 
 - Judgment is limited to deciding what the theory should say. Every check
-  comes from a `impact-model` command.
-- Change the document only with the element commands (`impact-model
+  comes from a `outcome-model` command.
+- Change the document only with the element commands (`outcome-model
   outcome add`, `link set`, `assumption rm --cascade`, and so on) or with
-  `impact-model patch`. Never edit the file by hand.
+  `outcome-model patch`. Never edit the file by hand.
 - Run an edit with `--dry-run` first when it is not obviously safe. A
   rejected edit writes nothing, and the command says which issues it would
   have added.
@@ -36,36 +36,36 @@ edit is checked before it is written, and every edit is small enough to read.
 1. Check the starting point:
 
    ```bash
-   impact-model validate impact-model.yaml
+   outcome-model validate outcome-model.yaml
    ```
 
 2. Preview each edit, then make it:
 
    ```bash
-   impact-model outcome set impact-model.yaml <id> --title "<new title>" --dry-run
-   impact-model outcome set impact-model.yaml <id> --title "<new title>"
-   impact-model link add impact-model.yaml --id <id> --from <outcome> --to <outcome> --rationale "<why>"
-   impact-model assumption add impact-model.yaml --id <id> --statement "<what must be true>" --applies-to <link-id>
+   outcome-model outcome set outcome-model.yaml <id> --title "<new title>" --dry-run
+   outcome-model outcome set outcome-model.yaml <id> --title "<new title>"
+   outcome-model link add outcome-model.yaml --id <id> --from <outcome> --to <outcome> --rationale "<why>"
+   outcome-model assumption add outcome-model.yaml --id <id> --statement "<what must be true>" --applies-to <link-id>
    ```
 
    For a change several elements share, write one patch and apply it as a unit:
 
    ```bash
-   impact-model patch impact-model.yaml change.patch.json --dry-run
-   impact-model patch impact-model.yaml change.patch.json
+   outcome-model patch outcome-model.yaml change.patch.json --dry-run
+   outcome-model patch outcome-model.yaml change.patch.json
    ```
 
 3. Check the result and the quality of the theory:
 
    ```bash
-   impact-model validate impact-model.yaml
-   impact-model lint impact-model.yaml
+   outcome-model validate outcome-model.yaml
+   outcome-model lint outcome-model.yaml
    ```
 
 4. Show what changed since the last version, if one is saved:
 
    ```bash
-   impact-model diff previous.yaml impact-model.yaml
+   outcome-model diff previous.yaml outcome-model.yaml
    ```
 
 ## Checks to report
@@ -76,5 +76,5 @@ edit is checked before it is written, and every edit is small enough to read.
 
 ## Outputs
 
-The edited `impact-model.yaml`. Tell the user which warnings remain and offer to
+The edited `outcome-model.yaml`. Tell the user which warnings remain and offer to
 fix them.

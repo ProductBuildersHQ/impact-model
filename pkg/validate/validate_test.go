@@ -301,7 +301,7 @@ func TestSchemaIssues(t *testing.T) {
 	if issues := Schema(readFixture(t, "full.json"), modelio.FormatJSON); issues != nil {
 		t.Fatalf("valid document produced schema issues:%s", describe(issues))
 	}
-	bad := `{"kind":"ImpactModel","specVersion":"0.1","id":"a","metadata":{},"context":{},"outcomes":[{"id":"o","level":"huge"}],"bogus":1}`
+	bad := `{"kind":"OutcomeModel","specVersion":"0.1","id":"a","metadata":{},"context":{},"outcomes":[{"id":"o","level":"huge"}],"bogus":1}`
 	issues := Schema([]byte(bad), modelio.FormatJSON)
 	want := map[string]string{
 		"/context":          "problemStatement",
@@ -366,7 +366,7 @@ func TestSource(t *testing.T) {
 	}
 
 	// Violates the schema: no document is returned.
-	doc, issues = Source([]byte(`{"kind":"ImpactModel"}`), modelio.FormatJSON)
+	doc, issues = Source([]byte(`{"kind":"OutcomeModel"}`), modelio.FormatJSON)
 	if doc != nil || len(issues) == 0 {
 		t.Fatalf("schema failure: doc=%v issues:%s", doc != nil, describe(issues))
 	}

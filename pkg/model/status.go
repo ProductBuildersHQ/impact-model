@@ -79,7 +79,7 @@ func (v AssumptionSource) Valid() bool { return slices.Contains(AllAssumptionSou
 // periods.
 type Status struct {
 	Schema      string        `json:"$schema,omitempty"`
-	Kind        Kind          `json:"kind" jsonschema:"required,enum=ImpactModelStatus"`
+	Kind        Kind          `json:"kind" jsonschema:"required,enum=OutcomeModelStatus"`
 	SpecVersion string        `json:"specVersion" jsonschema:"required"`
 	ModelID     string        `json:"modelId" jsonschema:"required"`
 	AsOf        string        `json:"asOf" jsonschema:"required,format=date"`

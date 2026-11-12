@@ -42,7 +42,7 @@ func Profiles() []Profile { return []Profile{ProfileDraft, ProfileStandard, Prof
 func (p Profile) Valid() bool { return slices.Contains(Profiles(), p) }
 
 // Categories group rules in the report. A rule's category is the middle part
-// of its ID, such as STR in IMP-STR-001.
+// of its ID, such as STR in OM-STR-001.
 const (
 	// CategorySTR is the structural category, which runs in every profile.
 	CategorySTR = "STR"
@@ -77,7 +77,7 @@ type Context struct {
 
 // Rule is one check.
 type Rule interface {
-	// ID is the stable identifier, such as IMP-STR-001.
+	// ID is the stable identifier, such as OM-STR-001.
 	ID() string
 	// Severity is the severity of every finding the rule reports.
 	Severity() validate.Severity
@@ -88,7 +88,7 @@ type Rule interface {
 	Check(*Context) []Finding
 }
 
-// Category returns the category of a rule ID: IMP-STR-001 is STR.
+// Category returns the category of a rule ID: OM-STR-001 is STR.
 func Category(id string) string {
 	parts := strings.Split(id, "-")
 	if len(parts) != 3 {
@@ -134,8 +134,8 @@ func NewRegistry() *Registry { return &Registry{rules: map[string]Rule{}} }
 // Add registers a rule. An empty or repeated ID is an error.
 func (g *Registry) Add(r Rule) error {
 	id := r.ID()
-	if Category(id) == "" || !strings.HasPrefix(id, "IMP-") {
-		return fmt.Errorf("lint: rule ID %q is not of the form IMP-<CAT>-<NNN>", id)
+	if Category(id) == "" || !strings.HasPrefix(id, "OM-") {
+		return fmt.Errorf("lint: rule ID %q is not of the form OM-<CAT>-<NNN>", id)
 	}
 	if _, dup := g.rules[id]; dup {
 		return fmt.Errorf("%w: %s", ErrDuplicateRule, id)
@@ -279,7 +279,7 @@ var categoryNames = map[string]string{
 func (r *Result) SummaryReport(project, version string, generatedAt time.Time) *summary.SummaryReport {
 	rep := &summary.SummaryReport{
 		Project: project, Version: version, Phase: "THEORY OF CHANGE LINT (" + strings.ToUpper(string(r.Profile)) + ")",
-		Teams: []summary.TeamSection{}, GeneratedAt: generatedAt, GeneratedBy: "impact-model lint",
+		Teams: []summary.TeamSection{}, GeneratedAt: generatedAt, GeneratedBy: "outcome-model lint",
 	}
 	byCat := map[string][]summary.TaskResult{}
 	var cats []string

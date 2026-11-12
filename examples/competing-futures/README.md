@@ -23,7 +23,7 @@ buyers" means the same thing in each.
 ## Check it
 
 ```bash
-impact-model validate future-open.yaml future-bundle.yaml future-extension.yaml \
+outcome-model validate future-open.yaml future-bundle.yaml future-extension.yaml \
   --registry actors.yaml --futures
 ```
 

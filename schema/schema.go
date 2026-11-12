@@ -28,9 +28,9 @@ const suffix = ".schema.json"
 
 // Schema names.
 const (
-	ImpactModel    = "impact-model"
+	OutcomeModel   = "outcome-model"
 	ObservationSet = "observation-set"
-	Status         = "impact-model-status"
+	Status         = "outcome-model-status"
 	StatusDiff     = "status-diff"
 	ActorRegistry  = "actor-registry"
 	ReviewResponse = "review-response"

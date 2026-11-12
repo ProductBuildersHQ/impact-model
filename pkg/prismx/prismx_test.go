@@ -18,7 +18,7 @@ import (
 
 func example(t *testing.T) (*model.Model, *model.Status) {
 	t.Helper()
-	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

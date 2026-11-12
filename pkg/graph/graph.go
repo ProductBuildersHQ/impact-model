@@ -546,7 +546,7 @@ func (g *Graph) Orphans() []string {
 
 // DeadEnds returns every node except impact outcomes that has no
 // non-feedback path to an impact outcome, in node order. A document with no
-// impact outcome makes every node a dead end; lint rule IMP-STR-001
+// impact outcome makes every node a dead end; lint rule OM-STR-001
 // reports that case.
 func (g *Graph) DeadEnds() []string {
 	reach := g.canReachImpact()

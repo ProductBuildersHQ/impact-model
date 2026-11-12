@@ -1,5 +1,5 @@
 ---
-name: impact-draft-from-sources
+name: outcome-draft-from-sources
 description: Draft a Theory of Change for an organization from its public pages and reports, recording each source as evidence and labelling every element as stated, inferred, or hypothesis. Use when asked to draft, bootstrap, or sketch a Theory of Change from websites, reports, or other documents.
 ---
 
@@ -20,9 +20,9 @@ a source.
 ## Rules
 
 - Judgment is limited to reading sources, drafting text, and asking the
-  user. Every check and every number comes from a `impact-model` command.
-- Change the document only with `impact-model evidence add` and
-  `impact-model patch`. Never edit the file by hand.
+  user. Every check and every number comes from a `outcome-model` command.
+- Change the document only with `outcome-model evidence add` and
+  `outcome-model patch`. Never edit the file by hand.
 - Copy excerpts verbatim from the source. Keep them short.
 - Basis, one per element:
   - `stated`: a source says it. Cite it in `provenance.evidenceIds`.
@@ -39,14 +39,14 @@ a source.
 1. Start the document:
 
    ```bash
-   impact-model init --id <slug> --name "<Organization>" --out impact-model.yaml
+   outcome-model init --id <slug> --name "<Organization>" --out outcome-model.yaml
    ```
 
 2. Record each source. Repeat for every page or report. The ID is derived
    from the title (`ev-<title-slug>`) when `--id` is omitted:
 
    ```bash
-   impact-model evidence add impact-model.yaml \
+   outcome-model evidence add outcome-model.yaml \
      --title "<page title>" --url <url> --accessed <YYYY-MM-DD> \
      --sensitivity public --excerpt "<verbatim quote>"
    ```
@@ -55,7 +55,7 @@ a source.
    each element with a `provenance` object, then apply it:
 
    ```bash
-   impact-model patch impact-model.yaml draft.patch.json
+   outcome-model patch outcome-model.yaml draft.patch.json
    ```
 
    If the patch is rejected, read the reported issues, fix the patch, and
@@ -64,13 +64,13 @@ a source.
 4. Check the document:
 
    ```bash
-   impact-model validate impact-model.yaml
+   outcome-model validate outcome-model.yaml
    ```
 
 5. Render the workshop pack for the organization to review:
 
    ```bash
-   impact-model report definitions impact-model.yaml --out definitions.md
+   outcome-model report definitions outcome-model.yaml --out definitions.md
    ```
 
 ## Checks to report
@@ -82,5 +82,5 @@ a source.
 
 ## Outputs
 
-`impact-model.yaml` and `definitions.md`. Tell the user which elements are
+`outcome-model.yaml` and `definitions.md`. Tell the user which elements are
 inferred or hypothesis: those are the first to ask the organization about.

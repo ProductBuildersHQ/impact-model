@@ -32,10 +32,10 @@ json the output is a structured-evaluation summary report. The impact model must
 validate first; a document that does not is exit code 1.
 
 Use --list to print the rules instead of running them.`,
-		Example: `  impact-model lint impact-model.yaml
-  impact-model lint impact-model.yaml --profile draft
-  impact-model lint impact-model.yaml --disable IMP-PRV-001,IMP-AUD-001 --format json
-  impact-model lint --list`,
+		Example: `  outcome-model lint outcome-model.yaml
+  outcome-model lint outcome-model.yaml --profile draft
+  outcome-model lint outcome-model.yaml --disable OM-PRV-001,OM-AUD-001 --format json
+  outcome-model lint --list`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error { return runLint(e, cmd, args) },
 	}

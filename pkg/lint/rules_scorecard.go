@@ -13,7 +13,7 @@ import (
 // strategy map that runs upward, and objectives that are owned and measured
 // by lead or lag indicators.
 func init() {
-	register("IMP-BSC-001", validate.SeverityWarning, "The strategy map runs upward: no scorecard objective leads to one in a lower perspective.", func(c *Context) []Finding {
+	register("OM-BSC-001", validate.SeverityWarning, "The strategy map runs upward: no scorecard objective leads to one in a lower perspective.", func(c *Context) []Finding {
 		var out []Finding
 		forObjectives(c.Doc, func(i int, o model.Outcome) {
 			for _, id := range c.Doc.ScorecardContributesTo(o.ID) {
@@ -28,7 +28,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-BSC-002", validate.SeverityInfo, "Every scorecard objective names the actor who answers for it.", func(c *Context) []Finding {
+	register("OM-BSC-002", validate.SeverityInfo, "Every scorecard objective names the actor who answers for it.", func(c *Context) []Finding {
 		var out []Finding
 		forObjectives(c.Doc, func(i int, o model.Outcome) {
 			if o.OwnerID == "" {
@@ -39,7 +39,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-BSC-003", validate.SeverityInfo, "Every scorecard objective has an indicator.", func(c *Context) []Finding {
+	register("OM-BSC-003", validate.SeverityInfo, "Every scorecard objective has an indicator.", func(c *Context) []Finding {
 		var out []Finding
 		forObjectives(c.Doc, func(i int, o model.Outcome) {
 			for _, ind := range c.Doc.Indicators {
@@ -53,7 +53,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-BSC-004", validate.SeverityInfo, "Every indicator of a scorecard objective says whether it is a lead or a lag measure.", func(c *Context) []Finding {
+	register("OM-BSC-004", validate.SeverityInfo, "Every indicator of a scorecard objective says whether it is a lead or a lag measure.", func(c *Context) []Finding {
 		objective := map[string]bool{}
 		for _, o := range c.Doc.ScorecardObjectives() {
 			objective[o.ID] = true

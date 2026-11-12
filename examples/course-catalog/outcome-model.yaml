@@ -1,4 +1,4 @@
-kind: ImpactModel
+kind: OutcomeModel
 specVersion: "0.1"
 id: lanternwood-catalog
 metadata:

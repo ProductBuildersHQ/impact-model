@@ -39,9 +39,9 @@ func lastTarget(i model.Indicator) string {
 
 func init() {
 	// ---- measurement -------------------------------------------------------
-	register("IMP-MEA-001", validate.SeverityError, "Every outcome within the declared ceiling of accountability is measured by an indicator, or stood in for by one.", func(c *Context) []Finding {
+	register("OM-MEA-001", validate.SeverityError, "Every outcome within the declared ceiling of accountability is measured by an indicator, or stood in for by one.", func(c *Context) []Finding {
 		if c.Doc.Ceiling == nil {
-			return nil // without a ceiling nothing is known to be owned; IMP-ACC-001 asks for one
+			return nil // without a ceiling nothing is known to be owned; OM-ACC-001 asks for one
 		}
 		measured := map[string]bool{}
 		for _, ind := range activeIndicators(c.Doc) {
@@ -59,7 +59,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-MEA-002", validate.SeverityWarning, "Every indicator has a baseline, a target, a data source, and a frequency.", func(c *Context) []Finding {
+	register("OM-MEA-002", validate.SeverityWarning, "Every indicator has a baseline, a target, a data source, and a frequency.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
 			var missing []string
@@ -82,7 +82,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-MEA-003", validate.SeverityWarning, "Quantitative indicators have a unit and a direction.", func(c *Context) []Finding {
+	register("OM-MEA-003", validate.SeverityWarning, "Quantitative indicators have a unit and a direction.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
 			if t := ind.v.MeasurementType; t != model.MeasurementQuantitative && t != "" {
@@ -102,7 +102,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-MEA-004", validate.SeverityWarning, "Target dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-MEA-004", validate.SeverityWarning, "Target dates fall within the time horizon of the impact model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil
@@ -119,7 +119,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-MEA-005", validate.SeverityWarning, "An outcome is not due before the outcomes that lead to it.", func(c *Context) []Finding {
+	register("OM-MEA-005", validate.SeverityWarning, "An outcome is not due before the outcomes that lead to it.", func(c *Context) []Finding {
 		due := map[string]string{} // outcome ID to its latest target date
 		for _, ind := range activeIndicators(c.Doc) {
 			if d := lastTarget(ind.v); d > due[ind.v.Measures] {
@@ -143,14 +143,14 @@ func init() {
 	})
 
 	// ---- accountability and claims ----------------------------------------
-	register("IMP-ACC-001", validate.SeverityWarning, "A ceiling of accountability is declared.", func(c *Context) []Finding {
+	register("OM-ACC-001", validate.SeverityWarning, "A ceiling of accountability is declared.", func(c *Context) []Finding {
 		if c.Doc.Ceiling == nil {
 			return []Finding{{Path: "/ceilingOfAccountability", Message: "no ceiling of accountability; say which outcomes the organization answers for and which it only contributes to"}}
 		}
 		return nil
 	})
 
-	register("IMP-ACC-002", validate.SeverityWarning, "Outcomes above the ceiling of accountability are not owned.", func(c *Context) []Finding {
+	register("OM-ACC-002", validate.SeverityWarning, "Outcomes above the ceiling of accountability are not owned.", func(c *Context) []Finding {
 		if c.Doc.Ceiling == nil {
 			return nil
 		}
@@ -164,7 +164,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-CLM-001", validate.SeverityWarning, "Indicators above the ceiling of accountability claim contribution, not attribution.", func(c *Context) []Finding {
+	register("OM-CLM-001", validate.SeverityWarning, "Indicators above the ceiling of accountability claim contribution, not attribution.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
 			if _, isOutcome := c.Doc.Outcome(ind.v.Measures); isOutcome && !c.Graph.BelowCeiling(ind.v.Measures) && ind.v.EffectiveClaim() == model.ClaimAttribution {
@@ -188,26 +188,26 @@ func init() {
 			return check(rep, c.Doc.Budget)
 		})
 	}
-	budget("IMP-BUD-001", validate.SeverityWarning, "Selected indicators fit the staff time budget.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
+	budget("OM-BUD-001", validate.SeverityWarning, "Selected indicators fit the staff time budget.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
 		if ch := r.Budget.StaffMinutesPerWeek; ch.Over {
 			return []Finding{{Path: "/measurementBudget/staffMinutesPerWeek", Message: fmt.Sprintf("selected indicators take %.4g staff minutes a week; the budget is %.4g", ch.Actual, ch.Limit)}}
 		}
 		return nil
 	})
-	budget("IMP-BUD-002", validate.SeverityWarning, "Selected indicators fit the question budget per respondent.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
+	budget("OM-BUD-002", validate.SeverityWarning, "Selected indicators fit the question budget per respondent.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
 		if ch := r.Budget.QuestionsPerYear; ch.Over {
 			return []Finding{{Path: "/measurementBudget/maxQuestionsPerRespondentPerYear", Message: fmt.Sprintf("selected indicators ask each respondent %.4g questions a year; the budget is %.4g", ch.Actual, ch.Limit)}}
 		}
 		return nil
 	})
-	budget("IMP-BUD-003", validate.SeverityInfo, "The number of selected indicators is within the target range.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
+	budget("OM-BUD-003", validate.SeverityInfo, "The number of selected indicators is within the target range.", func(r *burden.Report, b *model.MeasurementBudget) []Finding {
 		if sm := r.Budget.SelectedMetrics; sm.Declared && !sm.Within {
 			return []Finding{{Path: "/measurementBudget/targetSelectedMetrics", Message: fmt.Sprintf("%d indicators are selected; the target is %d to %d", sm.Actual, sm.Min, sm.Max)}}
 		}
 		return nil
 	})
 
-	register("IMP-BUD-004", validate.SeverityInfo, "Selected indicators say how their data is collected.", func(c *Context) []Finding {
+	register("OM-BUD-004", validate.SeverityInfo, "Selected indicators say how their data is collected.", func(c *Context) []Finding {
 		var out []Finding
 		for _, ind := range activeIndicators(c.Doc) {
 			if isSelected(ind.v) && (ind.v.Collection == nil || ind.v.Collection.Mode == "") {
@@ -232,13 +232,13 @@ func init() {
 			return out
 		})
 	}
-	asm("IMP-ASM-001", validate.SeverityWarning, "High and critical assumptions say how they will be tested.",
+	asm("OM-ASM-001", validate.SeverityWarning, "High and critical assumptions say how they will be tested.",
 		"a high or critical assumption needs a description of how it will be tested",
 		func(_ *Context, a model.Assumption) bool { return critical(a) && a.Test == "" })
-	asm("IMP-ASM-002", validate.SeverityWarning, "High and critical assumptions cite evidence.",
+	asm("OM-ASM-002", validate.SeverityWarning, "High and critical assumptions cite evidence.",
 		"a high or critical assumption cites no evidence",
 		func(_ *Context, a model.Assumption) bool { return critical(a) && len(a.EvidenceIDs) == 0 })
-	asm("IMP-ASM-004", validate.SeverityWarning, "Assumptions that need testing say how, and are watched or tied to a decision, a learning question, or an evaluation.",
+	asm("OM-ASM-004", validate.SeverityWarning, "Assumptions that need testing say how, and are watched or tied to a decision, a learning question, or an evaluation.",
 		"this assumption needs testing but has no test, or no monitoring indicator, related decision, learning question, or evaluation",
 		func(c *Context, a model.Assumption) bool {
 			if !a.NeedsTesting {
@@ -255,7 +255,7 @@ func init() {
 			return a.Test == "" || !watched
 		})
 
-	register("IMP-ASM-003", validate.SeverityInfo, "The impact model states at least one contextual or external assumption.", func(c *Context) []Finding {
+	register("OM-ASM-003", validate.SeverityInfo, "The impact model states at least one contextual or external assumption.", func(c *Context) []Finding {
 		if len(c.Doc.Assumptions) == 0 {
 			return nil // nothing is assumed yet; other rules say so
 		}
@@ -267,7 +267,7 @@ func init() {
 		return []Finding{{Path: "/assumptions", Message: "no assumption is about the context or outside forces; impact models that look only inward miss what can go wrong around them"}}
 	})
 
-	register("IMP-ASM-005", validate.SeverityInfo, "An impact model with shared or partner outcomes states a partnership assumption.", func(c *Context) []Finding {
+	register("OM-ASM-005", validate.SeverityInfo, "An impact model with shared or partner outcomes states a partnership assumption.", func(c *Context) []Finding {
 		shared := false
 		for _, o := range activeOutcomes(c.Doc) {
 			r := o.v.EffectiveResponsibility()
@@ -284,7 +284,7 @@ func init() {
 		return []Finding{{Path: "/assumptions", Message: "some outcomes depend on partners but no assumption says what the partners must do"}}
 	})
 
-	register("IMP-RSK-001", validate.SeverityInfo, "High and critical assumptions have a related risk with a mitigation.", func(c *Context) []Finding {
+	register("OM-RSK-001", validate.SeverityInfo, "High and critical assumptions have a related risk with a mitigation.", func(c *Context) []Finding {
 		var out []Finding
 		for i, a := range c.Doc.Assumptions {
 			if a.Provenance.IsRejected() || !critical(a) {

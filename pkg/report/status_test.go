@@ -15,7 +15,7 @@ import (
 // the later snapshot with the changes since the earlier.
 func exampleInput(t *testing.T) StatusInput {
 	t.Helper()
-	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

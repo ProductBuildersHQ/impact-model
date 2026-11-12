@@ -23,7 +23,7 @@ func run(t *testing.T, args ...string) string {
 	t.Helper()
 	var out, errOut bytes.Buffer
 	if code := cli.Execute(args, strings.NewReader(""), &out, &errOut); code != cli.ExitOK {
-		t.Fatalf("impact-model %s: exit %d: %s", strings.Join(args, " "), code, errOut.String())
+		t.Fatalf("outcome-model %s: exit %d: %s", strings.Join(args, " "), code, errOut.String())
 	}
 	return out.String()
 }
@@ -40,7 +40,7 @@ func draft(t *testing.T) []byte {
 	if err := json.Unmarshal(raw, &sources); err != nil {
 		t.Fatal(err)
 	}
-	file := filepath.Join(t.TempDir(), "impact-model.json")
+	file := filepath.Join(t.TempDir(), "outcome-model.json")
 	run(t, "init", "--id", "lakeside", "--name", "Lakeside Community Alliance", "--out", file)
 	for _, s := range sources {
 		page, err := os.ReadFile(filepath.Join("testdata", s.File))
@@ -137,7 +137,7 @@ func TestDraftFromSourcesIsRepeatable(t *testing.T) {
 
 func TestDraftRendersTheWorkshopPack(t *testing.T) {
 	data := draft(t)
-	file := filepath.Join(t.TempDir(), "impact-model.json")
+	file := filepath.Join(t.TempDir(), "outcome-model.json")
 	if err := os.WriteFile(file, data, 0o600); err != nil {
 		t.Fatal(err)
 	}

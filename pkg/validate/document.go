@@ -190,8 +190,8 @@ func (c *checker) actorRefs(path, element string, ids []string) {
 
 func (c *checker) header() {
 	d := c.doc
-	if d.Kind != model.KindImpactModel {
-		c.errorf("VAL-DOC-001", "/kind", "", "kind is %q; expected %q", string(d.Kind), string(model.KindImpactModel))
+	if d.Kind != model.KindOutcomeModel {
+		c.errorf("VAL-DOC-001", "/kind", "", "kind is %q; expected %q", string(d.Kind), string(model.KindOutcomeModel))
 	}
 	if major, _, _ := strings.Cut(d.SpecVersion, "."); major != "0" {
 		c.errorf("VAL-DOC-002", "/specVersion", "", "specVersion %q is not supported (this version reads 0.x)", d.SpecVersion)

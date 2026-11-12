@@ -14,7 +14,7 @@ func approveArgs(theory string, extra ...string) []string {
 }
 
 func TestApproveRefusesOpenHypotheses(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	before := mustRead(t, theory)
 	r := run(t, "", approveArgs(theory)...)
 	wantCode(t, r, ExitInvalid)
@@ -32,7 +32,7 @@ func TestApproveRefusesOpenHypotheses(t *testing.T) {
 }
 
 func TestApproveForced(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	wantCode(t, run(t, "", approveArgs(theory, "--force")...), ExitInvalid)
 	wantCode(t, run(t, "", approveArgs(theory, "--force", "--reason", "sign-off needed now", "--dry-run")...), ExitOK)
 	wantCode(t, run(t, "", approveArgs(theory, "--force", "--reason", "sign-off needed now")...), ExitOK)

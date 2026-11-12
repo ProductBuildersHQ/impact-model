@@ -69,7 +69,7 @@ func TestExportV2MOM(t *testing.T) {
 	}
 
 	// A model without a vision, values, or pathways is refused, naming them.
-	refused := run(t, "", "export", "v2mom", "../../examples/market-adoption/impact-model.yaml")
+	refused := run(t, "", "export", "v2mom", "../../examples/market-adoption/outcome-model.yaml")
 	wantCode(t, refused, ExitUsageErr)
 	for _, want := range []string{"cannot be drawn as a V2MOM", "context.vision", "context.values"} {
 		if !strings.Contains(refused.err, want) {
@@ -98,7 +98,7 @@ func TestExportVSEM(t *testing.T) {
 	}
 
 	// A model without a vision, a mission, or pathways is refused, naming them.
-	refused := run(t, "", "export", "vsem", "../../examples/market-adoption/impact-model.yaml")
+	refused := run(t, "", "export", "vsem", "../../examples/market-adoption/outcome-model.yaml")
 	wantCode(t, refused, ExitUsageErr)
 	for _, want := range []string{"cannot be drawn as a VSEM", "context.vision or context.mission", "a pathway"} {
 		if !strings.Contains(refused.err, want) {
@@ -166,12 +166,12 @@ func TestExportBSC(t *testing.T) {
 		t.Error("two exports differ")
 	}
 	// A model with no outcome in a scorecard perspective is refused.
-	r = run(t, "", "export", "bsc", "../../examples/course-catalog/impact-model.yaml")
+	r = run(t, "", "export", "bsc", "../../examples/course-catalog/outcome-model.yaml")
 	wantCode(t, r, ExitUsageErr)
 }
 
 func TestExportDMAIC(t *testing.T) {
-	const catalog = "../../examples/course-catalog/impact-model.yaml"
+	const catalog = "../../examples/course-catalog/outcome-model.yaml"
 	const catalogObs = "../../examples/course-catalog/observations-2026-h1.yaml"
 	out := filepath.Join(t.TempDir(), "dmaic.json")
 	r := run(t, "", "export", "dmaic", catalog, "-O", catalogObs, "-o", out)

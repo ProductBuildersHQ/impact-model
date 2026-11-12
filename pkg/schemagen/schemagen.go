@@ -33,9 +33,9 @@ type Definition struct {
 // Definitions returns the schemas this module publishes, in a stable order.
 func Definitions() []Definition {
 	return []Definition{
-		{"impact-model", "Impact Model", "An impact model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence.", &model.Model{}},
+		{"outcome-model", "Impact Model", "An impact model document: context, outcomes, causal links, interventions, assumptions, indicators, actors, and evidence.", &model.Model{}},
 		{"observation-set", "Impact Model Observation Set", "Indicator observations, assumption assessments, and notes for one impact model and period.", &model.ObservationSet{}},
-		{"impact-model-status", "Impact Model Status", "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date.", &model.Status{}},
+		{"outcome-model-status", "Impact Model Status", "A computed status snapshot of indicators, outcomes, pathways, links, and assumptions at a date.", &model.Status{}},
 		{"status-diff", "Impact Model Status Diff", "Changes between two status snapshots.", &model.StatusDiff{}},
 		{"actor-registry", "Impact Model Actor Registry", "A shared list of actors referenced by several impact models.", &model.ActorRegistry{}},
 		{"csv-mapping", "Impact Model CSV Mapping", "How the columns of a spreadsheet map onto indicator observations.", &model.CSVMapping{}},

@@ -128,7 +128,7 @@ message naming what to add.`
 		Use:     kind + " <model-file>",
 		Short:   short,
 		Long:    long + "\n\nThe output is JSON.",
-		Example: fmt.Sprintf("  impact-model export %s impact-model.yaml -O obs-q3.yaml -o %s.json", kind, kind),
+		Example: fmt.Sprintf("  outcome-model export %s outcome-model.yaml -O obs-q3.yaml -o %s.json", kind, kind),
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runPrismExport(e, cmd, kind, args[0])

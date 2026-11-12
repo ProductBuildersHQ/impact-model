@@ -30,7 +30,7 @@ func newImportReviewCmd(e *env) *cobra.Command {
 Impact model is never changed. The command writes:
 
   - a patch of the changes it could work out (--out), to be looked over and
-    then applied with 'impact-model patch';
+    then applied with 'outcome-model patch';
   - a list of the rows that need a person to decide;
   - a consultation record of the review (--consultation-out).
 
@@ -52,8 +52,8 @@ though changes are still proposed.
 
 Exit code 0 means every row became a change. Exit code 1 means a person has to
 look at something: a flagged row or an out-of-date response.`,
-		Example: `  impact-model import review impact-model.yaml response.json --out proposed.patch.json
-  impact-model import review impact-model.yaml --from-csv sheet.csv --reviewer "program staff" --date 2026-03-01`,
+		Example: `  outcome-model import review outcome-model.yaml response.json --out proposed.patch.json
+  outcome-model import review outcome-model.yaml --from-csv sheet.csv --reviewer "program staff" --date 2026-03-01`,
 		Args: cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error { return runImportReview(e, cmd, args) },
 	}

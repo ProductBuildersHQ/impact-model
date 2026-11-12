@@ -36,7 +36,7 @@ func dmaicIndicators(c *Context) []dmaicIndicator {
 // enough, and from enough people, for control charts and process capability
 // to mean something. They say nothing about a pathway that is not marked.
 func init() {
-	register("IMP-DMA-001", validate.SeverityWarning, "An indicator of a DMAIC pathway says how often it is measured and where the data comes from.", func(c *Context) []Finding {
+	register("OM-DMA-001", validate.SeverityWarning, "An indicator of a DMAIC pathway says how often it is measured and where the data comes from.", func(c *Context) []Finding {
 		var out []Finding
 		for _, d := range dmaicIndicators(c) {
 			var missing []string
@@ -54,7 +54,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-DMA-002", validate.SeverityWarning, "An indicator of a DMAIC pathway is measured at least 20 times a year.", func(c *Context) []Finding {
+	register("OM-DMA-002", validate.SeverityWarning, "An indicator of a DMAIC pathway is measured at least 20 times a year.", func(c *Context) []Finding {
 		var out []Finding
 		for _, d := range dmaicIndicators(c) {
 			n, ok := model.TimesPerYear(d.v.Frequency)
@@ -68,7 +68,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-DMA-003", validate.SeverityWarning, "A survey indicator of a DMAIC pathway gets at least 30 responses per measurement.", func(c *Context) []Finding {
+	register("OM-DMA-003", validate.SeverityWarning, "A survey indicator of a DMAIC pathway gets at least 30 responses per measurement.", func(c *Context) []Finding {
 		var out []Finding
 		for _, d := range dmaicIndicators(c) {
 			col := d.v.Collection
@@ -83,7 +83,7 @@ func init() {
 			}
 			n, ok := model.TimesPerYear(d.v.Frequency)
 			if !ok {
-				continue // IMP-DMA-001 reports the missing frequency
+				continue // OM-DMA-001 reports the missing frequency
 			}
 			asked := float64(col.RespondentsPerYear)
 			if col.SampleRate > 0 {

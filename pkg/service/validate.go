@@ -73,7 +73,7 @@ func ValidateFamily(parentPath string, childPaths ...string) (Report, error) {
 	}
 	return Report{
 		Source: parentPath,
-		Kind:   model.KindImpactModel,
+		Kind:   model.KindOutcomeModel,
 		Issues: append([]validate.Issue{}, validate.Family(parent, children...)...),
 	}, nil
 }
@@ -90,7 +90,7 @@ func ValidateFutures(paths ...string) (Report, error) {
 		}
 		docs = append(docs, d)
 	}
-	return Report{Source: "competing futures", Kind: model.KindImpactModel, Issues: append([]validate.Issue{}, validate.Futures(docs...)...)}, nil
+	return Report{Source: "competing futures", Kind: model.KindOutcomeModel, Issues: append([]validate.Issue{}, validate.Futures(docs...)...)}, nil
 }
 
 // LoadActorRegistry reads an actor registry file.

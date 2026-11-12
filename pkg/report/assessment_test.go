@@ -9,7 +9,7 @@ import (
 )
 
 func TestAssessmentGoldenOverTheIntermediaryExample(t *testing.T) {
-	doc, err := modelio.LoadDocument("../../examples/intermediary/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/intermediary/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -40,7 +40,7 @@ func InitDocument(o InitOptions) (*model.Model, error) {
 		return nil, fmt.Errorf("%w %q (available: %v)", ErrUnknownTemplate, o.Template, Templates())
 	}
 	if o.ID == "" {
-		o.ID = "my-impact-model"
+		o.ID = "my-outcome-model"
 	}
 	if o.Name == "" {
 		o.Name = "My impact model"
@@ -118,7 +118,7 @@ func FormatFile(path string, check, sortElements bool) (FormatResult, error) {
 
 func formatBytes(data []byte, f modelio.Format, sortElements bool) ([]byte, error) {
 	if sortElements {
-		if kind, err := modelio.DetectKind(data, f); err == nil && kind == model.KindImpactModel {
+		if kind, err := modelio.DetectKind(data, f); err == nil && kind == model.KindOutcomeModel {
 			doc, err := modelio.ParseDocument(data, f)
 			if err != nil {
 				return nil, err

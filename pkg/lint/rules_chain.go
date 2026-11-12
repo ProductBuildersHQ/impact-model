@@ -24,7 +24,7 @@ func activeInterventions(d *model.Model) []indexed[model.Intervention] {
 // activity says what it produces, that it leads somewhere, that the links and
 // the interventions that carry them agree, and that what was done is measured.
 func init() {
-	register("IMP-INT-003", validate.SeverityWarning, "Every intervention says what it produces.", func(c *Context) []Finding {
+	register("OM-INT-003", validate.SeverityWarning, "Every intervention says what it produces.", func(c *Context) []Finding {
 		var out []Finding
 		for _, in := range activeInterventions(c.Doc) {
 			if len(in.v.Outputs) > 0 {
@@ -44,7 +44,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-INT-004", validate.SeverityWarning, "Every intervention leads, through the outcomes it targets, to an impact outcome.", func(c *Context) []Finding {
+	register("OM-INT-004", validate.SeverityWarning, "Every intervention leads, through the outcomes it targets, to an impact outcome.", func(c *Context) []Finding {
 		var out []Finding
 		for _, in := range activeInterventions(c.Doc) {
 			leads := false
@@ -63,7 +63,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-INT-005", validate.SeverityWarning, "A link that names an intervention is carried out by an intervention that targets one end of the link.", func(c *Context) []Finding {
+	register("OM-INT-005", validate.SeverityWarning, "A link that names an intervention is carried out by an intervention that targets one end of the link.", func(c *Context) []Finding {
 		var out []Finding
 		for _, l := range activeLinks(c.Doc) {
 			for _, id := range l.v.InterventionIDs {
@@ -80,7 +80,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-INT-006", validate.SeverityInfo, "Every intervention has an indicator of what was done.", func(c *Context) []Finding {
+	register("OM-INT-006", validate.SeverityInfo, "Every intervention has an indicator of what was done.", func(c *Context) []Finding {
 		measured := map[string]bool{}
 		for _, ind := range activeIndicators(c.Doc) {
 			measured[ind.v.Measures] = true
@@ -95,7 +95,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-INT-007", validate.SeverityInfo, "Every intervention states its resources.", func(c *Context) []Finding {
+	register("OM-INT-007", validate.SeverityInfo, "Every intervention states its resources.", func(c *Context) []Finding {
 		var out []Finding
 		for _, in := range activeInterventions(c.Doc) {
 			if in.v.Resources == "" {
@@ -106,7 +106,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-INT-008", validate.SeverityWarning, "Interventions run within the time horizon of the impact model.", func(c *Context) []Finding {
+	register("OM-INT-008", validate.SeverityWarning, "Interventions run within the time horizon of the impact model.", func(c *Context) []Finding {
 		h := c.Doc.Context.TimeHorizon
 		if h == nil {
 			return nil

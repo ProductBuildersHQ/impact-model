@@ -74,124 +74,124 @@ func TestRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 		rule, element string
 		defect, fix   func(d *model.Model)
 	}{
-		{"IMP-MEA-001", "oc-s1", func(d *model.Model) { d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm} },
+		{"OM-MEA-001", "oc-s1", func(d *model.Model) { d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm} },
 			func(d *model.Model) { addIndicator(d, "ind-1", "oc-s1") }},
-		{"IMP-MEA-001", "oc-s2", func(d *model.Model) {
+		{"OM-MEA-001", "oc-s2", func(d *model.Model) {
 			d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm}
 			addIndicator(d, "ind-1", "oc-s1")
 		},
 			func(d *model.Model) {
 				addIndicator(d, "ind-2", "oc-b", func(i *model.Indicator) { i.ProxyFor = []string{"oc-s2"} })
 			}},
-		{"IMP-MEA-002", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") },
+		{"OM-MEA-002", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") },
 			func(d *model.Model) {
 				i := indicator(d, "ind-x")
 				i.Baseline = &model.Baseline{Level: "low"}
 				i.Targets = []model.Target{{Date: "2027-01-01", Level: "high"}}
 				i.DataSource, i.Frequency = "Sign-in sheets", "P3M"
 			}},
-		{"IMP-MEA-003", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") },
+		{"OM-MEA-003", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") },
 			func(d *model.Model) {
 				indicator(d, "ind-x").Unit, indicator(d, "ind-x").Direction = "people", model.DirectionIncrease
 			}},
-		{"IMP-MEA-004", "ind-x", func(d *model.Model) {
+		{"OM-MEA-004", "ind-x", func(d *model.Model) {
 			horizon(d)
 			addIndicator(d, "ind-x", "oc-s1", func(i *model.Indicator) { i.Targets = []model.Target{{Date: "2030-01-01", Level: "x"}} })
 		}, func(d *model.Model) { indicator(d, "ind-x").Targets[0].Date = "2027-06-30" }},
-		{"IMP-MEA-005", "oc-a", func(d *model.Model) {
+		{"OM-MEA-005", "oc-a", func(d *model.Model) {
 			addIndicator(d, "ind-s", "oc-s1", func(i *model.Indicator) { i.Targets = []model.Target{{Date: "2027-12-31", Level: "x"}} })
 			addIndicator(d, "ind-a", "oc-a", func(i *model.Indicator) { i.Targets = []model.Target{{Date: "2026-12-31", Level: "x"}} })
 		}, func(d *model.Model) { indicator(d, "ind-a").Targets[0].Date = "2028-12-31" }},
-		{"IMP-ACC-001", "", func(d *model.Model) {},
+		{"OM-ACC-001", "", func(d *model.Model) {},
 			func(d *model.Model) { d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm} }},
-		{"IMP-ACC-002", "oc-impact", func(d *model.Model) {
+		{"OM-ACC-002", "oc-impact", func(d *model.Model) {
 			d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm}
 			outcome(d, "oc-impact").Responsibility = model.ResponsibilityOwn
 		}, func(d *model.Model) { outcome(d, "oc-impact").Responsibility = model.ResponsibilityShared }},
-		{"IMP-CLM-001", "ind-x", func(d *model.Model) {
+		{"OM-CLM-001", "ind-x", func(d *model.Model) {
 			d.Ceiling = &model.Ceiling{Level: model.LevelLongTerm}
 			addIndicator(d, "ind-x", "oc-impact", func(i *model.Indicator) { i.Claim = model.ClaimAttribution })
 		}, func(d *model.Model) { indicator(d, "ind-x").Claim = model.ClaimContribution }},
-		{"IMP-BUD-001", "", func(d *model.Model) {
+		{"OM-BUD-001", "", func(d *model.Model) {
 			d.Budget = &model.MeasurementBudget{StaffMinutesPerWeek: 10}
 			addIndicator(d, "ind-x", "oc-s1", selected, func(i *model.Indicator) {
 				i.Collection = &model.Collection{Mode: model.ModeManual, MinutesPerPeriod: 100, Period: "P1W"}
 			})
 		}, func(d *model.Model) { d.Budget.StaffMinutesPerWeek = 200 }},
-		{"IMP-BUD-002", "", func(d *model.Model) {
+		{"OM-BUD-002", "", func(d *model.Model) {
 			d.Budget = &model.MeasurementBudget{MaxQuestionsPerRespondentPerYear: 5}
 			addIndicator(d, "ind-x", "oc-s1", selected, func(i *model.Indicator) {
 				i.Collection = &model.Collection{Mode: model.ModeSurvey, Period: "P1M", QuestionsPerRespondent: 4}
 			})
 		}, func(d *model.Model) { d.Budget.MaxQuestionsPerRespondentPerYear = 100 }},
-		{"IMP-BUD-003", "", func(d *model.Model) {
+		{"OM-BUD-003", "", func(d *model.Model) {
 			d.Budget = &model.MeasurementBudget{TargetSelectedMetrics: &model.Range{Min: 3, Max: 5}}
 			addIndicator(d, "ind-x", "oc-s1", selected)
 		}, func(d *model.Model) { d.Budget.TargetSelectedMetrics = &model.Range{Min: 1, Max: 2} }},
-		{"IMP-BUD-004", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
+		{"OM-BUD-004", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
 			func(d *model.Model) {
 				indicator(d, "ind-x").Collection = &model.Collection{Mode: model.ModePassive}
 			}},
-		{"IMP-ASM-001", "asm-c", func(d *model.Model) {
+		{"OM-ASM-001", "asm-c", func(d *model.Model) {
 			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", Criticality: model.CriticalityCritical})
 		}, func(d *model.Model) { d.Assumptions[1].Test = "Ask partners twice a year." }},
-		{"IMP-ASM-002", "asm-c", func(d *model.Model) {
+		{"OM-ASM-002", "asm-c", func(d *model.Model) {
 			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", Criticality: model.CriticalityHigh})
 		}, func(d *model.Model) {
 			d.Evidence = append(d.Evidence, model.Evidence{ID: "ev-1", Title: "Study"})
 			d.Assumptions[1].EvidenceIDs = []string{"ev-1"}
 		}},
-		{"IMP-ASM-003", "", func(d *model.Model) {},
+		{"OM-ASM-003", "", func(d *model.Model) {},
 			func(d *model.Model) { d.Assumptions[0].Type = model.AssumptionContextual }},
-		{"IMP-ASM-004", "asm-c", func(d *model.Model) {
+		{"OM-ASM-004", "asm-c", func(d *model.Model) {
 			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", NeedsTesting: true})
 		}, func(d *model.Model) {
 			d.Assumptions[1].Test = "Pilot it."
 			d.Decisions = append(d.Decisions, model.Decision{ID: "dec-1", Question: "Q", RelatedIDs: []string{"asm-c"}})
 		}},
-		{"IMP-ASM-005", "", func(d *model.Model) {
+		{"OM-ASM-005", "", func(d *model.Model) {
 			outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner
 		}, func(d *model.Model) {
 			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-p", Statement: "Partners show up.", Type: model.AssumptionPartnership})
 		}},
-		{"IMP-RSK-001", "asm-c", func(d *model.Model) {
+		{"OM-RSK-001", "asm-c", func(d *model.Model) {
 			d.Assumptions = append(d.Assumptions, model.Assumption{ID: "asm-c", Statement: "S", Criticality: model.CriticalityCritical})
 		}, func(d *model.Model) {
 			d.Risks = append(d.Risks, model.Risk{Risk: core.Risk{ID: "rsk-1", Description: "D", Mitigation: "Plan B"}, RelatedAssumptionIDs: []string{"asm-c"}})
 		}},
-		{"IMP-INT-002", "int-1", func(d *model.Model) {},
+		{"OM-INT-002", "int-1", func(d *model.Model) {},
 			func(d *model.Model) {
 				d.Actors = append(d.Actors, model.Actor{ID: "act-1", Name: "Network"})
 				d.Interventions[0].OwnerID = "act-1"
 			}},
-		{"IMP-ACT-001", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Sphere = model.SphereInfluence },
+		{"OM-ACT-001", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Sphere = model.SphereInfluence },
 			func(d *model.Model) {
 				d.Actors = append(d.Actors, model.Actor{ID: "act-1", Name: "Partner"})
 				outcome(d, "oc-s1").ActorIDs = []string{"act-1"}
 			}},
-		{"IMP-EVD-001", "ln-a-i", func(d *model.Model) {},
+		{"OM-EVD-001", "ln-a-i", func(d *model.Model) {},
 			func(d *model.Model) {
 				d.Evidence = append(d.Evidence, model.Evidence{ID: "ev-1", Title: "Study"})
 				d.Links[0].EvidenceIDs = []string{"ev-1"}
 			}},
-		{"IMP-PTH-001", "pw-1", func(d *model.Model) {
+		{"OM-PTH-001", "pw-1", func(d *model.Model) {
 			d.Outcomes = append(d.Outcomes, model.Outcome{ID: "oc-iso", Title: "Isolated", Level: model.LevelShortTerm})
 			pathway(d, "oc-iso")
 		}, func(d *model.Model) { d.Pathways[0].OutcomeIDs = []string{"oc-s1"} }},
-		{"IMP-PTH-002", "pw-1", func(d *model.Model) { pathway(d, "oc-s1") },
+		{"OM-PTH-002", "pw-1", func(d *model.Model) { pathway(d, "oc-s1") },
 			func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) }},
-		{"IMP-PTH-003", "ind-x", func(d *model.Model) {
+		{"OM-PTH-003", "ind-x", func(d *model.Model) {
 			pathway(d, "oc-s1")
 			d.Pathways = append(d.Pathways, model.Pathway{ID: "pw-2", Title: "Other"})
 			addIndicator(d, "ind-x", "oc-s1", func(i *model.Indicator) { i.PathwayIDs = []string{"pw-2"} })
 		}, func(d *model.Model) { indicator(d, "ind-x").PathwayIDs = []string{"pw-1"} }},
-		{"IMP-MET-001", "met-1", func(d *model.Model) {
+		{"OM-MET-001", "met-1", func(d *model.Model) {
 			pathway(d, "oc-s1")
 			d.Metrics = append(d.Metrics, model.Metric{ID: "met-1", Name: "M", Definition: "D", Formula: "F", Layer: model.LayerCommon})
 		}, func(d *model.Model) {
 			addIndicator(d, "ind-x", "oc-s1", func(i *model.Indicator) { i.MetricID, i.PathwayIDs = "met-1", []string{"pw-1"} })
 		}},
-		{"IMP-MET-003", "met-w", func(d *model.Model) {
+		{"OM-MET-003", "met-w", func(d *model.Model) {
 			pathway(d, "oc-s1")
 			d.Metrics = append(d.Metrics,
 				model.Metric{ID: "met-wt", Name: "Weight", Definition: "D", Formula: "F"},
@@ -200,51 +200,51 @@ func TestRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 		}, func(d *model.Model) {
 			addIndicator(d, "ind-wt", "oc-s2", func(i *model.Indicator) { i.MetricID, i.PathwayIDs = "met-wt", []string{"pw-1"} })
 		}},
-		{"IMP-AUD-001", "aud-1", func(d *model.Model) {
+		{"OM-AUD-001", "aud-1", func(d *model.Model) {
 			d.Audiences = append(d.Audiences, model.Audience{ID: "aud-1", Name: "Board"})
 		},
 			func(d *model.Model) { outcome(d, "oc-impact").AudienceIDs = []string{"aud-1"} }},
-		{"IMP-CAU-001", "cause-1", func(d *model.Model) {
+		{"OM-CAU-001", "cause-1", func(d *model.Model) {
 			d.Causes = append(d.Causes, model.Cause{ID: "cause-1", Statement: "S", Level: model.CauseStructural})
 		}, func(d *model.Model) { outcome(d, "oc-a").AddressesCauses = []string{"cause-1"} }},
-		{"IMP-CAU-002", "", func(d *model.Model) {
+		{"OM-CAU-002", "", func(d *model.Model) {
 			d.Causes = append(d.Causes, model.Cause{ID: "cause-i", Statement: "S", Level: model.CauseImmediate})
 			outcome(d, "oc-a").AddressesCauses = []string{"cause-i"}
 		}, func(d *model.Model) {
 			d.Causes = append(d.Causes, model.Cause{ID: "cause-u", Statement: "S", Level: model.CauseUnderlying})
 			outcome(d, "oc-b").AddressesCauses = []string{"cause-u"}
 		}},
-		{"IMP-RSP-001", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner },
+		{"OM-RSP-001", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner },
 			func(d *model.Model) {
 				d.Actors = append(d.Actors, model.Actor{ID: "act-1", Name: "Partner"})
 				outcome(d, "oc-s1").DeliveredBy = []string{"act-1"}
 			}},
-		{"IMP-RSP-002", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner },
+		{"OM-RSP-002", "oc-s1", func(d *model.Model) { outcome(d, "oc-s1").Responsibility = model.ResponsibilityPartner },
 			func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1") }},
-		{"IMP-EQU-001", "oc-s1", func(d *model.Model) {
+		{"OM-EQU-001", "oc-s1", func(d *model.Model) {
 			d.TargetGroups = append(d.TargetGroups, model.TargetGroup{ID: "tg-1", Name: "Small members"})
 			outcome(d, "oc-s1").TargetGroupIDs = []string{"tg-1"}
 			addIndicator(d, "ind-x", "oc-s1")
 		}, func(d *model.Model) { indicator(d, "ind-x").TargetGroupIDs = []string{"tg-1"} }},
-		{"IMP-VAL-001", "", func(d *model.Model) {},
+		{"OM-VAL-001", "", func(d *model.Model) {},
 			func(d *model.Model) {
 				d.Consultations = append(d.Consultations, model.Consultation{ID: "con-1", Date: "2026-01-01", Step: model.StepWhole})
 			}},
-		{"IMP-PRV-001", "oc-impact", func(d *model.Model) {},
+		{"OM-PRV-001", "oc-impact", func(d *model.Model) {},
 			func(d *model.Model) {
 				outcome(d, "oc-impact").Provenance = &model.Provenance{Basis: model.BasisInferred}
 			}},
-		{"IMP-PRV-002", "oc-s1", func(d *model.Model) {
+		{"OM-PRV-002", "oc-s1", func(d *model.Model) {
 			outcome(d, "oc-s1").Provenance = &model.Provenance{Basis: model.BasisStated}
 		}, func(d *model.Model) {
 			d.Evidence = append(d.Evidence, model.Evidence{ID: "ev-1", Title: "Report", URL: "https://example.org/report"})
 			outcome(d, "oc-s1").Provenance.EvidenceIDs = []string{"ev-1"}
 		}},
-		{"IMP-PRV-003", "oc-s1", func(d *model.Model) {
+		{"OM-PRV-003", "oc-s1", func(d *model.Model) {
 			d.Metadata.Status = "approved"
 			outcome(d, "oc-s1").Provenance = &model.Provenance{Basis: model.BasisHypothesis}
 		}, func(d *model.Model) { outcome(d, "oc-s1").Provenance.Basis = model.BasisConfirmed }},
-		{"IMP-PRV-004", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
+		{"OM-PRV-004", "ind-x", func(d *model.Model) { addIndicator(d, "ind-x", "oc-s1", selected) },
 			func(d *model.Model) { indicator(d, "ind-x").DataAvailability = model.DataPublic }},
 	}
 	for _, tt := range tests {
@@ -265,25 +265,25 @@ func TestRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 func TestEveryDocumentedRuleIsRegisteredOnce(t *testing.T) {
 	// Rules the TRD lists that validation already enforces as errors, so
 	// the document cannot reach lint in a state that breaks them.
-	byValidation := []string{"IMP-INT-001", "IMP-MET-002"}
+	byValidation := []string{"OM-INT-001", "OM-MET-002"}
 	want := []string{
-		"IMP-STR-001", "IMP-STR-002", "IMP-STR-003", "IMP-STR-004", "IMP-STR-005", "IMP-STR-006", "IMP-STR-007",
-		"IMP-LOG-001", "IMP-LOG-002", "IMP-LOG-003", "IMP-LOG-004",
-		"IMP-ASM-001", "IMP-ASM-002", "IMP-ASM-003", "IMP-ASM-004", "IMP-ASM-005", "IMP-RSK-001",
-		"IMP-MEA-001", "IMP-MEA-002", "IMP-MEA-003", "IMP-MEA-004", "IMP-MEA-005",
-		"IMP-ACC-001", "IMP-ACC-002", "IMP-CLM-001", "IMP-INT-002", "IMP-ACT-001", "IMP-EVD-001",
-		"IMP-PTH-001", "IMP-PTH-002", "IMP-PTH-003", "IMP-MET-001", "IMP-MET-003",
-		"IMP-BUD-001", "IMP-BUD-002", "IMP-BUD-003", "IMP-BUD-004", "IMP-AUD-001",
-		"IMP-CAU-001", "IMP-CAU-002", "IMP-RSP-001", "IMP-RSP-002", "IMP-EQU-001", "IMP-VAL-001",
-		"IMP-PRV-001", "IMP-PRV-002", "IMP-PRV-003", "IMP-PRV-004",
-		"IMP-INT-003", "IMP-INT-004", "IMP-INT-005", "IMP-INT-006", "IMP-INT-007", "IMP-INT-008",
-		"IMP-AUD-002", "IMP-HLN-001", "IMP-HLN-002", "IMP-HLN-003", "IMP-HLN-004",
-		"IMP-NSM-001", "IMP-NSM-002", "IMP-NSM-003", "IMP-NSM-004", "IMP-NSM-005", "IMP-NSM-006", "IMP-NSM-007",
-		"IMP-CTX-001", "IMP-CTX-002",
-		"IMP-DMA-001", "IMP-DMA-002", "IMP-DMA-003",
-		"IMP-EFF-001", "IMP-EFF-002", "IMP-CAU-003",
-		"IMP-LRN-001", "IMP-LRN-002", "IMP-LRN-003",
-		"IMP-BSC-001", "IMP-BSC-002", "IMP-BSC-003", "IMP-BSC-004",
+		"OM-STR-001", "OM-STR-002", "OM-STR-003", "OM-STR-004", "OM-STR-005", "OM-STR-006", "OM-STR-007",
+		"OM-LOG-001", "OM-LOG-002", "OM-LOG-003", "OM-LOG-004",
+		"OM-ASM-001", "OM-ASM-002", "OM-ASM-003", "OM-ASM-004", "OM-ASM-005", "OM-RSK-001",
+		"OM-MEA-001", "OM-MEA-002", "OM-MEA-003", "OM-MEA-004", "OM-MEA-005",
+		"OM-ACC-001", "OM-ACC-002", "OM-CLM-001", "OM-INT-002", "OM-ACT-001", "OM-EVD-001",
+		"OM-PTH-001", "OM-PTH-002", "OM-PTH-003", "OM-MET-001", "OM-MET-003",
+		"OM-BUD-001", "OM-BUD-002", "OM-BUD-003", "OM-BUD-004", "OM-AUD-001",
+		"OM-CAU-001", "OM-CAU-002", "OM-RSP-001", "OM-RSP-002", "OM-EQU-001", "OM-VAL-001",
+		"OM-PRV-001", "OM-PRV-002", "OM-PRV-003", "OM-PRV-004",
+		"OM-INT-003", "OM-INT-004", "OM-INT-005", "OM-INT-006", "OM-INT-007", "OM-INT-008",
+		"OM-AUD-002", "OM-HLN-001", "OM-HLN-002", "OM-HLN-003", "OM-HLN-004",
+		"OM-NSM-001", "OM-NSM-002", "OM-NSM-003", "OM-NSM-004", "OM-NSM-005", "OM-NSM-006", "OM-NSM-007",
+		"OM-CTX-001", "OM-CTX-002",
+		"OM-DMA-001", "OM-DMA-002", "OM-DMA-003",
+		"OM-EFF-001", "OM-EFF-002", "OM-CAU-003",
+		"OM-LRN-001", "OM-LRN-002", "OM-LRN-003",
+		"OM-BSC-001", "OM-BSC-002", "OM-BSC-003", "OM-BSC-004",
 	}
 	slices.Sort(want)
 	var got []string
@@ -302,11 +302,11 @@ func TestEveryDocumentedRuleIsRegisteredOnce(t *testing.T) {
 }
 
 func TestPRV001RunsOnlyInTheFullProfile(t *testing.T) {
-	r, ok := Default.Rule("IMP-PRV-001")
+	r, ok := Default.Rule("OM-PRV-001")
 	if !ok {
-		t.Fatal("IMP-PRV-001 is not registered")
+		t.Fatal("OM-PRV-001 is not registered")
 	}
 	if Runs(r, ProfileStandard) || !Runs(r, ProfileFull) {
-		t.Error("IMP-PRV-001 should run under full only")
+		t.Error("OM-PRV-001 should run under full only")
 	}
 }

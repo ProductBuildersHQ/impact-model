@@ -21,8 +21,8 @@ TODO placeholders to replace. The output is YAML unless --format json is
 given or --out ends in .json.
 
 Available templates: ` + strings.Join(service.Templates(), ", ") + `.`,
-		Example: `  impact-model init --id youth-employment --name "Youth Employment" --out impact-model.yaml
-  impact-model init --format json > impact-model.json`,
+		Example: `  outcome-model init --id youth-employment --name "Youth Employment" --out outcome-model.yaml
+  outcome-model init --format json > outcome-model.json`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			out := flagString(cmd, "out")

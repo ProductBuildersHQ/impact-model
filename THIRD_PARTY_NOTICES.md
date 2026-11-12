@@ -1,6 +1,6 @@
 # Third-party notices
 
-The `impact-model` command and its MCP server are built from this repository
+The `outcome-model` command and its MCP server are built from this repository
 together with the Go modules below. This repository is licensed under the
 [MIT License](LICENSE). Each module keeps its own license, and the full text of
 every license and notice file is in [`third_party/licenses/`](third_party/licenses/),
@@ -69,7 +69,7 @@ have not agreed to relicense remain MIT. Both licenses are permissive, and its
 ## Used to build, not distributed
 
 These modules are used by the schema generator and the tests. They are not
-compiled into the `impact-model` binary, so no notice travels with it, and
+compiled into the `outcome-model` binary, so no notice travels with it, and
 they are listed here for completeness.
 
 | Module | Version | License |

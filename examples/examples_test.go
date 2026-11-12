@@ -46,9 +46,9 @@ func read(t *testing.T, path string) []byte {
 
 func loadTheory(t *testing.T, dir string) *model.Model {
 	t.Helper()
-	doc, err := modelio.LoadDocument(filepath.Join(dir, "impact-model.yaml"))
+	doc, err := modelio.LoadDocument(filepath.Join(dir, "outcome-model.yaml"))
 	if err != nil {
-		t.Fatalf("%s/impact-model.yaml: %v", dir, err)
+		t.Fatalf("%s/outcome-model.yaml: %v", dir, err)
 	}
 	return doc
 }
@@ -66,7 +66,7 @@ func TestEveryExampleFileIsCanonical(t *testing.T) {
 				t.Fatalf("Reformat: %v", err)
 			}
 			if string(out) != string(data) {
-				t.Fatalf("%s is not canonical; run: impact-model fmt %s", path, path)
+				t.Fatalf("%s is not canonical; run: outcome-model fmt %s", path, path)
 			}
 		})
 	}
@@ -93,7 +93,7 @@ func TestExamplesAreFictional(t *testing.T) {
 
 func exampleDirs(t *testing.T) []string {
 	t.Helper()
-	dirs, err := filepath.Glob("*/impact-model.yaml")
+	dirs, err := filepath.Glob("*/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

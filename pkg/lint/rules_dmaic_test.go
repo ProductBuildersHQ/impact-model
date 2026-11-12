@@ -32,29 +32,29 @@ func TestDMAICRulesFindSeededDefectsAndAcceptRepairs(t *testing.T) {
 		rule, element string
 		defect, fix   func(d *model.Model)
 	}{
-		{"IMP-DMA-001", "ind-weekly",
+		{"OM-DMA-001", "ind-weekly",
 			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "" },
 			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P1W" }},
-		{"IMP-DMA-001", "ind-weekly",
+		{"OM-DMA-001", "ind-weekly",
 			func(d *model.Model) { indicator(d, "ind-weekly").DataSource = "" },
 			func(d *model.Model) {
 				indicator(d, "ind-weekly").Collection = &model.Collection{Mode: model.ModePassive, System: "Learning platform"}
 			}},
-		{"IMP-DMA-002", "ind-weekly",
+		{"OM-DMA-002", "ind-weekly",
 			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P1M" },
 			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P2W" }},
-		{"IMP-DMA-002", "ind-weekly",
+		{"OM-DMA-002", "ind-weekly",
 			func(d *model.Model) { indicator(d, "ind-weekly").Frequency = "P3M" },
 			func(d *model.Model) { d.Pathways[0].Projections = nil }},
-		{"IMP-DMA-003", "ind-nps",
+		{"OM-DMA-003", "ind-nps",
 			func(d *model.Model) { addIndicator(d, "ind-nps", "oc-s1", survey(0)) },
 			func(d *model.Model) { indicator(d, "ind-nps").Collection.RespondentsPerYear = 5200 }},
 		// 780 a year, weekly, is 15 per measurement; monthly it is 65.
-		{"IMP-DMA-003", "ind-nps",
+		{"OM-DMA-003", "ind-nps",
 			func(d *model.Model) { addIndicator(d, "ind-nps", "oc-s1", survey(780)) },
 			func(d *model.Model) { indicator(d, "ind-nps").Frequency = "P1M" }},
 		// A sample of half the people asked halves the responses.
-		{"IMP-DMA-003", "ind-nps",
+		{"OM-DMA-003", "ind-nps",
 			func(d *model.Model) {
 				addIndicator(d, "ind-nps", "oc-s1", survey(2600))
 				indicator(d, "ind-nps").Collection.SampleRate = 0.5
@@ -84,7 +84,7 @@ func TestDMAICRulesAreQuietForUnmarkedPathways(t *testing.T) {
 		i.Frequency = "P1Y"
 		i.Collection = &model.Collection{Mode: model.ModeSurvey, RespondentsPerYear: 12}
 	})
-	for _, rule := range []string{"IMP-DMA-001", "IMP-DMA-002", "IMP-DMA-003"} {
+	for _, rule := range []string{"OM-DMA-001", "OM-DMA-002", "OM-DMA-003"} {
 		if got := fires(t, d, rule); len(got) != 0 {
 			t.Errorf("%s reported %v on a pathway not marked for DMAIC", rule, got)
 		}

@@ -32,7 +32,7 @@ Thumbs.db
 .envrc
 
 # Local build output
-/impact-model
+/outcome-model
 dist/
 
 # Generated review artifacts

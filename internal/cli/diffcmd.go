@@ -26,10 +26,10 @@ The result is Markdown, or JSON with --format json.
 With --revision, nothing is shown. Instead the command prints a patch that
 appends a draft revision to the newer impact model, recording the version, date,
 and trigger given and listing every element ID that changed. Review it, then
-apply it with 'impact-model patch'.`,
-		Example: `  impact-model diff impact-model-v1.yaml impact-model-v2.yaml
-  impact-model diff old.yaml new.yaml --revision --version 0.2 --date 2026-03-01 > revision.patch.json
-  impact-model patch new.yaml revision.patch.json`,
+apply it with 'outcome-model patch'.`,
+		Example: `  outcome-model diff outcome-model-v1.yaml outcome-model-v2.yaml
+  outcome-model diff old.yaml new.yaml --revision --version 0.2 --date 2026-03-01 > revision.patch.json
+  outcome-model patch new.yaml revision.patch.json`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error { return runDiff(e, cmd, args[0], args[1]) },
 	}

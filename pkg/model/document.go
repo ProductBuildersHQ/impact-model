@@ -20,9 +20,9 @@ type Kind string
 
 // Document kinds.
 const (
-	KindImpactModel    Kind = "ImpactModel"
+	KindOutcomeModel   Kind = "OutcomeModel"
 	KindObservationSet Kind = "ObservationSet"
-	KindStatus         Kind = "ImpactModelStatus"
+	KindStatus         Kind = "OutcomeModelStatus"
 	KindActorRegistry  Kind = "ActorRegistry"
 	KindReviewResponse Kind = "ReviewResponse"
 )
@@ -30,7 +30,7 @@ const (
 // Model is an impact model.
 type Model struct {
 	Schema      string `json:"$schema,omitempty"`
-	Kind        Kind   `json:"kind" jsonschema:"required,enum=ImpactModel"`
+	Kind        Kind   `json:"kind" jsonschema:"required,enum=OutcomeModel"`
 	SpecVersion string `json:"specVersion" jsonschema:"required"`
 	// ID is the document slug used in references (model:<id>).
 	ID       string        `json:"id" jsonschema:"required"`
@@ -92,7 +92,7 @@ type Model struct {
 // NewModel returns a document with Kind and SpecVersion set.
 func NewModel(id, problemStatement string) *Model {
 	return &Model{
-		Kind:        KindImpactModel,
+		Kind:        KindOutcomeModel,
 		SpecVersion: SpecVersion,
 		ID:          id,
 		Context:     Context{ProblemStatement: problemStatement},

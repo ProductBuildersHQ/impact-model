@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	exTheory = "../../examples/intermediary/impact-model.yaml"
+	exTheory = "../../examples/intermediary/outcome-model.yaml"
 	exObs    = "../../examples/intermediary/observations-2026-q3.yaml"
 	exMap    = "../../examples/intermediary/csv/mapping.yaml"
 	exSheet  = "../../examples/intermediary/csv/monthly-q4.csv"

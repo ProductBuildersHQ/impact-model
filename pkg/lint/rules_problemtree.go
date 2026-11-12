@@ -9,7 +9,7 @@ import (
 // core problem is relieved by some outcome or set aside with a reason, and
 // that the outcomes relieving effects reach far enough up the chain.
 func init() {
-	register("IMP-EFF-001", validate.SeverityWarning, "Each effect is relieved by an outcome or set aside with a reason.", func(c *Context) []Finding {
+	register("OM-EFF-001", validate.SeverityWarning, "Each effect is relieved by an outcome or set aside with a reason.", func(c *Context) []Finding {
 		relieved := relievers(c.Doc)
 		var out []Finding
 		for i, e := range c.Doc.Effects {
@@ -21,7 +21,7 @@ func init() {
 		return out
 	})
 
-	register("IMP-EFF-002", validate.SeverityInfo, "Effects are relieved by long-term or impact outcomes, not only by earlier ones.", func(c *Context) []Finding {
+	register("OM-EFF-002", validate.SeverityInfo, "Effects are relieved by long-term or impact outcomes, not only by earlier ones.", func(c *Context) []Finding {
 		relieved := relievers(c.Doc)
 		if len(relieved) == 0 {
 			return nil

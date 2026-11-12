@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/impact-model.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/outcome-model.schema.json",
   "$ref": "#/$defs/Model",
   "$defs": {
     "Actor": {
@@ -1561,7 +1561,7 @@
         "kind": {
           "type": "string",
           "enum": [
-            "ImpactModel"
+            "OutcomeModel"
           ]
         },
         "specVersion": {

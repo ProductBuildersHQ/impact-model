@@ -1,6 +1,6 @@
 {
-  "$schema": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/impact-model.schema.json",
-  "kind": "ImpactModel",
+  "$schema": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/outcome-model.schema.json",
+  "kind": "OutcomeModel",
   "specVersion": "0.1",
   "id": "open-agent-auth",
   "metadata": {

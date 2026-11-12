@@ -11,7 +11,7 @@ import (
 )
 
 func TestExportPRISM(t *testing.T) {
-	doc, err := modelio.LoadDocument("../../examples/course-catalog/impact-model.yaml")
+	doc, err := modelio.LoadDocument("../../examples/course-catalog/outcome-model.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

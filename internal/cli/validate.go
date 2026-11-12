@@ -30,11 +30,11 @@ perspectives, do not both speak for the same actor in the same future, and
 refer to each other's elements correctly.
 
 Exit code 1 means at least one file has errors.`,
-		Example: `  impact-model validate impact-model.yaml
-  impact-model validate observations-2026-q4.yaml --model impact-model.yaml
-  impact-model validate program-a.yaml program-b.yaml --parent organization.yaml
-  impact-model validate future-a.yaml future-b.yaml future-c.yaml --registry actors.yaml --futures
-  impact-model validate --format json impact-model.json`,
+		Example: `  outcome-model validate outcome-model.yaml
+  outcome-model validate observations-2026-q4.yaml --model outcome-model.yaml
+  outcome-model validate program-a.yaml program-b.yaml --parent organization.yaml
+  outcome-model validate future-a.yaml future-b.yaml future-c.yaml --registry actors.yaml --futures
+  outcome-model validate --format json outcome-model.json`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			format, err := outputFormat(cmd)

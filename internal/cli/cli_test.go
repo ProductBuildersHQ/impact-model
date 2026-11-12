@@ -67,7 +67,7 @@ func wantCode(t *testing.T, r result, code int) {
 func TestVersionAndHelp(t *testing.T) {
 	r := run(t, "", "--version")
 	wantCode(t, r, 0)
-	if !strings.Contains(r.stdout, "impact-model version") {
+	if !strings.Contains(r.stdout, "outcome-model version") {
 		t.Fatalf("version output = %q", r.stdout)
 	}
 	r = run(t, "")
@@ -96,7 +96,7 @@ func TestValidate(t *testing.T) {
 	good := fixtureCopy(t, "full.json", "good.json")
 	r := run(t, "", "validate", good)
 	wantCode(t, r, 0)
-	if !strings.Contains(r.stdout, "good.json: ok (ImpactModel)") {
+	if !strings.Contains(r.stdout, "good.json: ok (OutcomeModel)") {
 		t.Fatalf("stdout = %q", r.stdout)
 	}
 	if r := run(t, "", "validate", "-q", good); r.stdout != "" {
@@ -127,7 +127,7 @@ func TestValidate(t *testing.T) {
 	if err := json.Unmarshal([]byte(r.stdout), &reports); err != nil {
 		t.Fatalf("stdout is not JSON: %v\n%s", err, r.stdout)
 	}
-	if len(reports) != 1 || reports[0].Kind != "ImpactModel" || reports[0].Issues[0].Code != "VAL-REF-001" {
+	if len(reports) != 1 || reports[0].Kind != "OutcomeModel" || reports[0].Issues[0].Code != "VAL-REF-001" {
 		t.Fatalf("reports = %+v", reports)
 	}
 
@@ -136,7 +136,7 @@ func TestValidate(t *testing.T) {
 }
 
 func TestValidateObservationsAgainstTheory(t *testing.T) {
-	theory := fixtureCopy(t, "full.json", "impact-model.json")
+	theory := fixtureCopy(t, "full.json", "outcome-model.json")
 	obs := fixtureCopy(t, "observations.json", "obs.json")
 	wantCode(t, run(t, "", "validate", obs), 0)
 	wantCode(t, run(t, "", "validate", obs, "--model", theory), 0)
@@ -156,7 +156,7 @@ func TestValidateObservationsAgainstTheory(t *testing.T) {
 }
 
 func TestGraph(t *testing.T) {
-	doc := fixtureCopy(t, "full.json", "impact-model.json")
+	doc := fixtureCopy(t, "full.json", "outcome-model.json")
 
 	r := run(t, "", "graph", doc)
 	wantCode(t, r, 0)
@@ -187,7 +187,7 @@ func TestGraph(t *testing.T) {
 
 	r = run(t, "", "graph", doc, "--format", "dot")
 	wantCode(t, r, 0)
-	if !strings.HasPrefix(r.stdout, "digraph impact-model {") || !strings.Contains(r.stdout, "[style=dashed]") {
+	if !strings.HasPrefix(r.stdout, "digraph outcome-model {") || !strings.Contains(r.stdout, "[style=dashed]") {
 		t.Fatalf("dot = %q", r.stdout)
 	}
 
@@ -221,7 +221,7 @@ func TestGraphOfInvalidDocumentExitsOne(t *testing.T) {
 func TestSchema(t *testing.T) {
 	r := run(t, "", "schema")
 	wantCode(t, r, 0)
-	if !strings.Contains(r.stdout, "impact-model\n") || !strings.Contains(r.stdout, "observation-set\n") {
+	if !strings.Contains(r.stdout, "outcome-model\n") || !strings.Contains(r.stdout, "observation-set\n") {
 		t.Fatalf("names = %q", r.stdout)
 	}
 	r = run(t, "", "schema", "--format", "json")
@@ -229,7 +229,7 @@ func TestSchema(t *testing.T) {
 	if err := json.Unmarshal([]byte(r.stdout), &names); err != nil || len(names) != 7 {
 		t.Fatalf("names JSON = %q (%v)", r.stdout, err)
 	}
-	r = run(t, "", "schema", "impact-model")
+	r = run(t, "", "schema", "outcome-model")
 	wantCode(t, r, 0)
 	var s map[string]any
 	if err := json.Unmarshal([]byte(r.stdout), &s); err != nil || s["$id"] == nil {
@@ -243,7 +243,7 @@ func TestSchema(t *testing.T) {
 func TestInit(t *testing.T) {
 	r := run(t, "", "init", "--id", "demo", "--name", "Demo")
 	wantCode(t, r, 0)
-	if !strings.HasPrefix(r.stdout, "kind: ImpactModel\n") {
+	if !strings.HasPrefix(r.stdout, "kind: OutcomeModel\n") {
 		t.Fatalf("default output should be YAML: %q", r.stdout)
 	}
 	if _, err := modelio.ParseDocument([]byte(r.stdout), modelio.FormatYAML); err != nil {
@@ -256,7 +256,7 @@ func TestInit(t *testing.T) {
 		t.Fatalf("init JSON does not parse: %v", err)
 	}
 
-	out := filepath.Join(t.TempDir(), "impact-model.json")
+	out := filepath.Join(t.TempDir(), "outcome-model.json")
 	r = run(t, "", "init", "--out", out, "--problem", "Funders see anecdotes.")
 	wantCode(t, r, 0)
 	if !strings.HasPrefix(mustRead(t, out), "{") || !strings.Contains(mustRead(t, out), "Funders see anecdotes.") {
@@ -308,7 +308,7 @@ func TestFmt(t *testing.T) {
 }
 
 func TestPatch(t *testing.T) {
-	path := fixtureCopy(t, "full.json", "impact-model.json")
+	path := fixtureCopy(t, "full.json", "outcome-model.json")
 	rename := `[{"op":"replace","path":"/outcomes/@oc-idp-support/title","value":"Providers ship it"}]`
 
 	// Dry run prints the document, writes nothing.
@@ -381,7 +381,7 @@ func TestPatch(t *testing.T) {
 }
 
 func TestPatchYAMLFile(t *testing.T) {
-	out := filepath.Join(t.TempDir(), "impact-model.yaml")
+	out := filepath.Join(t.TempDir(), "outcome-model.yaml")
 	wantCode(t, run(t, "", "init", "--id", "demo", "--out", out, "-q"), 0)
 	patch := `[{"op":"replace","path":"/outcomes/@oc-first/title","value":"Staff write strong applications"}]`
 	wantCode(t, run(t, patch, "patch", out, "-", "-q"), 0)
@@ -412,7 +412,7 @@ func TestValidateAgainstParent(t *testing.T) {
 		return path
 	}
 	parent := write("parent.json", `{
-  "kind": "ImpactModel", "specVersion": "0.1", "id": "agent-ecosystem-trust",
+  "kind": "OutcomeModel", "specVersion": "0.1", "id": "agent-ecosystem-trust",
   "metadata": {}, "context": {"problemStatement": "p"},
   "outcomes": [{"id": "oc-trusted-agents", "title": "Agents are trusted", "level": "impact"}],
   "pathways": [{"id": "pw-authz", "title": "Authorization", "childModel": "model:open-agent-auth"}]

@@ -35,8 +35,8 @@ func DetectKind(data []byte, f Format) (model.Kind, error) {
 // SchemaName returns the embedded schema that validates a document kind.
 func SchemaName(k model.Kind) (string, error) {
 	switch k {
-	case model.KindImpactModel:
-		return schema.ImpactModel, nil
+	case model.KindOutcomeModel:
+		return schema.OutcomeModel, nil
 	case model.KindObservationSet:
 		return schema.ObservationSet, nil
 	case model.KindStatus:
@@ -77,7 +77,7 @@ func ParseDocument(data []byte, f Format) (*model.Model, error) {
 	if err != nil {
 		return nil, err
 	}
-	doc, err := decode[model.Model](j, schema.ImpactModel)
+	doc, err := decode[model.Model](j, schema.OutcomeModel)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,7 @@ func Reformat(data []byte, f Format) ([]byte, error) {
 	}
 	var v any
 	switch kind {
-	case model.KindImpactModel:
+	case model.KindOutcomeModel:
 		v, err = ParseDocument(data, f)
 	case model.KindObservationSet:
 		v, err = ParseObservationSet(data, f)
