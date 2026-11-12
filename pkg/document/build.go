@@ -71,6 +71,7 @@ func Build(in Input, opts Options) (*Document, error) {
 		doc.Subtitle = "Outcome model: " + titles(sections)
 	}
 	seen := map[SectionKind]bool{}
+	backgroundAt := -1
 	for _, k := range sections {
 		if !k.Valid() {
 			return nil, fmt.Errorf("document: unknown section %q", k)
@@ -79,6 +80,13 @@ func Build(in Input, opts Options) (*Document, error) {
 			return nil, fmt.Errorf("document: section %q is listed twice", k)
 		}
 		seen[k] = true
+		if k == SectionBackground {
+			// The background names the sections that follow it, so it is
+			// written once they are known.
+			backgroundAt = len(doc.Sections)
+			doc.Sections = append(doc.Sections, Section{})
+			continue
+		}
 		body, err := sectionBody(in, k)
 		if errors.Is(err, ErrSectionUnavailable) && opts.SkipUnavailable {
 			doc.Skipped = append(doc.Skipped, Skipped{Kind: k, Reason: reason(err)})
@@ -88,6 +96,13 @@ func Build(in Input, opts Options) (*Document, error) {
 			return nil, fmt.Errorf("document: section %s: %w", k, err)
 		}
 		doc.Sections = append(doc.Sections, section(k, body))
+	}
+	if backgroundAt >= 0 {
+		var following []SectionKind
+		for _, s := range doc.Sections[backgroundAt+1:] {
+			following = append(following, s.Kind)
+		}
+		doc.Sections[backgroundAt] = section(SectionBackground, background(in, following))
 	}
 	return doc, nil
 }

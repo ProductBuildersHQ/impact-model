@@ -18,6 +18,7 @@ type SectionKind string
 
 // The sections a document can include.
 const (
+	SectionBackground     SectionKind = "background"
 	SectionTheoryOfChange SectionKind = "theory-of-change"
 	SectionProblemTrees   SectionKind = "problem-trees"
 	SectionLogicModels    SectionKind = "logic-models"
@@ -35,7 +36,7 @@ const (
 // uses.
 func SectionKinds() []SectionKind {
 	return []SectionKind{
-		SectionTheoryOfChange, SectionProblemTrees, SectionLogicModels, SectionOutcomeMap,
+		SectionBackground, SectionTheoryOfChange, SectionProblemTrees, SectionLogicModels, SectionOutcomeMap,
 		SectionLogframe, SectionMetrics, SectionVSEM, SectionOGSM, SectionMEL, SectionDMAIC,
 		SectionGlossary,
 	}
@@ -54,6 +55,8 @@ func (k SectionKind) Valid() bool {
 // Title is the section's heading in the document.
 func (k SectionKind) Title() string {
 	switch k {
+	case SectionBackground:
+		return "Background"
 	case SectionTheoryOfChange:
 		return "Theory of Change"
 	case SectionProblemTrees:
@@ -80,22 +83,55 @@ func (k SectionKind) Title() string {
 	return string(k)
 }
 
+// Purpose says what a section shows a reader, in terms of the organization's
+// mission and vision. The background section lists it for the sections that
+// follow.
+func (k SectionKind) Purpose() string {
+	switch k {
+	case SectionBackground:
+		return "Who the organization is, its vision and mission, and its programs"
+	case SectionTheoryOfChange:
+		return "How the programs' activities lead, step by step, to the impact in the vision, for the whole organization and for each program, with the reasoning, assumptions, and risks"
+	case SectionProblemTrees:
+		return "The problem the mission responds to, its causes, and its effects"
+	case SectionLogicModels:
+		return "For each program, what goes in, what it does, what it produces, and the change it aims for"
+	case SectionOutcomeMap:
+		return "The outcomes and the preconditions each one depends on"
+	case SectionLogframe:
+		return "Each result with its indicators, how they are checked, and the assumptions it rests on"
+	case SectionMetrics:
+		return "How each indicator is defined, collected, and reported"
+	case SectionVSEM:
+		return "The vision, and the strategies, execution, and metrics that carry it out, on one page"
+	case SectionOGSM:
+		return "The objective, the goals that say it is reached, and the strategies and measures for each"
+	case SectionMEL:
+		return "How progress is monitored, evaluated, and learned from, and who hears about it"
+	case SectionDMAIC:
+		return "Which processes to measure and improve, and how"
+	case SectionGlossary:
+		return "The terms this document uses"
+	}
+	return ""
+}
+
 // Profiles are named lists of sections for common readers. A profile is only
 // a starting point: any list of sections, in any order, can be given instead.
 var Profiles = map[string][]SectionKind{
 	// nonprofit is the document a nonprofit shares with its board, funders,
 	// and staff: why change happens, what each program does, where the
 	// organization is going, and how it will learn.
-	"nonprofit": {SectionTheoryOfChange, SectionLogicModels, SectionVSEM, SectionMEL, SectionGlossary},
+	"nonprofit": {SectionBackground, SectionTheoryOfChange, SectionLogicModels, SectionVSEM, SectionMEL, SectionGlossary},
 	// strategy is a leadership plan: the theory, then the two strategy
 	// formats.
-	"strategy": {SectionTheoryOfChange, SectionVSEM, SectionOGSM},
+	"strategy": {SectionBackground, SectionTheoryOfChange, SectionVSEM, SectionOGSM},
 	// improvement is for process improvement work: the problem and its
 	// causes, then the DMAIC plan.
-	"improvement": {SectionProblemTrees, SectionDMAIC},
+	"improvement": {SectionBackground, SectionProblemTrees, SectionDMAIC},
 	// evaluation is for evaluators and funders: the logic, the logframe, the
 	// indicators, and the MEL plan.
-	"evaluation": {SectionTheoryOfChange, SectionLogicModels, SectionLogframe, SectionMetrics, SectionMEL},
+	"evaluation": {SectionBackground, SectionTheoryOfChange, SectionLogicModels, SectionLogframe, SectionMetrics, SectionMEL},
 	// full is every section.
 	"full": SectionKinds(),
 }

@@ -1,16 +1,103 @@
 # Riverbend Nonprofit Network theory of change
 
-Outcome model: Theory of Change, Logic Models, VSEM, Monitoring, Evaluation, and Learning Plan, Glossary
+Outcome model: Background, Theory of Change, Logic Models, VSEM, Monitoring, Evaluation, and Learning Plan, Glossary
 
 *Example stamp*
 
 ## Contents
 
-1. Theory of Change
-2. Logic Models
-3. VSEM: Vision, Strategy, Execution, Metrics
-4. Monitoring, Evaluation, and Learning Plan
-5. Glossary
+1. Background
+2. Theory of Change
+3. Logic Models
+4. VSEM: Vision, Strategy, Execution, Metrics
+5. Monitoring, Evaluation, and Learning Plan
+6. Glossary
+
+## Background
+
+### About Riverbend Nonprofit Network
+
+Riverbend Nonprofit Network began in 2015, when a dozen nonprofit directors in Riverbend County started meeting to share back-office costs. It is now a membership network of about 150 nonprofits, from food banks to youth programs, with about 8 staff.
+
+The network runs leadership cohorts and peer circles, a shared bookkeeping and grants service, and a members' forum that takes joint positions to the county and its funders. This example is fictional.
+
+**Whom it serves.** About 150 member nonprofits, and through them the residents of Riverbend County who use their services.
+
+**Where.** Riverbend County (a fictional county).
+
+**Period of this model.** January 2026 to December 2028.
+
+### Vision, mission, and values
+
+**Vision.** A county where every resident can count on a strong local nonprofit when they need one.
+
+**Mission.** Strengthen the nonprofits of Riverbend County so that residents get timely, good-quality services.
+
+**Values.**
+
+- **Members first.** Every program answers to what member nonprofits need, not to what is easy to offer.
+- **Stronger together.** Shared services and a shared voice do more than each organization can alone.
+- **Candor about results.** Report what the evidence shows, including when it disappoints, and change course.
+
+### Programs
+
+Riverbend Nonprofit Network works through three programs. Each is a pathway in the theory of change that follows.
+
+#### Learning Exchange
+
+Peer learning and leadership coaching for member leaders.
+
+**Activities:**
+
+- Run mixed-size peer-learning cohorts
+- Offer one-to-one leadership coaching
+- Deliver a management skills training series
+
+#### Shared Services
+
+Pooled back-office help, group purchasing, and a shared grants calendar.
+
+**Activities:**
+
+- Run pooled bookkeeping and payroll help
+- Negotiate group purchasing agreements
+- Maintain a shared grants calendar
+
+#### Civic Voice
+
+Helping members speak together to local government and funders.
+
+**Activities:**
+
+- Publish plain-language policy briefings
+- Convene member forums to draft joint positions
+- Set up a standing liaison channel with the county planning office
+- Host a funder and member roundtable
+
+### How this document serves the mission and vision
+
+This document is drawn from one outcome model: a single description of the change Riverbend Nonprofit Network works toward, the steps that lead to it, and how progress is measured. Every section is generated from that model, so the views agree with each other and change together when the model changes.
+
+The vision is where the work leads. In the model it is reached through two impact outcomes:
+
+- Residents get timely, good-quality services from local nonprofits
+- Residents' priorities shape local public decisions
+
+The mission is carried out through the programs above. Each is a pathway in the model, from its activities through short-, medium-, and long-term outcomes to the impact.
+
+For this period the model sets one objective: Member nonprofits are strong and connected enough that residents get good services and are heard.
+
+Riverbend Nonprofit Network answers for its results up to and including its long-term outcomes. Above that, it contributes to change alongside others and tracks it without claiming it as its own.
+
+The sections that follow look at the same model from different angles:
+
+| Section | What it shows |
+|---------|---------------|
+| Theory of Change | How the programs' activities lead, step by step, to the impact in the vision, for the whole organization and for each program, with the reasoning, assumptions, and risks |
+| Logic Models | For each program, what goes in, what it does, what it produces, and the change it aims for |
+| VSEM: Vision, Strategy, Execution, Metrics | The vision, and the strategies, execution, and metrics that carry it out, on one page |
+| Monitoring, Evaluation, and Learning Plan | How progress is monitored, evaluated, and learned from, and who hears about it |
+| Glossary | The terms this document uses |
 
 ## Theory of Change
 
