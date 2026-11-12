@@ -23,7 +23,7 @@ Regenerate this file with `scripts/third-party-notices.sh`.
 | Module | Version | License | Copyright |
 |--------|---------|---------|-----------|
 | [`github.com/google/jsonschema-go`](third_party/licenses/github.com/google/jsonschema-go) | v0.4.3 | MIT | Copyright (c) 2025 JSON Schema Go Project Authors |
-| [`github.com/grokify/d2vision`](third_party/licenses/github.com/grokify/d2vision) | v0.5.0 | MIT | Copyright (c) 2026 John Wang |
+| [`github.com/grokify/d2vision`](third_party/licenses/github.com/grokify/d2vision) | v0.6.0 | MIT | Copyright (c) 2026 John Wang |
 | [`github.com/grokify/oscompat`](third_party/licenses/github.com/grokify/oscompat) | v0.13.0 | MIT | Copyright (c) 2025 John Wang |
 | [`github.com/grokify/prism-core`](third_party/licenses/github.com/grokify/prism-core) | v0.6.0 | MIT | Copyright (c) 2026 John Wang |
 | [`github.com/grokify/prism-roadmap`](third_party/licenses/github.com/grokify/prism-roadmap) | v0.26.0 | MIT | Copyright (c) 2026 John Wang |
@@ -35,6 +35,7 @@ Regenerate this file with `scripts/third-party-notices.sh`.
 | [`github.com/spf13/cobra`](third_party/licenses/github.com/spf13/cobra) | v1.10.2 | Apache-2.0 | see the license file |
 | [`github.com/spf13/pflag`](third_party/licenses/github.com/spf13/pflag) | v1.1.0 | BSD-3-Clause | Copyright (c) 2012 Alex Ogier. All rights reserved. and others |
 | [`github.com/yosida95/uritemplate/v3`](third_party/licenses/github.com/yosida95/uritemplate/v3) | v3.0.2 | BSD-3-Clause | Copyright (C) 2016, Kohei YOSHIDA <https://yosida95.com/>. All rights reserved. |
+| [`github.com/yuin/goldmark`](third_party/licenses/github.com/yuin/goldmark) | v1.8.7 | MIT | Copyright (c) 2019 Yusuke Inuzuka |
 | [`golang.org/x/oauth2`](third_party/licenses/golang.org/x/oauth2) | v0.38.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
 | [`golang.org/x/sync`](third_party/licenses/golang.org/x/sync) | v0.25.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
 | [`golang.org/x/sys`](third_party/licenses/golang.org/x/sys) | v0.50.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |

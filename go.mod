@@ -3,7 +3,7 @@ module github.com/ProductBuildersHQ/outcome-model
 go 1.26.5
 
 require (
-	github.com/grokify/d2vision v0.5.0
+	github.com/grokify/d2vision v0.6.0
 	github.com/grokify/oscompat v0.13.0
 	github.com/grokify/prism-core v0.6.0
 	github.com/grokify/prism-roadmap v0.26.0
