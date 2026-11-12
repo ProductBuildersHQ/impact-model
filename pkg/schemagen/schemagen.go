@@ -104,6 +104,8 @@ func EnumValues() map[reflect.Type][]string {
 	add := func(t reflect.Type, values []string) { m[t] = values }
 	add(typeOf[impact.Level](), strs(impact.AllLevels()))
 	add(typeOf[impact.Sphere](), strs(impact.AllSpheres()))
+	add(typeOf[impact.ScorecardPerspective](), strs(impact.AllScorecardPerspectives()))
+	add(typeOf[impact.LeadLag](), strs(impact.AllLeadLags()))
 	add(typeOf[impact.LogicType](), strs(impact.AllLogicTypes()))
 	add(typeOf[impact.ChangeType](), strs(impact.AllChangeTypes()))
 	add(typeOf[impact.LinkType](), strs(impact.AllLinkTypes()))

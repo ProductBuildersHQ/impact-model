@@ -29,7 +29,7 @@ impact-model lint --list
 ```
 
 Validation says a document is well formed; lint says whether the impact model is
-sound. There are 72 deterministic rules, each with an ID such as `IMP-LOG-001`,
+sound. There are 81 deterministic rules, each with an ID such as `IMP-LOG-001`,
 grouped by what they look at:
 
 | Area | What the rules look for |

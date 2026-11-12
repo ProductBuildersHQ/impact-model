@@ -364,7 +364,7 @@ func TestInlineDocumentSizeIsLimited(t *testing.T) {
 // same service function, and refuses what the format cannot draw.
 func TestExportTool(t *testing.T) {
 	cs := connect(t, workDir(t))
-	for _, kind := range []string{"okr", "journey", "v2mom", "vsem", "mel", "ogsm"} {
+	for _, kind := range []string{"okr", "journey", "v2mom", "vsem", "mel", "ogsm", "bsc"} {
 		out, errText := call(t, cs, "impact_export", map[string]any{"path": "impact-model.yaml", "observationPaths": []string{"obs.yaml"}, "kind": kind})
 		if errText != "" || out["kind"] != kind || out["document"] == nil {
 			t.Errorf("export %s: %q %.200v", kind, errText, out)

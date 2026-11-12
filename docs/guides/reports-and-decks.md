@@ -126,6 +126,7 @@ impact-model export journey impact-model.yaml -o journeys.json
 impact-model export v2mom impact-model.yaml -O obs-q3.yaml -o v2mom.json
 impact-model export vsem impact-model.yaml -O obs-q3.yaml -o vsem.json
 impact-model export ogsm impact-model.yaml -O obs-q3.yaml -o ogsm.json
+impact-model export bsc impact-model.yaml -O obs-q3.yaml -o bsc.json
 impact-model export dmaic impact-model.yaml -O obs-q3.yaml -o dmaic.json
 impact-model export mel impact-model.yaml -O obs-q3.yaml -o mel.json
 ```
@@ -138,10 +139,13 @@ journeys. `export v2mom` writes a V2MOM with one method per pathway; the
 strategy per pathway, its resources, execution, and metrics; the
 [VSEM guide](vsem.md) maps each part. `export ogsm` writes an OGSM with the
 objective and its goals, one strategy per pathway, and its measures and
-actions; the [OGSM guide](ogsm.md) maps each part. `export dmaic` writes a DMAIC metrics
+actions; the [OGSM guide](ogsm.md) maps each part. `export bsc` writes a
+Balanced Scorecard with its strategy map, themes, measures, and initiatives
+for the outcomes placed in scorecard perspectives; the
+[Balanced Scorecard guide](bsc.md) maps each part. `export dmaic` writes a DMAIC metrics
 document for the pathways marked for DMAIC; the [DMAIC guide](dmaic.md) maps
 each part. `export mel` writes a monitoring, evaluation, and learning plan; the
-[MEL guide](mel.md) maps each part. All seven are JSON for the PRISM tools, and an agent gets the same
+[MEL guide](mel.md) maps each part. All eight are JSON for the PRISM tools, and an agent gets the same
 exports from the MCP server's `impact_export` tool.
 
 ## The layered logic model diagram

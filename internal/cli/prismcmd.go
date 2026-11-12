@@ -104,6 +104,25 @@ first. With observations (-O), the goals and measures carry current values,
 progress, and status. A model with several impact outcomes and no
 context.objective, or without a pathway, is refused, with a message naming
 what to add.`
+	case "bsc":
+		short, long = "Export the impact model as a Balanced Scorecard", `Export the impact model as a Balanced Scorecard:
+
+  Mission, vision  context.mission and context.vision
+  Perspectives     those the outcomes use, top first: mission, financial,
+                   customer, internal process, learning and growth
+  Objectives       each outcome with a scorecardPerspective, owned by its
+                   ownerActorId
+  Strategy map     each objective contributes to the nearest objectives its
+                   outcome leads to, through causal links (not feedback) and
+                   precondition groups
+  Themes           each pathway that holds an objective
+  Measures         each objective's indicators, lead or lag
+  Initiatives      each intervention, serving the objectives among its
+                   targets, or else the nearest ones they lead to
+
+With observations (-O), the measures carry current values, progress, and
+status. A model with no outcome in a scorecard perspective is refused, with a
+message naming what to add.`
 	}
 	cmd := &cobra.Command{
 		Use:     kind + " <model-file>",
@@ -139,7 +158,7 @@ func runPrismExport(e *env, cmd *cobra.Command, kind, path string) error {
 	for _, o := range exp.Omissions {
 		fmt.Fprintf(e.errOut, "note: %s is left out: %s\n", o.IndicatorID, o.Reason)
 	}
-	if errors.Is(err, prismx.ErrNotV2MOMReady) || errors.Is(err, prismx.ErrNotVSEMReady) || errors.Is(err, prismx.ErrNotDMAICReady) || errors.Is(err, prismx.ErrNotMELReady) || errors.Is(err, prismx.ErrNotOGSMReady) {
+	if errors.Is(err, prismx.ErrNotV2MOMReady) || errors.Is(err, prismx.ErrNotVSEMReady) || errors.Is(err, prismx.ErrNotDMAICReady) || errors.Is(err, prismx.ErrNotMELReady) || errors.Is(err, prismx.ErrNotOGSMReady) || errors.Is(err, prismx.ErrNotBSCReady) {
 		return &ExitError{Code: ExitUsageErr, Err: fmt.Errorf("%s: %w", path, err)}
 	}
 	if err != nil {

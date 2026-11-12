@@ -214,6 +214,7 @@ var refSites = []refSite{
 	{"outcomes", []string{"addressesCauses"}, dropItem, 0},
 	{"outcomes", []string{"addressesEffects"}, dropItem, 0},
 	{"outcomes", []string{"targetGroupIds"}, dropItem, 0},
+	{"outcomes", []string{"ownerActorId"}, dropValue, 0},
 	{"indicators", []string{"targetGroupIds"}, dropItem, 0},
 	{"causes", []string{"parents"}, dropItem, 0},
 	{"causes", []string{"affectedGroupIds"}, dropItem, 0},

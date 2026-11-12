@@ -27,6 +27,12 @@ type Outcome struct {
 	// outcome; omitted means own. Every outcome is monitored, but only own
 	// and shared outcomes count toward accountability.
 	Responsibility Responsibility `json:"responsibility,omitempty"`
+	// OwnerID is the actor who answers for the outcome, as a strategic
+	// objective's owner does.
+	OwnerID string `json:"ownerActorId,omitempty"`
+	// ScorecardPerspective is the Balanced Scorecard perspective the outcome
+	// sits in; an outcome without one is not an objective of the scorecard.
+	ScorecardPerspective ScorecardPerspective `json:"scorecardPerspective,omitempty"`
 	// DeliveredBy are the actors who deliver the outcome.
 	DeliveredBy []string `json:"deliveredBy,omitempty"`
 	// AddressesCauses are the causes in the problem tree the outcome
@@ -165,6 +171,9 @@ type Indicator struct {
 	MeasurementType MeasurementType `json:"measurementType,omitempty"`
 	Unit            string          `json:"unit,omitempty"`
 	Direction       Direction       `json:"direction,omitempty"`
+	// LeadLag says whether the indicator moves before the results it drives
+	// (lead) or reports a result after the fact (lag).
+	LeadLag LeadLag `json:"leadLag,omitempty"`
 	// Tolerance is the acceptable band for maintain-direction indicators.
 	Tolerance float64 `json:"tolerance,omitempty"`
 	// Levels are ordered qualitative levels from lowest to highest.

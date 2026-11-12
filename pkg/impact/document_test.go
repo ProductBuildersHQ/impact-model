@@ -160,37 +160,39 @@ var snakeCase = regexp.MustCompile(`^[a-z][a-z0-9]*(_[a-z0-9]+)*$`)
 
 func TestEnums(t *testing.T) {
 	enums := map[string][]string{
-		"Level":              strs(AllLevels()),
-		"Sphere":             strs(AllSpheres()),
-		"LogicType":          strs(AllLogicTypes()),
-		"ChangeType":         strs(AllChangeTypes()),
-		"LinkType":           strs(AllLinkTypes()),
-		"Polarity":           strs(AllPolarities()),
-		"LoopType":           strs(AllLoopTypes()),
-		"InterventionType":   strs(AllInterventionTypes()),
-		"InterventionStatus": strs(AllInterventionStatuses()),
-		"AssumptionType":     strs(AllAssumptionTypes()),
-		"AssumptionStatus":   strs(AllAssumptionStatuses()),
-		"Criticality":        strs(AllCriticalities()),
-		"Rating":             strs(AllRatings()),
-		"MeasurementType":    strs(AllMeasurementTypes()),
-		"Direction":          strs(AllDirections()),
-		"ActorType":          strs(AllActorTypes()),
-		"ActorRole":          strs(AllActorRoles()),
-		"Stance":             strs(AllStances()),
-		"PerspectiveRole":    strs(AllPerspectiveRoles()),
-		"EvidenceType":       strs(AllEvidenceTypes()),
-		"Strength":           strs(AllStrengths()),
-		"EvidenceDirection":  strs(AllEvidenceDirections()),
-		"ProcessTracingTest": strs(AllProcessTracingTests()),
-		"Sensitivity":        strs(AllSensitivities()),
-		"FactorKind":         strs(AllFactorKinds()),
-		"RiskCategory":       strs(AllRiskCategories()),
-		"Framework":          strs(AllFrameworks()),
-		"Relation":           strs(AllRelations()),
-		"RevisionTrigger":    strs(AllRevisionTriggers()),
-		"QualityRating":      strs(AllQualityRatings()),
-		"DecisionStatus":     strs(AllDecisionStatuses()),
+		"Level":                strs(AllLevels()),
+		"Sphere":               strs(AllSpheres()),
+		"LogicType":            strs(AllLogicTypes()),
+		"ChangeType":           strs(AllChangeTypes()),
+		"LinkType":             strs(AllLinkTypes()),
+		"Polarity":             strs(AllPolarities()),
+		"LoopType":             strs(AllLoopTypes()),
+		"InterventionType":     strs(AllInterventionTypes()),
+		"InterventionStatus":   strs(AllInterventionStatuses()),
+		"AssumptionType":       strs(AllAssumptionTypes()),
+		"AssumptionStatus":     strs(AllAssumptionStatuses()),
+		"Criticality":          strs(AllCriticalities()),
+		"Rating":               strs(AllRatings()),
+		"MeasurementType":      strs(AllMeasurementTypes()),
+		"Direction":            strs(AllDirections()),
+		"ActorType":            strs(AllActorTypes()),
+		"ActorRole":            strs(AllActorRoles()),
+		"Stance":               strs(AllStances()),
+		"PerspectiveRole":      strs(AllPerspectiveRoles()),
+		"EvidenceType":         strs(AllEvidenceTypes()),
+		"Strength":             strs(AllStrengths()),
+		"EvidenceDirection":    strs(AllEvidenceDirections()),
+		"ProcessTracingTest":   strs(AllProcessTracingTests()),
+		"Sensitivity":          strs(AllSensitivities()),
+		"FactorKind":           strs(AllFactorKinds()),
+		"RiskCategory":         strs(AllRiskCategories()),
+		"Framework":            strs(AllFrameworks()),
+		"Relation":             strs(AllRelations()),
+		"RevisionTrigger":      strs(AllRevisionTriggers()),
+		"QualityRating":        strs(AllQualityRatings()),
+		"DecisionStatus":       strs(AllDecisionStatuses()),
+		"ScorecardPerspective": strs(AllScorecardPerspectives()),
+		"LeadLag":              strs(AllLeadLags()),
 	}
 	for name, values := range enums {
 		seen := map[string]bool{}
@@ -216,6 +218,12 @@ func TestEnums(t *testing.T) {
 	}
 	if Framework("").Valid() || !FrameworkBSC.Valid() {
 		t.Error("Framework validity mismatch")
+	}
+	if ScorecardMission.Rank() != 0 || ScorecardLearningGrowth.Rank() != 4 || ScorecardPerspective("people").Rank() != -1 {
+		t.Error("scorecard perspectives are not ranked top first")
+	}
+	if !LeadIndicator.Valid() || LeadLag("leading").Valid() {
+		t.Error("LeadLag validity mismatch")
 	}
 }
 

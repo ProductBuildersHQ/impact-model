@@ -160,6 +160,7 @@ func TestExportsAreDeterministic(t *testing.T) {
 		"OKR":   func() (any, error) { return ToOKR(doc, st) },
 		"V2MOM": func() (any, error) { return ToV2MOM(doc, st) },
 		"OGSM":  func() (any, error) { return ToOGSM(doc, st) },
+		"BSC":   func() (any, error) { return ToBSC(doc, st) },
 	}
 	for name, export := range exports {
 		var first []byte

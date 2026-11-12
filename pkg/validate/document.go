@@ -294,6 +294,8 @@ func (c *checker) outcomes() {
 		enum(c, p+"/level", o.ID, o.Level)
 		enum(c, p+"/sphere", o.ID, o.Sphere)
 		enum(c, p+"/changeType", o.ID, o.ChangeType)
+		enum(c, p+"/scorecardPerspective", o.ID, o.ScorecardPerspective)
+		c.actor(p+"/ownerActorId", o.ID, o.OwnerID)
 		if o.Logic != nil {
 			c.logic(p+"/logic", o.ID, *o.Logic)
 		}
@@ -433,6 +435,7 @@ func (c *checker) indicators() {
 		c.ref(p+"/measures", ind.ID, ind.Measures, impact.ElementOutcome, impact.ElementIntervention, impact.ElementAssumption, impact.ElementPathway)
 		enum(c, p+"/measurementType", ind.ID, ind.MeasurementType)
 		enum(c, p+"/direction", ind.ID, ind.Direction)
+		enum(c, p+"/leadLag", ind.ID, ind.LeadLag)
 		c.duration(p+"/frequency", ind.ID, ind.Frequency)
 		c.actor(p+"/ownerActorId", ind.ID, ind.OwnerID)
 		c.refs(p+"/proxyFor", ind.ID, ind.ProxyFor, impact.ElementOutcome)

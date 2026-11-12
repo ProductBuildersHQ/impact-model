@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/impact-model`
-**Status:** In progress — 23 of 27 phases completed
+**Status:** In progress — 24 of 28 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -638,3 +638,17 @@
   - Type: capability · Status: completed
   - Depends on: `RMI-PRISMROADMAP-024` (goals/ogsm in prism-roadmap), `RMI-IMPACTMODEL-024`
   - Acceptance: prismx.ToOGSM linked by ID and refusing a model without a clear objective or pathways; export ogsm in the CLI, the service layer, and the MCP server; golden tests on the examples; an OGSM guide and credits entry
+
+## Phase 28 — Balanced Scorecard
+
+**Theme:** The Balanced Scorecard as a stand-alone format in prism-roadmap, the impact model placing its outcomes in scorecard perspectives, and an export that draws the strategy map from the causal links and needs nothing else
+**Status:** Completed — 2 of 2 items completed
+
+- [x] `RMI-IMPACTMODEL-026` Hold everything a Balanced Scorecard needs in the impact model
+  - Type: capability · Status: completed
+  - Acceptance: a gap analysis recorded in the TRD; the missing fields added with validation and lint; schemas regenerated; examples carry the new fields
+
+- [x] `RMI-IMPACTMODEL-027` Export a Balanced Scorecard projection of an impact model
+  - Type: capability · Status: completed
+  - Depends on: `RMI-PRISMROADMAP-025` (goals/bsc in prism-roadmap), `RMI-IMPACTMODEL-026`
+  - Acceptance: prismx.ToBSC linked by ID, the strategy map drawn from causal links; export bsc in the CLI, the service layer, and the MCP server; tests on the examples; a Balanced Scorecard guide and credits entry

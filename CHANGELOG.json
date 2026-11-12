@@ -17,6 +17,9 @@
       },
       {
         "description": "An OGSM from the impact model alone: `export ogsm` writes the objective, due at the end of the time horizon, the indicators of its outcomes as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's focus as measures, and its interventions as actions"
+      },
+      {
+        "description": "A Balanced Scorecard from the impact model: `export bsc` writes the outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives"
       }
     ],
     "added": [
@@ -28,6 +31,9 @@
       },
       {
         "description": "`export ogsm` and the `ogsm` kind of the MCP tool `impact_export`: an OGSM (Objective, Goals, Strategies, Measures) in prism-roadmap's `goals/ogsm` format. The objective is `context.objective`, or the model's one impact outcome, due at `context.timeHorizon.end`; goals are the indicators of its outcomes; each pathway is a strategy serving the goals its outcomes are or lead to, through causal links and precondition groups; its focus indicators are measures, leaving out any that is already a goal; and its interventions are actions with owners, status, and dates. A model with an ambiguous objective, or without a pathway, is refused, naming what to add. In Go: `prismx.ToOGSM` and `prismx.ErrNotOGSMReady`"
+      },
+      {
+        "description": "`export bsc` and the `bsc` kind of the MCP tool `impact_export`: a Balanced Scorecard in prism-roadmap's `goals/bsc` format. The perspectives are those the outcomes use, top first, with the mission above the financial perspective; each placed outcome is an objective that contributes to the nearest objectives its outcome leads to, through causal links that are not feedback and precondition groups; pathways that hold an objective are strategic themes; indicators are lead or lag measures; and interventions are initiatives serving the objectives their targets are or lead to, with their resources as the budget. A model with no outcome in a scorecard perspective is refused. In Go: `prismx.ToBSC` and `prismx.ErrNotBSCReady`"
       },
       {
         "description": "A problem tree per pathway: `pathway.problemStatement` is a program's own core problem, and `pathwayIds` on causes and effects name the program trees they belong to, a shared cause naming several. `report problem-tree`, `problem-tree-d2`, and `problem-tree-json` take `--pathway`, and the `definitions` pack draws the whole tree and then each program's tree. Validation checks the new references (VAL-REF-001), and removing a pathway with cascade drops them"
@@ -58,6 +64,12 @@
       },
       {
         "description": "Lint IMP-CTX-002: a model with several impact outcomes and no `context.objective` has no single objective, so a plan such as an OGSM cannot be drawn"
+      },
+      {
+        "description": "Balanced Scorecard fields: `outcome.scorecardPerspective` (`mission`, `financial`, `customer`, `internal_process`, or `learning_growth`) places an outcome in a scorecard, `outcome.ownerActorId` names who answers for it, and `indicator.leadLag` marks a lead or lag measure. `Model.ScorecardObjectives`, `ScorecardContributesTo`, and `ScorecardObjectivesServed` draw the strategy map and what each intervention serves from the causal graph. The outcome and indicator commands take `--scorecard-perspective`, `--owner`, and `--lead-lag`"
+      },
+      {
+        "description": "Lint IMP-BSC-001 to 004: once an outcome names a scorecard perspective, the strategy map runs upward, and each objective is owned, measured, and measured by lead or lag indicators"
       }
     ],
     "changed": [
@@ -67,7 +79,7 @@
     ],
     "dependencies": [
       {
-        "description": "Bumped `github.com/grokify/prism-roadmap` from v0.22.0 to v0.25.0, which adds `goals/vsem`, `goals/mel`, and `goals/ogsm`"
+        "description": "Bumped `github.com/grokify/prism-roadmap` from v0.22.0 to v0.26.0, which adds `goals/vsem`, `goals/mel`, `goals/ogsm`, and `goals/bsc`"
       }
     ],
     "documentation": [
@@ -91,6 +103,15 @@
       },
       {
         "description": "An OGSM guide maps each part of an OGSM to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export"
+      },
+      {
+        "description": "The authoring guide and concepts cover scorecard perspectives, objective owners, and lead and lag measures, and the intermediary example places its outcomes in a mission-led scorecard"
+      },
+      {
+        "description": "The README and the guides give the current number of lint rules, 81"
+      },
+      {
+        "description": "A Balanced Scorecard guide maps each part of a scorecard to the impact model, and the README, the documentation home, concepts, credits, and the CLI, MCP, and reports guides list the export; the credits name where OKRs, VSEM, OGSM, and the Balanced Scorecard come from"
       }
     ]
   },
