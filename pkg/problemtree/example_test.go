@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 var update = flag.Bool("update", false, "rewrite the golden files")

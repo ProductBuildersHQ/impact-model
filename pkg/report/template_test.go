@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
 )
 
 func TestCustomTemplate(t *testing.T) {

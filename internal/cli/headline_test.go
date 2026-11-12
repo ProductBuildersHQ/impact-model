@@ -4,9 +4,9 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 )
 
 // The focus flags set the North Star, the one metric, and the guardrails, and

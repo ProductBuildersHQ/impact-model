@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-go install github.com/ProductBuildersHQ/impact-model/cmd/impact-model@latest
+go install github.com/ProductBuildersHQ/outcome-model/cmd/impact-model@latest
 impact-model --version
 ```
 

@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // A common metric counts for a pathway when an indicator of it measures an

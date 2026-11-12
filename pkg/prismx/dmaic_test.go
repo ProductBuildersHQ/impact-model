@@ -10,10 +10,10 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
 )
 
 // dmaicExample is the intermediary example with Shared Services marked for

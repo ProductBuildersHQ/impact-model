@@ -8,9 +8,9 @@ import (
 	core "github.com/grokify/prism-core"
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/approve"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/approve"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 func newApproveCmd(e *env) *cobra.Command {

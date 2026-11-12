@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // The scorecard rules apply once an outcome names a Balanced Scorecard

@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // RollupResult is the value an indicator takes by combining other indicators

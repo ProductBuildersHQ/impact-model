@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // CSV tables are RFC 4180: comma separated, CRLF line ends, fields quoted

@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // The assessment report renders from an impact model alone. It tells a reader how

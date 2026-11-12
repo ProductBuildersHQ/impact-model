@@ -4,7 +4,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ComposeResult is the value of a composed indicator.

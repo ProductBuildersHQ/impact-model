@@ -10,7 +10,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/v2mom"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ErrNotV2MOMReady is returned, wrapped, when an impact model lacks what a

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // provEl is an element that can carry a provenance.

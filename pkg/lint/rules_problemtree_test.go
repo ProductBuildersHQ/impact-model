@@ -5,7 +5,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // treeDoc is the clean base with one effect of the core problem.

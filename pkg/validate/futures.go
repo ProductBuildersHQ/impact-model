@@ -6,8 +6,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/ref"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/ref"
 )
 
 // futureRef is the shape of a competing-future reference: ufm:<slug>.

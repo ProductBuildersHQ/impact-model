@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Large builds a layered impact model of 200 outcomes, 400 links, and 300

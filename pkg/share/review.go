@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 // ReviewRow is one element put to a reviewer. The response columns are not

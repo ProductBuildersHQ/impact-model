@@ -8,10 +8,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/share"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 func newLintCmd(e *env) *cobra.Command {

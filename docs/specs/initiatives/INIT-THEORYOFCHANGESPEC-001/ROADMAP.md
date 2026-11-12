@@ -1,7 +1,7 @@
 # ROADMAP — Impact Model Specification — Go-first model, JSON Schema, measurement, and leadership reporting
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
-**Repository:** `github.com/ProductBuildersHQ/impact-model`
+**Repository:** `github.com/ProductBuildersHQ/outcome-model`
 **Status:** In progress — 24 of 28 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; later items are `RMI-IMPACTMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
@@ -465,7 +465,7 @@
 
 - [x] `RMI-THEORYOFCHANGESPEC-074` Rename the module, packages, command, kind, schemas, MCP tools, and skills to impact-model
   - Type: capability · Status: completed
-  - Acceptance: module path github.com/ProductBuildersHQ/impact-model; pkg/impact and pkg/impactio; command impact-model; kind ImpactModel; schemas impact-model*; tools impact_*; skills impact-*; build, vet, tests, and lint pass
+  - Acceptance: module path github.com/ProductBuildersHQ/outcome-model; pkg/impact and pkg/impactio; command impact-model; kind ImpactModel; schemas impact-model*; tools impact_*; skills impact-*; build, vet, tests, and lint pass
 
 - [x] `RMI-THEORYOFCHANGESPEC-075` Rewrite the documentation around one impact model with several views
   - Type: capability · Status: completed

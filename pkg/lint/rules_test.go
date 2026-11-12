@@ -4,8 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // clean returns a small impact model that breaks none of the structure or logic

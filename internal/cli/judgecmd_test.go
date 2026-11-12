@@ -10,7 +10,7 @@ import (
 
 	"github.com/plexusone/structured-evaluation/rubric"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/judge"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/judge"
 )
 
 // bundleOf runs `judge show` and returns the parsed bundle.

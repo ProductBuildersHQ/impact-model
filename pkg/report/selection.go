@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // invertedScore flips a 1 to 5 score, so a criterion where low is better

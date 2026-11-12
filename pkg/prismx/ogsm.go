@@ -8,7 +8,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/ogsm"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ErrNotOGSMReady is returned, wrapped, when an impact model lacks what an

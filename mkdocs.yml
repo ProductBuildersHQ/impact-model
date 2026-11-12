@@ -1,8 +1,8 @@
 site_name: Impact Model
 site_description: "An AI-native, spec-driven way to model, measure, and report on impact: the theory of change, logic model, and related views of one model"
-site_url: https://productbuildershq.com/impact-model
-repo_url: https://github.com/ProductBuildersHQ/impact-model
-repo_name: ProductBuildersHQ/impact-model
+site_url: https://productbuildershq.com/outcome-model
+repo_url: https://github.com/ProductBuildersHQ/outcome-model
+repo_name: ProductBuildersHQ/outcome-model
 
 # docs/guides/ holds the user guides and docs/releases/ the release notes.
 docs_dir: docs
@@ -106,4 +106,4 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ProductBuildersHQ/impact-model
+      link: https://github.com/ProductBuildersHQ/outcome-model

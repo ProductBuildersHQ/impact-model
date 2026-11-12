@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 func rollupDoc(agg impact.Aggregation) *impact.Model {

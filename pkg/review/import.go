@@ -11,8 +11,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Candidate is an element a quoted text may refer to: its ID and the

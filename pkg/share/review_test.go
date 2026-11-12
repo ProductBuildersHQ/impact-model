@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 func fullView(t *testing.T, mutate func(*impact.Model)) *report.View {

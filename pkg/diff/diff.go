@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Op says what happened to an element.

@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/approve"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/approve"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 )
 
 func approveArgs(theory string, extra ...string) []string {

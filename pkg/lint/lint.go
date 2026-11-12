@@ -17,9 +17,9 @@ import (
 
 	"github.com/plexusone/structured-evaluation/summary"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // Profile selects which rules run.

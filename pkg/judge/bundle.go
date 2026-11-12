@@ -15,12 +15,12 @@ import (
 	"github.com/plexusone/structured-evaluation/rubric"
 	"github.com/plexusone/structured-evaluation/summary"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/spec"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/spec"
 )
 
 // BundleKind identifies a judge bundle.

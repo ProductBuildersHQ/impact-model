@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/internal/testfixture"
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/internal/testfixture"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
 )
 
 // execPipeline builds the graph, evaluates the status, builds the view, and

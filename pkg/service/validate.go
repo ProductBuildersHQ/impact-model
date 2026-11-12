@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // Report is the validation result for one input.

@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/review"
-	"github.com/ProductBuildersHQ/impact-model/pkg/share"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/review"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
 )
 
 // ImportReview maps a review response onto doc as proposals. doc is never

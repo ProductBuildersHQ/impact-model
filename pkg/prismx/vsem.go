@@ -7,7 +7,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/vsem"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ErrNotVSEMReady is returned, wrapped, when an impact model lacks what a VSEM

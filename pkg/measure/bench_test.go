@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/internal/testfixture"
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/internal/testfixture"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 func pipeline(d *impact.Model, sets []*impact.ObservationSet) error {

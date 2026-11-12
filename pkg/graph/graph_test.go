@@ -11,7 +11,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 func loadFull(t *testing.T) *impact.Model {

@@ -13,9 +13,9 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/okr"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
 )
 
 // ToOKR exports the outcomes an organization answers for (owned or shared,

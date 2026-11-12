@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/ProductBuildersHQ/impact-model/internal/cli"
+	"github.com/ProductBuildersHQ/outcome-model/internal/cli"
 )
 
 const (

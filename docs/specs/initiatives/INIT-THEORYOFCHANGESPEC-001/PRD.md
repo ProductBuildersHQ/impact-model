@@ -7,7 +7,7 @@
 > See [the decision](../../../design/adrs/0001-rename-to-impact-model.md).
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
-**Repository:** `github.com/ProductBuildersHQ/impact-model`
+**Repository:** `github.com/ProductBuildersHQ/outcome-model`
 **Workflow:** pbhq-lite
 **Status:** Draft — pending stakeholder review (pbhq-lite gate: after PRD)
 

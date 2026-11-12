@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // DefaultDateFormat is the date layout used when a mapping gives none.

@@ -5,8 +5,8 @@ import (
 
 	"github.com/grokify/prism-roadmap/journey"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
 )
 
 // ToOutcomeJourneys exports each numeric indicator as an outcome journey: where

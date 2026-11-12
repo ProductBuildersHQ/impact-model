@@ -6,7 +6,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 func loadFixture(t *testing.T) *impact.Model {

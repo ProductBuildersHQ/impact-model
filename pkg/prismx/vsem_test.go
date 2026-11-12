@@ -8,7 +8,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/vsem"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 func TestVSEMExportValidates(t *testing.T) {

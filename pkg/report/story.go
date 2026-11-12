@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Disclosure is a story as a report may show it.

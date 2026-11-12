@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 func TestReportKinds(t *testing.T) {

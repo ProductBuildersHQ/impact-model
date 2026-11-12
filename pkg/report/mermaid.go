@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // MermaidOptions configures the pathway diagram.

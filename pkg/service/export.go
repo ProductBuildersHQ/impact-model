@@ -5,8 +5,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/prismx"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/prismx"
 )
 
 // PRISMExportKinds are the documents an impact model exports for the PRISM tools.

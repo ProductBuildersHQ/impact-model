@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/impact-model/schema/v0/actor-registry.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/actor-registry.schema.json",
   "$ref": "#/$defs/ActorRegistry",
   "$defs": {
     "Actor": {

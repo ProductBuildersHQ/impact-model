@@ -12,7 +12,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Calendar. Collection periods are converted with a fixed 52-week year, a

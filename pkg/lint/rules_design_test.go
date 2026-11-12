@@ -6,8 +6,8 @@ import (
 
 	core "github.com/grokify/prism-core"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // addIndicator appends an indicator to the document and lets the caller

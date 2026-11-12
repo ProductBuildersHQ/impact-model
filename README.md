@@ -6,16 +6,16 @@
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![License][license-svg]][license-url]
 
- [go-ci-svg]: https://github.com/ProductBuildersHQ/impact-model/actions/workflows/go-ci.yaml/badge.svg?branch=main
- [go-ci-url]: https://github.com/ProductBuildersHQ/impact-model/actions/workflows/go-ci.yaml
- [go-lint-svg]: https://github.com/ProductBuildersHQ/impact-model/actions/workflows/go-lint.yaml/badge.svg?branch=main
- [go-lint-url]: https://github.com/ProductBuildersHQ/impact-model/actions/workflows/go-lint.yaml
- [go-sast-svg]: https://github.com/ProductBuildersHQ/impact-model/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
- [go-sast-url]: https://github.com/ProductBuildersHQ/impact-model/actions/workflows/go-sast-codeql.yaml
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/ProductBuildersHQ/impact-model
- [docs-godoc-url]: https://pkg.go.dev/github.com/ProductBuildersHQ/impact-model
+ [go-ci-svg]: https://github.com/ProductBuildersHQ/outcome-model/actions/workflows/go-ci.yaml/badge.svg?branch=main
+ [go-ci-url]: https://github.com/ProductBuildersHQ/outcome-model/actions/workflows/go-ci.yaml
+ [go-lint-svg]: https://github.com/ProductBuildersHQ/outcome-model/actions/workflows/go-lint.yaml/badge.svg?branch=main
+ [go-lint-url]: https://github.com/ProductBuildersHQ/outcome-model/actions/workflows/go-lint.yaml
+ [go-sast-svg]: https://github.com/ProductBuildersHQ/outcome-model/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
+ [go-sast-url]: https://github.com/ProductBuildersHQ/outcome-model/actions/workflows/go-sast-codeql.yaml
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/ProductBuildersHQ/outcome-model
+ [docs-godoc-url]: https://pkg.go.dev/github.com/ProductBuildersHQ/outcome-model
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/ProductBuildersHQ/impact-model/blob/main/LICENSE
+ [license-url]: https://github.com/ProductBuildersHQ/outcome-model/blob/main/LICENSE
 
 **Impact Model** is an AI-native format from
 [ProductBuildersHQ](https://github.com/ProductBuildersHQ) for describing how a
@@ -305,7 +305,7 @@ what they hope for, and then show whether it did.
 ## Quick start
 
 ```bash
-go install github.com/ProductBuildersHQ/impact-model/cmd/impact-model@latest
+go install github.com/ProductBuildersHQ/outcome-model/cmd/impact-model@latest
 
 impact-model init --id my-program --name "My program" --out impact-model.yaml
 impact-model validate impact-model.yaml

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 // StatusReportKinds are the report kinds made from a status snapshot.

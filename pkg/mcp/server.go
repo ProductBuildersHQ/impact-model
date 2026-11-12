@@ -10,17 +10,17 @@ import (
 
 	sdk "github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/diff"
-	"github.com/ProductBuildersHQ/impact-model/pkg/edit"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/judge"
-	"github.com/ProductBuildersHQ/impact-model/pkg/lint"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/slides"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
-	"github.com/ProductBuildersHQ/impact-model/schema"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/diff"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/edit"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/judge"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/lint"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/slides"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/schema"
 )
 
 // Version is the server's reported version.

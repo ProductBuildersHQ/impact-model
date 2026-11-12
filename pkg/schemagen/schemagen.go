@@ -15,11 +15,11 @@ import (
 
 	"github.com/invopop/jsonschema"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // BaseURL is the prefix of every schema $id.
-const BaseURL = "https://github.com/ProductBuildersHQ/impact-model/schema/v0/"
+const BaseURL = "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/"
 
 // Definition describes one generated schema.
 type Definition struct {

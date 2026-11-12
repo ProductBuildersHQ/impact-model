@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/mcp"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/mcp"
 )
 
 func newMCPCmd() *cobra.Command {

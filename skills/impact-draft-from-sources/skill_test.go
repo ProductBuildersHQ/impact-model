@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/internal/cli"
+	"github.com/ProductBuildersHQ/outcome-model/internal/cli"
 )
 
 type source struct {

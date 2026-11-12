@@ -8,7 +8,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // SheetMeta supplies what a returned sheet does not say itself.

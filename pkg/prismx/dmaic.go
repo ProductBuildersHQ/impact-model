@@ -10,7 +10,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ErrNotDMAICReady is returned, wrapped, when an impact model has nothing to

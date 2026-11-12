@@ -10,10 +10,10 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/okr"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
 )
 
 func example(t *testing.T) (*impact.Model, *impact.Status) {
@@ -195,7 +195,7 @@ func TestOnlyThisPackageImportsThePRISMFamily(t *testing.T) {
 	}
 	forbidden := []string{"github.com/grokify/prism-roadmap", "github.com/grokify/structured-goals"}
 	allowed := map[string]bool{
-		"github.com/ProductBuildersHQ/impact-model/pkg/prismx": true,
+		"github.com/ProductBuildersHQ/outcome-model/pkg/prismx": true,
 	}
 	checked := 0
 	for _, line := range strings.Split(strings.TrimSpace(string(out)), "\n") {

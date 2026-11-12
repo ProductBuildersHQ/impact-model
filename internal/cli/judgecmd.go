@@ -9,8 +9,8 @@ import (
 	"github.com/plexusone/structured-evaluation/rubric"
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/judge"
-	"github.com/ProductBuildersHQ/impact-model/spec"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/judge"
+	"github.com/ProductBuildersHQ/outcome-model/spec"
 )
 
 func newJudgeCmd(e *env) *cobra.Command {

@@ -1,8 +1,8 @@
 package lint
 
 import (
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // The rules below check the problem tree's branches: that each effect of the

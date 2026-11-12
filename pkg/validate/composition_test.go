@@ -3,7 +3,7 @@ package validate
 import (
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Each way a composition can be wrong is reported at the place that is wrong.

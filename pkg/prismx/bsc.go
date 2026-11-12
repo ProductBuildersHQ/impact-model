@@ -7,7 +7,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/bsc"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ErrNotBSCReady is returned, wrapped, when an impact model lacks what a

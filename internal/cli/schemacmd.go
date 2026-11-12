@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/schema"
+	"github.com/ProductBuildersHQ/outcome-model/schema"
 )
 
 func newSchemaCmd(e *env) *cobra.Command {

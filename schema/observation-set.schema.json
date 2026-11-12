@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/impact-model/schema/v0/observation-set.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/observation-set.schema.json",
   "$ref": "#/$defs/ObservationSet",
   "$defs": {
     "AssumptionAssessment": {

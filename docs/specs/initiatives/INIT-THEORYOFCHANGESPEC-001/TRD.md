@@ -7,7 +7,7 @@
 > See [the decision](../../../design/adrs/0001-rename-to-impact-model.md).
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
-**Repository:** `github.com/ProductBuildersHQ/impact-model`
+**Repository:** `github.com/ProductBuildersHQ/outcome-model`
 **Version:** 0.1
 **Status:** Draft
 
@@ -19,7 +19,7 @@ apply are answered `Not applicable — <rationale>`.
 
 ### 1.1 Purpose
 
-Define the Go module `github.com/ProductBuildersHQ/impact-model`: a
+Define the Go module `github.com/ProductBuildersHQ/outcome-model`: a
 Go-struct-first Theory of Change (ToC) model, its generated JSON Schemas, and
 the library, CLI, and MCP tooling that validate, analyze, measure, judge, and
 report on ToC documents. This TRD lets implementation proceed phase by phase
@@ -577,7 +577,7 @@ MCP tool errors return `isError: true` with a JSON body
 
 ### 6.9 Versioning
 
-- Schema `$id`: `https://github.com/ProductBuildersHQ/impact-model/schema/v0/<name>.schema.json`.
+- Schema `$id`: `https://github.com/ProductBuildersHQ/outcome-model/schema/v0/<name>.schema.json`.
 - Every document carries `kind` (`ImpactModel` | `ObservationSet` |
   `ImpactModelStatus`) and `specVersion` (`"0.1"`).
 - Within v0.x, minor versions are additive; removals or renames require a

@@ -11,11 +11,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
-	"github.com/ProductBuildersHQ/impact-model/pkg/share"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/share"
 )
 
 // workshopKind is the export kind that selects the workshop deck.

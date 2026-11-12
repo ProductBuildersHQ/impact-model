@@ -5,8 +5,8 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // funcRule is a rule written as a function.

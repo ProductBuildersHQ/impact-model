@@ -5,12 +5,12 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/burden"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/logicmodel"
-	"github.com/ProductBuildersHQ/impact-model/pkg/problemtree"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
-	"github.com/ProductBuildersHQ/impact-model/pkg/slides"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/burden"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/logicmodel"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/problemtree"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/slides"
 )
 
 // WorkshopDeck renders the workshop deck for a document as Marp Markdown.

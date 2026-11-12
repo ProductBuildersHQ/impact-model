@@ -5,7 +5,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 func composed(op impact.CompositionOp, parts ...string) impact.Indicator {

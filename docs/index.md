@@ -317,4 +317,4 @@ reports use [structured-evaluation](https://github.com/plexusone/structured-eval
 
 ## License
 
-[MIT](https://github.com/ProductBuildersHQ/impact-model/blob/main/LICENSE)
+[MIT](https://github.com/ProductBuildersHQ/outcome-model/blob/main/LICENSE)

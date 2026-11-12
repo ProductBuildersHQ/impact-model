@@ -13,7 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/schemagen"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/schemagen"
 )
 
 func main() {

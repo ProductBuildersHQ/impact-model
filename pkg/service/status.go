@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/measure"
-	"github.com/ProductBuildersHQ/impact-model/pkg/report"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/measure"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/report"
 )
 
 // StatusInputFor evaluates doc against the observation sets as of asOf and

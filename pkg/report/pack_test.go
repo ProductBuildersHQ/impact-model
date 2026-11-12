@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/problemtree"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/problemtree"
 )
 
 func TestDefinitionsPackGolden(t *testing.T) {

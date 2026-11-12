@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // LearningInput adds to a status report what a learning review needs: the

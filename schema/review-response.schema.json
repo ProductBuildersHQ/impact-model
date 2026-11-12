@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ProductBuildersHQ/impact-model/schema/v0/review-response.schema.json",
+  "$id": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/review-response.schema.json",
   "$ref": "#/$defs/ReviewResponse",
   "$defs": {
     "ReviewItem": {

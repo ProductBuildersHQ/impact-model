@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Observations checks observation sets against the impact model they measure.

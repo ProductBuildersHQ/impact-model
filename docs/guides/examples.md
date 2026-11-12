@@ -1,7 +1,7 @@
 # Examples
 
 Four complete examples are in the repository's
-[`examples/`](https://github.com/ProductBuildersHQ/impact-model/tree/main/examples)
+[`examples/`](https://github.com/ProductBuildersHQ/outcome-model/tree/main/examples)
 directory. **Everything in them is fictional**: the organizations, people,
 numbers, and URLs (all under `example.org`) are invented for illustration.
 

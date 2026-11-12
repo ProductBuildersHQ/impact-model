@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/service"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/service"
 )
 
 func newFmtCmd(e *env) *cobra.Command {

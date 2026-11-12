@@ -1,7 +1,7 @@
 {
   "irVersion": "1.0",
   "project": "impact-model",
-  "repository": "https://github.com/ProductBuildersHQ/impact-model",
+  "repository": "https://github.com/ProductBuildersHQ/outcome-model",
   "versioning": "semver",
   "commitConvention": "conventional",
   "maintainers": [

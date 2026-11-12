@@ -9,7 +9,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/mel"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // ErrNotMELReady is returned, wrapped, when an impact model has no outcome

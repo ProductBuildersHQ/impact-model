@@ -8,7 +8,7 @@ import (
 
 	"github.com/grokify/prism-roadmap/goals/bsc"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 func TestBSCExportValidates(t *testing.T) {

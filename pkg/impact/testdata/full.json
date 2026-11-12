@@ -1,5 +1,5 @@
 {
-  "$schema": "https://github.com/ProductBuildersHQ/impact-model/schema/v0/impact-model.schema.json",
+  "$schema": "https://github.com/ProductBuildersHQ/outcome-model/schema/v0/impact-model.schema.json",
   "kind": "ImpactModel",
   "specVersion": "0.1",
   "id": "open-agent-auth",

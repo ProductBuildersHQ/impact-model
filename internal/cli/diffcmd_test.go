@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/diff"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/diff"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 )
 
 // twoVersions copies the full fixture twice and edits the second with the

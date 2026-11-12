@@ -5,7 +5,7 @@ package main
 import (
 	"os"
 
-	"github.com/ProductBuildersHQ/impact-model/internal/cli"
+	"github.com/ProductBuildersHQ/outcome-model/internal/cli"
 )
 
 func main() {

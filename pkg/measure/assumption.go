@@ -6,8 +6,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/graph"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/graph"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // EffectiveAssumptions returns each assumption's status at asOf: the latest

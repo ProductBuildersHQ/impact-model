@@ -3,7 +3,7 @@ package measure
 import (
 	"fmt"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // Diff lists what changed between two status snapshots of the same impact model:

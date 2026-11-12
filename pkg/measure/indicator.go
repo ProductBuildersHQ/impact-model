@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 // DefaultTolerance is how far behind expected progress an indicator may fall

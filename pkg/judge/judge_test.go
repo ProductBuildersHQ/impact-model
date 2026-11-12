@@ -11,8 +11,8 @@ import (
 
 	"github.com/plexusone/structured-evaluation/rubric"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
-	"github.com/ProductBuildersHQ/impact-model/pkg/impactio"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impactio"
 )
 
 func load(t *testing.T) *impact.Model {

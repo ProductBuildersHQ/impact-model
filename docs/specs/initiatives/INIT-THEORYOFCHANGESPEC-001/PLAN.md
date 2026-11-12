@@ -1,7 +1,7 @@
 # PLAN — Theory of Change Specification — Go-first model, JSON Schema, measurement, and leadership reporting
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
-**Repository:** `github.com/ProductBuildersHQ/impact-model`
+**Repository:** `github.com/ProductBuildersHQ/outcome-model`
 **Version:** 0.4
 **Status:** Draft — pending tech-lead review (pbhq-lite gate: after PLAN)
 

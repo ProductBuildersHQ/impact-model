@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/validate"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/validate"
 )
 
 // Removing an indicator removes it from every headline list and every focus

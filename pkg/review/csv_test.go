@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ProductBuildersHQ/impact-model/pkg/impact"
+	"github.com/ProductBuildersHQ/outcome-model/pkg/impact"
 )
 
 const sheet = "# model:riverbend-network version:0.2.0 hash:sha256:current\r\n" +

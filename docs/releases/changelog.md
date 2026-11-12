@@ -1,6 +1,6 @@
 # Changelog
 
-See [CHANGELOG.md](https://github.com/ProductBuildersHQ/impact-model/blob/main/CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/ProductBuildersHQ/outcome-model/blob/main/CHANGELOG.md)
 for the full changelog.
 
 ## Releases
