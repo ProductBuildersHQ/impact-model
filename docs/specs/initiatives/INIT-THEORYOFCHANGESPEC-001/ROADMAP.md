@@ -665,7 +665,7 @@
 ## Phase 30 — Metric Roles
 
 **Theme:** The North Star and the one metric that matters as roles of a metric, checked alike and leading the executive report and deck
-**Status:** Completed — 2 of 2 items completed
+**Status:** Completed — 3 of 3 items completed
 
 - [x] `RMI-OUTCOMEMODEL-001` Check the one metric that matters as the North Star is checked
   - Type: capability · Status: completed
@@ -674,3 +674,8 @@
 - [x] `RMI-OUTCOMEMODEL-002` Lead the executive report and deck with what each program steers by
   - Type: capability · Status: completed
   - Acceptance: report exec and deck exec open with each pathway's North Star and one metric that matters, with status and progress, and any guardrail off track, at risk, stale, or without data; report.Steering shared by both; unit and golden tests; the reports guide updated
+
+- [x] `RMI-OUTCOMEMODEL-003` Date the one metric that matters
+  - Type: capability · Status: completed
+  - Depends on: `RMI-OUTCOMEMODEL-001`, `RMI-OUTCOMEMODEL-002`
+  - Acceptance: focus.oneMetrics replaces focus.oneMetricId with dated entries (indicatorId, from, to, stage, reason) that do not overlap; Focus.OneMetricAt picks the entry for a date; reports and exports use the snapshot's date; edit.FocusOn and pathway focus close the current focus the day before a new one; cascade drops entries naming a removed indicator; schema regenerated; tests

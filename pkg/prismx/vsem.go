@@ -95,7 +95,7 @@ func ToVSEM(doc *model.Model, st *model.Status) (*vsem.VSEM, error) {
 			out.Execution = append(out.Execution, vsemExecution(doc, *in, p.ID))
 		}
 		if f := p.Focus; f != nil {
-			for _, r := range focusMeasures(f) {
+			for _, r := range focusMeasures(f, asOf(st)) {
 				ind, ok := doc.Indicator(r.id)
 				if !ok || ind.Rejected() || listed[ind.ID] {
 					continue

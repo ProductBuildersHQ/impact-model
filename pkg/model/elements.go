@@ -652,14 +652,56 @@ type Focus struct {
 	// delivers to the people it serves. It measures an outcome at or below the
 	// ceiling of accountability, never an output or an activity.
 	NorthStarID string `json:"northStarId,omitempty"`
-	// OneMetricID is the indicator to focus on at the pathway's current stage.
-	// It changes as the stage does, and may be the same as the North Star.
-	OneMetricID string `json:"oneMetricId,omitempty"`
+	// OneMetrics are the one metric that matters for each period: the
+	// indicator the team focused on, from when, and why. The focus changes
+	// as the stage does, so earlier entries record what the team steered by
+	// then. Periods do not overlap. An entry may name the North Star.
+	OneMetrics []OneMetric `json:"oneMetrics,omitempty"`
 	// GuardrailIDs are indicators watched so that pursuing the North Star does
 	// not harm something else, such as equity, quality, or staff burden.
 	GuardrailIDs []string `json:"guardrailIds,omitempty"`
 	// Rationale says why these were chosen.
 	Rationale string `json:"rationale,omitempty"`
+}
+
+// OneMetric is the one metric that matters for a period: the indicator a team
+// focuses on at its current stage, from Lean Analytics (Croll and Yoskovitz).
+type OneMetric struct {
+	IndicatorID string `json:"indicatorId" jsonschema:"required"`
+	// From is the first day of the focus.
+	From string `json:"from" jsonschema:"required,format=date"`
+	// To is the last day of the focus; empty while it is the current focus.
+	To string `json:"to,omitempty" jsonschema:"format=date"`
+	// Stage is the stage the focus fits, e.g. "activation" or "retention".
+	Stage string `json:"stage,omitempty"`
+	// Reason says why this metric matters most for the period.
+	Reason string `json:"reason,omitempty"`
+}
+
+// Covers reports whether the period includes the date (YYYY-MM-DD).
+func (m OneMetric) Covers(date string) bool {
+	return m.From <= date && (m.To == "" || date <= m.To)
+}
+
+// OneMetricAt returns the one metric that matters on the date: the entry whose
+// period covers it. With no date, it returns the entry that started last,
+// which is the current focus when the document is up to date. The second
+// result is false when there is none.
+func (f *Focus) OneMetricAt(date string) (OneMetric, bool) {
+	if f == nil || len(f.OneMetrics) == 0 {
+		return OneMetric{}, false
+	}
+	var best OneMetric
+	found := false
+	for _, m := range f.OneMetrics {
+		if date != "" && !m.Covers(date) {
+			continue
+		}
+		if !found || m.From > best.From {
+			best, found = m, true
+		}
+	}
+	return best, found
 }
 
 // ExternalRef points at an element of another framework or system.

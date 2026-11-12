@@ -47,15 +47,24 @@ pathways:
   - id: pw-onboarding
     focus:
       northStarId: ind-retention-90       # the lasting value delivered
-      oneMetricId: ind-first-week-recon   # where the team is focused now
+      oneMetrics:                         # where the team focused, period by period
+        - indicatorId: ind-signups
+          from: 2026-07-01
+          to: 2026-12-31
+          stage: acquisition
+          reason: Too few accounts to learn from.
+        - indicatorId: ind-first-week-recon
+          from: 2027-01-01                # no end: the current focus
+          stage: activation
+          reason: Most new accounts never reconcile a month.
       guardrailIds: [ind-support-load]    # watched so the North Star does no harm
-      rationale: Activation is the bottleneck this quarter.
+      rationale: Steer by retention; protect support.
 ```
 
 | Role | What it is | Changes | Checked by |
 |------|------------|---------|------------|
 | **North Star** | The one number that best captures the value a program or product delivers to the people it serves | Rarely | `OM-NSM-001` to `007`: it measures an outcome at or below the ceiling of accountability, has a baseline and a target, has a guardrail, and serves its own pathway |
-| **One metric that matters** | The number the team focuses on at its current stage, from *Lean Analytics* (Croll and Yoskovitz). Often a driver further down the chain, such as activation, or a measure of the riskiest assumption | With the stage, often each quarter | `OM-NSM-008`: it serves its own pathway. `OM-NSM-009`: when it measures an outcome or an intervention other than the North Star's, it leads to the North Star through the causal links |
+| **One metric that matters** | The number the team focuses on at its current stage, from *Lean Analytics* (Croll and Yoskovitz). Often a driver further down the chain, such as activation, or a measure of the riskiest assumption | With the stage, often each quarter, so it is dated: each entry has a `from`, an optional `to`, a `stage`, and a `reason` | Validation: each entry has a start date, ends no earlier than it starts, and no two periods overlap. `OM-NSM-008`: each serves its own pathway. `OM-NSM-009`: each that measures an outcome or an intervention other than the North Star's leads to the North Star through the causal links |
 | **Guardrail** | A number watched so that pursuing the North Star does not harm something else, such as equity, quality, or staff burden | Rarely | `OM-NSM-004` and `006`: a North Star has one, and it is not the North Star itself |
 
 The roles are not further steps after impact. The North Star sits **at or below the
@@ -63,7 +72,20 @@ ceiling of accountability**: it is the highest change the team answers for. Impa
 above the ceiling, is tracked and reported as a contribution. Early on, the North
 Star and the one metric that matters are often the same indicator.
 
-`outcome-model report metric-tree` marks each role among the tiers. The executive
+The one metric that matters on a date is the entry whose period covers it. Reports
+with a snapshot use the snapshot's date; without one, the entry that started last is
+the current focus. Earlier entries stay on record, so a review can see what the team
+steered by in each period. To change the focus, give the new one and the day it
+starts; the current focus ends the day before:
+
+```bash
+outcome-model pathway focus outcome-model.yaml pw-onboarding \
+  --one-metric ind-first-week-recon --from 2027-01-01 \
+  --stage activation --reason "Most new accounts never reconcile a month"
+```
+
+`outcome-model report metric-tree` marks each role among the tiers, and lists the
+other periods' one metric that matters. The executive
 report and deck (`report exec`, `deck exec`) open with what each program steers by:
 its North Star and its one metric that matters, with their status, and any guardrail
 that is off track, at risk, stale, or without data. The V2MOM, VSEM, and OGSM exports

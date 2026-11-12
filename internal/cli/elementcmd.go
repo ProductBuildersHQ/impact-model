@@ -290,7 +290,6 @@ var elementFlags = map[string][]elementFlag{
 		ss("interventions", "interventionIds", "intervention IDs in the pathway"),
 		s("child", "childModel", "Outcome model that elaborates this pathway, as model:<doc>"),
 		s("north-star", "focus.northStarId", "indicator ID of the pathway's North Star: an outcome metric, never an output"),
-		s("one-metric", "focus.oneMetricId", "indicator ID to focus on at the pathway's current stage"),
 		ss("guardrails", "focus.guardrailIds", "indicator IDs watched so the North Star is not pursued at their cost"),
 	},
 	"decision": {
@@ -341,6 +340,9 @@ validated path as "outcome-model patch": it is atomic, and nothing is
 written if the result would have more structural errors than before.`, article(k.Name)),
 	}
 	parent.AddCommand(newAddCmd(e, k, flags), newSetCmd(e, k, flags), newRmCmd(e, k))
+	if k.Name == "pathway" {
+		parent.AddCommand(newFocusCmd(e))
+	}
 	return parent
 }
 

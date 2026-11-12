@@ -258,7 +258,6 @@ var refSites = []refSite{
 	{"pathways", []string{"interventionIds"}, dropItem, 0},
 	{"pathways", []string{"ownerActorId"}, dropValue, 0},
 	{"pathways", []string{"focus", "northStarId"}, dropValue, 0},
-	{"pathways", []string{"focus", "oneMetricId"}, dropValue, 0},
 	{"pathways", []string{"focus", "guardrailIds"}, dropItem, 0},
 	{"alignments", []string{"elementId"}, dropElement, 0},
 	{"decisions", []string{"ownerActorId"}, dropValue, 0},
@@ -442,12 +441,14 @@ type objectSite struct {
 
 // objectSites are the lists of objects that name an element: the criterion
 // scores of an indicator, an outcome, and an intervention, and the headline
-// list of an audience, whose entries name indicators.
+// list of an audience and the one metric that matters for each period of a
+// pathway, whose entries name indicators.
 var objectSites = []objectSite{
 	{refSite{array: "indicators", field: []string{"selection", "scores"}, action: dropItem}, "criterionId"},
 	{refSite{array: "outcomes", field: []string{"priority", "scores"}, action: dropItem}, "criterionId"},
 	{refSite{array: "interventions", field: []string{"priority", "scores"}, action: dropItem}, "criterionId"},
 	{refSite{array: "audiences", field: []string{"headline"}, action: dropItem}, "indicatorId"},
+	{refSite{array: "pathways", field: []string{"focus", "oneMetrics"}, action: dropItem}, "indicatorId"},
 }
 
 // findObjectRef finds an object that names the element id. These are scanned

@@ -2,7 +2,7 @@
 title: "Open agent authorization standard adoption"
 version: "0.1"
 model-id: "open-agent-auth"
-content-hash: "9714c12f79c2d57ee406efc3b393a2e2e3a4bf774e0eb690aa81b841ec7dc84e"
+content-hash: "99d45af18d0212aa4a409f8947d09000ebf48b3ddc86cd9ca24d3958251019b6"
 ---
 
 # The problem
@@ -156,4 +156,4 @@ Work down this list. For each: agree, change, remove, or not sure. Record what t
 
 # Export details
 
-Outcome model open-agent-auth · version 0.1 · hash 9714c12f79c2
+Outcome model open-agent-auth · version 0.1 · hash 99d45af18d02

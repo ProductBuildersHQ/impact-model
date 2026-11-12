@@ -763,7 +763,21 @@
       ],
       "focus": {
         "northStarId": "ind-idp-count",
-        "oneMetricId": "ind-idp-roadmaps",
+        "oneMetrics": [
+          {
+            "indicatorId": "ind-idp-count",
+            "from": "2026-01-01",
+            "to": "2026-06-30",
+            "stage": "adoption",
+            "reason": "Early on, the count of supporting providers was the bottleneck"
+          },
+          {
+            "indicatorId": "ind-idp-roadmaps",
+            "from": "2026-07-01",
+            "stage": "commitment",
+            "reason": "Providers support the standard; getting it onto their roadmaps is next"
+          }
+        ],
         "guardrailIds": [
           "ind-reference-downloads"
         ],

@@ -179,8 +179,8 @@ strategy to carry out and is left out.
 ## Metrics
 
 A strategy's metrics are the indicators its pathway steers by, from its `focus`:
-the **North Star**, then the **one metric that matters** if the pathway names
-one, then the **guardrails**. Each description starts with its role, such as
+the **North Star**, then the **one metric that matters** on the snapshot's date
+(or the current one) if the pathway names one, then the **guardrails**. Each description starts with its role, such as
 "North Star:".
 
 The **vision's metrics** are the indicators of `impact`-level outcomes that are

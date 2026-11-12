@@ -92,7 +92,7 @@ func ToV2MOM(doc *model.Model, st *model.Status) (*v2mom.V2MOM, error) {
 		scope := pathwayScope(doc, p)
 		m := v2mom.Method{ID: p.ID, Name: p.Title, Description: p.Description, Owner: actorName(doc, p.OwnerID)}
 		if f := p.Focus; f != nil {
-			for _, r := range focusMeasures(f) {
+			for _, r := range focusMeasures(f, asOf(st)) {
 				ind, ok := doc.Indicator(r.id)
 				if !ok || ind.Rejected() {
 					continue
@@ -126,8 +126,18 @@ func ToV2MOM(doc *model.Model, st *model.Status) (*v2mom.V2MOM, error) {
 
 type focusRole struct{ id, role string }
 
-// focusMeasures lists a pathway's focus indicators in order, each once.
-func focusMeasures(f *model.Focus) []focusRole {
+// asOf is the snapshot's date, or empty without a snapshot.
+func asOf(st *model.Status) string {
+	if st == nil {
+		return ""
+	}
+	return st.AsOf
+}
+
+// focusMeasures lists a pathway's focus indicators in order, each once: the
+// North Star, the one metric that matters on the date (or the current one when
+// there is no date), then the guardrails.
+func focusMeasures(f *model.Focus, asOf string) []focusRole {
 	var out []focusRole
 	seen := map[string]bool{}
 	add := func(id, role string) {
@@ -137,7 +147,9 @@ func focusMeasures(f *model.Focus) []focusRole {
 		}
 	}
 	add(f.NorthStarID, "North Star")
-	add(f.OneMetricID, "One metric that matters")
+	if om, ok := f.OneMetricAt(asOf); ok {
+		add(om.IndicatorID, "One metric that matters")
+	}
 	for _, id := range f.GuardrailIDs {
 		add(id, "Guardrail")
 	}

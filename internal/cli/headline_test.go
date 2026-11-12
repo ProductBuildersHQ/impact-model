@@ -9,12 +9,12 @@ import (
 	"github.com/ProductBuildersHQ/outcome-model/pkg/modelio"
 )
 
-// The focus flags set the North Star, the one metric, and the guardrails, and
+// The focus flags set the North Star and the guardrails, and
 // the product kind is accepted.
 func TestPathwayFocusFlags(t *testing.T) {
 	path := fixtureCopy(t, "full.json", "doc.json")
 	r := run(t, "", "pathway", "set", path, "pw-supply", "--kind", "product",
-		"--north-star", "ind-idp-count", "--one-metric", "ind-idp-roadmaps", "--guardrails", "ind-reference-downloads,ind-idp-count-na")
+		"--north-star", "ind-idp-count", "--guardrails", "ind-reference-downloads,ind-idp-count-na")
 	wantCode(t, r, 0)
 	doc, err := modelio.LoadDocument(path)
 	if err != nil {
@@ -24,7 +24,7 @@ func TestPathwayFocusFlags(t *testing.T) {
 	if !ok || pw.Focus == nil {
 		t.Fatalf("pathway = %+v", pw)
 	}
-	if pw.Kind != model.PathwayProduct || pw.Focus.NorthStarID != "ind-idp-count" || pw.Focus.OneMetricID != "ind-idp-roadmaps" ||
+	if pw.Kind != model.PathwayProduct || pw.Focus.NorthStarID != "ind-idp-count" ||
 		!slices.Equal(pw.Focus.GuardrailIDs, []string{"ind-reference-downloads", "ind-idp-count-na"}) {
 		t.Errorf("kind %q, focus %+v", pw.Kind, pw.Focus)
 	}
@@ -90,4 +90,25 @@ func TestIndicatorCompositionFlags(t *testing.T) {
 	if mustRead(t, path) != before {
 		t.Error("the file changed although the change was rejected")
 	}
+}
+
+// pathway focus starts a new one metric that matters and closes the current
+// one the day before.
+func TestPathwayFocusStartsANewOneMetric(t *testing.T) {
+	path := fixtureCopy(t, "full.json", "doc.json")
+	r := run(t, "", "pathway", "focus", path, "pw-supply", "--one-metric", "ind-reference-downloads",
+		"--from", "2027-01-01", "--stage", "growth", "--reason", "Adoption beyond the first providers")
+	wantCode(t, r, 0)
+	doc, err := modelio.LoadDocument(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pw, _ := doc.Pathway("pw-supply")
+	ms := pw.Focus.OneMetrics
+	if len(ms) != 3 || ms[1].To != "2026-12-31" || ms[2] != (model.OneMetric{IndicatorID: "ind-reference-downloads",
+		From: "2027-01-01", Stage: "growth", Reason: "Adoption beyond the first providers"}) {
+		t.Errorf("one metrics = %+v", ms)
+	}
+	r = run(t, "", "pathway", "focus", path, "pw-supply", "--one-metric", "ind-idp-count", "--from", "2026-12-01")
+	wantCode(t, r, ExitUsageErr)
 }

@@ -3,7 +3,7 @@ title: "Open agent authorization standard adoption"
 version: "0.1"
 date: "2026-09-30"
 model-id: "open-agent-auth"
-content-hash: "9714c12f79c2d57ee406efc3b393a2e2e3a4bf774e0eb690aa81b841ec7dc84e"
+content-hash: "99d45af18d0212aa4a409f8947d09000ebf48b3ddc86cd9ca24d3958251019b6"
 ---
 
 ## Problem tree
@@ -149,4 +149,4 @@ _This is a view of the causal model. It flattens the links between outcomes; the
 | General availability | A release available to all customers without special arrangement, as opposed to a preview. | A vendor's public release notes list the feature without a preview label. |
 
 
-*Outcome model open-agent-auth · version 0.1 · hash 9714c12f79c2 · as of 2026-09-30*
+*Outcome model open-agent-auth · version 0.1 · hash 99d45af18d02 · as of 2026-09-30*

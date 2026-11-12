@@ -86,7 +86,7 @@ func TestOGSMMapping(t *testing.T) {
 	for _, m := range out.Measures {
 		p, _ := doc.Pathway(m.StrategyID)
 		var focus []string
-		for _, r := range focusMeasures(p.Focus) {
+		for _, r := range focusMeasures(p.Focus, "") {
 			focus = append(focus, r.id)
 		}
 		if !slices.Contains(focus, m.ID) {

@@ -103,7 +103,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Shared metric definitions with formulas | `Model.Metrics[]` (`Metric`); `Indicator.MetricID`, `RollupFrom` | 033 |
 | Attribution vs contribution | `Indicator.Claim`, `Caveats` | 033 |
 | Metric tier: activity, output, outcome, impact (input, output, and driver metrics) | `Model.IndicatorTier` (derived from what the indicator measures; never stored) | 063 |
-| North Star, one metric that matters, guardrails, for a program or product | `Pathway.Focus` (`NorthStarID`, `OneMetricID`, `GuardrailIDs`, `Rationale`) | 064 |
+| North Star, one metric that matters, guardrails, for a program or product | `Pathway.Focus` (`NorthStarID`, `OneMetrics` as dated `OneMetric` entries, `GuardrailIDs`, `Rationale`) | 064 |
 | Headline metrics: the few numbers an audience leads with, in its order and wording | `Audience.Headline[]` (`HeadlineMetric`: `IndicatorID`, `Label`, `Note`) | 064 |
 | A metric worked out from others, such as cost per outcome | `Indicator.ComposedOf` (`Composition`: `Op` ratio, product, sum, or difference, and `IndicatorIDs`) | 067 |
 | Data availability | `Indicator.DataAvailability` | 052 |

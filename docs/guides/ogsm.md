@@ -193,8 +193,9 @@ Pathways are not ranked, so a strategy has no priority.
 ## Measures
 
 A strategy's measures are the indicators its pathway steers by, from its
-`focus`: the **North Star**, then the **one metric that matters** if the
-pathway names one, then the **guardrails**. Each description starts with its
+`focus`: the **North Star**, then the **one metric that matters** on the
+snapshot's date (or the current one) if the pathway names one, then the
+**guardrails**. Each description starts with its
 role, such as "North Star:". An indicator that is already a goal is not
 repeated as a measure.
 

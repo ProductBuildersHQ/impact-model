@@ -31,8 +31,8 @@ type SteeringMetric struct {
 }
 
 // Steering returns, for each pathway review has not rejected, in file order,
-// what it is steered by: its North Star, then its one metric that matters
-// when that is a different indicator, then each guardrail that needs
+// what it is steered by: its North Star, then its one metric that matters on
+// the snapshot's date when that is a different indicator, then each guardrail that needs
 // attention (off track, at risk, stale, or without data). A guardrail on
 // track stays out, so the list stays short.
 func Steering(in StatusInput) []SteeringMetric {
@@ -55,19 +55,20 @@ func Steering(in StatusInput) []SteeringMetric {
 		if p.Rejected() || f == nil {
 			continue
 		}
+		om, hasOM := f.OneMetricAt(in.Status.AsOf)
 		switch {
-		case f.NorthStarID != "" && f.NorthStarID == f.OneMetricID:
+		case hasOM && f.NorthStarID == om.IndicatorID:
 			add(p, RoleNorthStarAndOne, f.NorthStarID)
 		default:
 			if f.NorthStarID != "" {
 				add(p, RoleNorthStar, f.NorthStarID)
 			}
-			if f.OneMetricID != "" {
-				add(p, RoleOneMetric, f.OneMetricID)
+			if hasOM {
+				add(p, RoleOneMetric, om.IndicatorID)
 			}
 		}
 		for _, id := range f.GuardrailIDs {
-			if id == f.NorthStarID || id == f.OneMetricID {
+			if id == f.NorthStarID || (hasOM && id == om.IndicatorID) {
 				continue // a lint rule reports it; it is listed once above
 			}
 			if s, ok := byInd[id]; ok && needsAttention(s.State) {
