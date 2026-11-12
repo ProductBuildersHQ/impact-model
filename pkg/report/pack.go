@@ -29,13 +29,13 @@ func PathwayDiagrams(whole *View, pathways []*View) string {
 
 // Definitions renders the definition reports as one document, the pack a
 // workshop reviews before any data exists: the problem trees (see
-// problemTrees), then the causal pathways, logic models, outcome maps,
+// ProblemTreeIDs), then the causal pathways, logic models, outcome maps,
 // logframes, metric definitions, and glossary. whole and pathways are views of
 // doc.
 func Definitions(whole *View, pathways []*View, doc *model.Model) (string, error) {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s: definitions\n\n", mdText(whole.Document.Title))
-	trees, err := problemTrees(doc, whole.Filter)
+	trees, err := ProblemTreeIDs(doc, whole.Filter)
 	if err != nil {
 		return "", err
 	}
@@ -55,11 +55,11 @@ func Definitions(whole *View, pathways []*View, doc *model.Model) (string, error
 	return b.String(), nil
 }
 
-// problemTrees lists the problem trees the definitions pack draws, by pathway
+// ProblemTreeIDs lists the problem trees the definitions pack draws, by pathway
 // ID, "" being the whole model's. For the whole model: its tree, then the tree
 // of each pathway that has causes or effects of its own. For one pathway: its
 // own tree, or the whole model's when it has none. Empty trees are left out.
-func problemTrees(doc *model.Model, pathway string) ([]string, error) {
+func ProblemTreeIDs(doc *model.Model, pathway string) ([]string, error) {
 	candidates := []string{pathway}
 	if pathway == "" {
 		for _, p := range doc.Pathways {
