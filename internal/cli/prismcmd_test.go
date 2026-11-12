@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/grokify/prism-roadmap/goals/bsc"
 	"github.com/grokify/prism-roadmap/goals/dmaic"
 	"github.com/grokify/prism-roadmap/goals/mel"
 	"github.com/grokify/prism-roadmap/goals/ogsm"
@@ -144,6 +145,29 @@ func TestExportOGSM(t *testing.T) {
 	if again := run(t, "", "export", "ogsm", exTheory, "-O", exObs); again.stdout != first.stdout {
 		t.Error("two exports differ")
 	}
+}
+
+func TestExportBSC(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "bsc.json")
+	r := run(t, "", "export", "bsc", exTheory, "-O", exObs, "-o", out)
+	wantCode(t, r, ExitOK)
+	card, err := bsc.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := bsc.Errors(card.Validate(bsc.StrictValidationOptions())); len(errs) != 0 {
+		t.Errorf("exported scorecard does not meet the strict options: %+v", errs)
+	}
+	if len(card.Perspectives) == 0 || len(card.Objectives) == 0 || len(card.Measures) == 0 || len(card.Initiatives) == 0 || len(card.Themes) == 0 {
+		t.Errorf("perspectives, objectives, measures, initiatives, or themes missing")
+	}
+	first := run(t, "", "export", "bsc", exTheory, "-O", exObs)
+	if again := run(t, "", "export", "bsc", exTheory, "-O", exObs); again.stdout != first.stdout {
+		t.Error("two exports differ")
+	}
+	// A model with no outcome in a scorecard perspective is refused.
+	r = run(t, "", "export", "bsc", "../../examples/course-catalog/impact-model.yaml")
+	wantCode(t, r, ExitUsageErr)
 }
 
 func TestExportDMAIC(t *testing.T) {
