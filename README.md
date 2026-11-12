@@ -46,42 +46,47 @@ improvement formats such as DMAIC are all **projections** of it. Each draws the
 same model for a different reader and leaves something out, and none of them is
 a part of another.
 
+Within each view, formats that are steps of one process are listed in the order
+you would use them. The strategy formats are alternatives to one another, so
+they are listed alphabetically.
+
 ```mermaid
-flowchart LR
+flowchart TB
   classDef model fill:#fff4cc,stroke:#b8860b,stroke-width:2px,color:#111
   classDef causal fill:#eef7ee,stroke:#2e7d32,color:#111
   classDef strategy fill:#e8eefc,stroke:#3f51b5,color:#111
   classDef measure fill:#fdeee8,stroke:#bf360c,color:#111
   classDef improve fill:#f3e8fc,stroke:#6a1b9a,color:#111
+  classDef spacer fill:none,stroke:none,color:transparent
 
-  om["Outcome model<br/>problem, causes, outcomes, causal links, assumptions,<br/>evidence, interventions, indicators, audiences"]:::model
+  om["<b>Outcome model</b><br/>problem, causes, outcomes,<br/>causal links, assumptions,<br/>evidence, interventions,<br/>indicators, audiences"]:::model
 
   subgraph causality["Causality"]
-    pt["Problem tree"]:::causal
-    toc["Theory of change"]:::causal
-    omap["Outcome map"]:::causal
-    lm["Logic model"]:::causal
-    lf["Logframe"]:::causal
+    direction TB
+    pt["Problem tree"]:::causal ~~~ toc["Theory of change"]:::causal ~~~ omap["Outcome map"]:::causal ~~~ lm["Logic model"]:::causal ~~~ lf["Logframe"]:::causal
   end
   subgraph strategy["Strategy"]
-    okr["OKRs"]:::strategy
-    v2["V2MOM"]:::strategy
-    vs["VSEM"]:::strategy
-    og["OGSM"]:::strategy
-    bs["Balanced Scorecard"]:::strategy
+    direction TB
+    bs["Balanced Scorecard"]:::strategy ~~~ og["OGSM"]:::strategy ~~~ okr["OKRs"]:::strategy ~~~ v2["V2MOM"]:::strategy ~~~ vs["VSEM"]:::strategy
   end
   subgraph measurement["Measurement and learning"]
-    st["Status and metric tree"]:::measure
-    ml["MEL plan"]:::measure
+    direction TB
+    ml["MEL plan"]:::measure ~~~ mt["Metric tree"]:::measure ~~~ hm["Headline metrics"]:::measure ~~~ st["Status"]:::measure ~~~ m5["-"]:::spacer
   end
   subgraph improvement["Improvement"]
-    dm["DMAIC"]:::improve
+    direction TB
+    dm["DMAIC"]:::improve ~~~ i2["-"]:::spacer ~~~ i3["-"]:::spacer ~~~ i4["-"]:::spacer ~~~ i5["-"]:::spacer
   end
 
   om --> causality
   om --> strategy
   om --> measurement
   om --> improvement
+
+  style causality fill:#f7fbf7,stroke:#2e7d32
+  style strategy fill:#f5f7fe,stroke:#3f51b5
+  style measurement fill:#fef8f5,stroke:#bf360c
+  style improvement fill:#faf5fe,stroke:#6a1b9a
 ```
 
 ## What is an outcome model?
@@ -130,11 +135,11 @@ What do we commit to, and who owns it?
 
 | Projection | Answers | Get it with |
 |------------|---------|-------------|
+| **Balanced Scorecard** | Is the strategy balanced across what funders, customers, processes, and capabilities need, and how does each objective drive the next? Outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives. See [the mapping](docs/guides/bsc.md) | `export bsc` |
+| **OGSM** | What one thing do we want to achieve, how will we know, what choices get us there, and are they working? The objective from the context, due at the end of the time horizon, its outcomes' indicators as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's North Star and guardrails as measures, and its interventions as actions. See [the mapping](docs/guides/ogsm.md) | `export ogsm` |
 | **OKRs and outcome journeys** | What will a team commit to this quarter, and how does a person move through the outcomes? For the [PRISM](#part-of-the-prism-ecosystem) planning tools | `export okr`, `export journey` |
 | **V2MOM** | What do we want, what matters, how will we get it, what is in the way, and how will we know? Vision and values from the context, one method per pathway with its interventions as projects, measures from each pathway's North Star and guardrails, and obstacles from risks and open assumptions. See [the mapping](docs/guides/v2mom.md) | `export v2mom` |
 | **VSEM** | Where are we going, how, with what work, and how will we know? Vision and mission from the context, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, metrics from each pathway's North Star and guardrails, and the impact outcomes' indicators as the vision's metrics. See [the mapping](docs/guides/vsem.md) | `export vsem` |
-| **OGSM** | What one thing do we want to achieve, how will we know, what choices get us there, and are they working? The objective from the context, due at the end of the time horizon, its outcomes' indicators as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's North Star and guardrails as measures, and its interventions as actions. See [the mapping](docs/guides/ogsm.md) | `export ogsm` |
-| **Balanced Scorecard** | Is the strategy balanced across what funders, customers, processes, and capabilities need, and how does each objective drive the next? Outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives. See [the mapping](docs/guides/bsc.md) | `export bsc` |
 
 ### Measurement and learning
 
@@ -142,8 +147,9 @@ How will we know, and what must we learn?
 
 | Projection | Answers | Get it with |
 |------------|---------|-------------|
-| **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
 | **MEL plan** | How will we know it is working, when will we ask why, and what do we most need to learn? The outcomes as a results framework, interventions as activities, an indicator reference sheet per indicator, assumptions to monitor, and the evaluation plan, learning agenda, review meetings, and reporting schedule. See [the mapping](docs/guides/mel.md) | `export mel` |
+| **Metric tree and headline metrics** | What does each program steer by, and what is each audience told? | `report metric-tree`, `report headline` |
+| **Status** | How far has it come? Each indicator's progress against its targets by a date, each outcome's and pathway's state, links and assumptions, and a confidence score for each route to impact, all from observations. See [the guide](docs/guides/measurement.md) | `status`, `report exec`, `deck exec` |
 
 ### Improvement
 
