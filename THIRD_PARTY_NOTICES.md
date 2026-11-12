@@ -26,19 +26,19 @@ Regenerate this file with `scripts/third-party-notices.sh`.
 | [`github.com/grokify/d2vision`](third_party/licenses/github.com/grokify/d2vision) | v0.5.0 | MIT | Copyright (c) 2026 John Wang |
 | [`github.com/grokify/oscompat`](third_party/licenses/github.com/grokify/oscompat) | v0.13.0 | MIT | Copyright (c) 2025 John Wang |
 | [`github.com/grokify/prism-core`](third_party/licenses/github.com/grokify/prism-core) | v0.6.0 | MIT | Copyright (c) 2026 John Wang |
-| [`github.com/grokify/prism-roadmap`](third_party/licenses/github.com/grokify/prism-roadmap) | v0.22.0 | MIT | Copyright (c) 2026 John Wang |
+| [`github.com/grokify/prism-roadmap`](third_party/licenses/github.com/grokify/prism-roadmap) | v0.26.0 | MIT | Copyright (c) 2026 John Wang |
 | [`github.com/modelcontextprotocol/go-sdk`](third_party/licenses/github.com/modelcontextprotocol/go-sdk) | v1.8.0 | MIT AND Apache-2.0 | Copyright (c) 2024-2025 Model Context Protocol a Series of LF Projects, LLC. |
 | [`github.com/plexusone/structured-evaluation`](third_party/licenses/github.com/plexusone/structured-evaluation) | v0.15.0 | MIT | Copyright (c) 2026 John Wang |
 | [`github.com/santhosh-tekuri/jsonschema/v6`](third_party/licenses/github.com/santhosh-tekuri/jsonschema/v6) | v6.0.3 | Apache-2.0 | see the license file |
 | [`github.com/segmentio/asm`](third_party/licenses/github.com/segmentio/asm) | v1.2.1 | MIT | Copyright 2023 Segment |
 | [`github.com/segmentio/encoding`](third_party/licenses/github.com/segmentio/encoding) | v0.5.4 | MIT | Copyright (c) 2019 Segment.io, Inc. |
 | [`github.com/spf13/cobra`](third_party/licenses/github.com/spf13/cobra) | v1.10.2 | Apache-2.0 | see the license file |
-| [`github.com/spf13/pflag`](third_party/licenses/github.com/spf13/pflag) | v1.0.10 | BSD-3-Clause | Copyright (c) 2012 Alex Ogier. All rights reserved. and others |
+| [`github.com/spf13/pflag`](third_party/licenses/github.com/spf13/pflag) | v1.1.0 | BSD-3-Clause | Copyright (c) 2012 Alex Ogier. All rights reserved. and others |
 | [`github.com/yosida95/uritemplate/v3`](third_party/licenses/github.com/yosida95/uritemplate/v3) | v3.0.2 | BSD-3-Clause | Copyright (C) 2016, Kohei YOSHIDA <https://yosida95.com/>. All rights reserved. |
-| [`golang.org/x/oauth2`](third_party/licenses/golang.org/x/oauth2) | v0.37.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
-| [`golang.org/x/sync`](third_party/licenses/golang.org/x/sync) | v0.24.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
-| [`golang.org/x/sys`](third_party/licenses/golang.org/x/sys) | v0.49.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
-| [`golang.org/x/text`](third_party/licenses/golang.org/x/text) | v0.43.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
+| [`golang.org/x/oauth2`](third_party/licenses/golang.org/x/oauth2) | v0.38.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
+| [`golang.org/x/sync`](third_party/licenses/golang.org/x/sync) | v0.25.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
+| [`golang.org/x/sys`](third_party/licenses/golang.org/x/sys) | v0.50.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
+| [`golang.org/x/text`](third_party/licenses/golang.org/x/text) | v0.44.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
 | [`golang.org/x/time`](third_party/licenses/golang.org/x/time) | v0.16.0 | BSD-3-Clause | Copyright 2009 The Go Authors. |
 | [`gopkg.in/yaml.v3`](third_party/licenses/gopkg.in/yaml.v3) | v3.0.1 | MIT AND Apache-2.0 | Copyright (c) 2006-2010 Kirill Simonov and others |
 
