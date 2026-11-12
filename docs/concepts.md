@@ -21,7 +21,9 @@ OKRs and outcome journeys are projections too, written by `export okr` and
 `export journey` for the PRISM planning tools, and so is a V2MOM, written by
 `export v2mom` (see the [V2MOM guide](guides/v2mom.md)), a VSEM, written by
 `export vsem` (see the [VSEM guide](guides/vsem.md)), an OGSM, written by
-`export ogsm` (see the [OGSM guide](guides/ogsm.md)), and a DMAIC metrics
+`export ogsm` (see the [OGSM guide](guides/ogsm.md)), a Balanced Scorecard,
+written by `export bsc` (see the [Balanced Scorecard guide](guides/bsc.md)),
+and a DMAIC metrics
 document for pathways marked `projections: [dmaic]`, written by `export dmaic`
 (see the [DMAIC guide](guides/dmaic.md)), and a monitoring, evaluation, and learning plan, written by `export mel` (see the [MEL guide](guides/mel.md)).
 

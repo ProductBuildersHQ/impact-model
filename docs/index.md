@@ -10,7 +10,7 @@ generated JSON Schema, plus an SDK, the `impact-model` CLI, and an MCP server.
 
 You describe the change once, in one impact model. The problem tree, the
 [theory of change](https://en.wikipedia.org/wiki/Theory_of_change), the logic
-model, the outcome map, the logframe, strategy formats such as OKRs, V2MOM, VSEM, and OGSM,
+model, the outcome map, the logframe, strategy formats such as OKRs, V2MOM, VSEM, OGSM, and the Balanced Scorecard,
 improvement formats such as DMAIC, and a monitoring, evaluation, and learning
 (MEL) plan are **projections** of it. Each draws the
 same model for a different reader and leaves something out, and none of them is
@@ -32,6 +32,7 @@ flowchart LR
   im --> v2["V2MOM"]:::strategy
   im --> vs["VSEM"]:::strategy
   im --> og["OGSM"]:::strategy
+  im --> bs["Balanced Scorecard"]:::strategy
   im --> dm["DMAIC"]:::strategy
   im --> ml["MEL plan"]:::method
 ```
@@ -75,6 +76,7 @@ Each projection answers a different question for a different reader:
 | **V2MOM** | What do we want, what matters, how will we get it, what is in the way, and how will we know? Vision and values from the context, one method per pathway with its interventions as projects, measures from each pathway's North Star and guardrails, and obstacles from risks and open assumptions. See [the mapping](guides/v2mom.md) | `export v2mom` |
 | **VSEM** | Where are we going, how, with what work, and how will we know? Vision and mission from the context, one strategy per pathway with the resources it commits, its interventions as execution with owners and dates, metrics from each pathway's North Star and guardrails, and the impact outcomes' indicators as the vision's metrics. See [the mapping](guides/vsem.md) | `export vsem` |
 | **OGSM** | What one thing do we want to achieve, how will we know, what choices get us there, and are they working? The objective from the context, due at the end of the time horizon, its outcomes' indicators as goals, one strategy per pathway serving the goals its outcomes lead to, each pathway's North Star and guardrails as measures, and its interventions as actions. See [the mapping](guides/ogsm.md) | `export ogsm` |
+| **Balanced Scorecard** | Is the strategy balanced across what funders, customers, processes, and capabilities need, and how does each objective drive the next? Outcomes placed in scorecard perspectives as objectives, the strategy map from the causal links between them, pathways as strategic themes, indicators as lead and lag measures, and interventions as initiatives. See [the mapping](guides/bsc.md) | `export bsc` |
 | **DMAIC** | Which metrics are we improving, from what baseline to what target, what causes the gap, and is the gain holding? One category per pathway marked `projections: [dmaic]`, its numeric indicators as metrics with observations as data points, control limits once there are enough, root causes from the problem tree, and interventions as improvement initiatives. Lint first checks that those pathways are measured often enough. See [the mapping](guides/dmaic.md) | `export dmaic`, and `report dmaic-plan` to plan it before there is data |
 | **MEL plan** | How will we know it is working, when will we ask why, and what do we most need to learn? The outcomes as a results framework, interventions as activities, an indicator reference sheet per indicator, assumptions to monitor, and the evaluation plan, learning agenda, review meetings, and reporting schedule. See [the mapping](guides/mel.md) | `export mel` |
 
@@ -101,6 +103,7 @@ impact-model export journey impact-model.yaml           # outcome journeys for t
 impact-model export v2mom impact-model.yaml             # a V2MOM
 impact-model export vsem impact-model.yaml              # a VSEM
 impact-model export ogsm impact-model.yaml              # an OGSM
+impact-model export bsc impact-model.yaml               # a Balanced Scorecard
 impact-model export dmaic impact-model.yaml             # DMAIC improvement efforts
 impact-model export mel impact-model.yaml               # a monitoring, evaluation, and learning plan
 ```
@@ -272,7 +275,7 @@ Reading the second diagram:
 | **Edits that cannot make it worse** | One validated, atomic patch engine behind the CLI, the SDK, and the AI tools. A change that adds structural errors is rejected, and `--dry-run` shows the result first |
 | **Quality you can check** | A schema, structural validation, 81 deterministic lint rules, and a rubric for human or AI judges, so "is this a good impact model?" has an answer you can repeat |
 | **Progress you can measure** | Load a spreadsheet of numbers and see which indicators, outcomes, and pathways are on track, with assumptions that can cap a result and a confidence score for each route to impact |
-| **Artifacts for each audience** | Executive and funder reports, audience stories, slide decks, Word and PowerPoint files, CSV tables, and OKR, V2MOM, VSEM, OGSM, DMAIC, and MEL exports, all from one source and stamped with the version and hash |
+| **Artifacts for each audience** | Executive and funder reports, audience stories, slide decks, Word and PowerPoint files, CSV tables, and OKR, V2MOM, VSEM, OGSM, Balanced Scorecard, DMAIC, and MEL exports, all from one source and stamped with the version and hash |
 | **Review that comes back** | Send a packet or sheet to reviewers, import their answers as proposed changes you inspect, then record approval |
 | **Honest handling of people's data** | Stories and quotes appear only with consent, and restricted evidence is never rendered anywhere |
 | **Ready for AI agents** | An MCP server and agent skills let an agent draft, edit, measure, report, and export, under the same rules as a person |
@@ -294,6 +297,7 @@ what they hope for, and then show whether it did.
 | Export a V2MOM, and see how it maps | [V2MOM](guides/v2mom.md) |
 | Export a VSEM, and see how it maps | [VSEM](guides/vsem.md) |
 | Export an OGSM, and see how it maps | [OGSM](guides/ogsm.md) |
+| Export a Balanced Scorecard, and see how it maps | [Balanced Scorecard](guides/bsc.md) |
 | Export a MEL plan, and see how it maps | [MEL](guides/mel.md) |
 | Run a program with DMAIC, and see how it maps | [DMAIC](guides/dmaic.md) |
 | Send an impact model out for review | [Review round trip](guides/review-round-trip.md) |
@@ -307,7 +311,7 @@ The [release notes](releases/v0.5.0.md) list what the latest release contains, a
 
 Shared primitives come from
 [prism-core](https://github.com/grokify/prism-core). The OKR, outcome-journey,
-V2MOM, VSEM, OGSM, DMAIC, and MEL exports target the goals packages of
+V2MOM, VSEM, OGSM, Balanced Scorecard, DMAIC, and MEL exports target the goals packages of
 [prism-roadmap](https://github.com/grokify/prism-roadmap). Rubrics and GO/NO-GO
 reports use [structured-evaluation](https://github.com/plexusone/structured-evaluation).
 

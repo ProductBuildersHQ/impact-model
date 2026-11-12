@@ -69,7 +69,8 @@ different things, and an impact model can make all of them.
   answers for the outcome. An indicator's `leadLag` says whether it moves
   before the results (`lead`) or reports one (`lag`). The causal links between
   the placed outcomes become the strategy map; lint checks that it runs upward
-  and that each objective is owned and measured (IMP-BSC-001 to 004).
+  and that each objective is owned and measured (IMP-BSC-001 to 004; see the
+  [Balanced Scorecard guide](bsc.md)).
 
 ```bash
 # A pathway's North Star, and what watches it
