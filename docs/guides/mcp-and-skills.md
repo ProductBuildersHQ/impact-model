@@ -38,6 +38,7 @@ It makes no network calls and no model calls.
 | `outcome_report` | Render a definition or status report |
 | `outcome_deck` | Generate a deck as Marp Markdown |
 | `outcome_export` | Export for the PRISM tools as JSON: `okr`, `journey`, `v2mom`, `vsem`, `ogsm`, `bsc`, `dmaic`, or `mel`. With observations, the export carries the latest values and status. A model that lacks what the format needs is refused, naming what to add |
+| `outcome_document` | One Markdown document with the sections of a profile, or those listed, in order. Diagrams are D2 blocks; sections it skipped are listed |
 | `outcome_diff` | Compare two versions of an outcome model |
 | `outcome_judge_bundle` | Build the judge bundle |
 | `outcome_patch` | Apply a JSON Patch, atomically |
