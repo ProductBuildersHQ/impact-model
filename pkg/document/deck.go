@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/grokify/d2vision"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 )
@@ -50,6 +51,44 @@ type slide struct {
 	Items    []string `json:"items,omitempty"`
 	HTML     string   `json:"html,omitempty"`
 	SVG      string   `json:"svg,omitempty"`
+	// Width is the width, in slide pixels, to show a diagram at when fitting
+	// it to the slide would make its labels too small to read. The slide then
+	// scrolls. It is 0 when the diagram fits.
+	Width int `json:"width,omitempty"`
+}
+
+// The area a diagram fills on a 1280 x 720 slide, below the kicker and title,
+// in slide pixels, and the smallest label a slide shows without scrolling.
+const (
+	diagramAreaWidth  = 1152
+	diagramAreaHeight = 520
+	minSlideFontPx    = 15
+)
+
+// scrollWidth returns the width to show an SVG diagram at so its smallest
+// label is at least minSlideFontPx, or 0 when the diagram fits the slide at
+// that size. A diagram it cannot read is shown fitted.
+func scrollWidth(svg string) int {
+	d, err := d2vision.ParseString(svg)
+	if err != nil || d.ViewBox.Width <= 0 || d.ViewBox.Height <= 0 {
+		return 0
+	}
+	smallest := 0.0
+	for _, n := range d.Nodes {
+		if f := n.Style.FontSize; f > 0 && (smallest == 0 || f < smallest) {
+			smallest = f
+		}
+	}
+	if smallest == 0 {
+		return 0
+	}
+	w, h := d.ViewBox.Width, d.ViewBox.Height
+	fit := min(diagramAreaWidth/w, diagramAreaHeight/h)
+	if fit*smallest >= minSlideFontPx {
+		return 0
+	}
+	scale := min(diagramAreaWidth/w, minSlideFontPx/smallest)
+	return int(w*scale + 0.5)
 }
 
 // deckData is everything the deck's script needs.
@@ -98,7 +137,7 @@ func (d *Document) Deck(opts DeckOptions) ([]byte, error) {
 				lead = plain(p.Diagram.Title)
 				sl := slide{Kind: "diagram", Kicker: s.Title, Title: lead}
 				if svg, ok := svgFor(opts, p.Diagram); ok {
-					sl.SVG = svg
+					sl.SVG, sl.Width = svg, scrollWidth(svg)
 				} else {
 					h, err := toHTML("```d2\n" + p.Diagram.D2 + "```\n")
 					if err != nil {

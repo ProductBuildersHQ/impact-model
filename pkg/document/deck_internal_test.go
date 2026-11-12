@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -73,5 +74,35 @@ func TestLineBreaksSurviveWithoutRawHTML(t *testing.T) {
 	}
 	if strings.Contains(s, `\u003cscript\u003ex`) {
 		t.Error("raw HTML other than a line break got through")
+	}
+}
+
+// svgOf is a D2-style SVG w x h pixels with one node whose label is fontPx.
+func svgOf(w, h, fontPx int) string {
+	return fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %d %d">`+
+		`<g class="YQ=="><g class="shape"><rect x="0" y="0" width="100" height="50"/></g>`+
+		`<text style="font-size:%dpx">a</text></g></svg>`, w, h, fontPx)
+}
+
+// A diagram that fits a slide with readable labels is fitted. One whose labels
+// would be too small is shown at a readable width, no wider than the slide,
+// and scrolls.
+func TestScrollWidth(t *testing.T) {
+	for _, c := range []struct {
+		name       string
+		w, h, font int
+		want       int
+	}{
+		{"fits", 1000, 500, 24, 0},
+		{"tall", 1000, 2500, 24, 625},
+		{"wide and tall", 4000, 3000, 16, 1152},
+		{"no labels", 1000, 2500, 0, 0},
+	} {
+		if got := scrollWidth(svgOf(c.w, c.h, c.font)); got != c.want {
+			t.Errorf("%s: scrollWidth = %d, want %d", c.name, got, c.want)
+		}
+	}
+	if got := scrollWidth("not an svg"); got != 0 {
+		t.Errorf("unparsable SVG: %d", got)
 	}
 }
