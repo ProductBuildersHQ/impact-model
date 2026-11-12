@@ -412,6 +412,15 @@ Severity `error` blocks GO; `warning` is reported; `info` is advisory.
 | OM-BSC-002 | info | Every scorecard objective names an `ownerActorId` |
 | OM-BSC-003 | info | Every scorecard objective is measured by an indicator that is not rejected |
 | OM-BSC-004 | info | Every indicator of a scorecard objective sets `leadLag` |
+| OM-NSM-001 | warning | A pathway's North Star measures an outcome, never an output or an activity |
+| OM-NSM-002 | warning | A North Star sits at or below the ceiling of accountability |
+| OM-NSM-003 | warning | A North Star has a baseline and a target |
+| OM-NSM-004 | warning | A pathway with a North Star has a guardrail |
+| OM-NSM-005 | warning | A North Star is an indicator of its own pathway (`Model.IndicatorServes`) |
+| OM-NSM-006 | warning | A guardrail is not the North Star |
+| OM-NSM-007 | info | A `program` or `product` pathway has a North Star |
+| OM-NSM-008 | warning | A pathway's one metric that matters (`focus.oneMetricId`) is an indicator of its own pathway |
+| OM-NSM-009 | info | A one metric that matters other than the North Star, measuring an outcome or an intervention, reaches the North Star's measured outcome through causal links (`Graph.Downstream`); a measure of an assumption or a pathway is not checked |
 
 Rule IDs are permanent. Retired rules keep their ID reserved.
 
@@ -1234,3 +1243,4 @@ No open question blocks implementation.
 | 0.12 | 2026-11-11 | John Wang | `export ogsm` and `ToOGSM` per the OGSM mapping (§6.18, TRD-014) |
 | 0.13 | 2026-11-12 | John Wang | Outcome `scorecardPerspective` and `ownerActorId`, indicator `leadLag`, lint OM-BSC-001 to 004, and the Balanced Scorecard gap analysis and mapping (§6.19) |
 | 0.14 | 2026-11-12 | John Wang | `export bsc` and `ToBSC` per the Balanced Scorecard mapping (§6.19, TRD-014) |
+| 0.15 | 2026-11-12 | John Wang | Lint OM-NSM-001 to 009 listed, with OM-NSM-008 and 009 for the one metric that matters; the executive report and deck open with what each program steers by (`report.Steering`) |

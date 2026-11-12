@@ -2,7 +2,7 @@
 
 **Initiative:** `INIT-THEORYOFCHANGESPEC-001`
 **Repository:** `github.com/ProductBuildersHQ/outcome-model`
-**Status:** In progress — 25 of 29 phases completed
+**Status:** In progress — 26 of 30 phases completed
 
 > RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, `Refs: <RMI-ID>`. Items from before the rename to impact-model are `RMI-THEORYOFCHANGESPEC-001` to `-076`; items from before the rename to outcome-model are `RMI-IMPACTMODEL-001` to `-028`; later items are `RMI-OUTCOMEMODEL-<NNN>`. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI `0NN` corresponds to PLAN step `P-NN`; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each `Satisfies` line are defined in PRD.md and TRD.md.
 
@@ -661,3 +661,16 @@
 - [x] `RMI-IMPACTMODEL-028` Rename the project to outcome-model
   - Type: enabler · Status: completed
   - Acceptance: module path github.com/ProductBuildersHQ/outcome-model; packages pkg/model and pkg/modelio; command outcome-model; kinds OutcomeModel and OutcomeModelStatus; schemas outcome-model and outcome-model-status; default file outcome-model.yaml; MCP tools and skills renamed; docs and README describe the outcome model and its four views; an ADR records the decision
+
+## Phase 30 — Metric Roles
+
+**Theme:** The North Star and the one metric that matters as roles of a metric, checked alike and leading the executive report and deck
+**Status:** Completed — 2 of 2 items completed
+
+- [x] `RMI-OUTCOMEMODEL-001` Check the one metric that matters as the North Star is checked
+  - Type: capability · Status: completed
+  - Acceptance: OM-NSM-008: the one metric that matters serves its own pathway; OM-NSM-009: one that measures an outcome or intervention other than the North Star's leads to it through causal links, a measure of an assumption excepted; seeded-defect tests; the measurement guide explains tiers and roles
+
+- [x] `RMI-OUTCOMEMODEL-002` Lead the executive report and deck with what each program steers by
+  - Type: capability · Status: completed
+  - Acceptance: report exec and deck exec open with each pathway's North Star and one metric that matters, with status and progress, and any guardrail off track, at risk, stale, or without data; report.Steering shared by both; unit and golden tests; the reports guide updated
