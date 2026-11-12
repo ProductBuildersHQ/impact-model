@@ -34,31 +34,32 @@ you would use them. The strategy formats are alternatives to one another, so
 they are listed alphabetically.
 
 ```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 1000}}}%%
 flowchart TB
   classDef model fill:#fff4cc,stroke:#b8860b,stroke-width:2px,color:#111
   classDef causal fill:#eef7ee,stroke:#2e7d32,color:#111
   classDef strategy fill:#e8eefc,stroke:#3f51b5,color:#111
   classDef measure fill:#fdeee8,stroke:#bf360c,color:#111
   classDef improve fill:#f3e8fc,stroke:#6a1b9a,color:#111
-  classDef spacer fill:none,stroke:none,color:transparent
+  classDef spacer fill:transparent,stroke:transparent,stroke-width:1px,color:transparent
 
-  om["<b>Outcome model</b><br/>problem, causes, outcomes,<br/>causal links, assumptions,<br/>evidence, interventions,<br/>indicators, audiences"]:::model
+  om["<b>Outcome model</b><br/>problem, causes, outcomes, causal links, assumptions, evidence, interventions, indicators, audiences"]:::model
 
-  subgraph causality["Causality"]
+  subgraph causality["<b>Causality</b>"]
     direction TB
     pt["Problem tree"]:::causal ~~~ toc["Theory of change"]:::causal ~~~ omap["Outcome map"]:::causal ~~~ lm["Logic model"]:::causal ~~~ lf["Logframe"]:::causal
   end
-  subgraph strategy["Strategy"]
+  subgraph strategy["<b>Strategy</b>"]
     direction TB
     bs["Balanced Scorecard"]:::strategy ~~~ og["OGSM"]:::strategy ~~~ okr["OKRs"]:::strategy ~~~ v2["V2MOM"]:::strategy ~~~ vs["VSEM"]:::strategy
   end
-  subgraph measurement["Measurement and learning"]
+  subgraph measurement["<b>Measurement and learning</b>"]
     direction TB
-    ml["MEL plan"]:::measure ~~~ mt["Metric tree"]:::measure ~~~ hm["Headline metrics"]:::measure ~~~ st["Status"]:::measure ~~~ m5["-"]:::spacer
+    ml["MEL plan"]:::measure ~~~ mt["Metric tree"]:::measure ~~~ hm["Headline metrics"]:::measure ~~~ st["Status"]:::measure ~~~ m5["DMAIC"]:::spacer
   end
-  subgraph improvement["Improvement"]
+  subgraph improvement["<b>Improvement</b>"]
     direction TB
-    dm["DMAIC"]:::improve ~~~ i2["-"]:::spacer ~~~ i3["-"]:::spacer ~~~ i4["-"]:::spacer ~~~ i5["-"]:::spacer
+    dm["DMAIC"]:::improve ~~~ i2["DMAIC"]:::spacer ~~~ i3["DMAIC"]:::spacer ~~~ i4["DMAIC"]:::spacer ~~~ i5["DMAIC"]:::spacer
   end
 
   om --> causality
@@ -66,10 +67,10 @@ flowchart TB
   om --> measurement
   om --> improvement
 
-  style causality fill:#f7fbf7,stroke:#2e7d32
-  style strategy fill:#f5f7fe,stroke:#3f51b5
-  style measurement fill:#fef8f5,stroke:#bf360c
-  style improvement fill:#faf5fe,stroke:#6a1b9a
+  style causality fill:#f7fbf7,stroke:#2e7d32,color:#1b5e20
+  style strategy fill:#f5f7fe,stroke:#3f51b5,color:#1a237e
+  style measurement fill:#fef8f5,stroke:#bf360c,color:#8a2400
+  style improvement fill:#faf5fe,stroke:#6a1b9a,color:#4a148c
 ```
 
 ## What is an outcome model?
