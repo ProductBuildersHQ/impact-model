@@ -38,7 +38,7 @@ as `NNN`) that adds the type or field. Concepts not in v0 are listed under
 | Outcome model document (holds the theory of change of ActKnowledge and UNDG) | `model.Model` (`kind: OutcomeModel`) | 004 |
 | Metadata, owners, status | `Model.Metadata` (`prism-core` `Metadata`) | 004 |
 | Whose outcome model it is (perspective) | `Model.Perspective` (`actorId`, `role`, `futureRef`) | 004 |
-| Problem statement, target population, time horizon, narrative | `Model.Context` | 004 |
+| Problem statement, target population, time horizon, narrative, and a background that introduces the organization | `Model.Context` | 004 |
 | Purpose: why the organization exists and what it works toward (a statement, not a causal element) | `Context.Mission`, `Context.Vision` | 064 |
 | Ceiling of accountability (ActKnowledge) | `Model.Ceiling` | 004 |
 | Revision / adaptive management, quality review (plausible, feasible, testable) | `Model.Revisions[]` (`Revision`, `QualityReview`) | 004 |

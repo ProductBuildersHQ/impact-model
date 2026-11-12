@@ -45,14 +45,15 @@ order they should appear. The two cannot be combined. Without either, the
 
 | Profile | Sections | For |
 |---------|----------|-----|
-| `nonprofit` | theory-of-change, logic-models, vsem, mel, glossary | A nonprofit's board, funders, and staff |
-| `strategy` | theory-of-change, vsem, ogsm | A leadership plan |
-| `evaluation` | theory-of-change, logic-models, logframe, metrics, mel | Evaluators and funders |
-| `improvement` | problem-trees, dmaic | Process improvement work |
+| `nonprofit` | background, theory-of-change, logic-models, vsem, mel, glossary | A nonprofit's board, funders, and staff |
+| `strategy` | background, theory-of-change, vsem, ogsm | A leadership plan |
+| `evaluation` | background, theory-of-change, logic-models, logframe, metrics, mel | Evaluators and funders |
+| `improvement` | background, problem-trees, dmaic | Process improvement work |
 | `full` | every section | A complete reference |
 
 | Section | What it holds |
 |---------|---------------|
+| `background` | Who the organization is, from `context.background` (or its actor's description); whom it serves, where, and the model's period; its vision, mission, and values; each program with its activities; and how the document serves the mission and vision, with a table of the sections that follow and what each shows |
 | `theory-of-change` | The theory of change on one page, then each pathway's, as diagrams drawn bottom-up from activities to impact; then the narrative: causes, priorities, assumptions and risks, who does what, and how it is monitored |
 | `problem-trees` | The whole model's problem tree, then each pathway's own |
 | `logic-models` | For each pathway, the layered logic model diagram and its table |
@@ -64,6 +65,20 @@ order they should appear. The two cannot be combined. Without either, the
 | `mel` | The [MEL plan](mel.md), with an indicator reference sheet for each indicator |
 | `dmaic` | The [DMAIC](dmaic.md) improvement plan |
 | `glossary` | The terms the model defines |
+
+Every profile opens with the background, so a reader new to the organization
+starts with who it is and why the views that follow matter. Its prose comes
+from the model: write the introduction once in `context.background`,
+paragraphs separated by a blank line, and every document carries it.
+
+```yaml
+context:
+  background: |-
+    Riverbend Nonprofit Network began in 2015, when a dozen nonprofit
+    directors started meeting to share back-office costs. ...
+
+    The network runs leadership cohorts and peer circles, ...
+```
 
 ```bash
 outcome-model export document outcome-model.yaml --sections theory-of-change,vsem,mel --out plan.docx

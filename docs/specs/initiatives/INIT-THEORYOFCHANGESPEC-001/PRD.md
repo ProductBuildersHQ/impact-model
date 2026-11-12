@@ -673,6 +673,11 @@ named version, so that both teams work from the same agreed theory.
   such as theory of change, logic models, VSEM, and MEL for a nonprofit), and
   receives Markdown, a Word document, or a single-file HTML presentation, with
   the diagrams rendered. The theory of change MUST be drawable on one page.
+- **PRD-FR-609** A document MUST be able to open with a background for a
+  reader new to the organization: who it is, its vision, mission, and values,
+  its programs, and how the views that follow serve its mission and vision.
+  All of it MUST come from the outcome model, so it is written once and every
+  document carries the same words.
 
 ### 4.7 Editing (PRD-FR-7xx)
 

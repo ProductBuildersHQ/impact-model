@@ -683,7 +683,7 @@
 ## Phase 31 — Documents and Presentations
 
 **Theme:** One human-readable document from the outcome model, with the sections and their order chosen by the reader: Markdown, Word, or an HTML presentation, with the diagrams drawn
-**Status:** Completed — 3 of 3 items completed
+**Status:** Completed — 4 of 4 items completed
 
 - [x] `RMI-OUTCOMEMODEL-004` Draw the theory of change on one page
   - Type: capability · Status: completed
@@ -701,3 +701,9 @@
   - Depends on: `RMI-OUTCOMEMODEL-005`
   - Satisfies: PRD-FR-608, TRD-048
   - Acceptance: a single-file React presentation with keyboard navigation and slide addresses, long content paginated, and a `?print` view meeting the deck-pdf/v1 contract; deck tests; checked in a headless browser
+
+- [x] `RMI-OUTCOMEMODEL-007` Open a document with the organization's background
+  - Type: capability · Status: completed
+  - Depends on: `RMI-OUTCOMEMODEL-005`
+  - Satisfies: PRD-FR-609, TRD-049
+  - Acceptance: `context.background` in the model and schema; a `background` section first in every profile, with who the organization is, its vision, mission, and values, its programs and activities, and how the document serves the mission and vision; the example carries a fictional background; unit and golden tests; the documents guide covers it
