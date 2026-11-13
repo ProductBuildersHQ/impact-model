@@ -16,7 +16,7 @@
         <link rel="prev" href="../measurement/">
       
       
-        <link rel="next" href="../problem-tree/">
+        <link rel="next" href="../documents/">
       
       
         
@@ -639,6 +639,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documents and Presentations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1567,6 +1595,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../releases/v0.7.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.7.0
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../releases/v0.6.0/" class="md-nav__link">
         
   
@@ -1953,11 +2009,15 @@ them before any data exists.</p>
 </tr>
 <tr>
 <td><code>logic-model-layered</code></td>
-<td>The logic model as columns, from inputs to impact, with a box for each item and an arrow wherever the outcome model says one leads to another. Written as Mermaid</td>
+<td>The logic model as columns, from inputs to impact, with a box for each item and an arrow wherever the outcome model says one leads to another. Written as Mermaid, left to right for slides</td>
 </tr>
 <tr>
 <td><code>logic-model-d2</code></td>
-<td>The same layered diagram as <a href="https://d2lang.com">D2</a>, where a grid keeps every stage in its own column. Render it with <code>d2 diagram.d2 diagram.svg</code></td>
+<td>The same diagram as <a href="https://d2lang.com">D2</a>, drawn bottom-up: a band per stage with impact on top, boxes of one width, and ELK as its layout engine so arrows go around boxes. Render it with <code>d2 diagram.d2 diagram.svg</code></td>
+</tr>
+<tr>
+<td><code>theory-of-change-d2</code></td>
+<td>The theory of change on one page, as D2: the activities and outcomes of every pathway together, or of the pathway <code>--pathway</code> names, short-term through impact. It is drawn like <code>logic-model-d2</code>: bottom-up, a band per stage with the impact on top, boxes of one width, and arrows routed around boxes. Inputs and outputs are left to the logic model, and each activity is joined to the outcomes its outputs lead to</td>
 </tr>
 <tr>
 <td><code>problem-tree</code></td>

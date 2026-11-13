@@ -16,7 +16,7 @@
         <link rel="prev" href="../PLAN/">
       
       
-        <link rel="next" href="../../../../releases/v0.6.0/">
+        <link rel="next" href="../../../../releases/v0.7.0/">
       
       
         
@@ -468,6 +468,34 @@
     
   
     Reports and Decks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documents and Presentations
   
 
     
@@ -1704,6 +1732,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#phase-31-documents-and-presentations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 31 — Documents and Presentations
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1773,6 +1812,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../releases/v0.7.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.7.0
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2333,6 +2400,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#phase-31-documents-and-presentations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 31 — Documents and Presentations
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2356,7 +2434,7 @@
 <h1 id="roadmap-outcome-model-specification-go-first-model-json-schema-measurement-and-leadership-reporting">ROADMAP — Outcome Model Specification — Go-first model, JSON Schema, measurement, and leadership reporting<a class="headerlink" href="#roadmap-outcome-model-specification-go-first-model-json-schema-measurement-and-leadership-reporting" title="Permanent link">&para;</a></h1>
 <p><strong>Initiative:</strong> <code>INIT-THEORYOFCHANGESPEC-001</code>
 <strong>Repository:</strong> <code>github.com/ProductBuildersHQ/outcome-model</code>
-<strong>Status:</strong> In progress — 26 of 30 phases completed</p>
+<strong>Status:</strong> In progress — 27 of 31 phases completed</p>
 <blockquote>
 <p>RMI IDs are stable and permanent. Commits implementing an item carry its own ID as the trailer, <code>Refs: &lt;RMI-ID&gt;</code>. Items from before the rename to impact-model are <code>RMI-THEORYOFCHANGESPEC-001</code> to <code>-076</code>; items from before the rename to outcome-model are <code>RMI-IMPACTMODEL-001</code> to <code>-028</code>; later items are <code>RMI-OUTCOMEMODEL-&lt;NNN&gt;</code>. Phase status is derived from member RMIs — a phase is complete only when all its RMIs are complete. RMI <code>0NN</code> corresponds to PLAN step <code>P-NN</code>; phases order the work, so numbers are not sequential across phases. Phases 1–5 are the thin slice (adopter milestones M0 and M1). Requirements in each <code>Satisfies</code> line are defined in PRD.md and TRD.md.</p>
 </blockquote>
@@ -3084,6 +3162,42 @@
 <li>Type: capability · Status: completed</li>
 <li>Depends on: <code>RMI-OUTCOMEMODEL-001</code>, <code>RMI-OUTCOMEMODEL-002</code></li>
 <li>Acceptance: focus.oneMetrics replaces focus.oneMetricId with dated entries (indicatorId, from, to, stage, reason) that do not overlap; Focus.OneMetricAt picks the entry for a date; reports and exports use the snapshot's date; edit.FocusOn and pathway focus close the current focus the day before a new one; cascade drops entries naming a removed indicator; schema regenerated; tests</li>
+</ul>
+<h2 id="phase-31-documents-and-presentations">Phase 31 — Documents and Presentations<a class="headerlink" href="#phase-31-documents-and-presentations" title="Permanent link">&para;</a></h2>
+<p><strong>Theme:</strong> One human-readable document from the outcome model, with the sections and their order chosen by the reader: Markdown, Word, or an HTML presentation, with the diagrams drawn
+<strong>Status:</strong> Completed — 4 of 4 items completed</p>
+<ul>
+<li>[x] <code>RMI-OUTCOMEMODEL-004</code> Draw the theory of change on one page</li>
+<li>Type: capability · Status: completed</li>
+<li>Satisfies: PRD-FR-608, TRD-046</li>
+<li>
+<p>Acceptance: a <code>theory-of-change-d2</code> report drawing every pathway's activities and outcomes in one D2 diagram, or one pathway's, inputs and outputs left out with activities joined through them; drawn bottom-up in a band per stage, laid out with ELK so no arrow crosses a box, with boxes of one width and wrapped labels so a pathway's diagram reads at 8 points on a portrait page, checked with d2vision's legibility analysis; unit tests; the reports guide lists it</p>
+</li>
+<li>
+<p>[x] <code>RMI-OUTCOMEMODEL-005</code> Export the outcome model as one document</p>
+</li>
+<li>Type: capability · Status: completed</li>
+<li>Depends on: <code>RMI-OUTCOMEMODEL-004</code>, and prism-roadmap's embeddable Markdown renderers (<code>OmitHeader</code>, <code>HeadingOffset</code>, and DMAIC Markdown)</li>
+<li>Satisfies: PRD-FR-608, TRD-047</li>
+<li>
+<p>Acceptance: <code>pkg/document</code> with sections and profiles; <code>export document</code> to .md, .docx, and .html in the CLI, the service layer, and the MCP server (<code>outcome_document</code>); strategy sections through <code>pkg/prismx</code> only; golden and determinism tests; a documents guide</p>
+</li>
+<li>
+<p>[x] <code>RMI-OUTCOMEMODEL-006</code> Show the document as an HTML presentation</p>
+</li>
+<li>Type: capability · Status: completed</li>
+<li>Depends on: <code>RMI-OUTCOMEMODEL-005</code></li>
+<li>Satisfies: PRD-FR-608, TRD-048</li>
+<li>
+<p>Acceptance: a single-file React presentation with keyboard navigation and slide addresses, long content paginated, and a <code>?print</code> view meeting the deck-pdf/v1 contract; deck tests; checked in a headless browser</p>
+</li>
+<li>
+<p>[x] <code>RMI-OUTCOMEMODEL-007</code> Open a document with the organization's background</p>
+</li>
+<li>Type: capability · Status: completed</li>
+<li>Depends on: <code>RMI-OUTCOMEMODEL-005</code></li>
+<li>Satisfies: PRD-FR-609, TRD-049</li>
+<li>Acceptance: <code>context.background</code> in the model and schema; a <code>background</code> section first in every profile, with who the organization is, its vision, mission, and values, its programs and activities, and how the document serves the mission and vision; the example carries a fictional background; unit and golden tests; the documents guide covers it</li>
 </ul>
 
 
